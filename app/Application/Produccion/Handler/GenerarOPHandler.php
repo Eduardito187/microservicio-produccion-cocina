@@ -71,10 +71,10 @@ class GenerarOPHandler
 
             foreach ($op->pullEvents() as $event) {
                 OutboxStore::append(
-                    name:        $event->name(),
+                    name: $event->name(),
                     aggregateId: (string)$persistedId,
-                    occurredOn:  $event->occurredOn(),
-                    payload:     $event->toArray()
+                    occurredOn: $event->occurredOn(),
+                    payload: $event->toArray()
                 );
             }
 

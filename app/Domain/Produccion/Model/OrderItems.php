@@ -2,6 +2,7 @@
 namespace App\Domain\Produccion\Model;
 
 use App\Domain\Produccion\ValueObject\OrderItem;
+use InvalidArgumentException;
 use DomainException;
 use Traversable;
 
@@ -34,7 +35,7 @@ class OrderItems implements \IteratorAggregate, \Countable
 
         foreach ($items as $item) {
             if (!$item instanceof OrderItem) {
-                throw new \InvalidArgumentException('Todos los elementos deben ser OrderItem');
+                throw new InvalidArgumentException('Todos los elementos deben ser OrderItem');
             }
 
             $sku = $item->sku()->value();
