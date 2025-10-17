@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Infrastructure\Http\Controllers\EventBusController;
 use App\Infrastructure\Http\Controllers\GenerarOPController;
 
 /*
@@ -20,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/produccion/ordenes/generar', GenerarOPController::class);
+Route::post('/event-bus', EventBusController::class);

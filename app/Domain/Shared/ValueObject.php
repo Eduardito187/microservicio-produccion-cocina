@@ -2,7 +2,8 @@
 
 namespace App\Domain\Shared;
 
-abstract class ValueObject {
+class ValueObject
+{
     /**
      * @param ValueObject $other
      * @return bool

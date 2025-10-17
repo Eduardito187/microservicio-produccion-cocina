@@ -56,13 +56,19 @@ class OrdenProduccion
      */
     public static function crear(string $id, DateTimeImmutable $fecha, string $sucursalId): self
     {
-        $self = new self($id, $fecha, $sucursalId);
-
-        $self->record(new OrdenProduccionCreada(
-            $id,
-            $fecha->format('Y-m-d'),
+        $self = new self(
+            $id, 
+            $fecha, 
             $sucursalId
-        ));
+        );
+
+        $self->record(
+            new OrdenProduccionCreada(
+                $id,
+                $fecha->format('Y-m-d'),
+                $sucursalId
+            )
+        );
 
         return $self;
     }
@@ -78,7 +84,8 @@ class OrdenProduccion
         }
 
         $this->estado = 'CERRADA';
-        // $this->record(new OrdenProduccionCerrada($this->id));
+
+        //Guardadar modificacion en base de datos
     }
 
     /**

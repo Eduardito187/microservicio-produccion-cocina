@@ -12,7 +12,7 @@ class Capacidad extends ValueObject {
      * @param int $valor
      * @throws InvalidArgumentException
      */
-    public function __construct(public int $valor)
+    public function __construct(int $valor)
     {
         if ($valor <= 0) throw new InvalidArgumentException('Capacidad > 0');
     }

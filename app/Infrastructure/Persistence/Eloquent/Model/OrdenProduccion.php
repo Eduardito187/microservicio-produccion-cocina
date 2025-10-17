@@ -9,5 +9,5 @@ class OrdenProduccion extends Model
     protected $table = 'orden_produccion';
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $fillable = ['id','fecha','sede_id','estado'];
+    protected $fillable = ['id', 'fecha', 'sucursal_id', 'estado'];
 }

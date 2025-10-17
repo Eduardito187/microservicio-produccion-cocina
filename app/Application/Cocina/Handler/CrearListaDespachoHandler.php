@@ -8,7 +8,7 @@ use App\Domain\Produccion\Repository\OrdenProduccion;
 use App\Application\Produccion\Command\GenerarOP;
 use Illuminate\Support\Facades\DB;
 
-class GenerarOPHandler
+class CrearListaDespachoHandler
 {
     /**
      * @var OrdenProduccion
@@ -47,11 +47,7 @@ class GenerarOPHandler
                     payload: $event->toArray()
                 );
             }
-/*
-            DB::afterCommit(function () {
-                dispatch(new \App\Jobs\PublishOutbox());
-            });
-*/
+
             return $opId;
         });
     }

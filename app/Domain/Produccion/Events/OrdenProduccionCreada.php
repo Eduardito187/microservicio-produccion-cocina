@@ -39,8 +39,8 @@ class OrdenProduccionCreada extends BaseDomainEvent
     public function toArray(): array
     {
         return [
-            'op_id'  => $this->aggregateId(),
-            'fecha'  => $this->fecha,
+            'op_id' => $this->aggregateId(),
+            'fecha' => $this->fecha,
             'sucursalId' => $this->sucursalId,
         ];
     }

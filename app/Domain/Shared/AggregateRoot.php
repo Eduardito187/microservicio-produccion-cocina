@@ -2,20 +2,20 @@
 
 namespace App\Domain\Shared;
 
-trait AggregateRoot {
+trait AggregateRoot
+{
     /** 
      * @var DomainEvent[]
      */
     private array $events = [];
 
     /**
-     * @param DomainEvent $e
+     * @param DomainEvent $event
      * @return void
      */
-    protected function record(DomainEvent $e): void
+    protected function record(DomainEvent $event): void
     {
-        $this->events[] = $e;
-    
+        $this->events[] = $event;
     }
 
     /**
@@ -25,6 +25,7 @@ trait AggregateRoot {
     {
         $e = $this->events;
         $this->events = [];
+
         return $e;
     }
 }

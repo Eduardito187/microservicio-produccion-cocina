@@ -6,7 +6,15 @@ use App\Infrastructure\Persistence\Eloquent\Model\Outbox;
 use Illuminate\Support\Str;
 use DateTimeImmutable;
 
-class OutboxStore {
+class OutboxStore
+{
+  /**
+   * @param string $name
+   * @param string $aggregateId
+   * @param DateTimeImmutable $occurredOn
+   * @param array $payload
+   * @return void
+   */
   public static function append(string $name, string $aggregateId, DateTimeImmutable $occurredOn, array $payload): void
   {
     Outbox::create([

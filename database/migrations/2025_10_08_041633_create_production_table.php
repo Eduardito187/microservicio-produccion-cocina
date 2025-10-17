@@ -21,7 +21,8 @@ return new class extends Migration
 
         Schema::create('produccion_batch', function (Blueprint $t) {
             $t->string('id')->primary();
-            $t->string('op_id'); $t->foreign('op_id')->references('id')->on('orden_produccion');
+            $t->string('op_id');
+            $t->foreign('op_id')->references('id')->on('orden_produccion');
             $t->string('estacion_id');
             $t->string('receta_version_id');
             $t->string('porcion_id');
@@ -42,7 +43,8 @@ return new class extends Migration
 
         Schema::create('item_despacho', function (Blueprint $t) {
             $t->id();
-            $t->string('lista_id'); $t->foreign('lista_id')->references('id')->on('lista_despacho');
+            $t->string('lista_id');
+            $t->foreign('lista_id')->references('id')->on('lista_despacho');
             $t->string('etiqueta_id');
             $t->string('paciente_id');
             $t->json('direccion_snapshot');

@@ -4,12 +4,19 @@ namespace App\Application\Shared;
 
 use DateTimeImmutable;
 
-interface EventBus {
+interface EventBus
+{
     /**
+     * @param string $eventId
      * @param string $name
      * @param array $payload
      * @param DateTimeImmutable $occurredOn
      * @return void
      */
-    public function publish(string $name, array $payload, DateTimeImmutable $occurredOn): void;
+    public function publish(
+        string $eventId,
+        string $name,
+        array $payload,
+        DateTimeImmutable $occurredOn
+    ): void;
 }

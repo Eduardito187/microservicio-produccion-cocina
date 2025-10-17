@@ -25,15 +25,14 @@ class PublishOutbox implements ShouldQueue
      */
     public function handle(EventBus $bus): void
     {
-        // Lote pequeño para evitar lock largos
         Outbox::whereNull('published_at')->orderBy('occurred_on')->limit(100)->get()->each(function (Outbox $row) use ($bus) {
-            // Publica
             $bus->publish(
+                $row->id,
                 $row->event_name,
                 $row->payload,
                 new DateTimeImmutable($row->occurred_on->format(DATE_ATOM))
             );
-            // Marca como publicado (idempotencia: confirmar en destino si aplicas)
+
             $row->forceFill(['published_at' => now()])->save();
         });
     }

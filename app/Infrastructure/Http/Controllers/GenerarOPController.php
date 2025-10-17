@@ -24,6 +24,10 @@ class GenerarOPController
         $this->handler = $handler;
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -32,7 +36,7 @@ class GenerarOPController
             'items' => ['array']
         ]);
 
-        $opId = ($this->handler)(
+        $opId = $this->handler->__invoke(
             new GenerarOP(
                 new DateTimeImmutable($data['fecha']),
                 $data['sucursalId'],

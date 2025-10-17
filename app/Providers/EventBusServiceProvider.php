@@ -13,8 +13,6 @@ class EventBusServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(EventBus::class, fn() =>
-            new HttpEventBus(config('events.endpoint'))
-        );
+        $this->app->bind(EventBus::class, fn() => new HttpEventBus());
     }
 }
