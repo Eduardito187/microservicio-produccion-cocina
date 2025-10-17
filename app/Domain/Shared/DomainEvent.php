@@ -17,9 +17,9 @@ interface DomainEvent
     public function occurredOn(): DateTimeImmutable;
 
     /**
-     * @return string
+     * @return string|int|null
      */
-    public function aggregateId(): string;
+    public function aggregateId(): string|int|null;
 
     /**
      * @return array

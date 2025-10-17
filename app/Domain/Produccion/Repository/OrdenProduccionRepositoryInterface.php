@@ -4,17 +4,17 @@ namespace App\Domain\Produccion\Repository;
 
 use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
 
-interface OrdenProduccion
+interface OrdenProduccionRepositoryInterface
 {
     /**
-     * @param string $id
+     * @param int|null $id
      * @return AggregateOrdenProduccion|null
      */
-    public function byId(string $id): ? AggregateOrdenProduccion;
+    public function byId(int $id): ? AggregateOrdenProduccion;
 
     /**
      * @param AggregateOrdenProduccion $op
-     * @return void
+     * @return int
      */
-    public function save(AggregateOrdenProduccion $op): void;
+    public function save(AggregateOrdenProduccion $op): int;
 }

@@ -3,13 +3,14 @@
 namespace App\Domain\Produccion\Events;
 
 use App\Domain\Shared\BaseDomainEvent;
+use DateTimeImmutable;
 
 class OrdenProduccionCreada extends BaseDomainEvent
 {
     /**
      * @var string
      */
-    private readonly string $fecha;
+    private readonly DateTimeImmutable $fecha;
 
     /**
      * @var string
@@ -19,13 +20,13 @@ class OrdenProduccionCreada extends BaseDomainEvent
     /**
      * Constructor
      * 
-     * @param string $opId
-     * @param string $fecha
+     * @param string|int|null $opId
+     * @param DateTimeImmutable $fecha
      * @param string $sucursalId
      */
     public function __construct(
-        string $opId,
-        string $fecha,
+        string|int|null $opId,
+        DateTimeImmutable $fecha,
         string $sucursalId
     ) {
         $this->fecha = $fecha;

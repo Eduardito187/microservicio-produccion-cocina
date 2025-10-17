@@ -7,7 +7,7 @@ use DateTimeImmutable;
 class BaseDomainEvent implements DomainEvent
 {
     /**
-     * @var string
+     * @var string|int|null
      */
     protected $aggregateId;
 
@@ -19,11 +19,11 @@ class BaseDomainEvent implements DomainEvent
     /**
      * Constructor
      * 
-     * @param string $aggregateId
+     * @param string|int|null $aggregateId
      * @param mixed $occurredOn
      */
     public function __construct(
-        string $aggregateId,
+        string|int|null $aggregateId,
         ?DateTimeImmutable $occurredOn = null
     ) {
         $this->aggregateId = $aggregateId;
@@ -47,9 +47,9 @@ class BaseDomainEvent implements DomainEvent
     }
 
     /**
-     * @return string
+     * @return string|int|null
      */
-    public function aggregateId(): string
+    public function aggregateId(): string|int|null
     {
         return $this->aggregateId;
     }

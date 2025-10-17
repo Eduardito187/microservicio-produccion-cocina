@@ -11,9 +11,9 @@ class Products
     use AggregateRoot;
 
     /**
-     * @var string
+     * @var int
      */
-    public readonly string $id;
+    public readonly int $id;
 
     /**
      * @var string
@@ -33,13 +33,13 @@ class Products
     /**
      * Constructor
      * 
-     * @param string $id
+     * @param int $id
      * @param string $sku
      * @param float $price
      * @param float $special_price
      */
     public function __construct(
-        string $id,
+        int $id,
         string $sku,
         float $price,
         float $special_price
@@ -51,13 +51,13 @@ class Products
     }
 
     /**
-     * @param string $id
+     * @param int $id
      * @param string $sku
      * @param float $price
      * @param float $special_price
      * @return Products
      */
-    public static function crear(string $id, string $sku, float $price, float $special_price): self
+    public static function crear(int $id, string $sku, float $price, float $special_price): self
     {
         $self = new self(
             $id, 

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orden_produccion', function (Blueprint $t) {
-            $t->string('id')->primary();
+            $t->bigIncrements('id');
             $t->date('fecha');
             $t->string('sucursal_id');
             $t->string('estado');
@@ -20,9 +20,9 @@ return new class extends Migration
         });
 
         Schema::create('produccion_batch', function (Blueprint $t) {
-            $t->string('id')->primary();
-            $t->string('op_id');
-            $t->foreign('op_id')->references('id')->on('orden_produccion');
+            $t->bigIncrements('id');
+            $t->unsignedBigInteger('op_id')->nullable();
+            $t->foreign('op_id')->references('id')->on('orden_produccion')->onDelete('cascade');
             $t->string('estacion_id');
             $t->string('receta_version_id');
             $t->string('porcion_id');
@@ -34,7 +34,7 @@ return new class extends Migration
         });
 
         Schema::create('lista_despacho', function (Blueprint $t) {
-            $t->string('id')->primary();
+            $t->bigIncrements('id');
             $t->string('op_id')->unique();
             $t->date('fecha_entrega');
             $t->string('sucursal_id');
@@ -42,9 +42,9 @@ return new class extends Migration
         });
 
         Schema::create('item_despacho', function (Blueprint $t) {
-            $t->id();
-            $t->string('lista_id');
-            $t->foreign('lista_id')->references('id')->on('lista_despacho');
+            $t->bigIncrements('id');
+            $t->unsignedBigInteger('lista_id')->nullable();
+            $t->foreign('lista_id')->references('id')->on('lista_despacho')->onDelete('cascade');
             $t->string('etiqueta_id');
             $t->string('paciente_id');
             $t->json('direccion_snapshot');
@@ -53,7 +53,7 @@ return new class extends Migration
         });
 
         Schema::create('outbox', function (Blueprint $t) {
-            $t->uuid('id')->primary();
+            $t->bigIncrements('id');
             $t->string('event_name');
             $t->string('aggregate_id');
             $t->json('payload');

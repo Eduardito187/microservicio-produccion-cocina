@@ -5,10 +5,12 @@ namespace App\Domain\Produccion\ValueObject;
 use App\Domain\Shared\ValueObject;
 use InvalidArgumentException;
 
-class Capacidad extends ValueObject
+class Qty extends ValueObject
 {
-    /** @var string */
-    public readonly string $value;
+    /**
+     * @var int
+     */
+    public readonly int $value;
 
     /**
      * Constructor
@@ -19,17 +21,26 @@ class Capacidad extends ValueObject
     public function __construct(int $value)
     {
         if ($value <= 0) {
-            throw new InvalidArgumentException('Capacidad > 0');
+            throw new InvalidArgumentException('Qty > 0');
         }
 
         $this->value = $value;
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function value(): string
+    public function value(): int
     {
         return $this->value;
+    }
+
+    /**
+     * @param Qty $other
+     * @return Qty
+     */
+    public function add(Qty $other): self
+    {
+        return new self($this->value + $other->value());
     }
 }

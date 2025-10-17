@@ -2,6 +2,7 @@
 
 namespace App\Application\Produccion\Command;
 
+use App\Application\Produccion\Command\DTO\GenerarOPItemDTO;
 use DateTimeImmutable;
 
 class GenerarOP
@@ -17,7 +18,7 @@ class GenerarOP
     public readonly string $sucursalId;
 
     /**
-     * @var array
+     * @var GenerarOPItemDTO[]
      */
     public readonly array $items;
 

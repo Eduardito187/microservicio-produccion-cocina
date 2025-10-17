@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $t) {
-            $t->string('id')->primary();
+            $t->bigIncrements('id');
             $t->string('sku')->unique();
             $t->decimal('price', 18, 2);
             $t->decimal('special_price', 18, 2);
@@ -20,11 +20,12 @@ return new class extends Migration
         });
 
         Schema::create('order_item', function (Blueprint $t) {
-            $t->string('id')->primary();
-            $t->string('op_id');
-            $t->foreign('op_id')->references('id')->on('orden_produccion');
-            $t->string('p_id');
-            $t->foreign('p_id')->references('id')->on('products');
+            $t->bigIncrements('id');
+            $t->unsignedBigInteger('op_id')->nullable();
+            $t->foreign('op_id')->references('id')->on('orden_produccion')->onDelete('cascade');
+            $t->unsignedBigInteger('p_id')->nullable();
+            $t->foreign('p_id')->references('id')->on('products')->onDelete('cascade');
+            $t->string('sku');
             $t->integer('qty');
             $t->decimal('price', 18, 2);
             $t->decimal('final_price', 18, 2);

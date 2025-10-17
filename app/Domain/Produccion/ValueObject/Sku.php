@@ -5,7 +5,7 @@ namespace App\Domain\Produccion\ValueObject;
 use App\Domain\Shared\ValueObject;
 use InvalidArgumentException;
 
-class Capacidad extends ValueObject
+class Sku extends ValueObject
 {
     /** @var string */
     public readonly string $value;
@@ -13,16 +13,18 @@ class Capacidad extends ValueObject
     /**
      * Constructor
      * 
-     * @param int $value
+     * @param string $value
      * @throws InvalidArgumentException
      */
-    public function __construct(int $value)
+    public function __construct(string $value)
     {
-        if ($value <= 0) {
-            throw new InvalidArgumentException('Capacidad > 0');
+        $value = trim($value);
+
+        if ($value === '') {
+            throw new InvalidArgumentException('SKU cannot be empty');
         }
 
-        $this->value = $value;
+        $this->value = strtoupper($value);
     }
 
     /**

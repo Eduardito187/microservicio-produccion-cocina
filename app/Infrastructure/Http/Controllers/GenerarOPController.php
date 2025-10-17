@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Http\Controllers;
 
 use App\Application\Produccion\Handler\GenerarOPHandler;
-use App\Application\Produccion\Command\GenerarOP;
+use App\Domain\Produccion\ValueObject\OrdenProduccion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use DateTimeImmutable;
@@ -37,7 +37,8 @@ class GenerarOPController
         ]);
 
         $opId = $this->handler->__invoke(
-            new GenerarOP(
+            new OrdenProduccion(
+                $data['id'] ?? null,
                 new DateTimeImmutable($data['fecha']),
                 $data['sucursalId'],
                 $data['items'] ?? []

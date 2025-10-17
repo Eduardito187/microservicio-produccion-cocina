@@ -3,10 +3,10 @@
 namespace App\Infrastructure\Persistence\Eloquent\Repository;
 
 use App\Infrastructure\Persistence\Eloquent\Model\Products as ProductModel;
-use App\Domain\Cocina\Repository\ProductRepository as DomainRepository;
+use App\Domain\Cocina\Repository\ProductRepositoryInterface;
 use App\Domain\Cocina\Aggregate\Products;
 
-class ProductRespository implements DomainRepository
+class ProductRepository implements ProductRepositoryInterface
 {
     /**
      * @param string $id
@@ -15,6 +15,24 @@ class ProductRespository implements DomainRepository
     public function byId(string $id): ?Products
     {
         $row = ProductModel::find($id);
+
+        if (!$row) return null;
+
+        return new Products(
+            $row->id,
+            $row->sku,
+            $row->price,
+            $row->special_price
+        );
+    }
+
+    /**
+     * @param string $sku
+     * @return Products|null
+     */
+    public function bySku(string $sku): ?Products
+    {
+        $row = ProductModel::where('sku', $sku)->first();
 
         if (!$row) return null;
 
