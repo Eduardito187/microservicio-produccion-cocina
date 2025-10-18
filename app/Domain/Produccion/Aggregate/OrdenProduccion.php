@@ -146,17 +146,17 @@ class OrdenProduccion
     }
 
     /**
-     * @param OrderItems $nuevos
+     * @param OrderItems $items
      * @throws DomainException
      * @return void
      */
-    public function agregarItems(OrderItems $nuevos): void
+    public function agregarItems(OrderItems $items): void
     {
         if ($this->estado !== EstadoOP::CREADA) {
             throw new DomainException('Solo se pueden agregar ítems cuando la OP está CREADA.');
         }
 
-        $this->items = $this->items->mergedWith($nuevos);
+        $this->items = $this->items->mergedWith($items);
     }
 
     /**

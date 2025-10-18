@@ -23,6 +23,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+
 Route::post('/produccion/ordenes/generar', GenerarOPController::class);
 Route::post('/produccion/ordenes/planificar', PlanificarOPController::class);
 Route::post('/produccion/ordenes/procesar', ProcesarOPController::class);
