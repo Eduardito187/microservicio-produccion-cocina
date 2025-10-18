@@ -60,9 +60,6 @@ class DespachadorOPHandler
                 //no existe la orden
             }
 
-            $ordenProduccion->cerrar();
-            $persistedId = $this->ordenProduccionRepository->save($ordenProduccion, false);
-
             $listaDespacho = AggregateListaDespacho::crear(
                 null, 
                 $command->opId, 
@@ -89,9 +86,12 @@ class DespachadorOPHandler
             $this->listaDespachoRepository->save($listaDespacho, true);
 
             foreach ($this->produccionBatchRepositoryInterface->byOrderId($command->opId) as $item) {
-                $item->desapchar();
+                $item->despachar();
                 $this->produccionBatchRepositoryInterface->save($item);
             }
+
+            $ordenProduccion->cerrar();
+            $persistedId = $this->ordenProduccionRepository->save($ordenProduccion, false);
 
             foreach ($ordenProduccion->pullEvents() as $event) {
                 OutboxStore::append(

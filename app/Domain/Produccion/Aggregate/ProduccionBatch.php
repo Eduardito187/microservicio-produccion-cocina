@@ -203,7 +203,7 @@ class ProduccionBatch
      * @throws DomainException
      * @return void
      */
-    public function desapchar(): void
+    public function despachar(): void
     {
         if (!in_array($this->estado, [EstadoPlanificado::PROCESANDO], true)) {
             throw new DomainException('No se puede despachar en su estado actual el batch.');

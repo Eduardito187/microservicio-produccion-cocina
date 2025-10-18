@@ -19,8 +19,8 @@ interface ProduccionBatchRepositoryInterface
     public function byOrderId(int|null $ordenProduccionId): array;
 
     /**
-     * @param AggregateProduccionBatch $op
+     * @param AggregateProduccionBatch $pb
      * @return int
      */
-    public function save(AggregateProduccionBatch $op): int;
+    public function save(AggregateProduccionBatch $pb): int;
 }
