@@ -49,15 +49,9 @@ class EventBusController
 
             switch ($data['event']) {
                 case 'App\Domain\Produccion\Events\OrdenProduccionCreada':
-                    // TODO: map payload to your use case
-                    // Example:
-                    // app(\App\Application\Cocina\Handler\CrearListaDespachoHandler::class)(
-                    //     new \App\Application\Cocina\Command\CrearListaDespacho(
-                    //         $data['payload']['op_id'],
-                    //         $data['payload']['fecha'],
-                    //         $data['payload']['sucursalId'],
-                    //     )
-                    // );
+                    break;
+                
+                case 'App\Domain\Produccion\Events\OrdenProduccionPlanificada':
                     break;
 
                 default:

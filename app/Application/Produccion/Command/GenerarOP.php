@@ -2,38 +2,41 @@
 
 namespace App\Application\Produccion\Command;
 
-use App\Application\Produccion\Command\DTO\GenerarOPItemDTO;
 use DateTimeImmutable;
 
 class GenerarOP
 {
-    /**
+    /** 
+     * @var int|null
+     */
+    public ?int $id;
+
+    /** 
      * @var DateTimeImmutable
      */
-    public readonly DateTimeImmutable $fecha;
+    public DateTimeImmutable $fecha;
 
-    /**
-     * @var string
+    /** 
+     * @var int|string
      */
-    public readonly string $sucursalId;
+    public int|string $sucursalId;
 
-    /**
-     * @var GenerarOPItemDTO[]
+    /** 
+     * @var array
      */
-    public readonly array $items;
+    public array $items;
 
     /**
      * Constructor
      * 
+     * @param mixed $id
      * @param DateTimeImmutable $fecha
-     * @param string $sucursalId
+     * @param int|string $sucursalId
      * @param array $items
      */
-    public function __construct(
-        DateTimeImmutable $fecha,
-        string $sucursalId,
-        array $items
-    ) {
+    public function __construct(?int $id, DateTimeImmutable $fecha, int|string $sucursalId, array $items)
+    {
+        $this->id = $id;
         $this->fecha = $fecha;
         $this->sucursalId = $sucursalId;
         $this->items = $items;

@@ -2,6 +2,9 @@
 
 namespace App\Domain\Produccion\Aggregate;
 
+use App\Domain\Produccion\Events\OrdenProduccionPlanificada;
+use App\Domain\Produccion\Events\OrdenProduccionProcesada;
+use App\Domain\Produccion\Events\OrdenProduccionCerrada;
 use App\Domain\Produccion\Events\OrdenProduccionCreada;
 use App\Domain\Produccion\Model\OrderItems;
 use App\Domain\Shared\AggregateRoot;
@@ -25,7 +28,7 @@ class OrdenProduccion
     /**
      * @var string
      */
-    private string $sucursalId;
+    private int|string $sucursalId;
 
     /**
      * @var EstadoOP
@@ -42,7 +45,7 @@ class OrdenProduccion
      * 
      * @param int|null $id
      * @param DateTimeImmutable $fecha
-     * @param string $sucursalId
+     * @param int|string $sucursalId
      * @param EstadoOP $estado
      * @param array|OrderItems $items
      * @throws DomainException
@@ -50,7 +53,7 @@ class OrdenProduccion
     private function __construct(
         int|null $id,
         DateTimeImmutable $fecha,
-        string $sucursalId,
+        int|string $sucursalId,
         EstadoOP $estado,
         array|OrderItems $items
     ) {
@@ -68,16 +71,12 @@ class OrdenProduccion
     /**
      * @param int|null $id
      * @param DateTimeImmutable $fecha
-     * @param string $sucursalId
+     * @param int|string $sucursalId
      * @param OrderItems $items
      * @return OrdenProduccion
      */
-    public static function crear(
-        int|null $id,
-        DateTimeImmutable $fecha,
-        string $sucursalId,
-        OrderItems $items
-    ): self {
+    public static function crear(int|null $id, DateTimeImmutable $fecha, string $sucursalId, OrderItems $items): self
+    {
         $self = new self($id, $fecha, $sucursalId, EstadoOP::CREADA, $items);
 
         $self->record(new OrdenProduccionCreada(
@@ -92,32 +91,58 @@ class OrdenProduccion
     /**
      * @param int $id
      * @param DateTimeImmutable $fecha
-     * @param string $sucursalId
+     * @param int|string $sucursalId
      * @param EstadoOP $estado
      * @param OrderItems $items
      * @return OrdenProduccion
      */
-    public static function reconstitute(
-        int $id,
-        DateTimeImmutable $fecha,
-        string $sucursalId,
-        EstadoOP $estado,
-        OrderItems $items
-    ): self {
+    public static function reconstitute(int $id, DateTimeImmutable $fecha, string $sucursalId, EstadoOP $estado, OrderItems $items): self
+    {
         $self = new self($id, $fecha, $sucursalId, $estado, $items);
 
         return $self;
     }
 
+    /**
+     * @throws DomainException
+     * @return void
+     */
+    public function planificar(): void
+    {
+        if (!in_array($this->estado, [EstadoOP::CREADA], true)) {
+            throw new DomainException('No se puede planificar en su estado actual.');
+        }
+
+        $this->estado = EstadoOP::PLANIFICADA;
+        $this->record(new OrdenProduccionPlanificada($this->id, $this->fecha));
+    }
+
+    /**
+     * @throws DomainException
+     * @return void
+     */
+    public function procesar(): void
+    {
+        if (!in_array($this->estado, [EstadoOP::PLANIFICADA], true)) {
+            throw new DomainException('No se puede procesar en su estado actual.');
+        }
+
+        $this->estado = EstadoOP::EN_PROCESO;
+        $this->record(new OrdenProduccionProcesada($this->id, $this->fecha));
+    }
+
+    /**
+     * @throws DomainException
+     * @return void
+     */
     public function cerrar(): void
     {
-        if (!in_array($this->estado, [EstadoOP::CREADA, EstadoOP::EN_PROCESO], true)) {
-            throw new DomainException('La OP no se puede cerrar en su estado actual.');
+        if (!in_array($this->estado, [EstadoOP::EN_PROCESO], true)) {
+            throw new DomainException('No se puede cerrar en su estado actual.');
         }
 
         $this->estado = EstadoOP::CERRADA;
-
-        //$this->record(new OrdenProduccionCerrada($this->id, $this->fecha));
+        $this->record(new OrdenProduccionCerrada($this->id, $this->fecha));
     }
 
     /**
@@ -151,9 +176,9 @@ class OrdenProduccion
     }
 
     /**
-     * @return string
+     * @return int|string
      */
-    public function sucursalId(): string
+    public function sucursalId(): int|string
     {
         return $this->sucursalId;
     }

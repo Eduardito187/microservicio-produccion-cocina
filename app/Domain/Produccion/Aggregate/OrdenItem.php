@@ -3,26 +3,28 @@
 namespace App\Domain\Produccion\Aggregate;
 
 use App\Domain\Produccion\Events\OrdenItemCreada;
+use App\Domain\Cocina\Aggregate\Products;
 use App\Domain\Shared\AggregateRoot;
+use DomainException;
 
 class OrdenItem
 {
     use AggregateRoot;
 
     /**
-     * @var string
+     * @var int|null
      */
-    public readonly string $id;
+    public readonly int|null $id;
 
     /**
-     * @var string
+     * @var int
      */
-    public readonly string $ordenProduccionId;
+    public readonly int $ordenProduccionId;
 
     /**
-     * @var string
+     * @var int|null
      */
-    public readonly string $productId;
+    public int|null $productId;
 
     /**
      * @var string
@@ -37,28 +39,28 @@ class OrdenItem
     /**
      * @var float
      */
-    public readonly float $price;
+    public float $price;
 
     /**
      * @var float
      */
-    public readonly float $finalPrice;
+    public float $finalPrice;
 
     /**
      * Constructor
      * 
-     * @param string $id
-     * @param string $ordenProduccionId
-     * @param string $productId
+     * @param int|null $id
+     * @param int $ordenProduccionId
+     * @param int|null $productId
      * @param string $sku
      * @param int $qty
      * @param float $price
      * @param float $finalPrice
      */
     public function __construct(
-        string $id,
-        string $ordenProduccionId,
-        string $productId,
+        int|null $id,
+        int $ordenProduccionId,
+        int|null $productId,
         string $sku,
         int $qty,
         float $price,
@@ -74,16 +76,16 @@ class OrdenItem
     }
 
     /**
-     * @param string $id
-     * @param string $ordenProduccionId
-     * @param string $productId
+     * @param int|null $id
+     * @param int $ordenProduccionId
+     * @param int|null $productId
      * @param string $sku
      * @param int $qty
      * @param float $price
      * @param float $finalPrice
      * @return OrdenItem
      */
-    public static function crear(string $id, string $ordenProduccionId, string $productId, string $sku, int $qty, float $price, float $finalPrice): self
+    public static function crear(int|null $id, int $ordenProduccionId, int|null $productId, string $sku, int $qty, float $price, float $finalPrice): self
     {
         $self = new self(
             $id,
@@ -107,5 +109,24 @@ class OrdenItem
         );
 
         return $self;
+    }
+
+    /**
+     * @param Products $product
+     * @throws DomainException
+     * @return void
+     */
+    public function loadProduct(Products $product): void
+    {
+        if ($product->id == null) {
+            throw new DomainException('El producto es invalido.');
+        }
+
+        $this->productId = $product->id;
+        $this->price = $product->price;
+
+        if ($product->special_price != 0) {
+            $this->finalPrice = $product->special_price;
+        }
     }
 }

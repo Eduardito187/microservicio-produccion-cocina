@@ -6,23 +6,23 @@ use App\Domain\Shared\ValueObject;
 use DomainException;
 use Traversable;
 
-class OrderItems extends ValueObject
+class ItemDespachos extends ValueObject
 {
     /**
-     * @var array|OrderItem[]
+     * @var array|ItemDespacho[]
      */
-    public readonly array $bySku;
+    public readonly array $items;
 
     /**
      * Constructor
      */
     private function __construct() {
-        $this->bySku = [];
+        $this->items = [];
     }
 
     /**
      * @param array $items
-     * @return OrderItems
+     * @return ItemDespachos
      */
     public static function fromArray(array $items): self
     {
@@ -38,18 +38,12 @@ class OrderItems extends ValueObject
     }
 
     /**
-     * @param OrderItem $item
+     * @param ItemDespacho $item
      * @return void
      */
-    public function add(OrderItem $item): void
+    public function add(ItemDespacho $item): void
     {
-        $sku = $item->sku()->value();
-
-        if (isset($this->bySku[$sku])) {
-            $this->bySku[$sku] = $this->bySku[$sku]->merge($item);
-        } else {
-            $this->bySku[$sku] = $item;
-        }
+        $this->items[] = $item;
     }
 
     /**
@@ -57,7 +51,7 @@ class OrderItems extends ValueObject
      */
     public function getIterator(): Traversable
     {
-        yield from array_values($this->bySku);
+        yield from array_values($this->items);
     }
 
     /**
@@ -65,21 +59,7 @@ class OrderItems extends ValueObject
      */
     public function count(): int
     {
-        return count($this->bySku);
-    }
-
-    /**
-     * @return int
-     */
-    public function totalQty(): int
-    {
-        $sum = 0;
-
-        foreach ($this->bySku as $item) {
-            $sum += $item->qty()->value();
-        }
-
-        return $sum;
+        return count($this->items);
     }
 
     /**
@@ -89,7 +69,7 @@ class OrderItems extends ValueObject
     private function assertNotEmpty(): void
     {
         if ($this->count() === 0) {
-            throw new DomainException('OrdenItems insuficientes.');
+            throw new DomainException('Despachos insuficientes.');
         }
     }
 }

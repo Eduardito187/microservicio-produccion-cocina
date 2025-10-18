@@ -2,11 +2,11 @@
 
 namespace App\Infrastructure\EventBus;
 
-use App\Application\Shared\EventBus;
+use App\Application\Shared\EventBusInterface;
 use Illuminate\Support\Facades\Http;
 use DateTimeImmutable;
 
-class HttpEventBus implements EventBus
+class HttpEventBus implements EventBusInterface
 {
     /**
      * @param string $eventId

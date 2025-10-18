@@ -4,7 +4,7 @@ namespace App\Application\Shared;
 
 use DateTimeImmutable;
 
-interface EventBus
+interface EventBusInterface
 {
     /**
      * @param string $eventId

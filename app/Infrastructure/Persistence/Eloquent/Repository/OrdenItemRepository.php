@@ -3,12 +3,25 @@
 namespace App\Infrastructure\Persistence\Eloquent\Repository;
 
 use App\Infrastructure\Persistence\Eloquent\Model\OrdenItem as OrdenItemModel;
-use App\Domain\Produccion\Repository\OrdenItemRepositoryInterface;
+use App\Infrastructure\Persistence\Eloquent\Repository\ProductRepository;
 use App\Domain\Produccion\Aggregate\OrdenItem as AggregateOrdenItem;
-use DateTimeImmutable;
+use App\Domain\Produccion\Repository\OrdenItemRepositoryInterface;
 
 class OrdenItemRepository implements OrdenItemRepositoryInterface
 {
+    /**
+     * @var ProductRepository
+     */
+    public readonly ProductRepository $productRepository;
+
+    /**
+     * Constructor
+     * @param ProductRepository $productRepository
+     */
+    public function __construct(ProductRepository $productRepository) {
+        $this->productRepository = $productRepository;
+    }
+
     /**
      * @param string $id
      * @return AggregateOrdenItem|null
@@ -36,6 +49,8 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
      */
     public function save(AggregateOrdenItem $item): void
     {
+        $product = $this->productRepository->bySku($item->sku);
+        $item->loadProduct($product);
         OrdenItemModel::updateOrCreate(
             ['id' => $item->id],
             [
@@ -44,7 +59,9 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
                 'sku' => $item->sku,
                 'qty' => $item->qty,
                 'price' => $item->price,
-                'final_price' => $item->finalPrice
+                'final_price' => $item->finalPrice,
+                'created_at' => now(),
+                'updated_at' => now()
             ]
         );
     }

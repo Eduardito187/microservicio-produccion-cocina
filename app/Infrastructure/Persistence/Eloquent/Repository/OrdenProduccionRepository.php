@@ -5,9 +5,10 @@ namespace App\Infrastructure\Persistence\Eloquent\Repository;
 use App\Infrastructure\Persistence\Eloquent\Model\OrdenProduccion as OrdenProduccionModel;
 use App\Infrastructure\Persistence\Eloquent\Model\OrdenItem as OrdenProduccionItemModel;
 use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
+use App\Infrastructure\Persistence\Eloquent\Repository\OrdenItemRepository;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
+use App\Domain\Produccion\Aggregate\OrdenItem as AggregateOrdenItem;
 use App\Domain\Produccion\Model\OrderItems as ModelOrderItems;
-use App\Infrastructure\Persistence\Eloquent\Repository\ProductRepository;
 use App\Domain\Produccion\ValueObject\OrderItem;
 use App\Domain\Produccion\Aggregate\EstadoOP;
 use App\Domain\Produccion\ValueObject\Qty;
@@ -19,17 +20,19 @@ use DateTimeInterface;
 class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
 {
     /**
-     * @var ProductRepository
+     * @var OrdenItemRepository
      */
-    public readonly ProductRepository $productRepository;
+    public readonly OrdenItemRepository $ordenItemRepository;
 
     /**
      * Constructor
-     * @param ProductRepository $productRepository
+     * 
+     * @param OrdenItemRepository $ordenItemRepository
      */
-    public function __construct(ProductRepository $productRepository) {
-        $this->productRepository = $productRepository;
+    public function __construct(OrdenItemRepository $ordenItemRepository) {
+        $this->ordenItemRepository = $ordenItemRepository;
     }
+
     /**
      * @param int|null $id
      */
@@ -39,12 +42,9 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
             return null;
         }
 
-        /** @var OrdenProduccionModel|null $row */
         $row = OrdenProduccionModel::query()->with('items')->find($id);
 
-        if (!$row) {
-            return null;
-        }
+        if (!$row) return null;
 
         $fecha = $this->mapDateToDomain($row->fecha);
         $estado = EstadoOP::from($row->estado);
@@ -60,13 +60,15 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     }
 
     /**
-     * Persist aggregate and its items (upsert + items sync) in a single transaction.
+     * @param AggregateOrdenProduccion $op
+     * @param bool $resetItems
+     * @return int
      */
-    public function save(AggregateOrdenProduccion $op): int
+    public function save(AggregateOrdenProduccion $op, bool $resetItems): int
     {
         $orderId = 0;
 
-        DB::transaction(function () use ($op, &$orderId) {
+        DB::transaction(function () use ($op, &$orderId, &$resetItems) {
             $model = OrdenProduccionModel::query()->updateOrCreate(
                 ['id' => $op->id()],
                 [
@@ -76,11 +78,10 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                 ]
             );
             $orderId = $model->id;
-            OrdenProduccionItemModel::query()->where('op_id', $orderId)->delete();
-            $toInsert = $this->mapItemsToRows($orderId, $op->items());
 
-            if (!empty($toInsert)) {
-                OrdenProduccionItemModel::query()->insert($toInsert);
+            if ($resetItems) {
+                OrdenProduccionItemModel::query()->where('op_id', $orderId)->delete();
+                $this->mapItemsToRows($orderId, $op->items());
             }
         });
 
@@ -107,38 +108,27 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     /**
      * @param int|null $opId
      * @param ModelOrderItems $items
-     * @return array
+     * @return void
      */
-    private function mapItemsToRows(int|null $opId, ModelOrderItems $items): array
+    private function mapItemsToRows(int|null $opId, ModelOrderItems $items): void
     {
-        $rows = [];
-
         foreach ($items as $item) {
-            $sku = $item->sku()->value();
-            $product = $this->productRepository->bySku($sku);
-            $finalPrice = $product->price;
-
-            if ($product->special_price != 0) {
-                $finalPrice = $product->special_price;
-            }
-
-            $rows[] = [
-                'op_id' => $opId,
-                'p_id' => $product->id,
-                'sku' => $sku,
-                'qty' => $item->qty()->value(),
-                'price' => $product->price,
-                'final_price' => $finalPrice,
-                'created_at' => now(),
-                'updated_at' => now()
-            ];
+            $this->ordenItemRepository->save(
+                new AggregateOrdenItem(
+                    null,
+                    $opId,
+                    null,
+                    $item->sku()->value(),
+                    $item->qty()->value(),
+                    0,
+                    0
+                )
+            );
         }
-
-        return $rows;
     }
 
     /**
-     * @param string|\DateTimeInterface $value
+     * @param string|DateTimeInterface $value
      * @return DateTimeImmutable
      */
     private function mapDateToDomain(string|DateTimeInterface $value): DateTimeImmutable

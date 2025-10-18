@@ -2,85 +2,70 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
+use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Infrastructure\Persistence\Eloquent\Outbox\OutboxStore;
-use App\Domain\Produccion\ValueObject\OrdenProduccion;
+use App\Application\Produccion\Command\GenerarOP;
 use App\Domain\Produccion\ValueObject\OrderItem;
 use App\Domain\Produccion\Model\OrderItems;
 use App\Domain\Produccion\ValueObject\Sku;
 use App\Domain\Produccion\ValueObject\Qty;
 use Illuminate\Support\Facades\DB;
-use RuntimeException;
 
 class GenerarOPHandler
 {
     /**
      * @var OrdenProduccionRepositoryInterface
      */
-    public readonly OrdenProduccionRepositoryInterface $repo;
+    public readonly OrdenProduccionRepositoryInterface $ordenProduccionRepository;
 
     /**
      * Constructor
      * 
-     * @param OrdenProduccionRepositoryInterface $repo
+     * @param OrdenProduccionRepositoryInterface $ordenProduccionRepository
      */
-    public function __construct(OrdenProduccionRepositoryInterface $repo)
+    public function __construct(OrdenProduccionRepositoryInterface $ordenProduccionRepository)
     {
-        $this->repo = $repo;
+        $this->ordenProduccionRepository = $ordenProduccionRepository;
     }
 
     /**
-     * @param OrdenProduccion $command
+     * @param GenerarOP $command
      * @return string|int|null
      */
-    public function __invoke(OrdenProduccion $command): string|int|null
+    public function __invoke(GenerarOP $command): string|int|null
     {
-        $domainItems = [];
+        $items = [];
 
-        foreach ($command->items() as $it) {
-            $domainItems[] = new OrderItem(
-                new Sku($it['sku']),
-                new Qty($it['qty'])
+        foreach ($command->items as $item) {
+            $items[] = new OrderItem(
+                new Sku($item['sku']),
+                new Qty($item['qty'])
             );
         }
 
-        $itemsCollection = OrderItems::fromArray($domainItems);
+        $orderItems = OrderItems::fromArray($items);
 
-        $opId = DB::transaction(function () use ($command, $itemsCollection): int {
-            $op = $command->id
-                ? $this->repo->byId((int)$command->id)
-                : null;
+        $ordenProduccionId = DB::transaction(function () use ($command, $orderItems): int {
+            $ordenProduccion = $command->id
+                ? $this->ordenProduccionRepository->byId($command->id)
+                : AggregateOrdenProduccion::crear(null, $command->fecha, $command->sucursalId, $orderItems);
 
-            if ($op === null) {
-                $op = AggregateOrdenProduccion::crear(
-                    null,
-                    $command->fecha,
-                    $command->sucursalId,
-                    $itemsCollection
-                );
-            } else {
-                $op->agregarItems($itemsCollection);
-            }
+            $ordenProduccion->agregarItems($orderItems);
+            $persistedId = $this->ordenProduccionRepository->save($ordenProduccion, true);
 
-            $persistedId = $this->repo->save($op);
-
-            if ($persistedId === null) {
-                throw new RuntimeException('OrdenProduccionRepository::save no asignó el id al agregado.');
-            }
-
-            foreach ($op->pullEvents() as $event) {
+            foreach ($ordenProduccion->pullEvents() as $event) {
                 OutboxStore::append(
                     name: $event->name(),
-                    aggregateId: (string)$persistedId,
+                    aggregateId: $persistedId,
                     occurredOn: $event->occurredOn(),
                     payload: $event->toArray()
                 );
             }
 
-            return (int)$persistedId;
+            return $persistedId;
         });
 
-        return $opId;
+        return $ordenProduccionId;
     }
 }

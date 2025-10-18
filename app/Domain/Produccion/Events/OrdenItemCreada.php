@@ -6,7 +6,6 @@ use App\Domain\Shared\BaseDomainEvent;
 
 class OrdenItemCreada extends BaseDomainEvent
 {
-
     /**
      * @var string
      */

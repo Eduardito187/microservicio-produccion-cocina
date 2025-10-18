@@ -105,27 +105,10 @@ class OrderItems implements \IteratorAggregate, \Countable
     {
         $sum = 0;
 
-        foreach ($this->bySku as $it) {
-            $sum += $it->qty()->value();
+        foreach ($this->bySku as $item) {
+            $sum += $item->qty()->value();
         }
 
         return $sum;
-    }
-
-    /**
-     * @return array
-     */
-    public function toPrimitives(): array
-    {
-        $rows = [];
-
-        foreach ($this->bySku as $it) {
-            $rows[] = [
-                'sku' => $it->sku()->value(),
-                'qty' => $it->qty()->value(),
-            ];
-        }
-
-        return $rows;
     }
 }
