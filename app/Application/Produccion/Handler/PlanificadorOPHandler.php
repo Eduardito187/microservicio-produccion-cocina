@@ -5,7 +5,7 @@ namespace App\Application\Produccion\Handler;
 use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
 use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
-use App\Infrastructure\Persistence\Eloquent\Outbox\OutboxStore;
+use App\Infrastructure\Persistence\Outbox\OutboxStore;
 use App\Domain\Produccion\Aggregate\EstadoPlanificado;
 use App\Application\Produccion\Command\PlanificarOP;
 use Illuminate\Support\Facades\DB;

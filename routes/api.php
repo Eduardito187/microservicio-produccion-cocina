@@ -2,11 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Infrastructure\Http\Controllers\EventBusController;
-use App\Infrastructure\Http\Controllers\GenerarOPController;
-use App\Infrastructure\Http\Controllers\ProcesarOPController;
-use App\Infrastructure\Http\Controllers\PlanificarOPController;
-use App\Infrastructure\Http\Controllers\DespacharOPController;
+use App\Presentation\Http\Controllers\EventBusController;
+use App\Presentation\Http\Controllers\GenerarOPController;
+use App\Presentation\Http\Controllers\ProcesarOPController;
+use App\Presentation\Http\Controllers\PlanificarOPController;
+use App\Presentation\Http\Controllers\DespacharOPController;
 
 /*
 |--------------------------------------------------------------------------

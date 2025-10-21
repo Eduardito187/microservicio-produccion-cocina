@@ -1,7 +1,7 @@
 <?php
 namespace App\Domain\Produccion\Model;
 
-use App\Domain\Produccion\ValueObject\OrderItem;
+use App\Domain\Produccion\ValueObjects\OrderItem;
 use InvalidArgumentException;
 use DomainException;
 use Traversable;

@@ -4,12 +4,12 @@ namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
-use App\Infrastructure\Persistence\Eloquent\Outbox\OutboxStore;
+use App\Infrastructure\Persistence\Outbox\OutboxStore;
 use App\Application\Produccion\Command\GenerarOP;
-use App\Domain\Produccion\ValueObject\OrderItem;
+use App\Domain\Produccion\ValueObjects\OrderItem;
 use App\Domain\Produccion\Model\OrderItems;
-use App\Domain\Produccion\ValueObject\Sku;
-use App\Domain\Produccion\ValueObject\Qty;
+use App\Domain\Produccion\ValueObjects\Sku;
+use App\Domain\Produccion\ValueObjects\Qty;
 use Illuminate\Support\Facades\DB;
 
 class GenerarOPHandler
@@ -46,10 +46,16 @@ class GenerarOPHandler
 
         $orderItems = OrderItems::fromArray($items);
 
+        //tener una sola funcion que transaccione en distintos handlers
         $ordenProduccionId = DB::transaction(function () use ($command, $orderItems): int {
             $ordenProduccion = $command->id
                 ? $this->ordenProduccionRepository->byId($command->id)
-                : AggregateOrdenProduccion::crear(null, $command->fecha, $command->sucursalId, $orderItems);
+                : AggregateOrdenProduccion::crear(
+                    null, 
+                    $command->fecha, 
+                    $command->sucursalId, 
+                    $orderItems
+                );
 
             $ordenProduccion->agregarItems($orderItems);
             $persistedId = $this->ordenProduccionRepository->save($ordenProduccion, true);

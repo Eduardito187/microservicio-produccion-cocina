@@ -4,7 +4,7 @@ namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
-use App\Infrastructure\Persistence\Eloquent\Outbox\OutboxStore;
+use App\Infrastructure\Persistence\Outbox\OutboxStore;
 use App\Application\Produccion\Command\ProcesadorOP;
 use Illuminate\Support\Facades\DB;
 

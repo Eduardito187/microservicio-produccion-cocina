@@ -3,8 +3,8 @@
 namespace App\Domain\Produccion\Aggregate;
 
 use App\Domain\Produccion\Events\ProduccionBatchCreado;
-use App\Domain\Produccion\ValueObject\Qty;
-use App\Domain\Produccion\ValueObject\Sku;
+use App\Domain\Produccion\ValueObjects\Qty;
+use App\Domain\Produccion\ValueObjects\Sku;
 use App\Domain\Shared\AggregateRoot;
 use DomainException;
 

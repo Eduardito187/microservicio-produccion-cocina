@@ -2,13 +2,13 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Infrastructure\Persistence\Eloquent\Repository\ListaDespachoRepository;
+use App\Infrastructure\Persistence\Repository\ListaDespachoRepository;
 use App\Domain\Produccion\Aggregate\ListaDespacho as AggregateListaDespacho;
 use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
-use App\Infrastructure\Persistence\Eloquent\Outbox\OutboxStore;
+use App\Infrastructure\Persistence\Outbox\OutboxStore;
 use App\Application\Produccion\Command\DespachadorOP;
-use App\Domain\Produccion\ValueObject\ItemDespacho;
+use App\Domain\Produccion\ValueObjects\ItemDespacho;
 use App\Domain\Produccion\Model\DespachoItems;
 use Illuminate\Support\Facades\DB;
 use DateTimeImmutable;

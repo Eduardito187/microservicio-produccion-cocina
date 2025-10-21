@@ -2,11 +2,11 @@
 
 namespace App\Jobs;
 
-use App\Infrastructure\Persistence\Eloquent\Model\Outbox;
+use App\Infrastructure\Persistence\Model\Outbox;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use App\Application\Shared\EventBus;
+use App\Application\Shared\BusInterface;
 use Illuminate\Bus\Queueable;
 use DateTimeImmutable;
 
@@ -20,10 +20,10 @@ class PublishOutbox implements ShouldQueue
     public function __construct() {}
 
     /**
-     * @param EventBus $bus
+     * @param BusInterface $bus
      * @return void
      */
-    public function handle(EventBus $bus): void
+    public function handle(BusInterface $bus): void
     {
         Outbox::whereNull('published_at')->orderBy('occurred_on')->limit(100)->get()->each(function (Outbox $row) use ($bus) {
             $bus->publish(
