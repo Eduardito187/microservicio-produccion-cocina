@@ -3,7 +3,7 @@
 namespace App\Domain\Produccion\Aggregate;
 
 use App\Domain\Produccion\Events\ItemDespachoCreado;
-use App\Domain\Shared\AggregateRoot;
+use App\Domain\Shared\Aggregate\AggregateRoot;
 
 class ItemDespacho
 {

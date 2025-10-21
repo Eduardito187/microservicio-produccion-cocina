@@ -4,9 +4,8 @@ namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
-use App\Infrastructure\Persistence\Outbox\OutboxStore;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ProcesadorOP;
-use Illuminate\Support\Facades\DB;
 
 class ProcesadorOPHandler
 {
@@ -21,17 +20,25 @@ class ProcesadorOPHandler
     public readonly ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface;
 
     /**
+     * @var TransactionAggregate
+     */
+    private readonly TransactionAggregate $transactionAggregate;
+
+    /**
      * Constructor
      * 
      * @param OrdenProduccionRepositoryInterface $ordenProduccionRepository
      * @param ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface
+     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         OrdenProduccionRepositoryInterface $ordenProduccionRepository,
-        ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface
+        ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface,
+        TransactionAggregate $transactionAggregate
     ) {
         $this->ordenProduccionRepository = $ordenProduccionRepository;
         $this->produccionBatchRepositoryInterface = $produccionBatchRepositoryInterface;
+        $this->transactionAggregate = $transactionAggregate;
     }
 
     /**
@@ -40,33 +47,18 @@ class ProcesadorOPHandler
      */
     public function __invoke(ProcesadorOP $command): string|int|null
     {
-        $ordenProduccionId = DB::transaction(function () use ($command): int {
-            $ordenProduccion = $command->opId ? $this->ordenProduccionRepository->byId($command->opId) : null;
-
-            if ($ordenProduccion == null) {
-                //no existe la orden
-            }
-
-            $ordenProduccion->procesar();
-            $persistedId = $this->ordenProduccionRepository->save($ordenProduccion, false);
+        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+            $ordenProduccion = $this->ordenProduccionRepository->byId($command->opId);
 
             foreach ($this->produccionBatchRepositoryInterface->byOrderId($command->opId) as $item) {
                 $item->procesar();
                 $this->produccionBatchRepositoryInterface->save($item);
             }
 
-            foreach ($ordenProduccion->pullEvents() as $event) {
-                OutboxStore::append(
-                    name: $event->name(),
-                    aggregateId: $persistedId,
-                    occurredOn: $event->occurredOn(),
-                    payload: $event->toArray()
-                );
-            }
-
+            $ordenProduccion->procesar();
+            $persistedId = $this->ordenProduccionRepository->save($ordenProduccion, false);
+            $ordenProduccion->publishOutbox($persistedId);
             return $persistedId;
         });
-
-        return $ordenProduccionId;
     }
 }

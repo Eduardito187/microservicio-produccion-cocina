@@ -3,7 +3,7 @@
 namespace App\Domain\Produccion\ValueObjects;
 
 use App\Domain\Produccion\ValueObjects\Sku;
-use App\Domain\Shared\ValueObject;
+use App\Domain\Shared\ValueObjects\ValueObject;
 
 class ItemDespacho extends ValueObject
 {
@@ -52,8 +52,8 @@ class ItemDespacho extends ValueObject
         Sku $sku,
         int $etiquetaId,
         int $pacienteId,
-        array $direccionSnapshot,
-        array $ventanaEntrega
+        array $direccionSnapshot = [],
+        array $ventanaEntrega = []
     ) {
         $this->listaId = $listaId;
         $this->sku = $sku;

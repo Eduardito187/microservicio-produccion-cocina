@@ -5,10 +5,9 @@ namespace App\Application\Produccion\Handler;
 use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
 use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
-use App\Infrastructure\Persistence\Outbox\OutboxStore;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Aggregate\EstadoPlanificado;
 use App\Application\Produccion\Command\PlanificarOP;
-use Illuminate\Support\Facades\DB;
 
 class PlanificadorOPHandler
 {
@@ -23,17 +22,25 @@ class PlanificadorOPHandler
     public readonly ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface;
 
     /**
+     * @var TransactionAggregate
+     */
+    private readonly TransactionAggregate $transactionAggregate;
+
+    /**
      * Constructor
      * 
      * @param OrdenProduccionRepositoryInterface $ordenProduccionRepository
      * @param ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface
+     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         OrdenProduccionRepositoryInterface $ordenProduccionRepository,
-        ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface
+        ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface,
+        TransactionAggregate $transactionAggregate
     ) {
         $this->ordenProduccionRepository = $ordenProduccionRepository;
         $this->produccionBatchRepositoryInterface = $produccionBatchRepositoryInterface;
+        $this->transactionAggregate = $transactionAggregate;
     }
 
     /**
@@ -42,18 +49,10 @@ class PlanificadorOPHandler
      */
     public function __invoke(PlanificarOP $command): string|int|null
     {
-        $ordenProduccionId = DB::transaction(function () use ($command): int {
-            $ordenProduccion = $command->opId ? $this->ordenProduccionRepository->byId($command->opId) : null;
+        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+            $ordenProduccion = $this->ordenProduccionRepository->byId($command->opId);
 
-            if ($ordenProduccion == null) {
-                //no existe la orden
-            }
-
-            $ordenProduccion->planificar();
-            $persistedId = $this->ordenProduccionRepository->save($ordenProduccion, false);
-
-            $i = 1;
-            foreach ($ordenProduccion->items() as $item) {
+            foreach ($ordenProduccion->items() as $key => $item) {
                 $this->produccionBatchRepositoryInterface->save(
                     new AggregateProduccionBatch(
                         null,
@@ -67,25 +66,16 @@ class PlanificadorOPHandler
                         EstadoPlanificado::PROGRAMADO,
                         $item->sku,
                         $item->qty,
-                        $i,
+                        $key + 1,
                         []
                     )
                 );
-                $i++;
             }
 
-            foreach ($ordenProduccion->pullEvents() as $event) {
-                OutboxStore::append(
-                    name: $event->name(),
-                    aggregateId: $persistedId,
-                    occurredOn: $event->occurredOn(),
-                    payload: $event->toArray()
-                );
-            }
-
+            $ordenProduccion->planificar();
+            $persistedId = $this->ordenProduccionRepository->save($ordenProduccion, false);
+            $ordenProduccion->publishOutbox($persistedId);
             return $persistedId;
         });
-
-        return $ordenProduccionId;
     }
 }

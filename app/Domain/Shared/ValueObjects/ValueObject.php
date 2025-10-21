@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Shared;
+namespace App\Domain\Shared\ValueObjects;
 
 class ValueObject
 {

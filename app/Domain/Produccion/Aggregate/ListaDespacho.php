@@ -4,7 +4,7 @@ namespace App\Domain\Produccion\Aggregate;
 
 use App\Domain\Produccion\Events\ListaDespachoCreada;
 use App\Domain\Produccion\Model\DespachoItems;
-use App\Domain\Shared\AggregateRoot;
+use App\Domain\Shared\Aggregate\AggregateRoot;
 use DateTimeImmutable;
 use DomainException;
 
@@ -61,19 +61,19 @@ class ListaDespacho
     }
 
     /**
-     * @param int|null $id
      * @param int $ordenProduccionId
      * @param DateTimeImmutable $fechaEntrega
      * @param int|string $sucursalId
      * @param array|DespachoItems $items
+     * @param int|null $id
      * @return ListaDespacho
      */
     public static function crear(
-        int|null $id,
         int $ordenProduccionId,
         DateTimeImmutable $fechaEntrega,
         int|string $sucursalId,
-        array|DespachoItems $items
+        array|DespachoItems $items = [],
+        int|null $id = null
     ): self
     {
         $self = new self(

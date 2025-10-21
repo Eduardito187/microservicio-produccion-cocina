@@ -2,7 +2,7 @@
 
 namespace App\Domain\Produccion\ValueObjects;
 
-use App\Domain\Shared\ValueObject;
+use App\Domain\Shared\ValueObjects\ValueObject;
 use DomainException;
 use Traversable;
 

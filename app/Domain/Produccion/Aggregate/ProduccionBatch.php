@@ -3,9 +3,9 @@
 namespace App\Domain\Produccion\Aggregate;
 
 use App\Domain\Produccion\Events\ProduccionBatchCreado;
+use App\Domain\Shared\Aggregate\AggregateRoot;
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
-use App\Domain\Shared\AggregateRoot;
 use DomainException;
 
 class ProduccionBatch

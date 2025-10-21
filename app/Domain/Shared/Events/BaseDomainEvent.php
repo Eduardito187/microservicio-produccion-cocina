@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Domain\Shared;
+namespace App\Domain\Shared\Events;
 
+use App\Domain\Shared\Events\Interface\DomainEventInterface;
 use DateTimeImmutable;
 
-class BaseDomainEvent implements DomainEvent
+class BaseDomainEvent implements DomainEventInterface
 {
     /**
      * @var string|int|null

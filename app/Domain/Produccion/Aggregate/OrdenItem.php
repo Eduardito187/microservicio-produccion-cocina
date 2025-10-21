@@ -3,8 +3,8 @@
 namespace App\Domain\Produccion\Aggregate;
 
 use App\Domain\Produccion\Events\OrdenItemCreada;
+use App\Domain\Shared\Aggregate\AggregateRoot;
 use App\Domain\Cocina\Aggregate\Products;
-use App\Domain\Shared\AggregateRoot;
 use DomainException;
 
 class OrdenItem

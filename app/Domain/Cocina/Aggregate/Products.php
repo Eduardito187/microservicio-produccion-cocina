@@ -3,8 +3,7 @@
 namespace App\Domain\Cocina\Aggregate;
 
 use App\Domain\Produccion\Events\ProductoCreado;
-use App\Domain\Shared\AggregateRoot;
-use DateTimeImmutable;
+use App\Domain\Shared\Aggregate\AggregateRoot;
 
 class Products
 {

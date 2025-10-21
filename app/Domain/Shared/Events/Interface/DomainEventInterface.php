@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\Shared;
+namespace App\Domain\Shared\Events\Interface;
 
 use DateTimeImmutable;
 
-interface DomainEvent
+interface DomainEventInterface
 {
     /**
      * @return string

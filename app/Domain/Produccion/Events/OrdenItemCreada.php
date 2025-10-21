@@ -2,7 +2,7 @@
 
 namespace App\Domain\Produccion\Events;
 
-use App\Domain\Shared\BaseDomainEvent;
+use App\Domain\Shared\Events\BaseDomainEvent;
 
 class OrdenItemCreada extends BaseDomainEvent
 {

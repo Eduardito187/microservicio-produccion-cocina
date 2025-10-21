@@ -6,11 +6,10 @@ use App\Infrastructure\Persistence\Repository\ListaDespachoRepository;
 use App\Domain\Produccion\Aggregate\ListaDespacho as AggregateListaDespacho;
 use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
-use App\Infrastructure\Persistence\Outbox\OutboxStore;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\DespachadorOP;
 use App\Domain\Produccion\ValueObjects\ItemDespacho;
 use App\Domain\Produccion\Model\DespachoItems;
-use Illuminate\Support\Facades\DB;
 use DateTimeImmutable;
 
 class DespachadorOPHandler
@@ -31,20 +30,28 @@ class DespachadorOPHandler
     public readonly ListaDespachoRepository $listaDespachoRepository;
 
     /**
+     * @var TransactionAggregate
+     */
+    private readonly TransactionAggregate $transactionAggregate;
+
+    /**
      * Constructor
      * 
      * @param OrdenProduccionRepositoryInterface $ordenProduccionRepository
      * @param ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface
      * @param ListaDespachoRepository $listaDespachoRepository
+     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         OrdenProduccionRepositoryInterface $ordenProduccionRepository,
         ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface,
-        ListaDespachoRepository $listaDespachoRepository
+        ListaDespachoRepository $listaDespachoRepository,
+        TransactionAggregate $transactionAggregate
     ) {
         $this->ordenProduccionRepository = $ordenProduccionRepository;
         $this->produccionBatchRepositoryInterface = $produccionBatchRepositoryInterface;
         $this->listaDespachoRepository = $listaDespachoRepository;
+        $this->transactionAggregate = $transactionAggregate;
     }
 
     /**
@@ -53,32 +60,13 @@ class DespachadorOPHandler
      */
     public function __invoke(DespachadorOP $command): string|int|null
     {
-        $ordenProduccionId = DB::transaction(function () use ($command): int {
-            $ordenProduccion = $command->opId ? $this->ordenProduccionRepository->byId($command->opId) : null;
-
-            if ($ordenProduccion == null) {
-                //no existe la orden
-            }
-
-            $listaDespacho = AggregateListaDespacho::crear(
-                null, 
-                $command->opId, 
-                new DateTimeImmutable("now"), 
-                $ordenProduccion->sucursalId(),
-                []
-            );
-
+        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+            $ordenProduccion = $this->ordenProduccionRepository->byId($command->opId);
+            $listaDespacho = AggregateListaDespacho::crear($command->opId,  new DateTimeImmutable("now"),  $ordenProduccion->sucursalId());
             $itemsDespacho = [];
 
             foreach ($ordenProduccion->items() as $item) {
-                $itemsDespacho[] = new ItemDespacho(
-                    $listaDespacho->id,
-                    $item->sku(),
-                    1,
-                    1,
-                    [],
-                    []
-                );
+                $itemsDespacho[] = new ItemDespacho($listaDespacho->id, $item->sku(), 1, 1);
             }
 
             $itemsDespacho = DespachoItems::fromArray($itemsDespacho);
@@ -92,19 +80,8 @@ class DespachadorOPHandler
 
             $ordenProduccion->cerrar();
             $persistedId = $this->ordenProduccionRepository->save($ordenProduccion, false);
-
-            foreach ($ordenProduccion->pullEvents() as $event) {
-                OutboxStore::append(
-                    name: $event->name(),
-                    aggregateId: $persistedId,
-                    occurredOn: $event->occurredOn(),
-                    payload: $event->toArray()
-                );
-            }
-
+            $ordenProduccion->publishOutbox($persistedId);
             return $persistedId;
         });
-
-        return $ordenProduccionId;
     }
 }
