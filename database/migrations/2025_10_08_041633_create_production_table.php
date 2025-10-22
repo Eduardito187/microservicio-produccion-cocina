@@ -47,7 +47,6 @@ return new class extends Migration
             $t->foreign('lista_id')->references('id')->on('lista_despacho')->onDelete('cascade');
             $t->string('sku');
             $t->integer('etiqueta_id');
-            $t->integer('paciente_id');
             $t->json('direccion_snapshot');
             $t->json('ventana_entrega');
             $t->timestamps();

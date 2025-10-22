@@ -54,9 +54,7 @@ class GenerarOPHandler
         return $this->transactionAggregate->runTransaction(function () use ($command, $orderItems): int {
             $ordenProduccion = AggregateOrdenProduccion::crear( $command->fecha,  $command->sucursalId,  $orderItems);
             $ordenProduccion->agregarItems($orderItems);
-            $persistedId = $this->ordenProduccionRepository->save($ordenProduccion, true);
-            $ordenProduccion->publishOutbox($persistedId);
-            return $persistedId;
+            return $this->ordenProduccionRepository->save($ordenProduccion, true, true);
         });
     }
 }

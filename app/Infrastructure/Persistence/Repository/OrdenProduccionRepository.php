@@ -5,9 +5,9 @@ namespace App\Infrastructure\Persistence\Repository;
 use App\Infrastructure\Persistence\Model\OrdenProduccion as OrdenProduccionModel;
 use App\Infrastructure\Persistence\Model\OrdenItem as OrdenProduccionItemModel;
 use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
-use App\Infrastructure\Persistence\Repository\OrdenItemRepository;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Domain\Produccion\Aggregate\OrdenItem as AggregateOrdenItem;
+use App\Infrastructure\Persistence\Repository\OrdenItemRepository;
 use App\Domain\Produccion\Model\OrderItems as ModelOrderItems;
 use App\Domain\Produccion\ValueObjects\OrderItem;
 use App\Domain\Produccion\Aggregate\EstadoOP;
@@ -61,9 +61,10 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     /**
      * @param AggregateOrdenProduccion $op
      * @param bool $resetItems
+     * @param bool $sendOutbox
      * @return int
      */
-    public function save(AggregateOrdenProduccion $op, bool $resetItems): int
+    public function save(AggregateOrdenProduccion $op, bool $resetItems = false, bool $sendOutbox = false): int
     {
         $model = OrdenProduccionModel::query()->updateOrCreate(
             ['id' => $op->id()],
@@ -78,6 +79,10 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         if ($resetItems) {
             OrdenProduccionItemModel::query()->where('op_id', $orderId)->delete();
             $this->mapItemsToRows($orderId, $op->items());
+        }
+
+        if ($sendOutbox) {
+            $op->publishOutbox($orderId);
         }
 
         return $orderId;

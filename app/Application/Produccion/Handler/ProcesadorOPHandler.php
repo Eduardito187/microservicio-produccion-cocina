@@ -56,9 +56,7 @@ class ProcesadorOPHandler
             }
 
             $ordenProduccion->procesar();
-            $persistedId = $this->ordenProduccionRepository->save($ordenProduccion, false);
-            $ordenProduccion->publishOutbox($persistedId);
-            return $persistedId;
+            return $this->ordenProduccionRepository->save($ordenProduccion, false, true);
         });
     }
 }

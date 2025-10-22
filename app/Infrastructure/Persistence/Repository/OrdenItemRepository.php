@@ -3,9 +3,9 @@
 namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\OrdenItem as OrdenItemModel;
-use App\Infrastructure\Persistence\Repository\ProductRepository;
 use App\Domain\Produccion\Aggregate\OrdenItem as AggregateOrdenItem;
 use App\Domain\Produccion\Repository\OrdenItemRepositoryInterface;
+use App\Infrastructure\Persistence\Repository\ProductRepository;
 
 class OrdenItemRepository implements OrdenItemRepositoryInterface
 {

@@ -15,7 +15,8 @@ interface OrdenProduccionRepositoryInterface
     /**
      * @param AggregateOrdenProduccion $op
      * @param bool $resetItems
+     * @param bool $sendOutbox
      * @return int
      */
-    public function save(AggregateOrdenProduccion $op, bool $resetItems): int;
+    public function save(AggregateOrdenProduccion $op, bool $resetItems = false, bool $sendOutbox = false): int;
 }
