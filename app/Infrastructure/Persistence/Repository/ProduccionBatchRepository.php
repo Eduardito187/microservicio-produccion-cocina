@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Repository;
 use App\Infrastructure\Persistence\Model\ProduccionBatch as ProduccionBatchModel;
 use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
 use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Produccion\Aggregate\EstadoPlanificado;
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
@@ -13,17 +14,15 @@ class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
 {
     /**
      * @param int|null $id
+     * @throws ModelNotFoundException
+     * @return AggregateProduccionBatch|null
      */
     public function byId(int|null $id): ?AggregateProduccionBatch
     {
-        if ($id == null) {
-            return null;
-        }
-
         $row = ProduccionBatchModel::find($id);
 
         if (!$row) {
-            return null;
+            throw new ModelNotFoundException("El batch de produccion id: {$id} no existe.");
         }
 
         return new AggregateProduccionBatch(

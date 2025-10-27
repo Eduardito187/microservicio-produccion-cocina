@@ -3,7 +3,7 @@
 namespace App\Domain\Produccion\ValueObjects;
 
 use App\Domain\Shared\ValueObjects\ValueObject;
-use InvalidArgumentException;
+use DomainException;
 
 class Sku extends ValueObject
 {
@@ -14,14 +14,14 @@ class Sku extends ValueObject
      * Constructor
      * 
      * @param string $value
-     * @throws InvalidArgumentException
+     * @throws DomainException
      */
     public function __construct(string $value)
     {
         $value = trim($value);
 
         if ($value === '') {
-            throw new InvalidArgumentException('SKU cannot be empty');
+            throw new DomainException('SKU cannot be empty');
         }
 
         $this->value = strtoupper($value);

@@ -7,6 +7,7 @@ use App\Domain\Produccion\Aggregate\ListaDespacho as AggregateListaDespacho;
 use App\Domain\Produccion\Aggregate\ItemDespacho as AggregateItemDespacho;
 use App\Domain\Produccion\Repository\ListaDespachoRepositoryInterface;
 use App\Infrastructure\Persistence\Repository\ItemDespachoRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Infrastructure\Persistence\Model\ItemDespacho;
 use App\Domain\Produccion\Model\DespachoItems;
 use DateTimeImmutable;
@@ -29,17 +30,16 @@ class ListaDespachoRepository implements ListaDespachoRepositoryInterface
 
     /**
      * @param string $id
+     * @throws ModelNotFoundException
      * @return AggregateListaDespacho|null
      */
     public function byId(string $id): ?AggregateListaDespacho
     {
-        if ($id == null) {
-            return null;
-        }
-
         $row = ListaDespachoModel::find($id);
 
-        if (!$row) return null;
+        if (!$row) {
+            throw new ModelNotFoundException("La lista de despacho id: {$id} no existe.");
+        }
 
         $fecha = $this->mapDateToDomain($row->fecha_entrega);
         $items = $this->mapItemsToDomain($row->items);
@@ -51,6 +51,22 @@ class ListaDespachoRepository implements ListaDespachoRepositoryInterface
             $row->sucursal_id,
             $items
         );
+    }
+
+    /**
+     * @param string $orderProduccion
+     * @throws ModelNotFoundException
+     * @return bool
+     */
+    public function validToCreate(string $orderProduccion): bool
+    {
+        $row = ListaDespachoModel::where('op_id', $orderProduccion);
+
+        if ($row) {
+            throw new ModelNotFoundException("La orden ya cuenta con una lista de despacho.");
+        }
+
+        return true;
     }
 
     /**

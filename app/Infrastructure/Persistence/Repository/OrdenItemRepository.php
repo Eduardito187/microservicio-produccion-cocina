@@ -6,6 +6,7 @@ use App\Infrastructure\Persistence\Model\OrdenItem as OrdenItemModel;
 use App\Domain\Produccion\Aggregate\OrdenItem as AggregateOrdenItem;
 use App\Domain\Produccion\Repository\OrdenItemRepositoryInterface;
 use App\Infrastructure\Persistence\Repository\ProductRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class OrdenItemRepository implements OrdenItemRepositoryInterface
 {
@@ -24,13 +25,16 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
 
     /**
      * @param string $id
+     * @throws ModelNotFoundException
      * @return AggregateOrdenItem|null
      */
     public function byId(string $id): ?AggregateOrdenItem
     {
         $row = OrdenItemModel::find($id);
 
-        if (!$row) return null;
+        if (!$row) {
+            throw new ModelNotFoundException("El orden item de produccion id: {$id} no existe.");
+        }
 
         return new AggregateOrdenItem(
             $row->id,

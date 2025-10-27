@@ -3,10 +3,12 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\GenerarOPHandler;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Application\Produccion\Command\GenerarOP;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use DateTimeImmutable;
+use DomainException;
 
 class GenerarOPController
 {
@@ -36,15 +38,21 @@ class GenerarOPController
             'items' => ['array']
         ]);
 
-        $ordenProduccion = $this->handler->__invoke(
-            new GenerarOP(
-                $data['id'] ?? null,
-                new DateTimeImmutable($data['fecha']),
-                $data['sucursalId'],
-                $data['items'] ?? []
-            )
-        );
+        try {
+            $ordenProduccionId = $this->handler->__invoke(
+                new GenerarOP(
+                    $data['id'] ?? null,
+                    new DateTimeImmutable($data['fecha']),
+                    $data['sucursalId'],
+                    $data['items'] ?? []
+                )
+            );
 
-        return response()->json(['ordenProduccion' => $ordenProduccion], 201);
+            return response()->json(['ordenProduccionId' => $ordenProduccionId], 201);
+        } catch (DomainException $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], 404);
+        }
     }
 }

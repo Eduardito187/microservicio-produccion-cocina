@@ -9,6 +9,7 @@ use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Domain\Produccion\Aggregate\OrdenItem as AggregateOrdenItem;
 use App\Infrastructure\Persistence\Repository\OrdenItemRepository;
 use App\Domain\Produccion\Model\OrderItems as ModelOrderItems;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Produccion\ValueObjects\OrderItem;
 use App\Domain\Produccion\Aggregate\EstadoOP;
 use App\Domain\Produccion\ValueObjects\Qty;
@@ -34,16 +35,16 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
 
     /**
      * @param int|null $id
+     * @throws ModelNotFoundException
+     * @return AggregateOrdenProduccion|null
      */
     public function byId(int|null $id): ?AggregateOrdenProduccion
     {
-        if ($id == null) {
-            return null;
-        }
-
         $row = OrdenProduccionModel::query()->with('items')->find($id);
 
-        if (!$row) return null;
+        if (!$row) {
+            throw new ModelNotFoundException("La orden de produccion id: {$id} no existe.");
+        }
 
         $fecha = $this->mapDateToDomain($row->fecha);
         $estado = EstadoOP::from($row->estado);

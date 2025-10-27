@@ -3,7 +3,7 @@
 namespace App\Domain\Produccion\ValueObjects;
 
 use App\Domain\Shared\ValueObjects\ValueObject;
-use InvalidArgumentException;
+use DomainException;
 
 class Qty extends ValueObject
 {
@@ -16,12 +16,12 @@ class Qty extends ValueObject
      * Constructor
      * 
      * @param int $value
-     * @throws InvalidArgumentException
+     * @throws DomainException
      */
     public function __construct(int $value)
     {
         if ($value <= 0) {
-            throw new InvalidArgumentException('Qty > 0');
+            throw new DomainException('Qty > 0');
         }
 
         $this->value = $value;

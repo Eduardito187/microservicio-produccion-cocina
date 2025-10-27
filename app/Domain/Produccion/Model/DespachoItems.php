@@ -2,7 +2,6 @@
 namespace App\Domain\Produccion\Model;
 
 use App\Domain\Produccion\ValueObjects\ItemDespacho;
-use InvalidArgumentException;
 use DomainException;
 use Traversable;
 
@@ -49,7 +48,7 @@ class DespachoItems implements \IteratorAggregate, \Countable
 
         foreach ($items as $item) {
             if (!$item instanceof ItemDespacho) {
-                throw new InvalidArgumentException('Todos los elementos deben ser ItemDespacho');
+                throw new DomainException('Todos los elementos deben ser ItemDespacho');
             }
 
             $map[] = $item;

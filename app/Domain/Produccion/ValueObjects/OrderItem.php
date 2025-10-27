@@ -3,7 +3,7 @@
 namespace App\Domain\Produccion\ValueObjects;
 
 use App\Domain\Shared\ValueObjects\ValueObject;
-use LogicException;
+use DomainException;
 
 class OrderItem extends ValueObject
 {
@@ -55,13 +55,13 @@ class OrderItem extends ValueObject
 
     /**
      * @param OrderItem $other
-     * @throws LogicException
+     * @throws DomainException
      * @return OrderItem
      */
     public function merge(OrderItem $other): self
     {
         if (!$this->sameSku($other)) {
-            throw new LogicException('Cannot merge items with different SKUs');
+            throw new DomainException('Cannot merge items with different SKUs');
         }
 
         return new self($this->sku, $this->qty->add($other->qty()));

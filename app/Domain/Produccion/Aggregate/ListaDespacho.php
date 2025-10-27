@@ -2,6 +2,8 @@
 
 namespace App\Domain\Produccion\Aggregate;
 
+use App\Infrastructure\Persistence\Repository\ListaDespachoRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Produccion\Events\ListaDespachoCreada;
 use App\Domain\Produccion\Model\DespachoItems;
 use App\Domain\Shared\Aggregate\AggregateRoot;
@@ -38,6 +40,11 @@ class ListaDespacho
     private array|DespachoItems $items;
 
     /**
+     * @var ListaDespachoRepository
+     */
+    public readonly ListaDespachoRepository $listaDespachoRepository;
+
+    /**
      * Constructor
      * 
      * @param int|null $id
@@ -45,6 +52,7 @@ class ListaDespacho
      * @param DateTimeImmutable $fechaEntrega
      * @param int|string $sucursalId
      * @param array|DespachoItems $items
+     * @throws ModelNotFoundException
      */
     public function __construct(
         int|null $id,
@@ -58,6 +66,8 @@ class ListaDespacho
         $this->fechaEntrega = $fechaEntrega;
         $this->sucursalId = $sucursalId;
         $this->items = $items;
+        $this->listaDespachoRepository = app(ListaDespachoRepository::class);
+        $this->listaDespachoRepository->validToCreate($this->ordenProduccionId);
     }
 
     /**
@@ -74,8 +84,7 @@ class ListaDespacho
         int|string $sucursalId,
         array|DespachoItems $items = [],
         int|null $id = null
-    ): self
-    {
+    ): self {
         $self = new self(
             $id,
             $ordenProduccionId,
@@ -103,8 +112,7 @@ class ListaDespacho
         DateTimeImmutable $fechaEntrega,
         int|string $sucursalId,
         array|DespachoItems $items
-    ): self
-    {
+    ): self {
         $self = new self(
             $id,
             $ordenProduccionId,
