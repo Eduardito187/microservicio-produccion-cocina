@@ -1,0 +1,18 @@
+docker compose -p microservicio exec -it mysql_server mysql -uappuser -p -h 127.0.0.1 -P 3306
+docker compose -p microservicio exec -it mysql_server mysql -uroot -p -h 127.0.0.1 -P 3306
+
+docker exec -it laravel_app php artisan migrate:status
+docker exec -it laravel_app php artisan migrate
+docker exec -it laravel_app php artisan serve
+
+docker exec -it mysql_server mysql -uroot -proot
+
+docker compose build
+docker compose up -d
+
+docker compose -p microservicio exec mysql_server `
+>>   mysql -uroot -proot -e "ALTER USER 'appuser'@'%' IDENTIFIED BY '13011973';
+>> ALTER USER 'appuser'@'172.18.0.1' IDENTIFIED BY '13011973';
+>> ALTER USER 'appuser'@'127.0.0.1' IDENTIFIED BY '13011973';
+>> ALTER USER 'appuser'@'localhost' IDENTIFIED BY '13011973';
+>> FLUSH PRIVILEGES;"

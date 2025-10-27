@@ -1,0 +1,47 @@
+services:
+  laravel_app:
+    container_name: laravel_app
+    image: microservicio-produccion-cocina-app
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/apache-fqdn.conf:/etc/apache2/conf-available/fqdn.conf:ro
+    working_dir: /var/www/html
+    command: /bin/bash -lc "a2enconf fqdn >/dev/null 2>&1 || true; php artisan migrate --force --no-interaction; apache2-foreground"
+    depends_on:
+      mysql_server:
+        condition: service_healthy
+
+  mysql_server:
+    container_name: mysql_server
+    image: mysql:8.4
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
+    pull_policy: always
+    environment:
+      - MYSQL_DATABASE=appuser
+      - MYSQL_USER=appuser
+      - MYSQL_PASSWORD=13011973
+      - MYSQL_ROOT_PASSWORD=13011973
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+
+  mailpit:
+    container_name: mailpit
+    image: axllent/mailpit:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  mysql_data:

@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::table('produccion_batch', function (Blueprint $t) {
             $t->string('sku')->after('op_id');
             $t->integer('qty')->after('sku');
-            $t->integer('posicion')->default(0)->after('estacion_id');
+            $t->integer('posicion')->default(0)->after('qty');
             $t->json('ruta')->nullable()->after('posicion');
             $t->index(['op_id'], 'idx_pb_op');
-            $t->index(['estacion_id'], 'idx_pb_est');
             $t->index(['op_id', 'posicion'], 'idx_pb_op_pos');
             $t->index(['sku'], 'idx_pb_sku');
         });
@@ -30,7 +29,6 @@ return new class extends Migration
     {
         Schema::table('produccion_batch', function (Blueprint $table) {
             $table->dropIndex('idx_pb_op');
-            $table->dropIndex('idx_pb_est');
             $table->dropIndex('idx_pb_op_pos');
             $table->dropIndex('idx_pb_sku');
         });

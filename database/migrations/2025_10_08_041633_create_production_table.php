@@ -23,9 +23,6 @@ return new class extends Migration
             $t->bigIncrements('id');
             $t->unsignedBigInteger('op_id')->nullable();
             $t->foreign('op_id')->references('id')->on('orden_produccion')->onDelete('cascade');
-            $t->integer('estacion_id');
-            $t->integer('receta_version_id');
-            $t->integer('porcion_id');
             $t->integer('cant_planificada');
             $t->integer('cant_producida')->default(0);
             $t->integer('merma_gr')->default(0);

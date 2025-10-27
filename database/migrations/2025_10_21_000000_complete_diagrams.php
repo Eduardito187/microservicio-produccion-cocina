@@ -44,6 +44,7 @@ return new class extends Migration
             $t->foreign('porcion_id')->references('id')->on('porcion');
 
             $t->index(['receta_version_id', 'porcion_id'], 'idx_pb_rec_por');
+            $t->index(['estacion_id'], 'idx_pb_est');
         });
 
         Schema::create('direccion', function (Blueprint $t) {
@@ -168,6 +169,7 @@ return new class extends Migration
             $t->dropForeign('produccion_batch_receta_version_id_foreign');
             $t->dropForeign('produccion_batch_porcion_id_foreign');
             $t->dropIndex('idx_pb_rec_por');
+            $t->dropIndex('idx_pb_est');
 
             $t->dropColumn(['rendimiento_pct', 'estacion_id', 'receta_version_id', 'porcion_id']);
         });
