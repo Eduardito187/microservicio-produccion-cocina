@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\Products as ProductModel;
+use App\Infrastructure\Persistence\Model\Product as ProductModel;
 use App\Domain\Cocina\Repository\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Cocina\Aggregate\Products;

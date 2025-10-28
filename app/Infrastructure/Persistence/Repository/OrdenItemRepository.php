@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\OrdenItem as OrdenItemModel;
+use App\Infrastructure\Persistence\Model\OrderItem as OrdenItemModel;
 use App\Domain\Produccion\Aggregate\OrdenItem as AggregateOrdenItem;
 use App\Domain\Produccion\Repository\OrdenItemRepositoryInterface;
 use App\Infrastructure\Persistence\Repository\ProductRepository;
@@ -60,7 +60,6 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
             [
                 'op_id' => $item->ordenProduccionId,
                 'p_id' => $item->productId,
-                'sku' => $item->sku,
                 'qty' => $item->qty,
                 'price' => $item->price,
                 'final_price' => $item->finalPrice,
