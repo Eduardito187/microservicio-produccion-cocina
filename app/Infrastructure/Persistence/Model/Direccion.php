@@ -2,31 +2,17 @@
 
 namespace App\Infrastructure\Persistence\Model;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-class Direccion extends Model
+class Direccion extends BaseModel
 {
-    use HasFactory;
-
     protected $table = 'direccion';
-    protected $primaryKey = 'id';
-    public $incrementing = true;
-    public $timestamps = true;
-    protected $fillable = [
-        'nombre',
-        'linea1',
-        'linea2',
-        'ciudad',
-        'provincia',
-        'pais',
-        'latitud',
-        'longitud',
-    ];
+    protected $guarded = [];
+
     protected $casts = [
-        'latitud' => 'decimal:7',
-        'longitud' => 'decimal:7',
-        'created_at'=> 'datetime',
-        'updated_at'=> 'datetime',
+        'geo' => 'array',
     ];
+
+    public function paquetes()
+    {
+        return $this->hasMany(Paquete::class, 'direccion_id');
+    }
 }

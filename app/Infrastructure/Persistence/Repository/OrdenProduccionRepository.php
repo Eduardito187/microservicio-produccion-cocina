@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\OrdenProduccion as OrdenProduccionModel;
-use App\Infrastructure\Persistence\Model\OrdenItem as OrdenProduccionItemModel;
+use App\Infrastructure\Persistence\Model\OrderItem as OrdenProduccionItemModel;
 use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Domain\Produccion\Aggregate\OrdenItem as AggregateOrdenItem;
@@ -98,7 +98,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
 
         foreach ($eloquentItems as $row) {
             $domainItems[] = new OrderItem(
-                new Sku($row->sku),
+                new Sku($row->product->sku),
                 new Qty($row->qty)
             );
         }

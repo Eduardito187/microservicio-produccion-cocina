@@ -1,36 +1,52 @@
 services:
   laravel_app:
     container_name: laravel_app
+    build:
+      context: .
+      dockerfile: Dockerfile.app
     image: microservicio-produccion-cocina-app
     ports:
       - "8000:80"
     volumes:
       - ./:/var/www/html
       - ./docker/apache-fqdn.conf:/etc/apache2/conf-available/fqdn.conf:ro
+      - ./docker/laravel.conf:/etc/apache2/sites-available/laravel.conf:ro
     working_dir: /var/www/html
-    command: /bin/bash -lc "a2enconf fqdn >/dev/null 2>&1 || true; php artisan migrate --force --no-interaction; apache2-foreground"
+    command: /bin/bash -lc "
+      set -e
+      a2enconf fqdn >/dev/null 2>&1 || true;
+      a2enmod rewrite;
+      a2dissite 000-default default-ssl >/dev/null 2>&1 || true;
+      a2ensite laravel;
+      chown -R www-data:www-data storage bootstrap/cache || true;
+      chmod -R ug+rw storage bootstrap/cache || true;
+      if [ ! -f .env ]; then cp .env.example .env || true; fi;
+      composer install --no-interaction --prefer-dist;
+      php artisan key:generate || true;
+      php artisan optimize:clear || true;
+      php artisan migrate --force --no-interaction || true;
+      exec apache2-foreground"
     depends_on:
       mysql_server:
         condition: service_healthy
 
   mysql_server:
     container_name: mysql_server
-    image: mysql:8.4
     build:
       context: .
       dockerfile: Dockerfile.mysql
-    pull_policy: always
+    image: microservicio-produccion-cocina-mysql
     environment:
-      - MYSQL_DATABASE=appuser
+      - MYSQL_DATABASE=produccion_cocina
       - MYSQL_USER=appuser
       - MYSQL_PASSWORD=13011973
       - MYSQL_ROOT_PASSWORD=13011973
     ports:
-      - "3306:3306"
+      - "33006:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p13011973"]
       interval: 5s
       timeout: 5s
       retries: 30

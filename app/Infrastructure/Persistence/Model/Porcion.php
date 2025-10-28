@@ -2,24 +2,13 @@
 
 namespace App\Infrastructure\Persistence\Model;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-class Porcion extends Model
+class Porcion extends BaseModel
 {
-    use HasFactory;
-
     protected $table = 'porcion';
-    protected $primaryKey = 'id';
-    public $incrementing = true;
-    public $timestamps = true;
-    protected $fillable = [
-        'nombre',
-        'peso_gr',
-    ];
-    protected $casts = [
-        'peso_gr'    => 'integer',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
+    protected $guarded = [];
+
+    public function batches()
+    {
+        return $this->hasMany(ProduccionBatch::class, 'porcion_id');
+    }
 }
