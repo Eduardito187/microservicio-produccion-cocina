@@ -1,8 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Model;
 
-class Lote extends Model
+/**
+ * @package App\Infrastructure\Persistence\Model
+ */
+class Lote extends BaseModel
 {
     protected $table = 'lote';
     protected $guarded = [];

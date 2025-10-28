@@ -1,7 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Model;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
+/**
+ * @package App\Infrastructure\Persistence\Model
+ */
 class Etiqueta extends BaseModel
 {
     protected $table = 'etiqueta';
@@ -11,33 +20,50 @@ class Etiqueta extends BaseModel
         'qr_payload' => 'array',
     ];
 
-    public function ordenProduccion()
+    /**
+     * @return BelongsTo
+     */
+    public function ordenProduccion(): BelongsTo
     {
         return $this->belongsTo(OrdenProduccion::class, 'orden_produccion_id');
     }
 
-    // In schema, lote_id references produccion_batch
-    public function lote()
+    /**
+     * @return BelongsTo
+     */
+    public function lote(): BelongsTo
     {
         return $this->belongsTo(ProduccionBatch::class, 'lote_id');
     }
 
-    public function recetaVersion()
+    /**
+     * @return BelongsTo
+     */
+    public function recetaVersion(): BelongsTo
     {
         return $this->belongsTo(RecetaVersion::class, 'receta_version_id');
     }
 
-    public function suscripcion()
+    /**
+     * @return BelongsTo
+     */
+    public function suscripcion(): BelongsTo
     {
         return $this->belongsTo(Suscripcion::class, 'suscripcion_id');
     }
 
-    public function paciente()
+    /**
+     * @return BelongsTo
+     */
+    public function paciente(): BelongsTo
     {
         return $this->belongsTo(Paciente::class, 'paciente_id');
     }
 
-    public function paquete()
+    /**
+     * @return HasOne
+     */
+    public function paquete(): HasOne
     {
         return $this->hasOne(Paquete::class, 'etiqueta_id');
     }

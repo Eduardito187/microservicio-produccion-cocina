@@ -25,6 +25,7 @@ services:
       php artisan key:generate || true;
       php artisan optimize:clear || true;
       php artisan migrate --force --no-interaction || true;
+      php artisan db:seed || true;
       exec apache2-foreground"
     depends_on:
       mysql_server:
