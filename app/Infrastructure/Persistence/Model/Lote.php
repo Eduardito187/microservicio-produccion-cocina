@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Persistence\Model;
 
-class InboundEvent extends BaseModel
+class Lote extends Model
 {
-    protected $table = 'inbound_events';
+    protected $table = 'lote';
     protected $guarded = [];
 }
