@@ -3,13 +3,15 @@
 namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\OrdenProduccion as OrdenProduccionModel;
-use App\Infrastructure\Persistence\Model\OrderItem as OrdenProduccionItemModel;
 use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
+use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
+use App\Infrastructure\Persistence\Model\OrderItem as OrdenProduccionItemModel;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Domain\Produccion\Aggregate\OrdenItem as AggregateOrdenItem;
 use App\Infrastructure\Persistence\Repository\OrdenItemRepository;
 use App\Domain\Produccion\Model\OrderItems as ModelOrderItems;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Produccion\Aggregate\EstadoPlanificado;
 use App\Domain\Produccion\ValueObjects\OrderItem;
 use App\Domain\Produccion\Aggregate\EstadoOP;
 use App\Domain\Produccion\ValueObjects\Qty;
@@ -49,13 +51,15 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         $fecha = $this->mapDateToDomain($row->fecha);
         $estado = EstadoOP::from($row->estado);
         $items = $this->mapItemsToDomain($row->items);
+        $batches = $this->mapItemsBatches($row->batches);
 
         return AggregateOrdenProduccion::reconstitute(
             $row->id,
             $fecha,
             $row->sucursal_id,
             $estado,
-            $items
+            $items,
+            $batches
         );
     }
 
@@ -92,11 +96,11 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     /** 
      * @return ModelOrderItems
      */
-    private function mapItemsToDomain($eloquentItems): ModelOrderItems
+    private function mapItemsToDomain($items): ModelOrderItems
     {
         $domainItems = [];
 
-        foreach ($eloquentItems as $row) {
+        foreach ($items as $row) {
             $domainItems[] = new OrderItem(
                 new Sku($row->product->sku),
                 new Qty($row->qty),
@@ -105,6 +109,35 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         }
 
         return ModelOrderItems::fromArray($domainItems);
+    }
+
+    /**
+     * @return AggregateProduccionBatch[]
+     */
+    private function mapItemsBatches($batches): array
+    {
+        $domainItems = [];
+
+        foreach ($batches as $row) {
+            $domainItems[] = new AggregateProduccionBatch(
+                $row->id,
+                $row->op_id,
+                $row->p_id,
+                $row->estacion_id,
+                $row->receta_version_id,
+                $row->porcion_id,
+                $row->cant_planificada,
+                $row->cant_producida,
+                $row->merma_gr,
+                EstadoPlanificado::from($row->estado),
+                $row->rendimiento,
+                new Qty($row->qty),
+                $row->posicion,
+                $row->ruta
+            );
+        }
+
+        return $domainItems;
     }
 
     /**

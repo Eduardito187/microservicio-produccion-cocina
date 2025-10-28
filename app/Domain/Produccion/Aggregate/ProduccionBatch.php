@@ -49,7 +49,7 @@ class ProduccionBatch
     /**
      * @var int
      */
-    public readonly int $cantProducida;
+    public int $cantProducida;
 
     /**
      * @var int
@@ -205,6 +205,7 @@ class ProduccionBatch
             throw new DomainException('No se puede procesar en su estado actual el batch.');
         }
 
+        $this->cantProducida = $this->cantPlanificada;
         $this->estado = EstadoPlanificado::PROCESANDO;
     }
 

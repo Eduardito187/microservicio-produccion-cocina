@@ -8,7 +8,6 @@ use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Produccion\Aggregate\EstadoPlanificado;
 use App\Domain\Produccion\ValueObjects\Qty;
-use App\Domain\Produccion\ValueObjects\Sku;
 
 class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
 {

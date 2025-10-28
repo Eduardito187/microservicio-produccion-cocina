@@ -2,6 +2,7 @@
 
 namespace App\Domain\Produccion\Aggregate;
 
+use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
 use App\Domain\Produccion\Events\OrdenProduccionPlanificada;
 use App\Domain\Produccion\Events\OrdenProduccionProcesada;
 use App\Domain\Produccion\Events\OrdenProduccionCerrada;
@@ -41,6 +42,11 @@ class OrdenProduccion
     private array|OrderItems $items;
 
     /**
+     * @var array
+     */
+    private array $batches;
+
+    /**
      * Constructor
      * 
      * @param int|null $id
@@ -48,6 +54,7 @@ class OrdenProduccion
      * @param int|string $sucursalId
      * @param EstadoOP $estado
      * @param array|OrderItems $items
+     * @param array $batches
      * @throws DomainException
      */
     private function __construct(
@@ -55,7 +62,8 @@ class OrdenProduccion
         DateTimeImmutable $fecha,
         int|string $sucursalId,
         EstadoOP $estado,
-        array|OrderItems $items
+        array|OrderItems $items,
+        array $batches
     ) {
         if ($items->count() === 0) {
             throw new DomainException('La OP debe tener al menos un ítem.');
@@ -66,18 +74,20 @@ class OrdenProduccion
         $this->sucursalId = $sucursalId;
         $this->estado = $estado;
         $this->items = $items;
+        $this->batches = $batches;
     }
 
     /**
      * @param DateTimeImmutable $fecha
      * @param int|string $sucursalId
      * @param OrderItems $items
+     * @param array $batches
      * @param int|null $id
      * @return OrdenProduccion
      */
-    public static function crear(DateTimeImmutable $fecha, string $sucursalId, OrderItems $items, int|null $id = null): self
+    public static function crear(DateTimeImmutable $fecha, string $sucursalId, OrderItems $items, array $batches = [], int|null $id = null): self
     {
-        $self = new self($id, $fecha, $sucursalId, EstadoOP::CREADA, $items);
+        $self = new self($id, $fecha, $sucursalId, EstadoOP::CREADA, $items, $batches);
 
         $self->record(new OrdenProduccionCreada(
             $id,
@@ -94,11 +104,18 @@ class OrdenProduccion
      * @param int|string $sucursalId
      * @param EstadoOP $estado
      * @param OrderItems $items
+     * @param array $batches
      * @return OrdenProduccion
      */
-    public static function reconstitute(int $id, DateTimeImmutable $fecha, string $sucursalId, EstadoOP $estado, OrderItems $items): self
-    {
-        $self = new self($id, $fecha, $sucursalId, $estado, $items);
+    public static function reconstitute(
+        int $id,
+        DateTimeImmutable $fecha,
+        string $sucursalId,
+        EstadoOP $estado,
+        OrderItems $items,
+        array $batches
+    ): self {
+        $self = new self($id, $fecha, $sucursalId, $estado, $items, $batches);
 
         return $self;
     }
@@ -197,5 +214,13 @@ class OrdenProduccion
     public function items(): OrderItems
     {
         return $this->items;
+    }
+
+    /**
+     * @return AggregateProduccionBatch[]
+     */
+    public function batches(): array
+    {
+        return $this->batches;
     }
 }
