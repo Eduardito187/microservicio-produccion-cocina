@@ -99,7 +99,8 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         foreach ($eloquentItems as $row) {
             $domainItems[] = new OrderItem(
                 new Sku($row->product->sku),
-                new Qty($row->qty)
+                new Qty($row->qty),
+                $row->p_id
             );
         }
 

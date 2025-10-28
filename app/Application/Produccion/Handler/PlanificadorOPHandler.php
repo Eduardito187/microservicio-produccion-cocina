@@ -57,17 +57,17 @@ class PlanificadorOPHandler
                     new AggregateProduccionBatch(
                         null,
                         $command->opId,
+                        $item->productId,
                         1,
                         1,
                         1,
                         1,
-                        1,
+                        0,
                         50,
                         EstadoPlanificado::PROGRAMADO,
-                        $item->sku,
+                        0,
                         $item->qty,
-                        $key + 1,
-                        []
+                        $key + 1
                     )
                 );
             }

@@ -3,7 +3,6 @@
 namespace App\Domain\Produccion\Events;
 
 use App\Domain\Produccion\ValueObjects\Qty;
-use App\Domain\Produccion\ValueObjects\Sku;
 use App\Domain\Shared\Events\BaseDomainEvent;
 
 class ProduccionBatchCreado extends BaseDomainEvent
@@ -18,11 +17,6 @@ class ProduccionBatchCreado extends BaseDomainEvent
      * @var int
      */
     public readonly int $estacionId;
-
-    /**
-     * @var Sku
-     */
-    private readonly Sku $sku;
 
     /**
      * @var Qty
@@ -40,7 +34,6 @@ class ProduccionBatchCreado extends BaseDomainEvent
      * @param int $id
      * @param int $ordenProduccionId
      * @param int $estacionId
-     * @param Sku $sku
      * @param Qty $qty
      * @param int $posicion
      */
@@ -48,13 +41,11 @@ class ProduccionBatchCreado extends BaseDomainEvent
         int $id,
         int $ordenProduccionId,
         int $estacionId,
-        Sku $sku,
         Qty $qty,
         int $posicion
     ) {
         $this->ordenProduccionId = $ordenProduccionId;
         $this->estacionId = $estacionId;
-        $this->sku = $sku;
         $this->qty = $qty;
         $this->posicion = $posicion;
         parent::__construct($id);
@@ -69,7 +60,6 @@ class ProduccionBatchCreado extends BaseDomainEvent
             'batch_id' => $this->aggregateId(),
             'ordenProduccionId' => $this->ordenProduccionId,
             'estacionId' => $this->estacionId,
-            'sku' => $this->sku->value(),
             'qty' => $this->qty->value(),
             'posicion' => $this->posicion
         ];

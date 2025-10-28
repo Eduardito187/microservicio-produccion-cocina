@@ -18,14 +18,25 @@ class OrderItem extends ValueObject
     public Qty $qty;
 
     /**
+     * @var int|null
+     */
+    public readonly int|null $productId;
+
+    /**
      * Constructor
      * 
      * @param Sku $sku
      * @param Qty $qty
+     * @param int|null $productId
      */
-    public function __construct(Sku $sku, Qty $qty) {
+    public function __construct(
+        Sku $sku,
+        Qty $qty,
+        int|null $productId = null
+    ) {
         $this->sku = $sku;
         $this->qty = $qty;
+        $this->productId = $productId;
     }
 
     /**
