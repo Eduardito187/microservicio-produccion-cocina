@@ -2,12 +2,9 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\DespachadorOP;
-use App\Domain\Produccion\ValueObjects\ItemDespacho;
-use App\Domain\Produccion\Model\DespachoItems;
 use DateTimeImmutable;
 
 class DespachadorOPHandler
@@ -18,11 +15,6 @@ class DespachadorOPHandler
     public readonly OrdenProduccionRepositoryInterface $ordenProduccionRepositoryInterface;
 
     /**
-     * @var ProduccionBatchRepositoryInterface
-     */
-    public readonly ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface;
-
-    /**
      * @var TransactionAggregate
      */
     private readonly TransactionAggregate $transactionAggregate;
@@ -31,16 +23,13 @@ class DespachadorOPHandler
      * Constructor
      * 
      * @param OrdenProduccionRepositoryInterface $ordenProduccionRepositoryInterface
-     * @param ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface
      * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         OrdenProduccionRepositoryInterface $ordenProduccionRepositoryInterface,
-        ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface,
         TransactionAggregate $transactionAggregate
     ) {
         $this->ordenProduccionRepositoryInterface = $ordenProduccionRepositoryInterface;
-        $this->produccionBatchRepositoryInterface = $produccionBatchRepositoryInterface;
         $this->transactionAggregate = $transactionAggregate;
     }
 
@@ -54,14 +43,9 @@ class DespachadorOPHandler
         return $this->transactionAggregate->runTransaction(function () use ($command): int {
             $ordenProduccion = $this->ordenProduccionRepositoryInterface->byId($command->opId);
             $ordenProduccion->generarItemsDespacho();
-
-            foreach ($ordenProduccion->batches() as $item) {
-                $item->despachar();
-                $this->produccionBatchRepositoryInterface->save($item);
-            }
-
+            $ordenProduccion->despacharBatches();
             $ordenProduccion->cerrar();
-            return $this->ordenProduccionRepositoryInterface->save($ordenProduccion, true, true);
+            return $this->ordenProduccionRepositoryInterface->save($ordenProduccion);
         });
     }
 }

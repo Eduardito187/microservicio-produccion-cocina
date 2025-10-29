@@ -7,9 +7,13 @@ use App\Domain\Produccion\Events\OrdenProduccionPlanificada;
 use App\Domain\Produccion\Events\OrdenProduccionProcesada;
 use App\Domain\Produccion\Events\OrdenProduccionCerrada;
 use App\Domain\Produccion\Events\OrdenProduccionCreada;
-use App\Domain\Produccion\ValueObjects\ItemDespacho;
+use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Shared\Aggregate\AggregateRoot;
-use App\Domain\Produccion\Model\OrderItems;
+use App\Domain\Produccion\Entity\ItemDespacho;
+use App\Domain\Produccion\ValueObjects\Sku;
+use App\Domain\Produccion\ValueObjects\Qty;
+use App\Domain\Produccion\Entity\OrdenItem;
+use App\Domain\Produccion\Enum\EstadoOP;
 use DateTimeImmutable;
 use DomainException;
 
@@ -38,9 +42,9 @@ class OrdenProduccion
     private EstadoOP $estado;
 
     /**
-     * @var array|OrderItems
+     * @var array
      */
-    private array|OrderItems $items;
+    private array $items;
 
     /**
      * @var array
@@ -59,24 +63,19 @@ class OrdenProduccion
      * @param DateTimeImmutable $fecha
      * @param int|string $sucursalId
      * @param EstadoOP $estado
-     * @param array|OrderItems $items
+     * @param array $items
      * @param array $batches
      * @param array $itemsDespacho
-     * @throws DomainException
      */
     private function __construct(
         int|null $id,
         DateTimeImmutable $fecha,
         int|string $sucursalId,
         EstadoOP $estado,
-        array|OrderItems $items,
+        array $items,
         array $batches,
         array $itemsDespacho
     ) {
-        if ($items->count() === 0) {
-            throw new DomainException('La OP debe tener al menos un ítem.');
-        }
-
         $this->id = $id;
         $this->fecha = $fecha;
         $this->sucursalId = $sucursalId;
@@ -89,7 +88,7 @@ class OrdenProduccion
     /**
      * @param DateTimeImmutable $fecha
      * @param int|string $sucursalId
-     * @param OrderItems $items
+     * @param array $items
      * @param array $batches
      * @param array $itemsDespacho
      * @param int|null $id
@@ -98,7 +97,7 @@ class OrdenProduccion
     public static function crear(
         DateTimeImmutable $fecha,
         string $sucursalId,
-        OrderItems $items,
+        array $items =  [],
         array $batches = [],
         array $itemsDespacho = [],
         int|null $id = null
@@ -119,7 +118,7 @@ class OrdenProduccion
      * @param DateTimeImmutable $fecha
      * @param int|string $sucursalId
      * @param EstadoOP $estado
-     * @param OrderItems $items
+     * @param array $items
      * @param array $batches
      * @param array $itemsDespacho
      * @return OrdenProduccion
@@ -129,7 +128,7 @@ class OrdenProduccion
         DateTimeImmutable $fecha,
         string $sucursalId,
         EstadoOP $estado,
-        OrderItems $items,
+        array $items,
         array $batches,
         array $itemsDespacho
     ): self {
@@ -181,31 +180,81 @@ class OrdenProduccion
     }
 
     /**
-     * @param OrderItems $items
+     * @param array $data
      * @throws DomainException
      * @return void
      */
-    public function agregarItems(OrderItems $items): void
+    public function agregarItems(array $data): void
     {
         if ($this->estado !== EstadoOP::CREADA) {
             throw new DomainException('Solo se pueden agregar ítems cuando la OP está CREADA.');
         }
 
-        $this->items = $this->items->mergedWith($items);
+        $items = [];
+
+        foreach ($data as $item) {
+            $items[] = new OrdenItem(
+                null,
+                null,
+                null,
+                new Qty($item['qty']),
+                new Sku($item['sku'])
+            );
+        }
+
+        $this->items = $items;
     }
 
     /**
      * @return ItemDespacho[]
+     */
+    public function generarBatches(): void
+    {
+        $items = [];
+
+        foreach ($this->items() as $key => $item) {
+            $items[] = new AggregateProduccionBatch(
+                null,
+                $this->id,
+                $item->productId,
+                1,
+                1,
+                1,
+                1,
+                0,
+                50,
+                EstadoPlanificado::PROGRAMADO,
+                0,
+                $item->qty,
+                $key + 1
+            );
+        }
+
+        $this->batches = $items;
+    }
+
+    /**
+     * @return void
      */
     public function generarItemsDespacho(): void
     {
         $items = [];
 
         foreach ($this->items() as $item) {
-            $items[] = new ItemDespacho($this->id, $item->productId, 1);
+            $items[] = new ItemDespacho(null, $this->id, $item->productId, null);
         }
 
         $this->itemsDespacho = $items;
+    }
+
+    /**
+     * @return void
+     */
+    public function despacharBatches(): void
+    {
+        foreach ($this->batches() as $item) {
+            $item->despachar();
+        }
     }
 
     /**
@@ -241,9 +290,9 @@ class OrdenProduccion
     }
 
     /**
-     * @return OrderItems
+     * @return OrdenItem[]
      */
-    public function items(): OrderItems
+    public function items(): array
     {
         return $this->items;
     }

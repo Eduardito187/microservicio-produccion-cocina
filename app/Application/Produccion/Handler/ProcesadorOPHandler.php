@@ -56,7 +56,7 @@ class ProcesadorOPHandler
             }
 
             $ordenProduccion->procesar();
-            return $this->ordenProduccionRepository->save($ordenProduccion, false, true);
+            return $this->ordenProduccionRepository->save($ordenProduccion);
         });
     }
 }

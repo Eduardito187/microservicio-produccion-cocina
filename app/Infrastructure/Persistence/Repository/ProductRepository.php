@@ -3,9 +3,9 @@
 namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\Product as ProductModel;
-use App\Domain\Cocina\Repository\ProductRepositoryInterface;
+use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Domain\Cocina\Aggregate\Products;
+use App\Domain\Produccion\Entity\Products;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -38,7 +38,9 @@ class ProductRepository implements ProductRepositoryInterface
     {
         $row = ProductModel::where('sku', $sku)->first();
 
-        if (!$row) return null;
+        if (!$row) {
+            throw new ModelNotFoundException("El producto sku: {$sku} no existe.");
+        }
 
         return new Products(
             $row->id,

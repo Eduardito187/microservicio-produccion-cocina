@@ -2,19 +2,19 @@
 
 namespace App\Domain\Produccion\Repository;
 
-use App\Domain\Produccion\Aggregate\ItemDespacho as AggregateItemDespacho;
+use App\Domain\Produccion\Entity\ItemDespacho;
 
 interface ItemDespachoRepositoryInterface
 {
     /**
      * @param string $id
-     * @return AggregateItemDespacho|null
+     * @return ItemDespacho|null
      */
-    public function byId(string $id): ? AggregateItemDespacho;
+    public function byId(string $id): ? ItemDespacho;
 
     /**
-     * @param AggregateItemDespacho $item
+     * @param ItemDespacho $item
      * @return void
      */
-    public function save(AggregateItemDespacho $item): void;
+    public function save(ItemDespacho $item): void;
 }

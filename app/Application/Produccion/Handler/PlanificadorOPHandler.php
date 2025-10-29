@@ -2,11 +2,8 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
-use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Aggregate\EstadoPlanificado;
 use App\Application\Produccion\Command\PlanificarOP;
 
 class PlanificadorOPHandler
@@ -17,11 +14,6 @@ class PlanificadorOPHandler
     public readonly OrdenProduccionRepositoryInterface $ordenProduccionRepository;
 
     /**
-     * @var ProduccionBatchRepositoryInterface
-     */
-    public readonly ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface;
-
-    /**
      * @var TransactionAggregate
      */
     private readonly TransactionAggregate $transactionAggregate;
@@ -30,16 +22,13 @@ class PlanificadorOPHandler
      * Constructor
      * 
      * @param OrdenProduccionRepositoryInterface $ordenProduccionRepository
-     * @param ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface
      * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         OrdenProduccionRepositoryInterface $ordenProduccionRepository,
-        ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface,
         TransactionAggregate $transactionAggregate
     ) {
         $this->ordenProduccionRepository = $ordenProduccionRepository;
-        $this->produccionBatchRepositoryInterface = $produccionBatchRepositoryInterface;
         $this->transactionAggregate = $transactionAggregate;
     }
 
@@ -51,29 +40,9 @@ class PlanificadorOPHandler
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): int {
             $ordenProduccion = $this->ordenProduccionRepository->byId($command->opId);
-
-            foreach ($ordenProduccion->items() as $key => $item) {
-                $this->produccionBatchRepositoryInterface->save(
-                    new AggregateProduccionBatch(
-                        null,
-                        $command->opId,
-                        $item->productId,
-                        1,
-                        1,
-                        1,
-                        1,
-                        0,
-                        50,
-                        EstadoPlanificado::PROGRAMADO,
-                        0,
-                        $item->qty,
-                        $key + 1
-                    )
-                );
-            }
-
+            $ordenProduccion->generarBatches();
             $ordenProduccion->planificar();
-            return $this->ordenProduccionRepository->save($ordenProduccion, false, true);
+            return $this->ordenProduccionRepository->save($ordenProduccion);
         });
     }
 }

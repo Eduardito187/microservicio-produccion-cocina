@@ -3,6 +3,7 @@
 namespace App\Domain\Produccion\Aggregate;
 
 use App\Domain\Produccion\Events\ProduccionBatchCreado;
+use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Shared\Aggregate\AggregateRoot;
 use App\Domain\Produccion\ValueObjects\Qty;
 use DomainException;

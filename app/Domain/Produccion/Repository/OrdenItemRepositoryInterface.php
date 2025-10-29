@@ -2,19 +2,19 @@
 
 namespace App\Domain\Produccion\Repository;
 
-use App\Domain\Produccion\Aggregate\OrdenItem as AggregateOrdenItem;
+use App\Domain\Produccion\Entity\OrdenItem;
 
 interface OrdenItemRepositoryInterface
 {
     /**
      * @param string $id
-     * @return AggregateOrdenItem|null
+     * @return OrdenItem|null
      */
-    public function byId(string $id): ? AggregateOrdenItem;
+    public function byId(string $id): ? OrdenItem;
 
     /**
-     * @param AggregateOrdenItem $item
+     * @param OrdenItem $item
      * @return void
      */
-    public function save(AggregateOrdenItem $item): void;
+    public function save(OrdenItem $item): void;
 }

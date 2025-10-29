@@ -13,10 +13,8 @@ interface OrdenProduccionRepositoryInterface
     public function byId(int|null $id): ? AggregateOrdenProduccion;
 
     /**
-     * @param AggregateOrdenProduccion $op
-     * @param bool $resetItems
-     * @param bool $sendOutbox
+     * @param AggregateOrdenProduccion $aggregateOrdenProduccion
      * @return int
      */
-    public function save(AggregateOrdenProduccion $op, bool $resetItems = false, bool $sendOutbox = false): int;
+    public function save(AggregateOrdenProduccion $aggregateOrdenProduccion): int;
 }

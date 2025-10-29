@@ -3,10 +3,12 @@
 namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\OrderItem as OrdenItemModel;
-use App\Domain\Produccion\Aggregate\OrdenItem as AggregateOrdenItem;
 use App\Domain\Produccion\Repository\OrdenItemRepositoryInterface;
 use App\Infrastructure\Persistence\Repository\ProductRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Produccion\Entity\OrdenItem;
+use App\Domain\Produccion\ValueObjects\Qty;
+use App\Domain\Produccion\ValueObjects\Sku;
 
 class OrdenItemRepository implements OrdenItemRepositoryInterface
 {
@@ -26,9 +28,9 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
     /**
      * @param string $id
      * @throws ModelNotFoundException
-     * @return AggregateOrdenItem|null
+     * @return OrdenItem|null
      */
-    public function byId(string $id): ?AggregateOrdenItem
+    public function byId(string $id): ?OrdenItem
     {
         $row = OrdenItemModel::find($id);
 
@@ -36,31 +38,34 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
             throw new ModelNotFoundException("El orden item de produccion id: {$id} no existe.");
         }
 
-        return new AggregateOrdenItem(
+        return new OrdenItem(
             $row->id,
             $row->ordenProduccionId,
             $row->productId,
-            $row->sku,
-            $row->qty,
+            new Qty($row->qty),
+            new Sku($row->product->SKU),
             $row->price,
             $row->finalPrice
         );
     }
 
     /**
-     * @param AggregateOrdenItem $item
+     * @param OrdenItem $item
      * @return void
      */
-    public function save(AggregateOrdenItem $item): void
+    public function save(OrdenItem $item): void
     {
-        $product = $this->productRepository->bySku($item->sku);
-        $item->loadProduct($product);
+        if ($item->productId == null) {
+            $product = $this->productRepository->bySku($item->sku()->value);
+            $item->loadProduct($product);
+        }
+
         OrdenItemModel::updateOrCreate(
             ['id' => $item->id],
             [
                 'op_id' => $item->ordenProduccionId,
                 'p_id' => $item->productId,
-                'qty' => $item->qty,
+                'qty' => $item->qty()->value,
                 'price' => $item->price,
                 'final_price' => $item->finalPrice,
                 'created_at' => now(),

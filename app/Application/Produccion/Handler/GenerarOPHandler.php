@@ -6,10 +6,6 @@ use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\GenerarOP;
-use App\Domain\Produccion\ValueObjects\OrderItem;
-use App\Domain\Produccion\Model\OrderItems;
-use App\Domain\Produccion\ValueObjects\Sku;
-use App\Domain\Produccion\ValueObjects\Qty;
 
 class GenerarOPHandler
 {
@@ -43,18 +39,10 @@ class GenerarOPHandler
      */
     public function __invoke(GenerarOP $command): string|int|null
     {
-        $items = [];
-
-        foreach ($command->items as $item) {
-            $items[] = new OrderItem(new Sku($item['sku']), new Qty($item['qty']));
-        }
-
-        $orderItems = OrderItems::fromArray($items);
-
-        return $this->transactionAggregate->runTransaction(function () use ($command, $orderItems): int {
-            $ordenProduccion = AggregateOrdenProduccion::crear( $command->fecha,  $command->sucursalId,  $orderItems);
-            $ordenProduccion->agregarItems($orderItems);
-            return $this->ordenProduccionRepository->save($ordenProduccion, true, true);
+        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+            $ordenProduccion = AggregateOrdenProduccion::crear( $command->fecha,  $command->sucursalId);
+            $ordenProduccion->agregarItems($command->items);
+            return $this->ordenProduccionRepository->save($ordenProduccion);
         });
     }
 }

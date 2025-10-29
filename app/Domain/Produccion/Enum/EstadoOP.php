@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Produccion\Aggregate;
+namespace App\Domain\Produccion\Enum;
 
 enum EstadoOP: string
 {

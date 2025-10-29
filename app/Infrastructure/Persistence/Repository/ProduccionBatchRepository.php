@@ -6,7 +6,7 @@ use App\Infrastructure\Persistence\Model\ProduccionBatch as ProduccionBatchModel
 use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
 use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Domain\Produccion\Aggregate\EstadoPlanificado;
+use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Produccion\ValueObjects\Qty;
 
 class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface

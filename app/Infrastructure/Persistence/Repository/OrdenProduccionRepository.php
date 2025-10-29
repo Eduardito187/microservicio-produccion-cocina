@@ -2,26 +2,20 @@
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\ProduccionBatch as ProduccionBatchModel;
 use App\Infrastructure\Persistence\Model\OrdenProduccion as OrdenProduccionModel;
 use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
 use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
-use App\Infrastructure\Persistence\Model\OrderItem as OrdenProduccionItemModel;
-use App\Infrastructure\Persistence\Model\ItemDespacho as ItemDespachoModel;
-use App\Domain\Produccion\Aggregate\ItemDespacho as AggregateItemDespacho;
 use App\Infrastructure\Persistence\Repository\ProduccionBatchRepository;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Infrastructure\Persistence\Repository\ItemDespachoRepository;
-use App\Domain\Produccion\Aggregate\OrdenItem as AggregateOrdenItem;
 use App\Infrastructure\Persistence\Repository\OrdenItemRepository;
-use App\Domain\Produccion\Model\OrderItems as ModelOrderItems;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Domain\Produccion\Aggregate\EstadoPlanificado;
-use App\Domain\Produccion\ValueObjects\ItemDespacho;
-use App\Domain\Produccion\ValueObjects\OrderItem;
-use App\Domain\Produccion\Aggregate\EstadoOP;
+use App\Domain\Produccion\Enum\EstadoPlanificado;
+use App\Domain\Produccion\Entity\ItemDespacho;
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
+use App\Domain\Produccion\Entity\OrdenItem;
+use App\Domain\Produccion\Enum\EstadoOP;
 use DateTimeImmutable;
 use DateTimeInterface;
 
@@ -72,7 +66,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
             throw new ModelNotFoundException("La orden de produccion id: {$id} no existe.");
         }
 
-        $fecha = $this->mapDateToDomain($row->fecha);
+        $fecha = $this->convertDate($row->fecha);
         $estado = EstadoOP::from($row->estado);
         $items = $this->mapItems($row->items);
         $batches = $this->mapItemsBatches($row->batches);
@@ -90,64 +84,50 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     }
 
     /**
-     * @param AggregateOrdenProduccion $op
-     * @param bool $resetItems
-     * @param bool $sendOutbox
+     * @param AggregateOrdenProduccion $aggregateOrdenProduccion
      * @return int
      */
-    public function save(AggregateOrdenProduccion $op, bool $resetItems = false, bool $sendOutbox = false): int
+    public function save(AggregateOrdenProduccion $aggregateOrdenProduccion): int
     {
         $model = OrdenProduccionModel::query()->updateOrCreate(
-            ['id' => $op->id()],
+            ['id' => $aggregateOrdenProduccion->id()],
             [
-                'fecha' => $op->fecha()->format('Y-m-d'),
-                'sucursal_id' => $op->sucursalId(),
-                'estado' => $op->estado()->value
+                'fecha' => $aggregateOrdenProduccion->fecha()->format('Y-m-d'),
+                'sucursal_id' => $aggregateOrdenProduccion->sucursalId(),
+                'estado' => $aggregateOrdenProduccion->estado()->value
             ]
         );
         $orderId = $model->id;
 
-        if ($resetItems) {
-            if ($op->estado()->value == EstadoOP::CREADA->value) {
-                OrdenProduccionItemModel::query()->where('op_id', $orderId)->delete();
-                $this->savedItems($orderId, $op->items());
-            }
-
-            if ($op->estado()->value == EstadoOP::PLANIFICADA->value) {
-                ProduccionBatchModel::query()->where('op_id', $orderId)->delete();
-                $this->savedBatch($op->batches());
-            }
-
-            if ($op->estado()->value == EstadoOP::CERRADA->value) {
-                ItemDespachoModel::query()->where('op_id', $orderId)->delete();
-                $this->savedDespacho($op->itemsDespacho());
-            }
-        }
-
-        if ($sendOutbox) {
-            $op->publishOutbox($orderId);
-        }
+        $this->savedItems($orderId, $aggregateOrdenProduccion->items());
+        $this->savedBatch($aggregateOrdenProduccion->batches());
+        $this->savedDespacho($aggregateOrdenProduccion->itemsDespacho());
+        $aggregateOrdenProduccion->publishOutbox($orderId);
 
         return $orderId;
     }
 
     /**
      * @param mixed $data
-     * @return ModelOrderItems
+     * @return OrdenItem[]
      */
-    private function mapItems($data): ModelOrderItems
+    private function mapItems($data): array
     {
         $items = [];
 
         foreach ($data as $row) {
-            $items[] = new OrderItem(
-                new Sku(value: $row->product->sku),
+            $items[] = new OrdenItem(
+                $row->id,
+                $row->op_id,
+                $row->p_id,
                 new Qty($row->qty),
-                $row->p_id
+                new Sku(value: $row->product->sku),
+                $row->price,
+                $row->final_price
             );
         }
 
-        return ModelOrderItems::fromArray($items);
+        return $items;
     }
 
     /**
@@ -190,6 +170,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
 
         foreach ($data as $row) {
             $items[] = new ItemDespacho(
+                $row->id,
                 $row->op_id,
                 $row->product_id,
                 $row->paquete_id
@@ -201,21 +182,19 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
 
     /**
      * @param int|null $opId
-     * @param ModelOrderItems $items
+     * @param OrdenItem[] $items
      * @return void
      */
-    private function savedItems(int|null $opId, ModelOrderItems $items): void
+    private function savedItems(int|null $opId, array $items): void
     {
         foreach ($items as $item) {
             $this->ordenItemRepository->save(
-                new AggregateOrdenItem(
-                    null,
+                new OrdenItem(
+                    $item->id,
                     $opId,
                     null,
-                    $item->sku()->value(),
-                    $item->qty()->value(),
-                    0,
-                    0
+                    $item->qty,
+                    $item->sku
                 )
             );
         }
@@ -231,7 +210,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         foreach ($items as $key => $item) {
             $this->produccionBatchRepository->save(
                 new AggregateProduccionBatch(
-                    null,
+                    $item->id,
                     $item->ordenProduccionId,
                     $item->productoId,
                     $item->estacionId,
@@ -257,7 +236,8 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     {
         foreach ($items as $item) {
             $this->itemDespachoRepository->save(
-                new AggregateItemDespacho(
+                new ItemDespacho(
+                    $item->id,
                     $item->ordenProduccionId,
                     $item->productId,
                     null
@@ -270,7 +250,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
      * @param string|DateTimeInterface $value
      * @return DateTimeImmutable
      */
-    private function mapDateToDomain(string|DateTimeInterface $value): DateTimeImmutable
+    private function convertDate(string|DateTimeInterface $value): DateTimeImmutable
     {
         if ($value instanceof DateTimeInterface) {
             return DateTimeImmutable::createFromInterface($value);

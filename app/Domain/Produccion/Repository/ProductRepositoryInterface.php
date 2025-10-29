@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\Cocina\Repository;
+namespace App\Domain\Produccion\Repository;
 
-use App\Domain\Cocina\Aggregate\Products;
+use App\Domain\Produccion\Entity\Products;
 
 interface ProductRepositoryInterface
 {
