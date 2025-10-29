@@ -20,7 +20,7 @@ class OrderItem extends ValueObject
     /**
      * @var int|null
      */
-    public readonly int|null $productId;
+    public int|null $productId;
 
     /**
      * Constructor

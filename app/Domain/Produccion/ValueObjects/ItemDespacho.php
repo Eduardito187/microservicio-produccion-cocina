@@ -2,72 +2,39 @@
 
 namespace App\Domain\Produccion\ValueObjects;
 
-use App\Domain\Produccion\ValueObjects\Sku;
 use App\Domain\Shared\ValueObjects\ValueObject;
 
 class ItemDespacho extends ValueObject
 {
     /**
-     * @var int|null
+     * @var int
      */
-    public readonly int|null $listaId;
-
-    /**
-     * @var Sku
-     */
-    public Sku $sku;
+    public int $ordenProduccionId;
 
     /**
      * @var int
      */
-    public readonly int $etiquetaId;
+    public int $productId;
 
     /**
      * @var int
      */
-    public readonly int $pacienteId;
-
-    /**
-     * @var array
-     */
-    public readonly array $direccionSnapshot;
-
-    /**
-     * @var array
-     */
-    public readonly array $ventanaEntrega;
+    public int|null $paqueteId;
 
     /**
      * Constructor
      * 
-     * @param int|null $listaId
-     * @param Sku $sku
-     * @param int $etiquetaId
-     * @param int $pacienteId
-     * @param array $direccionSnapshot
-     * @param array $ventanaEntrega
+     * @param int $ordenProduccionId
+     * @param int $productId
+     * @param int|null $paqueteId
      */
     public function __construct(
-        int|null $listaId,
-        Sku $sku,
-        int $etiquetaId,
-        int $pacienteId,
-        array $direccionSnapshot = [],
-        array $ventanaEntrega = []
+        int $ordenProduccionId,
+        int $productId,
+        int|null $paqueteId
     ) {
-        $this->listaId = $listaId;
-        $this->sku = $sku;
-        $this->etiquetaId = $etiquetaId;
-        $this->pacienteId = $pacienteId;
-        $this->direccionSnapshot = $direccionSnapshot;
-        $this->ventanaEntrega = $ventanaEntrega;
-    }
-
-    /**
-     * @return Sku
-     */
-    public function sku(): Sku
-    {
-        return $this->sku;
+        $this->ordenProduccionId = $ordenProduccionId;
+        $this->productId = $productId;
+        $this->paqueteId = $paqueteId;
     }
 }

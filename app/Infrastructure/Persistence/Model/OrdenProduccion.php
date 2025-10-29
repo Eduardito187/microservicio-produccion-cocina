@@ -34,14 +34,6 @@ class OrdenProduccion extends BaseModel
     /**
      * @return HasMany
      */
-    public function etiquetas(): HasMany
-    {
-        return $this->hasMany(Etiqueta::class, 'orden_produccion_id');
-    }
-
-    /**
-     * @return HasMany
-     */
     public function despachoItems(): HasMany
     {
         return $this->hasMany(ItemDespacho::class, 'op_id');

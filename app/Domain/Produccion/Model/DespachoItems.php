@@ -19,7 +19,7 @@ class DespachoItems implements \IteratorAggregate, \Countable
     private function __construct(array $items)
     {
         if (empty($items)) {
-            throw new DomainException('La colección no puede estar vacía.');
+            throw new DomainException('La colección despacho no puede estar vacía.');
         }
 
         $this->items = $items;

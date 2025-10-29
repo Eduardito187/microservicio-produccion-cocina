@@ -23,13 +23,9 @@ class ItemDespachoRepository implements ItemDespachoRepositoryInterface
         }
 
         return new AggregateItemDespacho(
-            $row->id,
-            $row->lista_id,
-            $row->sku,
-            $row->etiqueta_id,
-            $row->paciente_id,
-            $row->direccion_snapshot,
-            $row->ventana_entrega
+            $row->op_id,
+            $row->product_id,
+            $row->paquete_id
         );
     }
 
@@ -40,16 +36,11 @@ class ItemDespachoRepository implements ItemDespachoRepositoryInterface
     public function save(AggregateItemDespacho $item): void
     {
         ItemDespachoModel::updateOrCreate(
-            ['id' => $item->id],
+            ['id' => null],
             [
-                'lista_id' => $item->listaId,
-                'sku' => $item->sku,
-                'etiqueta_id' => $item->etiquetaId,
-                'paciente_id' => $item->pacienteId,
-                'direccion_snapshot' => $item->direccionSnapshot,
-                'ventana_entrega' => $item->ventanaEntrega,
-                'created_at' => now(),
-                'updated_at' => now()
+                'op_id' => $item->ordenProduccionId,
+                'product_id' => $item->productId,
+                'paquete_id' => $item->paqueteId
             ]
         );
     }

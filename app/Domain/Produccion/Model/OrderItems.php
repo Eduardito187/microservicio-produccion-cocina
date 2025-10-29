@@ -19,7 +19,7 @@ class OrderItems implements \IteratorAggregate, \Countable
     private function __construct(array $bySku)
     {
         if (empty($bySku)) {
-            throw new DomainException('La colección no puede estar vacía.');
+            throw new DomainException('La colección orden no puede estar vacía.');
         }
 
         $this->bySku = $bySku;

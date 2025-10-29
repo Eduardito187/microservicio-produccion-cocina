@@ -10,99 +10,55 @@ class ItemDespacho
     use AggregateRoot;
 
     /**
+     * @var int
+     */
+    public readonly int $ordenProduccionId;
+
+    /**
+     * @var int
+     */
+    public readonly int $productId;
+
+    /**
      * @var int|null
      */
-    public readonly int|null $id;
-
-    /**
-     * @var int
-     */
-    public readonly int $listaId;
-
-    /**
-     * @var string
-     */
-    public readonly string $sku;
-
-    /**
-     * @var int
-     */
-    public readonly int $etiquetaId;
-
-    /**
-     * @var int
-     */
-    public readonly int $pacienteId;
-
-    /**
-     * @var array
-     */
-    public readonly array $direccionSnapshot;
-
-    /**
-     * @var array
-     */
-    public readonly array $ventanaEntrega;
+    public readonly int|null $paqueteId;
 
     /**
      * Constructor
      * 
-     * @param int|null $id
-     * @param int $listaId
-     * @param string $sku
-     * @param int $etiquetaId
-     * @param int $pacienteId
-     * @param array $direccionSnapshot
-     * @param array $ventanaEntrega
+     * @param int $ordenProduccionId
+     * @param int $productId
+     * @param int|null $paqueteId
      */
     public function __construct(
-        int|null $id,
-        int $listaId,
-        string $sku,
-        int $etiquetaId,
-        int $pacienteId,
-        array $direccionSnapshot,
-        array $ventanaEntrega
+        int $ordenProduccionId,
+        int $productId,
+        int|null $paqueteId
     ) {
-        $this->id = $id;
-        $this->listaId = $listaId;
-        $this->sku = $sku;
-        $this->etiquetaId = $etiquetaId;
-        $this->pacienteId = $pacienteId;
-        $this->direccionSnapshot = $direccionSnapshot;
-        $this->ventanaEntrega = $ventanaEntrega;
+        $this->ordenProduccionId = $ordenProduccionId;
+        $this->productId = $productId;
+        $this->paqueteId = $paqueteId;
     }
 
     /**
-     * @param int|null $id
-     * @param int $listaId
-     * @param string $sku
-     * @param int $etiquetaId
-     * @param int $pacienteId
-     * @param array $direccionSnapshot
-     * @param array $ventanaEntrega
+     * @param int $ordenProduccionId
+     * @param int $productId
+     * @param int|null $paqueteId
      * @return ItemDespacho
      */
     public static function crear(
-        int|null $id,
-        int $listaId,
-        string $sku,
-        int $etiquetaId,
-        int $pacienteId,
-        array $direccionSnapshot,
-        array $ventanaEntrega
+        int $ordenProduccionId,
+        int $productId,
+        int|null $paqueteId
     ): self {
         $self = new self(
-            $id,
-            $listaId,
-            $sku,
-            $etiquetaId,
-            $pacienteId,
-            $direccionSnapshot,
-            $ventanaEntrega
+            $ordenProduccionId,
+            $productId,
+            $paqueteId
         );
 
-        $self->record(new ItemDespachoCreado( $listaId, $etiquetaId));
+        $self->record(new ItemDespachoCreado( $ordenProduccionId, $productId, $paqueteId));
 
         return $self;
     }

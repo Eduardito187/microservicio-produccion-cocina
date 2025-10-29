@@ -59,12 +59,4 @@ class ProduccionBatch extends BaseModel
     {
         return $this->belongsTo(Porcion::class, 'porcion_id');
     }
-
-    /**
-     * @return HasMany
-     */
-    public function etiquetas(): HasMany
-    {
-        return $this->hasMany(Etiqueta::class, 'lote_id');
-    }
 }

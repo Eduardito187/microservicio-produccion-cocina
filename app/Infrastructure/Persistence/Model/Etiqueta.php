@@ -23,22 +23,6 @@ class Etiqueta extends BaseModel
     /**
      * @return BelongsTo
      */
-    public function ordenProduccion(): BelongsTo
-    {
-        return $this->belongsTo(OrdenProduccion::class, 'orden_produccion_id');
-    }
-
-    /**
-     * @return BelongsTo
-     */
-    public function lote(): BelongsTo
-    {
-        return $this->belongsTo(ProduccionBatch::class, 'lote_id');
-    }
-
-    /**
-     * @return BelongsTo
-     */
     public function recetaVersion(): BelongsTo
     {
         return $this->belongsTo(RecetaVersion::class, 'receta_version_id');

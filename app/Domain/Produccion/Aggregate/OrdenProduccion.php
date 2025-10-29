@@ -7,6 +7,7 @@ use App\Domain\Produccion\Events\OrdenProduccionPlanificada;
 use App\Domain\Produccion\Events\OrdenProduccionProcesada;
 use App\Domain\Produccion\Events\OrdenProduccionCerrada;
 use App\Domain\Produccion\Events\OrdenProduccionCreada;
+use App\Domain\Produccion\ValueObjects\ItemDespacho;
 use App\Domain\Shared\Aggregate\AggregateRoot;
 use App\Domain\Produccion\Model\OrderItems;
 use DateTimeImmutable;
@@ -47,6 +48,11 @@ class OrdenProduccion
     private array $batches;
 
     /**
+     * @var array
+     */
+    private array $itemsDespacho;
+
+    /**
      * Constructor
      * 
      * @param int|null $id
@@ -55,6 +61,7 @@ class OrdenProduccion
      * @param EstadoOP $estado
      * @param array|OrderItems $items
      * @param array $batches
+     * @param array $itemsDespacho
      * @throws DomainException
      */
     private function __construct(
@@ -63,7 +70,8 @@ class OrdenProduccion
         int|string $sucursalId,
         EstadoOP $estado,
         array|OrderItems $items,
-        array $batches
+        array $batches,
+        array $itemsDespacho
     ) {
         if ($items->count() === 0) {
             throw new DomainException('La OP debe tener al menos un ítem.');
@@ -75,6 +83,7 @@ class OrdenProduccion
         $this->estado = $estado;
         $this->items = $items;
         $this->batches = $batches;
+        $this->itemsDespacho = $itemsDespacho;
     }
 
     /**
@@ -82,12 +91,19 @@ class OrdenProduccion
      * @param int|string $sucursalId
      * @param OrderItems $items
      * @param array $batches
+     * @param array $itemsDespacho
      * @param int|null $id
      * @return OrdenProduccion
      */
-    public static function crear(DateTimeImmutable $fecha, string $sucursalId, OrderItems $items, array $batches = [], int|null $id = null): self
-    {
-        $self = new self($id, $fecha, $sucursalId, EstadoOP::CREADA, $items, $batches);
+    public static function crear(
+        DateTimeImmutable $fecha,
+        string $sucursalId,
+        OrderItems $items,
+        array $batches = [],
+        array $itemsDespacho = [],
+        int|null $id = null
+    ): self {
+        $self = new self($id, $fecha, $sucursalId, EstadoOP::CREADA, $items, $batches, $itemsDespacho);
 
         $self->record(new OrdenProduccionCreada(
             $id,
@@ -105,6 +121,7 @@ class OrdenProduccion
      * @param EstadoOP $estado
      * @param OrderItems $items
      * @param array $batches
+     * @param array $itemsDespacho
      * @return OrdenProduccion
      */
     public static function reconstitute(
@@ -113,9 +130,10 @@ class OrdenProduccion
         string $sucursalId,
         EstadoOP $estado,
         OrderItems $items,
-        array $batches
+        array $batches,
+        array $itemsDespacho
     ): self {
-        $self = new self($id, $fecha, $sucursalId, $estado, $items, $batches);
+        $self = new self($id, $fecha, $sucursalId, $estado, $items, $batches, $itemsDespacho);
 
         return $self;
     }
@@ -177,6 +195,20 @@ class OrdenProduccion
     }
 
     /**
+     * @return ItemDespacho[]
+     */
+    public function generarItemsDespacho(): void
+    {
+        $items = [];
+
+        foreach ($this->items() as $item) {
+            $items[] = new ItemDespacho($this->id, $item->productId, 1);
+        }
+
+        $this->itemsDespacho = $items;
+    }
+
+    /**
      * @return int|null
      */
     public function id(): int|null
@@ -222,5 +254,13 @@ class OrdenProduccion
     public function batches(): array
     {
         return $this->batches;
+    }
+
+    /**
+     * @return ItemDespacho[]
+     */
+    public function itemsDespacho(): array
+    {
+        return $this->itemsDespacho;
     }
 }

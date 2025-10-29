@@ -13,7 +13,7 @@ return new class extends Migration
     {
         if (!Schema::hasTable('calendario')) {
             Schema::create('calendario', function (Blueprint $table) {
-                $table->id(); // bigint unsigned AI
+                $table->id();
                 $table->date('fecha');
                 $table->string('sucursal_id');
                 $table->timestamp('created_at')->nullable();
@@ -71,15 +71,6 @@ return new class extends Migration
                 $table->timestamp('updated_at')->nullable();
 
                 $table->unique('event_id', 'inbound_events_event_id_unique');
-            });
-        }
-
-        if (!Schema::hasTable('lote')) {
-            Schema::create('lote', function (Blueprint $table) {
-                $table->id();
-                $table->string('nombre');
-                $table->timestamp('created_at')->nullable();
-                $table->timestamp('updated_at')->nullable();
             });
         }
 
@@ -159,7 +150,6 @@ return new class extends Migration
             });
         }
 
-        // ---------- Tablas con FKs simples ----------
         if (!Schema::hasTable('paciente')) {
             Schema::create('paciente', function (Blueprint $table) {
                 $table->id();
@@ -169,9 +159,7 @@ return new class extends Migration
                 $table->timestamp('created_at')->nullable();
                 $table->timestamp('updated_at')->nullable();
 
-                $table->foreign('suscripcion_id', 'paciente_suscripcion_id_foreign')
-                      ->references('id')->on('suscripcion')
-                      ->cascadeOnDelete();
+                $table->foreign('suscripcion_id', 'paciente_suscripcion_id_foreign')->references('id')->on('suscripcion')->cascadeOnDelete();
             });
         }
 
@@ -189,17 +177,11 @@ return new class extends Migration
                 $table->index('op_id', 'order_item_op_id_foreign');
                 $table->index('p_id', 'order_item_p_id_foreign');
 
-                $table->foreign('op_id', 'order_item_op_id_foreign')
-                      ->references('id')->on('orden_produccion')
-                      ->cascadeOnDelete();
-
-                $table->foreign('p_id', 'order_item_p_id_foreign')
-                      ->references('id')->on('products')
-                      ->cascadeOnDelete();
+                $table->foreign('op_id', 'order_item_op_id_foreign')->references('id')->on('orden_produccion')->cascadeOnDelete();
+                $table->foreign('p_id', 'order_item_p_id_foreign')->references('id')->on('products')->cascadeOnDelete();
             });
         }
 
-        // ---------- Producción / batch con varias FKs ----------
         if (!Schema::hasTable('produccion_batch')) {
             Schema::create('produccion_batch', function (Blueprint $table) {
                 $table->id();
@@ -227,31 +209,17 @@ return new class extends Migration
                 $table->index(['receta_version_id', 'porcion_id'], 'idx_pb_rec_por');
                 $table->index('estacion_id', 'idx_pb_est');
 
-                $table->foreign('estacion_id', 'produccion_batch_estacion_id_foreign')
-                      ->references('id')->on('estacion');
-
-                $table->foreign('op_id', 'produccion_batch_op_id_foreign')
-                      ->references('id')->on('orden_produccion')
-                      ->cascadeOnDelete();
-
-                $table->foreign('p_id', 'produccion_batch_p_id_foreign')
-                      ->references('id')->on('products')
-                      ->cascadeOnDelete();
-
-                $table->foreign('porcion_id', 'produccion_batch_porcion_id_foreign')
-                      ->references('id')->on('porcion');
-
-                $table->foreign('receta_version_id', 'produccion_batch_receta_version_id_foreign')
-                      ->references('id')->on('receta_version');
+                $table->foreign('estacion_id', 'produccion_batch_estacion_id_foreign')->references('id')->on('estacion');
+                $table->foreign('op_id', 'produccion_batch_op_id_foreign')->references('id')->on('orden_produccion')->cascadeOnDelete();
+                $table->foreign('p_id', 'produccion_batch_p_id_foreign')->references('id')->on('products')->cascadeOnDelete();
+                $table->foreign('porcion_id', 'produccion_batch_porcion_id_foreign')->references('id')->on('porcion');
+                $table->foreign('receta_version_id', 'produccion_batch_receta_version_id_foreign')->references('id')->on('receta_version');
             });
         }
 
-        // ---------- Etiquetas y relaciones ----------
         if (!Schema::hasTable('etiqueta')) {
             Schema::create('etiqueta', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('orden_produccion_id')->nullable();
-                $table->unsignedBigInteger('lote_id')->nullable();
                 $table->unsignedBigInteger('receta_version_id')->nullable();
                 $table->unsignedBigInteger('suscripcion_id')->nullable();
                 $table->unsignedBigInteger('paciente_id')->nullable();
@@ -260,35 +228,17 @@ return new class extends Migration
                 $table->timestamp('updated_at')->nullable();
 
                 $table->unique(
-                    ['orden_produccion_id', 'lote_id', 'receta_version_id', 'paciente_id'],
+                    ['receta_version_id', 'paciente_id'],
                     'uk_etq_compuesta'
                 );
 
-                $table->index('lote_id', 'etiqueta_lote_id_foreign');
                 $table->index('receta_version_id', 'etiqueta_receta_version_id_foreign');
                 $table->index('suscripcion_id', 'etiqueta_suscripcion_id_foreign');
                 $table->index('paciente_id', 'etiqueta_paciente_id_foreign');
-                $table->index(['orden_produccion_id', 'lote_id'], 'etiqueta_orden_produccion_id_lote_id_index');
 
-                $table->foreign('lote_id', 'etiqueta_lote_id_foreign')
-                      ->references('id')->on('produccion_batch')
-                      ->nullOnDelete();
-
-                $table->foreign('orden_produccion_id', 'etiqueta_orden_produccion_id_foreign')
-                      ->references('id')->on('orden_produccion')
-                      ->cascadeOnDelete();
-
-                $table->foreign('paciente_id', 'etiqueta_paciente_id_foreign')
-                      ->references('id')->on('paciente')
-                      ->nullOnDelete();
-
-                $table->foreign('receta_version_id', 'etiqueta_receta_version_id_foreign')
-                      ->references('id')->on('receta_version')
-                      ->nullOnDelete();
-
-                $table->foreign('suscripcion_id', 'etiqueta_suscripcion_id_foreign')
-                      ->references('id')->on('suscripcion')
-                      ->nullOnDelete();
+                $table->foreign('paciente_id', 'etiqueta_paciente_id_foreign')->references('id')->on('paciente')->nullOnDelete();
+                $table->foreign('receta_version_id', 'etiqueta_receta_version_id_foreign')->references('id')->on('receta_version')->nullOnDelete();
+                $table->foreign('suscripcion_id', 'etiqueta_suscripcion_id_foreign')->references('id')->on('suscripcion')->nullOnDelete();
             });
         }
 
@@ -305,17 +255,9 @@ return new class extends Migration
                 $table->index('ventana_id', 'paquete_ventana_id_foreign');
                 $table->index('direccion_id', 'paquete_direccion_id_foreign');
 
-                $table->foreign('direccion_id', 'paquete_direccion_id_foreign')
-                      ->references('id')->on('direccion')
-                      ->cascadeOnDelete();
-
-                $table->foreign('etiqueta_id', 'paquete_etiqueta_id_foreign')
-                      ->references('id')->on('etiqueta')
-                      ->cascadeOnDelete();
-
-                $table->foreign('ventana_id', 'paquete_ventana_id_foreign')
-                      ->references('id')->on('ventana_entrega')
-                      ->cascadeOnDelete();
+                $table->foreign('direccion_id', 'paquete_direccion_id_foreign')->references('id')->on('direccion')->cascadeOnDelete();
+                $table->foreign('etiqueta_id', 'paquete_etiqueta_id_foreign')->references('id')->on('etiqueta')->cascadeOnDelete();
+                $table->foreign('ventana_id', 'paquete_ventana_id_foreign')->references('id')->on('ventana_entrega')->cascadeOnDelete();
             });
         }
 
@@ -332,17 +274,9 @@ return new class extends Migration
                 $table->index('product_id', 'item_despacho_product_id_foreign');
                 $table->index('paquete_id', 'item_despacho_paquete_id_foreign');
 
-                $table->foreign('op_id', 'item_despacho_op_id_foreign')
-                      ->references('id')->on('orden_produccion')
-                      ->cascadeOnDelete();
-
-                $table->foreign('paquete_id', 'item_despacho_paquete_id_foreign')
-                      ->references('id')->on('paquete')
-                      ->cascadeOnDelete();
-
-                $table->foreign('product_id', 'item_despacho_product_id_foreign')
-                      ->references('id')->on('products')
-                      ->cascadeOnDelete();
+                $table->foreign('op_id', 'item_despacho_op_id_foreign')->references('id')->on('orden_produccion')->cascadeOnDelete();
+                $table->foreign('paquete_id', 'item_despacho_paquete_id_foreign')->references('id')->on('paquete')->cascadeOnDelete();
+                $table->foreign('product_id', 'item_despacho_product_id_foreign')->references('id')->on('products')->cascadeOnDelete();
             });
         }
 
@@ -357,13 +291,8 @@ return new class extends Migration
                 $table->unique(['calendario_id', 'item_despacho_id'], 'calendario_item_calendario_id_item_despacho_id_unique');
                 $table->index('item_despacho_id', 'calendario_item_item_despacho_id_foreign');
 
-                $table->foreign('calendario_id', 'calendario_item_calendario_id_foreign')
-                      ->references('id')->on('calendario')
-                      ->cascadeOnDelete();
-
-                $table->foreign('item_despacho_id', 'calendario_item_item_despacho_id_foreign')
-                      ->references('id')->on('item_despacho')
-                      ->cascadeOnDelete();
+                $table->foreign('calendario_id', 'calendario_item_calendario_id_foreign')->references('id')->on('calendario')->cascadeOnDelete();
+                $table->foreign('item_despacho_id', 'calendario_item_item_despacho_id_foreign')->references('id')->on('item_despacho')->cascadeOnDelete();
             });
         }
     }
@@ -389,7 +318,6 @@ return new class extends Migration
         Schema::dropIfExists('personal_access_tokens');
         Schema::dropIfExists('outbox');
         Schema::dropIfExists('orden_produccion');
-        Schema::dropIfExists('lote');
         Schema::dropIfExists('inbound_events');
         Schema::dropIfExists('failed_jobs');
         Schema::dropIfExists('estacion');

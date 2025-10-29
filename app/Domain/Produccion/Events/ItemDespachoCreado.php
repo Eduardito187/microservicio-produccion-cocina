@@ -7,22 +7,30 @@ use App\Domain\Shared\Events\BaseDomainEvent;
 class ItemDespachoCreado extends BaseDomainEvent
 {
     /**
-     * @var string
+     * @var int
      */
-    private readonly int $etiquetaId;
+    private readonly int $productId;
+
+    /**
+     * @var int|null
+     */
+    private readonly int|null $paqueteId;
 
     /**
      * Constructor
      * 
-     * @param int|null $listaId
-     * @param int $etiquetaId
+     * @param int $ordenProduccionId
+     * @param int $productId
+     * @param int|null $paqueteId
      */
     public function __construct(
-        int|null $listaId,
-        int $etiquetaId
+        int $ordenProduccionId,
+        int $productId,
+        int|null $paqueteId
     ) {
-        $this->etiquetaId = $etiquetaId;
-        parent::__construct($listaId);
+        $this->productId = $productId;
+        $this->paqueteId = $paqueteId;
+        parent::__construct($ordenProduccionId);
     }
 
     /**
@@ -32,7 +40,8 @@ class ItemDespachoCreado extends BaseDomainEvent
     {
         return [
             'lista_id' => $this->aggregateId(),
-            'etiqueta_id' => $this->etiquetaId
+            'product_id' => $this->productId,
+            'paquete_id' => $this->paqueteId
         ];
     }
 }
