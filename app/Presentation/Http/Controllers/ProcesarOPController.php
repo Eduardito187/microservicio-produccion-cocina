@@ -31,14 +31,10 @@ class ProcesarOPController
      */
     public function __invoke(Request $request): JsonResponse
     {
-        $data = $request->validate(['ordenProduccionId' => ['required','int']]);
+        $data = $request->validate(['ordenProduccionId' => ['required', 'int']]);
 
         try {
-            $ordenProduccionId = $this->handler->__invoke(
-                new ProcesadorOP(
-                    $data['ordenProduccionId'] ?? null
-                )
-            );
+            $ordenProduccionId = $this->handler->__invoke(new ProcesadorOP($data['ordenProduccionId']));
 
             return response()->json(['ordenProduccionId' => $ordenProduccionId], 201);
         } catch (DomainException $e) {

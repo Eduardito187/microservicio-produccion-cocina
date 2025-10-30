@@ -7,16 +7,34 @@ class PlanificarOP
     /**
      * @var int
      */
-    public readonly int $opId;
+    public readonly int $ordenProduccionId;
+
+    /**
+     * @var int
+     */
+    public readonly int $estacionId;
+
+    /**
+     * @var int
+     */
+    public readonly int $recetaVersionId;
+
+    /**
+     * @var int
+     */
+    public readonly int $porcionId;
 
     /**
      * Constructor
      * 
-     * @param int $opId
+     * @param array $dataApi
      */
     public function __construct(
-        int $opId
+        array $dataApi
     ) {
-        $this->opId = $opId;
+        $this->ordenProduccionId = $dataApi["ordenProduccionId"];
+        $this->estacionId = $dataApi["estacionId"];
+        $this->recetaVersionId = $dataApi["recetaVersionId"];
+        $this->porcionId = $dataApi["porcionId"];
     }
 }

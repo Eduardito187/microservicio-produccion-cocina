@@ -5,7 +5,6 @@ namespace App\Application\Produccion\Handler;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\DespachadorOP;
-use DateTimeImmutable;
 
 class DespachadorOPHandler
 {
@@ -41,8 +40,8 @@ class DespachadorOPHandler
     {
         //etiqueta y paquete
         return $this->transactionAggregate->runTransaction(function () use ($command): int {
-            $ordenProduccion = $this->ordenProduccionRepositoryInterface->byId($command->opId);
-            $ordenProduccion->generarItemsDespacho();
+            $ordenProduccion = $this->ordenProduccionRepositoryInterface->byId($command->ordenProduccionId);
+            $ordenProduccion->generarItemsDespacho($command);
             $ordenProduccion->despacharBatches();
             $ordenProduccion->cerrar();
             return $this->ordenProduccionRepositoryInterface->save($ordenProduccion);

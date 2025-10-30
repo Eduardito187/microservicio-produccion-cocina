@@ -3,10 +3,14 @@
 namespace App\Domain\Produccion\Aggregate;
 
 use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
+use App\Domain\Produccion\Aggregate\Etiqueta as AggregateEtiqueta;
+use App\Domain\Produccion\Aggregate\Paquete as AggregatePaquete;
 use App\Domain\Produccion\Events\OrdenProduccionPlanificada;
 use App\Domain\Produccion\Events\OrdenProduccionProcesada;
 use App\Domain\Produccion\Events\OrdenProduccionCerrada;
 use App\Domain\Produccion\Events\OrdenProduccionCreada;
+use App\Application\Produccion\Command\DespachadorOP;
+use App\Application\Produccion\Command\PlanificarOP;
 use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Shared\Aggregate\AggregateRoot;
 use App\Domain\Produccion\Entity\ItemDespacho;
@@ -206,9 +210,10 @@ class OrdenProduccion
     }
 
     /**
+     * @param PlanificarOP $command
      * @return ItemDespacho[]
      */
-    public function generarBatches(): void
+    public function generarBatches(PlanificarOP $command): void
     {
         $items = [];
 
@@ -217,10 +222,10 @@ class OrdenProduccion
                 null,
                 $this->id,
                 $item->productId,
-                1,
-                1,
-                1,
-                1,
+                $command->estacionId,
+                $command->recetaVersionId,
+                $command->porcionId,
+                $item->qty()->value,
                 0,
                 50,
                 EstadoPlanificado::PROGRAMADO,
@@ -234,14 +239,40 @@ class OrdenProduccion
     }
 
     /**
+     * @param DespachadorOP $command
      * @return void
      */
-    public function generarItemsDespacho(): void
+    public function generarItemsDespacho(DespachadorOP $command): void
     {
+        /*
+        itemsDespacho
+            sku
+            recetaVersionId
+        pacienteId
+        direccionId
+        ventanaEntrega
+        */
+        $etiqueta = new AggregateEtiqueta(
+            null,
+            1,
+            1,
+            $command->pacienteId
+        );
+        $paquete = new AggregatePaquete(
+            null,
+            1,
+            $command->ventanaEntrega,
+            $command->direccionId
+        );
         $items = [];
 
         foreach ($this->items() as $item) {
-            $items[] = new ItemDespacho(null, $this->id, $item->productId, null);
+            $items[] = new ItemDespacho(
+                null,
+                $this->id,
+                $item->productId,
+                null
+            );
         }
 
         $this->itemsDespacho = $items;
@@ -254,6 +285,16 @@ class OrdenProduccion
     {
         foreach ($this->batches() as $item) {
             $item->despachar();
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function procesarBatches(): void
+    {
+        foreach ($this->batches() as $item) {
+            $item->procesar();
         }
     }
 

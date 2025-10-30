@@ -2,7 +2,6 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ProcesadorOP;
@@ -15,11 +14,6 @@ class ProcesadorOPHandler
     public readonly OrdenProduccionRepositoryInterface $ordenProduccionRepository;
 
     /**
-     * @var ProduccionBatchRepositoryInterface
-     */
-    public readonly ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface;
-
-    /**
      * @var TransactionAggregate
      */
     private readonly TransactionAggregate $transactionAggregate;
@@ -28,16 +22,13 @@ class ProcesadorOPHandler
      * Constructor
      * 
      * @param OrdenProduccionRepositoryInterface $ordenProduccionRepository
-     * @param ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface
      * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         OrdenProduccionRepositoryInterface $ordenProduccionRepository,
-        ProduccionBatchRepositoryInterface $produccionBatchRepositoryInterface,
         TransactionAggregate $transactionAggregate
     ) {
         $this->ordenProduccionRepository = $ordenProduccionRepository;
-        $this->produccionBatchRepositoryInterface = $produccionBatchRepositoryInterface;
         $this->transactionAggregate = $transactionAggregate;
     }
 
@@ -49,12 +40,7 @@ class ProcesadorOPHandler
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): int {
             $ordenProduccion = $this->ordenProduccionRepository->byId($command->opId);
-
-            foreach ($ordenProduccion->batches() as $item) {
-                $item->procesar();
-                $this->produccionBatchRepositoryInterface->save($item);
-            }
-
+            $ordenProduccion->procesarBatches();
             $ordenProduccion->procesar();
             return $this->ordenProduccionRepository->save($ordenProduccion);
         });

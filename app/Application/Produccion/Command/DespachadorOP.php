@@ -7,16 +7,40 @@ class DespachadorOP
     /**
      * @var int
      */
-    public readonly int $opId;
+    public readonly int $ordenProduccionId;
+
+    /**
+     * @var array
+     */
+    public readonly array $itemsDespacho;
+
+    /**
+     * @var int
+     */
+    public readonly int $pacienteId;
+
+    /**
+     * @var int
+     */
+    public readonly int $direccionId;
+
+    /**
+     * @var int
+     */
+    public readonly int $ventanaEntrega;
 
     /**
      * Constructor
      * 
-     * @param int $opId
+     * @param array $dataApi
      */
     public function __construct(
-        int $opId
+        array $dataApi
     ) {
-        $this->opId = $opId;
+        $this->ordenProduccionId = $dataApi["ordenProduccionId"];
+        $this->itemsDespacho = $dataApi["itemsDespacho"];
+        $this->pacienteId = $dataApi["pacienteId"];
+        $this->direccionId = $dataApi["direccionId"];
+        $this->ventanaEntrega = $dataApi["ventanaEntrega"];
     }
 }

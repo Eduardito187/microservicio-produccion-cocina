@@ -31,14 +31,18 @@ class DespacharOPController
      */
     public function __invoke(Request $request): JsonResponse
     {
-        $data = $request->validate(['ordenProduccionId' => ['required','int']]);
+        $data = $request->validate(
+            [
+                'ordenProduccionId' => ['required', 'int'],
+                'itemsDespacho' => ['required', 'array'],
+                'pacienteId' => ['required', 'int'],
+                'direccionId' => ['required', 'int'],
+                'ventanaEntrega' => ['required', 'int']
+            ]
+        );
 
         try {
-            $ordenProduccionId = $this->handler->__invoke(
-                new DespachadorOP(
-                    $data['ordenProduccionId'] ?? null
-                )
-            );
+            $ordenProduccionId = $this->handler->__invoke(new DespachadorOP($data));
 
             return response()->json(['ordenProduccionId' => $ordenProduccionId], 201);
         } catch (DomainException $e) {

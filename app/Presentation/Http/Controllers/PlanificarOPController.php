@@ -31,14 +31,17 @@ class PlanificarOPController
      */
     public function __invoke(Request $request): JsonResponse
     {
-        $data = $request->validate(['ordenProduccionId' => ['required','int']]);
+        $data = $request->validate(
+            [
+                'ordenProduccionId' => ['required', 'int'],
+                'estacionId' => ['required', 'int'],
+                'recetaVersionId' => ['required', 'int'],
+                'porcionId' => ['required', 'int']
+            ]
+        );
 
         try {
-            $ordenProduccionId = $this->handler->__invoke(
-                new PlanificarOP(
-                    $data['ordenProduccionId'] ?? null
-                )
-            );
+            $ordenProduccionId = $this->handler->__invoke(new PlanificarOP($data));
 
             return response()->json(['ordenProduccionId' => $ordenProduccionId], 201);
         } catch (DomainException $e) {
