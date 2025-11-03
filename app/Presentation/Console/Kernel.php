@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Console;
+namespace App\Presentation\Console;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Console\Scheduling\Schedule;
-use App\Jobs\PublishOutbox;
+use App\Infrastructure\Jobs\PublishOutbox;
 
 class Kernel extends ConsoleKernel
 {
