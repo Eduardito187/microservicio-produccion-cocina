@@ -251,7 +251,6 @@ class OrdenProduccion
         pacienteId
         direccionId
         ventanaEntrega
-        */
         $etiqueta = new AggregateEtiqueta(
             null,
             1,
@@ -264,6 +263,7 @@ class OrdenProduccion
             $command->ventanaEntrega,
             $command->direccionId
         );
+        */
         $items = [];
 
         foreach ($this->items() as $item) {
