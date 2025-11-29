@@ -6,5 +6,6 @@ storage/framework/cache/*
 storage/framework/sessions/*
 storage/framework/views/*
 .env
-docker-compose*.yml
+.env.example
+docker-compose*
 Dockerfile*

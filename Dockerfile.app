@@ -17,7 +17,7 @@ RUN printf '%s\n' \
   'a2ensite laravel >/dev/null 2>&1 || true' \
   'chown -R www-data:www-data storage bootstrap/cache || true' \
   'chmod -R ug+rw storage bootstrap/cache || true' \
-  '[ -f .env ] || cp -n .env.example .env || true' \
+  '[ -f .env ] || cp -n .env || true' \
   'composer install --no-interaction --prefer-dist' \
   'php artisan key:generate || true' \
   'php artisan migrate --force --no-interaction || true' \
