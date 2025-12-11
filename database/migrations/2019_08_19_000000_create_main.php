@@ -41,7 +41,7 @@ return new class extends Migration
         if (!Schema::hasTable('estacion')) {
             Schema::create('estacion', function (Blueprint $table) {
                 $table->id();
-                $table->string('nombre');
+                $table->string('nombre')->unique();
                 $table->unsignedInteger('capacidad')->nullable();
                 $table->timestamp('created_at')->nullable();
                 $table->timestamp('updated_at')->nullable();
@@ -101,7 +101,7 @@ return new class extends Migration
         if (!Schema::hasTable('porcion')) {
             Schema::create('porcion', function (Blueprint $table) {
                 $table->id();
-                $table->string('nombre');
+                $table->string('nombre')->unique();
                 $table->unsignedInteger('peso_gr');
                 $table->timestamp('created_at')->nullable();
                 $table->timestamp('updated_at')->nullable();
@@ -112,8 +112,8 @@ return new class extends Migration
             Schema::create('products', function (Blueprint $table) {
                 $table->id();
                 $table->string('sku')->unique();
-                $table->decimal('price', 18, 2);
-                $table->decimal('special_price', 18, 2);
+                $table->decimal('price', 10, 2);
+                $table->decimal('special_price', 10, 2)->default(0);
                 $table->timestamp('created_at')->nullable();
                 $table->timestamp('updated_at')->nullable();
             });
@@ -122,7 +122,7 @@ return new class extends Migration
         if (!Schema::hasTable('receta_version')) {
             Schema::create('receta_version', function (Blueprint $table) {
                 $table->id();
-                $table->string('nombre');
+                $table->string('nombre')->unique();
                 $table->json('nutrientes')->nullable();
                 $table->json('ingredientes')->nullable();
                 $table->unsignedInteger('version')->default(1);
@@ -134,7 +134,7 @@ return new class extends Migration
         if (!Schema::hasTable('suscripcion')) {
             Schema::create('suscripcion', function (Blueprint $table) {
                 $table->id();
-                $table->string('nombre');
+                $table->string('nombre')->unique();
                 $table->timestamp('created_at')->nullable();
                 $table->timestamp('updated_at')->nullable();
             });
@@ -153,7 +153,7 @@ return new class extends Migration
         if (!Schema::hasTable('paciente')) {
             Schema::create('paciente', function (Blueprint $table) {
                 $table->id();
-                $table->string('nombre');
+                $table->string('nombre')->unique();
                 $table->string('documento')->nullable();
                 $table->unsignedBigInteger('suscripcion_id')->nullable();
                 $table->timestamp('created_at')->nullable();
