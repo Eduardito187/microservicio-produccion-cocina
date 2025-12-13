@@ -61,7 +61,7 @@ class FlujoOrdenProduccionIntegrationTest extends TestCase
             'etiqueta_id' => $etiquetaId, 'ventana_id' => $ventanaEntregaId, 'direccion_id' => $direccionId, 'created_at' => now(), 'updated_at' => now()
         ]);
 
-        $responseGenerar = $this->postJson("produccion.ordenes.generar", [
+        $responseGenerar = $this->postJson(route("produccion.ordenes.generar"), [
             'fecha' => '2025-11-04',
             'sucursalId' => 'SCZ-001',
             'items' => [
@@ -75,7 +75,7 @@ class FlujoOrdenProduccionIntegrationTest extends TestCase
 
         $this->assertDatabaseHas('orden_produccion', ['id' => $opId, 'estado' => 'CREADA']);
 
-        $this->postJson("produccion.ordenes.planificar", [
+        $this->postJson(route("produccion.ordenes.planificar"), [
             'ordenProduccionId' => $opId,
             'estacionId' => $estacionId,
             'recetaVersionId' => $recetaVersion1Id,
@@ -84,11 +84,11 @@ class FlujoOrdenProduccionIntegrationTest extends TestCase
 
         $this->assertDatabaseHas('orden_produccion', ['id' => $opId, 'estado' => 'PLANIFICADA']);
 
-        $this->postJson("produccion.ordenes.procesar", ['ordenProduccionId' => $opId])->assertCreated()->assertJsonPath('ordenProduccionId', $opId);
+        $this->postJson(route("produccion.ordenes.procesar"), ['ordenProduccionId' => $opId])->assertCreated()->assertJsonPath('ordenProduccionId', $opId);
 
         $this->assertDatabaseHas('orden_produccion', ['id' => $opId, 'estado' => 'EN_PROCESO']);
 
-        $this->postJson("produccion.ordenes.despachar", [
+        $this->postJson(route("produccion.ordenes.despachar"), [
             'ordenProduccionId' => $opId,
             'itemsDespacho' => [
                 ['sku' => 'PIZZA-PEP', 'recetaVersionId' => $recetaVersion2Id],
