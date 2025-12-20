@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Presentation\Http\Controllers\EventBusController;
+use App\Presentation\Http\Controllers\PactStateController;
 use App\Presentation\Http\Controllers\GenerarOPController;
 use App\Presentation\Http\Controllers\ProcesarOPController;
 use App\Presentation\Http\Controllers\DespacharOPController;
@@ -14,3 +15,6 @@ Route::post('/produccion/ordenes/despachar', DespacharOPController::class)->name
 
 // api eventos
 Route::post('/event-bus', EventBusController::class);
+
+// test
+Route::post('/_pact/setup', PactStateController::class);

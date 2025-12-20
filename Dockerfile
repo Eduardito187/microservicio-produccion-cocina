@@ -6,7 +6,7 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --prefer-dist --no-progress --no-scripts
 
-# Ahora copiamos el resto del proyecto (TU CÓDIGO)
+# Ahora copiamos el resto del proyecto (CÓDIGO)
 COPY . .
 
 # Instala deps con autoload optimizado

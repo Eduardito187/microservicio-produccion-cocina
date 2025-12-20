@@ -22,3 +22,5 @@ yarn-error.log
 # PHPUnit coverage
 build/coverage/
 coverage/
+contract-tests/consumer/node_modules/
+contract-tests/provider/node_modules/

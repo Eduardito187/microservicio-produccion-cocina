@@ -1,0 +1,10 @@
+{
+    "name": "produccion-cocina-consumer-contract-tests",
+    "private": true,
+    "scripts": {
+        "test": "node pact/generar-planificar.pact.test.js"
+    },
+    "dependencies": {
+        "@pact-foundation/pact": "^13.0.0"
+    }
+}

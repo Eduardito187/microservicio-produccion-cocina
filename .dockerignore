@@ -1,11 +1,29 @@
-.git
-node_modules
+# Node
+**/node_modules
+**/npm-debug.log
+**/yarn.lock
+**/pnpm-lock.yaml
+
+# Pact output (opcional)
+contract-tests/**/pacts
+contract-tests/**/logs
+
+# PHP / Laravel
 vendor
-storage/logs/*
-storage/framework/cache/*
-storage/framework/sessions/*
-storage/framework/views/*
-.env
-.env.example
-docker-compose*
-Dockerfile*
+storage/logs
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+bootstrap/cache
+
+# Git / IDE / OS
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Docker local
+*.tar
+*.zip

@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.app
-    image: docker.io/${DOCKERHUB_USER}/microservicio-produccion-cocina-app:${IMAGE_TAG}
     ports:
       - "8000:80"
     volumes:
@@ -12,16 +11,44 @@ services:
       - ./docker/apache-fqdn.conf:/etc/apache2/conf-available/fqdn.conf:ro
       - ./docker/laravel.conf:/etc/apache2/sites-available/laravel.conf:ro
     working_dir: /var/www/html
+    environment:
+      DB_HOST: mysql_server
+      DB_PORT: 3306
     depends_on:
       mysql_server:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost/ >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 60s
+
+  artisan:
+    container_name: artisan
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    environment:
+      DB_HOST: mysql_server
+      DB_PORT: 3306
+    depends_on:
+      mysql_server:
+        condition: service_healthy
+    entrypoint: ["sh", "-lc"]
+    command: >
+      php artisan migrate --force --no-interaction &&
+      php artisan db:seed --no-interaction
+    restart: "no"
 
   mysql_server:
     container_name: mysql_server
     build:
       context: .
       dockerfile: Dockerfile.mysql
-    image: docker.io/${DOCKERHUB_USER}/microservicio-produccion-cocina-mysql:${IMAGE_TAG}
     environment:
       - MYSQL_DATABASE=produccion_cocina
       - MYSQL_USER=appuser
@@ -37,6 +64,38 @@ services:
       timeout: 5s
       retries: 30
       start_period: 15s
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: produccion-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  pact:
+    image: node:20
+    container_name: pact
+    working_dir: /work
+    volumes:
+      - ./:/work
+    environment:
+      PROVIDER_VERSION: "dev-local"
+      PROVIDER_BASE_URL: "http://laravel_app"
+      PACT_DO_NOT_TRACK: "true"
+    depends_on:
+      laravel_app:
+        condition: service_healthy
+    command: sh -lc "
+      until curl -fsS http://laravel_app/ >/dev/null; do sleep 2; done &&
+      cd contract-tests/consumer &&
+      npm install &&
+      npm test &&
+      cd ../provider &&
+      npm install &&
+      node verify-pacts.js"
 
 volumes:
   mysql_data:

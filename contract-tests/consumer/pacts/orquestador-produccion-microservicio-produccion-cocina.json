@@ -1,0 +1,190 @@
+{
+  "consumer": {
+    "name": "orquestador-produccion"
+  },
+  "interactions": [
+    {
+      "description": "POST generar OP",
+      "providerStates": [
+        {
+          "name": "product SKU1 exists"
+        }
+      ],
+      "request": {
+        "body": {
+          "fecha": "2025-12-19",
+          "items": [
+            {
+              "qty": 2,
+              "sku": "SKU1"
+            }
+          ],
+          "sucursalId": "SCZ"
+        },
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.fecha": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.items[0].qty": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.items[0].sku": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.sucursalId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "POST",
+        "path": "/api/produccion/ordenes/generar"
+      },
+      "response": {
+        "body": {
+          "ordenProduccionId": 1
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.ordenProduccionId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 201
+      }
+    },
+    {
+      "description": "POST planificar OP",
+      "providerStates": [
+        {
+          "name": "orden produccion 1 exists and porcion 1 exists"
+        }
+      ],
+      "request": {
+        "body": {
+          "estacionId": 1,
+          "ordenProduccionId": 1,
+          "porcionId": 1,
+          "recetaVersionId": 1
+        },
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.estacionId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.ordenProduccionId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.porcionId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.recetaVersionId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "POST",
+        "path": "/api/produccion/ordenes/planificar"
+      },
+      "response": {
+        "body": {
+          "ordenProduccionId": 1
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.ordenProduccionId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 201
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "13.2.0"
+    },
+    "pactRust": {
+      "ffi": "0.4.22",
+      "models": "1.2.3"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "microservicio-produccion-cocina"
+  }
+}
