@@ -2,11 +2,11 @@
 
 namespace App\Presentation\Http\Controllers;
 
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Schema;
 
 class PactStateController
 {
@@ -41,7 +41,7 @@ class PactStateController
             return response()->json(['ok' => true, 'state' => $state], 200);
         } catch (\Throwable $e) {
             DB::rollBack();
-            Log::error('[PACT_SETUP_ERROR] '.$state, ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            Log::error('[ ] '.$state, ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return response()->json(['ok' => false, 'state' => $state, 'error' => $e->getMessage()], 500);
         }
     }
@@ -71,8 +71,8 @@ class PactStateController
         if (in_array('updated_at', $cols, true)) $row['updated_at'] = now();
         DB::table($porcionTable)->updateOrInsert(['id' => 1], $row);
 
-        $ordenTable = "orden_produccion";
-        $cols = Schema::getColumnListing($ordenTable);
+        $orderTable = "orden_produccion";
+        $cols = Schema::getColumnListing($orderTable);
         $row = [];
         if (in_array('id', $cols, true)) $row['id'] = 1;
         if (in_array('estado', $cols, true)) $row['estado'] = 'CREADA';
@@ -80,6 +80,6 @@ class PactStateController
         if (in_array('fecha', $cols, true)) $row['fecha'] = now()->toDateString();
         if (in_array('created_at', $cols, true)) $row['created_at'] = now();
         if (in_array('updated_at', $cols, true)) $row['updated_at'] = now();
-        DB::table($ordenTable)->updateOrInsert(['id' => 1], $row);
+        DB::table($orderTable)->updateOrInsert(['id' => 1], $row);
     }
 }

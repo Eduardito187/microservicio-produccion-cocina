@@ -6,29 +6,29 @@ const { Verifier } = require("@pact-foundation/pact");
 (async () => {
     const pactDir = path.resolve(__dirname, "..", "consumer", "pacts");
     const providerBaseUrl = process.env.PROVIDER_BASE_URL || "http://laravel_app";
-
-    const pactUrls = fs.readdirSync(pactDir)
-        .filter(f => f.endsWith(".json"))
-        .map(f => path.join(pactDir, f));
-
+    const pactUrls = fs.readdirSync(pactDir).filter(f => f.endsWith(".json")).map(f => path.join(pactDir, f));
     const setupUrl = `${providerBaseUrl}/api/_pact/setup`;
-
     const opts = {
         provider: "microservicio-produccion-cocina",
         providerBaseUrl,
         pactUrls,
-
         publishVerificationResult: false,
         providerVersion: process.env.PROVIDER_VERSION || "dev-local",
-
-        // ✅ This is what fixes "no state handler found"
         stateHandlers: {
             "product SKU1 exists": async () => {
-                await axios.post(setupUrl, { state: "product SKU1 exists" }, { timeout: 15000 });
+                await axios.post(
+                    setupUrl,
+                    {state: "product SKU1 exists"},
+                    {timeout: 15000}
+                );
                 return Promise.resolve();
             },
             "orden produccion 1 exists and porcion 1 exists": async () => {
-                await axios.post(setupUrl, { state: "orden produccion 1 exists and porcion 1 exists" }, { timeout: 15000 });
+                await axios.post(
+                    setupUrl,
+                    {state: "orden produccion 1 exists and porcion 1 exists"},
+                    {timeout: 15000}
+                );
                 return Promise.resolve();
             }
         }
