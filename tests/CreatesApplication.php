@@ -8,7 +8,7 @@ use Illuminate\Foundation\Application;
 trait CreatesApplication
 {
     /**
-     * Creates the application.
+     * @inheritDoc
      */
     public function createApplication(): Application
     {
@@ -18,4 +18,4 @@ trait CreatesApplication
 
         return $app;
     }
-}
+} 

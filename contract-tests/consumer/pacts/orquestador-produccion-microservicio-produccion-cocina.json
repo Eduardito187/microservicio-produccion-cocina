@@ -25,43 +25,6 @@
           "Accept": "application/json",
           "Content-Type": "application/json"
         },
-        "matchingRules": {
-          "body": {
-            "$.fecha": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            },
-            "$.items[0].qty": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "integer"
-                }
-              ]
-            },
-            "$.items[0].sku": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            },
-            "$.sucursalId": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
         "method": "POST",
         "path": "/api/produccion/ordenes/generar"
       },
@@ -71,20 +34,6 @@
         },
         "headers": {
           "Content-Type": "application/json"
-        },
-        "matchingRules": {
-          "body": {
-            "$.ordenProduccionId": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "integer"
-                }
-              ]
-            }
-          },
-          "header": {},
-          "status": {}
         },
         "status": 201
       }
@@ -107,43 +56,6 @@
           "Accept": "application/json",
           "Content-Type": "application/json"
         },
-        "matchingRules": {
-          "body": {
-            "$.estacionId": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "integer"
-                }
-              ]
-            },
-            "$.ordenProduccionId": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "integer"
-                }
-              ]
-            },
-            "$.porcionId": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "integer"
-                }
-              ]
-            },
-            "$.recetaVersionId": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "integer"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
         "method": "POST",
         "path": "/api/produccion/ordenes/planificar"
       },
@@ -153,20 +65,6 @@
         },
         "headers": {
           "Content-Type": "application/json"
-        },
-        "matchingRules": {
-          "body": {
-            "$.ordenProduccionId": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "integer"
-                }
-              ]
-            }
-          },
-          "header": {},
-          "status": {}
         },
         "status": 201
       }

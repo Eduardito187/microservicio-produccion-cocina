@@ -35,3 +35,61 @@ Repositorio Eloquent para persistencia (IDs BIGINT AUTO_INCREMENT; FK order_item
 
 Outbox pattern:
 Los eventos de dominio (p. ej., OrdenProduccionCreada, OrdenProduccionPlanificada, OrdenProduccionIniciada, OrdenProduccionCerrada) se registran en tabla outbox dentro de la misma transacción y se publican after-commit (Si los datos logran registrarse).
+
+---
+
+## Actividad 4 – Capa de testing (Unit + Integration) + Coverage >=80%
+
+Este repositorio incluye:
+
+- **Unit tests** (sin DB): lógica de Dominio + Application Handlers.
+- **Integration tests** (con DB): flujos end-to-end vía HTTP (Feature tests).
+
+### 1) Ejecutar Unit tests
+
+```bash
+php artisan test --testsuite=Unit
+```
+
+### 2) Generar Code Coverage (Unit tests)
+
+> Requisito: tener un driver de coverage habilitado (Xdebug o PCOV).
+
+Opción A (recomendado): **Xdebug**
+
+```bash
+XDEBUG_MODE=coverage php artisan test --testsuite=Unit --coverage-text --coverage-html=storage/coverage
+```
+
+Opción B: **PCOV** (más rápido)
+
+```bash
+php -d pcov.enabled=1 -d pcov.directory=app php artisan test --testsuite=Unit --coverage-text --coverage-html=storage/coverage
+```
+
+El reporte HTML queda en `storage/coverage/index.html`.
+
+**Nota:** La configuración de `phpunit.xml` limita la cobertura a `app/Domain` y `app/Application` para que el porcentaje refleje la lógica del microservicio (no el boilerplate de Laravel).
+
+### 3) Ejecutar Integration tests (2 flujos)
+
+```bash
+php artisan test --testsuite=Feature
+```
+
+Flujos incluidos:
+
+1. `FlujoOrdenProduccionIntegrationTest`: **generar → planificar → procesar → despachar**.
+2. `EventBusIntegrationTest`: **auth + idempotencia** del endpoint `/api/event-bus`.
+
+---
+
+## Tips para el video (entrega individual)
+
+Checklist recomendado para grabar (3–6 min):
+
+1. Mostrar estructura `/tests/Unit` y `/tests/Feature`.
+2. Ejecutar unit tests.
+3. Ejecutar coverage y abrir `storage/coverage/index.html`.
+4. Ejecutar integration tests.
+5. Mostrar rápidamente los endpoints que cubre cada flujo.
