@@ -32,10 +32,7 @@ class OrdenProduccionTest extends TestCase
     {
         $fecha = new DateTimeImmutable('2025-01-01');
         $op = OrdenProduccion::crear($fecha, 'SUC1');
-        $items = [
-            ['sku' => 'ABC', 'qty' => 3],
-            ['sku' => 'XYZ', 'qty' => 5],
-        ];
+        $items = [['sku' => 'ABC', 'qty' => 3], ['sku' => 'XYZ', 'qty' => 5]];
         $op->agregarItems($items);
         $this->assertCount(2, $op->items());
         $this->assertSame('ABC', $op->items()[0]->sku()->value());
@@ -51,9 +48,7 @@ class OrdenProduccionTest extends TestCase
         $op = OrdenProduccion::crear($fecha, 'SUC1');
         $op->planificar();
         $this->expectException(DomainException::class);
-        $op->agregarItems([
-            ['sku' => 'ABC', 'qty' => 3],
-        ]);
+        $op->agregarItems([['sku' => 'ABC', 'qty' => 3]]);
     }
 
     /**
@@ -63,6 +58,7 @@ class OrdenProduccionTest extends TestCase
     {
         $fecha = new DateTimeImmutable('2025-01-01');
         $op = OrdenProduccion::crear($fecha, 'SUC1');
+        $this->assertNull($op->id());
         $op->planificar();
         $this->assertSame(EstadoOP::PLANIFICADA, $op->estado());
         $op->procesar();
