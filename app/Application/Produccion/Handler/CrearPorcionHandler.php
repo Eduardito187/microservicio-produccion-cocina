@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Application\Produccion\Handler;
+
+use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
+use App\Application\Produccion\Command\CrearPorcion;
+use App\Domain\Produccion\Entity\Porcion;
+
+class CrearPorcionHandler
+{
+    /**
+     * @var PorcionRepositoryInterface
+     */
+    public readonly PorcionRepositoryInterface $porcionRepository;
+
+    /**
+     * @var TransactionAggregate
+     */
+    private readonly TransactionAggregate $transactionAggregate;
+
+    /**
+     * Constructor
+     *
+     * @param PorcionRepositoryInterface $porcionRepository
+     * @param TransactionAggregate $transactionAggregate
+     */
+    public function __construct(
+        PorcionRepositoryInterface $porcionRepository,
+        TransactionAggregate $transactionAggregate
+    ) {
+        $this->porcionRepository = $porcionRepository;
+        $this->transactionAggregate = $transactionAggregate;
+    }
+
+    /**
+     * @param CrearPorcion $command
+     * @return int
+     */
+    public function __invoke(CrearPorcion $command): int
+    {
+        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+            $porcion = new Porcion(null, $command->nombre, $command->pesoGr);
+
+            return $this->porcionRepository->save($porcion);
+        });
+    }
+}

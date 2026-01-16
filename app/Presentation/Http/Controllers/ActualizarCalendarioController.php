@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Presentation\Http\Controllers;
+
+use App\Application\Produccion\Handler\ActualizarCalendarioHandler;
+use App\Application\Produccion\Command\ActualizarCalendario;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use DateTimeImmutable;
+
+class ActualizarCalendarioController
+{
+    /**
+     * @var ActualizarCalendarioHandler
+     */
+    private ActualizarCalendarioHandler $handler;
+
+    /**
+     * Constructor
+     *
+     * @param ActualizarCalendarioHandler $handler
+     */
+    public function __construct(ActualizarCalendarioHandler $handler) {
+        $this->handler = $handler;
+    }
+
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function __invoke(Request $request, int $id): JsonResponse
+    {
+        $data = $request->validate([
+            'fecha' => ['required', 'date'],
+            'sucursalId' => ['required', 'string', 'max:100'],
+        ]);
+
+        try {
+            $calendarioId = $this->handler->__invoke(new ActualizarCalendario(
+                $id,
+                new DateTimeImmutable($data['fecha']),
+                $data['sucursalId']
+            ));
+
+            return response()->json(['calendarioId' => $calendarioId], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], 404);
+        }
+    }
+}

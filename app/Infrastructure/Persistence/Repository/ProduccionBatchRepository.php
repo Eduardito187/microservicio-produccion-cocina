@@ -100,7 +100,7 @@ class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
                 'cant_planificada' => $pb->cantPlanificada,
                 'cant_producida' => $pb->cantProducida,
                 'merma_gr' => $pb->mermaGr,
-                'estado' => $pb->estado,
+                'estado' => $pb->estado->value,
                 'rendimiento' => $pb->rendimiento,
                 'qty' => $pb->qty->value(),
                 'posicion' => $pb->posicion,

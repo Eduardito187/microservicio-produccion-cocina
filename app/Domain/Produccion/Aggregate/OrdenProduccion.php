@@ -3,8 +3,6 @@
 namespace App\Domain\Produccion\Aggregate;
 
 use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
-use App\Domain\Produccion\Aggregate\Etiqueta as AggregateEtiqueta;
-use App\Domain\Produccion\Aggregate\Paquete as AggregatePaquete;
 use App\Domain\Produccion\Events\OrdenProduccionPlanificada;
 use App\Domain\Produccion\Events\OrdenProduccionProcesada;
 use App\Domain\Produccion\Events\OrdenProduccionCerrada;
@@ -244,34 +242,31 @@ class OrdenProduccion
      */
     public function generarItemsDespacho(DespachadorOP $command): void
     {
-        /*
-        itemsDespacho
-            sku
-            recetaVersionId
-        pacienteId
-        direccionId
-        ventanaEntrega
-        $etiqueta = new AggregateEtiqueta(
-            null,
-            1,
-            1,
-            $command->pacienteId
-        );
-        $paquete = new AggregatePaquete(
-            null,
-            1,
-            $command->ventanaEntrega,
-            $command->direccionId
-        );
-        */
+        $itemsDespachoBySku = [];
+
+        foreach ($command->itemsDespacho as $item) {
+            if (!isset($item['sku'], $item['recetaVersionId'])) {
+                continue;
+            }
+
+            $itemsDespachoBySku[strtoupper(trim($item['sku']))] = (int) $item['recetaVersionId'];
+        }
+
         $items = [];
 
         foreach ($this->items() as $item) {
+            $sku = $item->sku()->value;
+            $recetaVersionId = $itemsDespachoBySku[$sku] ?? null;
+
             $items[] = new ItemDespacho(
                 null,
                 $this->id,
                 $item->productId,
-                null
+                null,
+                $recetaVersionId,
+                $command->pacienteId,
+                $command->direccionId,
+                $command->ventanaEntrega
             );
         }
 

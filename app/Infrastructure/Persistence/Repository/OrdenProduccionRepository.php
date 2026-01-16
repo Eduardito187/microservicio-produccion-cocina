@@ -9,6 +9,11 @@ use App\Infrastructure\Persistence\Repository\ProduccionBatchRepository;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Infrastructure\Persistence\Repository\ItemDespachoRepository;
 use App\Infrastructure\Persistence\Repository\OrdenItemRepository;
+use App\Infrastructure\Persistence\Model\Etiqueta as EtiquetaModel;
+use App\Infrastructure\Persistence\Model\Paquete as PaqueteModel;
+use App\Infrastructure\Persistence\Model\Paciente as PacienteModel;
+use App\Infrastructure\Persistence\Model\Direccion as DireccionModel;
+use App\Infrastructure\Persistence\Model\VentanaEntrega as VentanaEntregaModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Produccion\Entity\ItemDespacho;
@@ -60,7 +65,9 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
      */
     public function byId(int|null $id): ?AggregateOrdenProduccion
     {
-        $row = OrdenProduccionModel::query()->with('items')->find($id);
+        $row = OrdenProduccionModel::query()
+            ->with(['items.product', 'batches', 'despachoItems'])
+            ->find($id);
 
         if (!$row) {
             throw new ModelNotFoundException("La orden de produccion id: {$id} no existe.");
@@ -173,7 +180,11 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                 $row->id,
                 $row->op_id,
                 $row->product_id,
-                $row->paquete_id
+                $row->paquete_id,
+                null,
+                null,
+                null,
+                null
             );
         }
 
@@ -222,7 +233,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                     $item->estado,
                     $item->rendimiento,
                     $item->qty,
-                    $key + 1
+                    $item->posicion
                 )
             );
         }
@@ -235,15 +246,73 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     private function savedDespacho(array $items): void
     {
         foreach ($items as $item) {
+            $paqueteId = $item->paqueteId ?? $this->resolvePaqueteId($item);
+
             $this->itemDespachoRepository->save(
                 new ItemDespacho(
                     $item->id,
                     $item->ordenProduccionId,
                     $item->productId,
-                    null
+                    $paqueteId,
+                    $item->recetaVersionId,
+                    $item->pacienteId,
+                    $item->direccionId,
+                    $item->ventanaEntregaId
                 )
             );
         }
+    }
+
+    /**
+     * @param ItemDespacho $item
+     * @return int|null
+     */
+    private function resolvePaqueteId(ItemDespacho $item): int|null
+    {
+        if (
+            $item->recetaVersionId === null
+            || $item->pacienteId === null
+            || $item->direccionId === null
+            || $item->ventanaEntregaId === null
+        ) {
+            return null;
+        }
+
+        $paciente = PacienteModel::find($item->pacienteId);
+        if (!$paciente) {
+            return null;
+        }
+
+        $direccion = DireccionModel::find($item->direccionId);
+        if (!$direccion) {
+            return null;
+        }
+
+        $ventana = VentanaEntregaModel::find($item->ventanaEntregaId);
+        if (!$ventana) {
+            return null;
+        }
+
+        $etiqueta = EtiquetaModel::firstOrCreate(
+            [
+                'receta_version_id' => $item->recetaVersionId,
+                'paciente_id' => $paciente->id,
+            ],
+            [
+                'suscripcion_id' => $paciente->suscripcion_id,
+                'qr_payload' => [],
+            ]
+        );
+
+        $paquete = PaqueteModel::firstOrCreate(
+            [
+                'etiqueta_id' => $etiqueta->id,
+                'ventana_id' => $ventana->id,
+                'direccion_id' => $direccion->id,
+            ]
+        );
+
+        return $paquete->id;
     }
 
     /**

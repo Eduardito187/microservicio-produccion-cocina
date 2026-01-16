@@ -61,4 +61,13 @@ class ProductRepository implements ProductRepositoryInterface
             ['sku' => $product->sku, 'price' => $product->price, 'special_price' => $product->special_price]
         );
     }
+
+    /**
+     * @param int $id
+     * @return void
+     */
+    public function delete(int $id): void
+    {
+        ProductModel::query()->whereKey($id)->delete();
+    }
 }

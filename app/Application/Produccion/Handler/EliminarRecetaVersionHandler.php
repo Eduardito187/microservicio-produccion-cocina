@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Application\Produccion\Handler;
+
+use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
+use App\Application\Produccion\Command\EliminarRecetaVersion;
+
+class EliminarRecetaVersionHandler
+{
+    /**
+     * @var RecetaVersionRepositoryInterface
+     */
+    public readonly RecetaVersionRepositoryInterface $recetaVersionRepository;
+
+    /**
+     * @var TransactionAggregate
+     */
+    private readonly TransactionAggregate $transactionAggregate;
+
+    /**
+     * Constructor
+     *
+     * @param RecetaVersionRepositoryInterface $recetaVersionRepository
+     * @param TransactionAggregate $transactionAggregate
+     */
+    public function __construct(
+        RecetaVersionRepositoryInterface $recetaVersionRepository,
+        TransactionAggregate $transactionAggregate
+    ) {
+        $this->recetaVersionRepository = $recetaVersionRepository;
+        $this->transactionAggregate = $transactionAggregate;
+    }
+
+    /**
+     * @param EliminarRecetaVersion $command
+     * @return void
+     */
+    public function __invoke(EliminarRecetaVersion $command): void
+    {
+        $this->transactionAggregate->runTransaction(function () use ($command): void {
+            $this->recetaVersionRepository->byId($command->id);
+            $this->recetaVersionRepository->delete($command->id);
+        });
+    }
+}

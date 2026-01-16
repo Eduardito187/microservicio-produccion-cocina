@@ -101,5 +101,9 @@ class FlujoOrdenProduccionIntegrationTest extends TestCase
 
         $this->assertDatabaseHas('orden_produccion', ['id' => $opId, 'estado' => 'CERRADA']);
         $this->assertDatabaseHas('item_despacho', ['op_id' => $opId]);
+        $this->assertSame(
+            2,
+            DB::table('item_despacho')->where('op_id', $opId)->whereNotNull('paquete_id')->count()
+        );
     }
 }

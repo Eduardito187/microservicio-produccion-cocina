@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Presentation\Http\Controllers;
+
+use App\Application\Produccion\Handler\EliminarCalendarioHandler;
+use App\Application\Produccion\Command\EliminarCalendario;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+
+class EliminarCalendarioController
+{
+    /**
+     * @var EliminarCalendarioHandler
+     */
+    private EliminarCalendarioHandler $handler;
+
+    /**
+     * Constructor
+     *
+     * @param EliminarCalendarioHandler $handler
+     */
+    public function __construct(EliminarCalendarioHandler $handler) {
+        $this->handler = $handler;
+    }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function __invoke(int $id): JsonResponse
+    {
+        try {
+            $this->handler->__invoke(new EliminarCalendario($id));
+            return response()->json(null, 204);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], 404);
+        }
+    }
+}

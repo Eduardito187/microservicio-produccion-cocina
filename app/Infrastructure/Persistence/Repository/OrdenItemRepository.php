@@ -40,12 +40,12 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
 
         return new OrdenItem(
             $row->id,
-            $row->ordenProduccionId,
-            $row->productId,
+            $row->op_id,
+            $row->p_id,
             new Qty($row->qty),
-            new Sku($row->product->SKU),
+            new Sku($row->product->sku),
             $row->price,
-            $row->finalPrice
+            $row->final_price
         );
     }
 

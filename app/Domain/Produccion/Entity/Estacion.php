@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Domain\Produccion\Entity;
+
+class Estacion
+{
+    /**
+     * @var int|null
+     */
+    public int|null $id;
+
+    /**
+     * @var string
+     */
+    public string $nombre;
+
+    /**
+     * @var int|null
+     */
+    public int|null $capacidad;
+
+    /**
+     * Constructor
+     *
+     * @param int|null $id
+     * @param string $nombre
+     * @param int|null $capacidad
+     */
+    public function __construct(int|null $id, string $nombre, int|null $capacidad = null)
+    {
+        $this->id = $id;
+        $this->nombre = $nombre;
+        $this->capacidad = $capacidad;
+    }
+}

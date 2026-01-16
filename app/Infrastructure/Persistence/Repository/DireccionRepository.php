@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Infrastructure\Persistence\Repository;
+
+use App\Infrastructure\Persistence\Model\Direccion as DireccionModel;
+use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Produccion\Entity\Direccion;
+
+class DireccionRepository implements DireccionRepositoryInterface
+{
+    /**
+     * @param int $id
+     * @throws ModelNotFoundException
+     * @return Direccion|null
+     */
+    public function byId(int $id): ?Direccion
+    {
+        $row = DireccionModel::find($id);
+
+        if (!$row) {
+            throw new ModelNotFoundException("La direccion id: {$id} no existe.");
+        }
+
+        return new Direccion(
+            $row->id,
+            $row->nombre,
+            $row->linea1,
+            $row->linea2,
+            $row->ciudad,
+            $row->provincia,
+            $row->pais,
+            $row->geo
+        );
+    }
+
+    /**
+     * @param Direccion $direccion
+     * @return int
+     */
+    public function save(Direccion $direccion): int
+    {
+        $model = DireccionModel::query()->updateOrCreate(
+            ['id' => $direccion->id],
+            [
+                'nombre' => $direccion->nombre,
+                'linea1' => $direccion->linea1,
+                'linea2' => $direccion->linea2,
+                'ciudad' => $direccion->ciudad,
+                'provincia' => $direccion->provincia,
+                'pais' => $direccion->pais,
+                'geo' => $direccion->geo,
+            ]
+        );
+
+        return $model->id;
+    }
+
+    /**
+     * @param int $id
+     * @return void
+     */
+    public function delete(int $id): void
+    {
+        DireccionModel::query()->whereKey($id)->delete();
+    }
+}

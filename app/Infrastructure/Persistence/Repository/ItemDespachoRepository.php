@@ -37,7 +37,7 @@ class ItemDespachoRepository implements ItemDespachoRepositoryInterface
     public function save(ItemDespacho $item): void
     {
         ItemDespachoModel::updateOrCreate(
-            ['id' => null],
+            ['id' => $item->id],
             [
                 'op_id' => $item->ordenProduccionId,
                 'product_id' => $item->productId,
