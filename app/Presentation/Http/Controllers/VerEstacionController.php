@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Presentation\Http\Controllers;
+
+use App\Application\Produccion\Handler\VerEstacionHandler;
+use App\Application\Produccion\Command\VerEstacion;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+
+class VerEstacionController
+{
+    /**
+     * @var VerEstacionHandler
+     */
+    private VerEstacionHandler $handler;
+
+    /**
+     * Constructor
+     *
+     * @param VerEstacionHandler $handler
+     */
+    public function __construct(VerEstacionHandler $handler) {
+        $this->handler = $handler;
+    }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function __invoke(int $id): JsonResponse
+    {
+        try {
+            $row = $this->handler->__invoke(new VerEstacion($id));
+            return response()->json($row);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], 404);
+        }
+    }
+}
+
+
+

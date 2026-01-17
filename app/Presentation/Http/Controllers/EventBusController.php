@@ -2,13 +2,28 @@
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Infrastructure\Persistence\Model\InboundEvent;
+use App\Application\Produccion\Command\RegistrarInboundEvent;
+use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class EventBusController
 {
+    /**
+     * @var RegistrarInboundEventHandler
+     */
+    private RegistrarInboundEventHandler $handler;
+
+    /**
+     * Constructor
+     *
+     * @param RegistrarInboundEventHandler $handler
+     */
+    public function __construct(RegistrarInboundEventHandler $handler) {
+        $this->handler = $handler;
+    }
+
     /**
      * Summary of __invoke
      * @param \Illuminate\Http\Request $request
@@ -32,18 +47,16 @@ class EventBusController
         ]);
 
         $eventId = $data['event_id'] ?? $this->hashEnvelope($data);
-        $already = InboundEvent::query()->where('event_id', $eventId)->exists();
+        $isDuplicate = $this->handler->__invoke(new RegistrarInboundEvent(
+            $eventId,
+            $data['event'],
+            $data['occurred_on'] ?? null,
+            json_encode($data['payload'])
+        ));
 
-        if ($already) {
+        if ($isDuplicate) {
             return response()->json(['status' => 'duplicate'], Response::HTTP_OK);
         }
-
-        InboundEvent::create([
-            'event_id' => $eventId,
-            'event_name' => $data['event'],
-            'occurred_on' => $data['occurred_on'] ?? null,
-            'payload' => json_encode($data['payload']),
-        ]);
 
         switch ($data['event']) {
             case 'App\Domain\Produccion\Events\OrdenProduccionCerrada':
@@ -87,3 +100,6 @@ class EventBusController
         );
     }
 }
+
+
+

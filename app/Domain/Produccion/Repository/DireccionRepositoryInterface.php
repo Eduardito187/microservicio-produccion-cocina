@@ -21,6 +21,11 @@ interface DireccionRepositoryInterface
     public function save(Direccion $direccion): int;
 
     /**
+     * @return Direccion[]
+     */
+    public function list(): array;
+
+    /**
      * @param int $id
      * @return void
      */

@@ -52,3 +52,6 @@ class ActualizarEtiqueta
         $this->qrPayload = $qrPayload;
     }
 }
+
+
+

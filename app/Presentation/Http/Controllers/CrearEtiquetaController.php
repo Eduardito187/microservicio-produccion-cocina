@@ -46,3 +46,6 @@ class CrearEtiquetaController
         return response()->json(['etiquetaId' => $etiquetaId], 201);
     }
 }
+
+
+

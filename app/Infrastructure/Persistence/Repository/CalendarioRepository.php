@@ -49,6 +49,24 @@ class CalendarioRepository implements CalendarioRepositoryInterface
     }
 
     /**
+     * @return Calendario[]
+     */
+    public function list(): array
+    {
+        $items = [];
+
+        foreach (CalendarioModel::query()->orderBy('id')->get() as $row) {
+            $items[] = new Calendario(
+                $row->id,
+                $this->convertDate($row->fecha),
+                $row->sucursal_id
+            );
+        }
+
+        return $items;
+    }
+
+    /**
      * @param int $id
      * @return void
      */

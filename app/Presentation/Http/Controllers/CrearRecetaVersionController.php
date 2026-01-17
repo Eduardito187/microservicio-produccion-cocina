@@ -46,3 +46,6 @@ class CrearRecetaVersionController
         return response()->json(['recetaVersionId' => $recetaVersionId], 201);
     }
 }
+
+
+

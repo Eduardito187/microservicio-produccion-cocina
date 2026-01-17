@@ -47,6 +47,24 @@ class PorcionRepository implements PorcionRepositoryInterface
     }
 
     /**
+     * @return Porcion[]
+     */
+    public function list(): array
+    {
+        $items = [];
+
+        foreach (PorcionModel::query()->orderBy('id')->get() as $row) {
+            $items[] = new Porcion(
+                $row->id,
+                $row->nombre,
+                $row->peso_gr
+            );
+        }
+
+        return $items;
+    }
+
+    /**
      * @param int $id
      * @return void
      */

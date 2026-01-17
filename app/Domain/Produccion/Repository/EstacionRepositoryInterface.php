@@ -21,6 +21,11 @@ interface EstacionRepositoryInterface
     public function save(Estacion $estacion): int;
 
     /**
+     * @return Estacion[]
+     */
+    public function list(): array;
+
+    /**
      * @param int $id
      * @return void
      */

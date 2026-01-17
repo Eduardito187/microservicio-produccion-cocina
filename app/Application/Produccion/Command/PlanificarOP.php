@@ -38,3 +38,6 @@ class PlanificarOP
         $this->porcionId = $dataApi["porcionId"];
     }
 }
+
+
+

@@ -24,6 +24,14 @@ class DireccionCrudTest extends TestCase
         $create->assertCreated()->assertJsonStructure(['direccionId']);
         $direccionId = $create->json('direccionId');
 
+        $this->getJson(route('direcciones.listar'))
+            ->assertOk()
+            ->assertJsonFragment(['id' => $direccionId, 'nombre' => 'Casa']);
+
+        $this->getJson(route('direcciones.ver', ['id' => $direccionId]))
+            ->assertOk()
+            ->assertJsonFragment(['id' => $direccionId, 'nombre' => 'Casa']);
+
         $update = $this->putJson(route('direcciones.actualizar', ['id' => $direccionId]), [
             'nombre' => 'Casa 2',
             'linea1' => 'Calle 2',

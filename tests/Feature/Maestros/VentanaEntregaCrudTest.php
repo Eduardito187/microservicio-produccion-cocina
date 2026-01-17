@@ -19,6 +19,14 @@ class VentanaEntregaCrudTest extends TestCase
         $create->assertCreated()->assertJsonStructure(['ventanaEntregaId']);
         $ventanaId = $create->json('ventanaEntregaId');
 
+        $this->getJson(route('ventanas-entrega.listar'))
+            ->assertOk()
+            ->assertJsonFragment(['id' => $ventanaId]);
+
+        $this->getJson(route('ventanas-entrega.ver', ['id' => $ventanaId]))
+            ->assertOk()
+            ->assertJsonFragment(['id' => $ventanaId]);
+
         $update = $this->putJson(route('ventanas-entrega.actualizar', ['id' => $ventanaId]), [
             'desde' => '2026-01-01 09:00:00',
             'hasta' => '2026-01-01 13:00:00',

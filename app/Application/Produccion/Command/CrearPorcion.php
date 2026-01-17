@@ -26,3 +26,6 @@ class CrearPorcion
         $this->pesoGr = $pesoGr;
     }
 }
+
+
+

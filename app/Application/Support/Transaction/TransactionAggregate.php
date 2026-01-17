@@ -28,3 +28,5 @@ class TransactionAggregate
         return $this->transactionManager->run($callback);
     }
 }
+
+

@@ -33,3 +33,6 @@ class ActualizarPorcion
         $this->pesoGr = $pesoGr;
     }
 }
+
+
+

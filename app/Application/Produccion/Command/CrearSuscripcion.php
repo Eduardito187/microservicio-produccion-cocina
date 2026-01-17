@@ -19,3 +19,6 @@ class CrearSuscripcion
         $this->nombre = $nombre;
     }
 }
+
+
+

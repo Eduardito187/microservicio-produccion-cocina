@@ -40,3 +40,6 @@ class CrearSuscripcionController
         return response()->json(['suscripcionId' => $suscripcionId], 201);
     }
 }
+
+
+

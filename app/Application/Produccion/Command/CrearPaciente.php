@@ -36,3 +36,6 @@ class CrearPaciente
         $this->suscripcionId = $suscripcionId;
     }
 }
+
+
+

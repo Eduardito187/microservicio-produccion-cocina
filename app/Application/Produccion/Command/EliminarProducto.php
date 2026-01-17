@@ -19,3 +19,6 @@ class EliminarProducto
         $this->id = $id;
     }
 }
+
+
+

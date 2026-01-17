@@ -57,6 +57,29 @@ class DireccionRepository implements DireccionRepositoryInterface
     }
 
     /**
+     * @return Direccion[]
+     */
+    public function list(): array
+    {
+        $items = [];
+
+        foreach (DireccionModel::query()->orderBy('id')->get() as $row) {
+            $items[] = new Direccion(
+                $row->id,
+                $row->nombre,
+                $row->linea1,
+                $row->linea2,
+                $row->ciudad,
+                $row->provincia,
+                $row->pais,
+                $row->geo
+            );
+        }
+
+        return $items;
+    }
+
+    /**
      * @param int $id
      * @return void
      */

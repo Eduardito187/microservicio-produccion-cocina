@@ -21,6 +21,11 @@ interface RecetaVersionRepositoryInterface
     public function save(RecetaVersion $recetaVersion): int;
 
     /**
+     * @return RecetaVersion[]
+     */
+    public function list(): array;
+
+    /**
      * @param int $id
      * @return void
      */

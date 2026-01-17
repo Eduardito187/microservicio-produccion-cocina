@@ -19,3 +19,6 @@ class EliminarRecetaVersion
         $this->id = $id;
     }
 }
+
+
+

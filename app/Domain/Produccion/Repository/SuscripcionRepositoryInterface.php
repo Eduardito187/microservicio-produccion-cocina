@@ -21,6 +21,11 @@ interface SuscripcionRepositoryInterface
     public function save(Suscripcion $suscripcion): int;
 
     /**
+     * @return Suscripcion[]
+     */
+    public function list(): array;
+
+    /**
      * @param int $id
      * @return void
      */

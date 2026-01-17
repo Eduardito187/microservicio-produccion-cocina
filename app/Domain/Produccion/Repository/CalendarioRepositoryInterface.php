@@ -21,6 +21,11 @@ interface CalendarioRepositoryInterface
     public function save(Calendario $calendario): int;
 
     /**
+     * @return Calendario[]
+     */
+    public function list(): array;
+
+    /**
      * @param int $id
      * @return void
      */

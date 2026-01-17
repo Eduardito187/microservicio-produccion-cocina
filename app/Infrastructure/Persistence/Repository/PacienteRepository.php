@@ -49,6 +49,25 @@ class PacienteRepository implements PacienteRepositoryInterface
     }
 
     /**
+     * @return Paciente[]
+     */
+    public function list(): array
+    {
+        $items = [];
+
+        foreach (PacienteModel::query()->orderBy('id')->get() as $row) {
+            $items[] = new Paciente(
+                $row->id,
+                $row->nombre,
+                $row->documento,
+                $row->suscripcion_id
+            );
+        }
+
+        return $items;
+    }
+
+    /**
      * @param int $id
      * @return void
      */

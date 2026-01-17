@@ -19,3 +19,6 @@ class EliminarVentanaEntrega
         $this->id = $id;
     }
 }
+
+
+

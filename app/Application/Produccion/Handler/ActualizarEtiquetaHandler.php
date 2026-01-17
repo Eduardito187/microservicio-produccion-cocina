@@ -49,3 +49,11 @@ class ActualizarEtiquetaHandler
         });
     }
 }
+
+
+
+
+
+
+
+

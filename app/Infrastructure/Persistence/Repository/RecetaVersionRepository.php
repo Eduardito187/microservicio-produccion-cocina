@@ -51,6 +51,26 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
     }
 
     /**
+     * @return RecetaVersion[]
+     */
+    public function list(): array
+    {
+        $items = [];
+
+        foreach (RecetaVersionModel::query()->orderBy('id')->get() as $row) {
+            $items[] = new RecetaVersion(
+                $row->id,
+                $row->nombre,
+                $row->nutrientes,
+                $row->ingredientes,
+                $row->version
+            );
+        }
+
+        return $items;
+    }
+
+    /**
      * @param int $id
      * @return void
      */

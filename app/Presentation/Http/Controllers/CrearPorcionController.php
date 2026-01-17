@@ -42,3 +42,6 @@ class CrearPorcionController
         return response()->json(['porcionId' => $porcionId], 201);
     }
 }
+
+
+

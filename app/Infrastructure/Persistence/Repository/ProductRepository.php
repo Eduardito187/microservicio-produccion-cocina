@@ -63,6 +63,25 @@ class ProductRepository implements ProductRepositoryInterface
     }
 
     /**
+     * @return Products[]
+     */
+    public function list(): array
+    {
+        $items = [];
+
+        foreach (ProductModel::query()->orderBy('id')->get() as $row) {
+            $items[] = new Products(
+                $row->id,
+                $row->sku,
+                (float) $row->price,
+                (float) $row->special_price
+            );
+        }
+
+        return $items;
+    }
+
+    /**
      * @param int $id
      * @return void
      */

@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Presentation\Http\Controllers;
+
+use App\Application\Produccion\Handler\VerPacienteHandler;
+use App\Application\Produccion\Command\VerPaciente;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+
+class VerPacienteController
+{
+    /**
+     * @var VerPacienteHandler
+     */
+    private VerPacienteHandler $handler;
+
+    /**
+     * Constructor
+     *
+     * @param VerPacienteHandler $handler
+     */
+    public function __construct(VerPacienteHandler $handler) {
+        $this->handler = $handler;
+    }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function __invoke(int $id): JsonResponse
+    {
+        try {
+            $row = $this->handler->__invoke(new VerPaciente($id));
+            return response()->json($row);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], 404);
+        }
+    }
+}
+
+
+

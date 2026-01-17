@@ -49,6 +49,25 @@ class PaqueteRepository implements PaqueteRepositoryInterface
     }
 
     /**
+     * @return Paquete[]
+     */
+    public function list(): array
+    {
+        $items = [];
+
+        foreach (PaqueteModel::query()->orderBy('id')->get() as $row) {
+            $items[] = new Paquete(
+                $row->id,
+                $row->etiqueta_id,
+                $row->ventana_id,
+                $row->direccion_id
+            );
+        }
+
+        return $items;
+    }
+
+    /**
      * @param int $id
      * @return void
      */

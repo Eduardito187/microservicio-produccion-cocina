@@ -21,6 +21,11 @@ interface PorcionRepositoryInterface
     public function save(Porcion $porcion): int;
 
     /**
+     * @return Porcion[]
+     */
+    public function list(): array;
+
+    /**
      * @param int $id
      * @return void
      */

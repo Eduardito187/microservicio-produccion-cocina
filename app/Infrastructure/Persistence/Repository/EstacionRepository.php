@@ -47,6 +47,24 @@ class EstacionRepository implements EstacionRepositoryInterface
     }
 
     /**
+     * @return Estacion[]
+     */
+    public function list(): array
+    {
+        $items = [];
+
+        foreach (EstacionModel::query()->orderBy('id')->get() as $row) {
+            $items[] = new Estacion(
+                $row->id,
+                $row->nombre,
+                $row->capacidad
+            );
+        }
+
+        return $items;
+    }
+
+    /**
      * @param int $id
      * @return void
      */

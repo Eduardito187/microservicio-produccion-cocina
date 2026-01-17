@@ -44,3 +44,6 @@ class CrearProductoController
         return response()->json(['productId' => $productId], 201);
     }
 }
+
+
+

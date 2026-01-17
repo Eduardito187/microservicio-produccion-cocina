@@ -25,6 +25,11 @@ interface ProductRepositoryInterface
     public function save(Products $product): void;
 
     /**
+     * @return Products[]
+     */
+    public function list(): array;
+
+    /**
      * @param int $id
      * @return void
      */

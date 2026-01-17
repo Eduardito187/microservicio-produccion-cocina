@@ -45,6 +45,23 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
     }
 
     /**
+     * @return Suscripcion[]
+     */
+    public function list(): array
+    {
+        $items = [];
+
+        foreach (SuscripcionModel::query()->orderBy('id')->get() as $row) {
+            $items[] = new Suscripcion(
+                $row->id,
+                $row->nombre
+            );
+        }
+
+        return $items;
+    }
+
+    /**
      * @param int $id
      * @return void
      */

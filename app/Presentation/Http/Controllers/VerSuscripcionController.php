@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Presentation\Http\Controllers;
+
+use App\Application\Produccion\Handler\VerSuscripcionHandler;
+use App\Application\Produccion\Command\VerSuscripcion;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+
+class VerSuscripcionController
+{
+    /**
+     * @var VerSuscripcionHandler
+     */
+    private VerSuscripcionHandler $handler;
+
+    /**
+     * Constructor
+     *
+     * @param VerSuscripcionHandler $handler
+     */
+    public function __construct(VerSuscripcionHandler $handler) {
+        $this->handler = $handler;
+    }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function __invoke(int $id): JsonResponse
+    {
+        try {
+            $row = $this->handler->__invoke(new VerSuscripcion($id));
+            return response()->json($row);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], 404);
+        }
+    }
+}
+
+
+

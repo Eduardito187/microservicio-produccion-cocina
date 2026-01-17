@@ -21,6 +21,11 @@ interface PacienteRepositoryInterface
     public function save(Paciente $paciente): int;
 
     /**
+     * @return Paciente[]
+     */
+    public function list(): array;
+
+    /**
      * @param int $id
      * @return void
      */

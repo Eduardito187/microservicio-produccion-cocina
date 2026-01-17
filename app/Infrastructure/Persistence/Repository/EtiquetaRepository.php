@@ -51,6 +51,26 @@ class EtiquetaRepository implements EtiquetaRepositoryInterface
     }
 
     /**
+     * @return Etiqueta[]
+     */
+    public function list(): array
+    {
+        $items = [];
+
+        foreach (EtiquetaModel::query()->orderBy('id')->get() as $row) {
+            $items[] = new Etiqueta(
+                $row->id,
+                $row->receta_version_id,
+                $row->suscripcion_id,
+                $row->paciente_id,
+                $row->qr_payload
+            );
+        }
+
+        return $items;
+    }
+
+    /**
      * @param int $id
      * @return void
      */

@@ -44,3 +44,6 @@ class CrearEtiqueta
         $this->qrPayload = $qrPayload;
     }
 }
+
+
+

@@ -21,6 +21,11 @@ interface VentanaEntregaRepositoryInterface
     public function save(VentanaEntrega $ventanaEntrega): int;
 
     /**
+     * @return VentanaEntrega[]
+     */
+    public function list(): array;
+
+    /**
      * @param int $id
      * @return void
      */

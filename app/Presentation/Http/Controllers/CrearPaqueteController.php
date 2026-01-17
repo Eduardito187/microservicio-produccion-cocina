@@ -44,3 +44,6 @@ class CrearPaqueteController
         return response()->json(['paqueteId' => $paqueteId], 201);
     }
 }
+
+
+

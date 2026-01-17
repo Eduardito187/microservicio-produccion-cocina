@@ -44,3 +44,6 @@ class ActualizarPaciente
         $this->suscripcionId = $suscripcionId;
     }
 }
+
+
+

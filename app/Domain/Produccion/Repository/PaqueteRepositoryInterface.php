@@ -21,6 +21,11 @@ interface PaqueteRepositoryInterface
     public function save(Paquete $paquete): int;
 
     /**
+     * @return Paquete[]
+     */
+    public function list(): array;
+
+    /**
      * @param int $id
      * @return void
      */

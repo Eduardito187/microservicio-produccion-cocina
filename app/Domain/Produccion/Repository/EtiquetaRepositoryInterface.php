@@ -21,6 +21,11 @@ interface EtiquetaRepositoryInterface
     public function save(Etiqueta $etiqueta): int;
 
     /**
+     * @return Etiqueta[]
+     */
+    public function list(): array;
+
+    /**
      * @param int $id
      * @return void
      */

@@ -26,3 +26,6 @@ class ActualizarSuscripcion
         $this->nombre = $nombre;
     }
 }
+
+
+

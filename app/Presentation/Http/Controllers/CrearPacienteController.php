@@ -44,3 +44,6 @@ class CrearPacienteController
         return response()->json(['pacienteId' => $pacienteId], 201);
     }
 }
+
+
+

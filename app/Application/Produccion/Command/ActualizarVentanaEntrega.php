@@ -35,3 +35,6 @@ class ActualizarVentanaEntrega
         $this->hasta = $hasta;
     }
 }
+
+
+

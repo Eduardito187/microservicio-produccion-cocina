@@ -19,3 +19,6 @@ class EliminarPorcion
         $this->id = $id;
     }
 }
+
+
+
