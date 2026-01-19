@@ -64,7 +64,6 @@ use App\Presentation\Http\Controllers\ListarPaquetesController;
 use App\Presentation\Http\Controllers\VerPaqueteController;
 use App\Presentation\Http\Controllers\CrearProductoController;
 use App\Presentation\Http\Controllers\ActualizarProductoController;
-use App\Presentation\Http\Controllers\EliminarProductoController;
 use App\Presentation\Http\Controllers\ListarProductosController;
 use App\Presentation\Http\Controllers\VerProductoController;
 
@@ -119,7 +118,6 @@ Route::post('/productos', CrearProductoController::class)->name('productos.crear
 Route::get('/productos', ListarProductosController::class)->name('productos.listar');
 Route::get('/productos/{id}', VerProductoController::class)->name('productos.ver');
 Route::put('/productos/{id}', ActualizarProductoController::class)->name('productos.actualizar');
-Route::delete('/productos/{id}', EliminarProductoController::class)->name('productos.eliminar');
 
 Route::post('/calendarios', CrearCalendarioController::class)->name('calendarios.crear');
 Route::get('/calendarios', ListarCalendariosController::class)->name('calendarios.listar');
