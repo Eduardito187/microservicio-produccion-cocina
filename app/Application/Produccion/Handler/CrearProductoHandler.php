@@ -41,10 +41,10 @@ class CrearProductoHandler
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): int {
             $product = new Products(
-                id: null,
-                sku: $command->sku,
-                price: $command->price,
-                special_price: $command->specialPrice
+                null,
+                $command->sku,
+                $command->price,
+                $command->specialPrice
             );
 
             $this->productRepository->save($product);

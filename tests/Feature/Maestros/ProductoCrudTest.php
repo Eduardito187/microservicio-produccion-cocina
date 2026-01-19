@@ -12,7 +12,7 @@ class ProductoCrudTest extends TestCase
     public function test_crear_actualizar_y_eliminar_producto(): void
     {
         $create = $this->postJson(route('productos.crear'), [
-            'sku' => 'SKU-001',
+            'sku' => 'PIZZA-PEP',
             'price' => 10.5,
             'specialPrice' => 9.5,
         ]);
@@ -22,14 +22,14 @@ class ProductoCrudTest extends TestCase
 
         $this->getJson(route('productos.listar'))
             ->assertOk()
-            ->assertJsonFragment(['id' => $productId, 'sku' => 'SKU-001']);
+            ->assertJsonFragment(['id' => $productId, 'sku' => 'PIZZA-PEP']);
 
         $this->getJson(route('productos.ver', ['id' => $productId]))
             ->assertOk()
-            ->assertJsonFragment(['id' => $productId, 'sku' => 'SKU-001']);
+            ->assertJsonFragment(['id' => $productId, 'sku' => 'PIZZA-PEP']);
 
         $update = $this->putJson(route('productos.actualizar', ['id' => $productId]), [
-            'sku' => 'SKU-002',
+            'sku' => 'PIZZA-MARG',
             'price' => 12.5,
             'specialPrice' => 10.0,
         ]);

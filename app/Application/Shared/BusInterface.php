@@ -20,5 +20,3 @@ interface BusInterface
         DateTimeImmutable $occurredOn
     ): void;
 }
-
-
