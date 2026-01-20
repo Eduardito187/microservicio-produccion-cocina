@@ -9,9 +9,11 @@ class EventBusIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * @return void
+     */
     public function test_event_bus_rechaza_sin_token_y_acepta_con_token_y_es_idempotente(): void
     {
-        // ENV esperado por el controller
         $_ENV['EVENTBUS_SECRET'] = 'test-secret';
 
         $payload = [
@@ -22,22 +24,16 @@ class EventBusIntegrationTest extends TestCase
         ];
 
         // 1) Sin token => 401
-        $this->postJson('/api/event-bus', $payload)
-            ->assertStatus(401)
-            ->assertJsonPath('message', 'Unauthorized');
+        $this->postJson('/api/event-bus', $payload)->assertStatus(401)->assertJsonPath('message', 'Unauthorized');
 
         // 2) Con token correcto => ok y crea inbound_event
-        $this->withHeader('X-EventBus-Token', 'test-secret')
-            ->postJson('/api/event-bus', $payload)
-            ->assertOk()
-            ->assertJsonPath('status', 'ok');
+        $this->withHeader('X-EventBus-Token', 'test-secret')->postJson('/api/event-bus', $payload)
+            ->assertOk()->assertJsonPath('status', 'ok');
 
         $this->assertDatabaseHas('inbound_events', ['event_id' => 'evt-123']);
 
         // 3) Misma request => duplicate, no duplica registro
-        $this->withHeader('X-EventBus-Token', 'test-secret')
-            ->postJson('/api/event-bus', $payload)
-            ->assertOk()
-            ->assertJsonPath('status', 'duplicate');
+        $this->withHeader('X-EventBus-Token', 'test-secret')->postJson('/api/event-bus', $payload)
+            ->assertOk()->assertJsonPath('status', 'duplicate');
     }
 }

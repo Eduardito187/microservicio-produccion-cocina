@@ -9,7 +9,7 @@ use DomainException;
 class CapacidadTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_it_creates_a_valid_capacidad(): void
     {
@@ -18,7 +18,7 @@ class CapacidadTest extends TestCase
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_it_throws_when_value_is_not_positive(): void
     {

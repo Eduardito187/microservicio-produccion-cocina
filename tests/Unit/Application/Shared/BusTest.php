@@ -10,21 +10,18 @@ use DateTimeImmutable;
 class BusTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_publica_evento_con_datos_correctos(): void
     {
         $bus = $this->createMock(BusInterface::class);
-
-        $bus->expects($this->once())
-            ->method('publish')
+        $bus->expects($this->once())->method('publish')
             ->with(
                 $this->equalTo('evt-1'),
                 $this->equalTo('EventoX'),
                 $this->equalTo(['x' => 1]),
                 $this->isInstanceOf(DateTimeImmutable::class)
             );
-
         $publisher = new SimpleEventPublisher($bus);
         $publisher->publish('evt-1', 'EventoX', ['x' => 1]);
     }

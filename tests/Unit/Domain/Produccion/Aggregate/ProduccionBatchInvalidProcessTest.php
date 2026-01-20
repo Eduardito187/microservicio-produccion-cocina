@@ -11,25 +11,12 @@ use DomainException;
 class ProduccionBatchInvalidProcessTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_no_permite_procesar_si_no_esta_planificado(): void
     {
         $batch = ProduccionBatch::crear(
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            EstadoPlanificado::PROCESANDO,
-            10,
-            new Qty(1),
-            1,
-            []
+            1, 1, 1, 1, 1, 1, 1, 1, 1, EstadoPlanificado::PROCESANDO, 10, new Qty(1), 1, []
         );
 
         $this->expectException(DomainException::class);

@@ -9,28 +9,33 @@ use PHPUnit\Framework\TestCase;
 class AggregateRootTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_record_and_pull_events_behaviour(): void
     {
-        $agg = new class {
+        $aggregate = new class {
             use AggregateRoot;
 
+            /**
+             * @return void
+             */
             public function raise(): void
             {
                 $this->record(new class(1) extends BaseDomainEvent {
-                    public function toArray(): array { return ['x' => 1]; }
+                    public function toArray(): array {
+                        return ['x' => 1];
+                    }
                 });
             }
         };
 
-        $this->assertSame([], $agg->pullEvents());
+        $this->assertSame([], $aggregate->pullEvents());
 
-        $agg->raise();
-        $events = $agg->pullEvents();
+        $aggregate->raise();
+        $events = $aggregate->pullEvents();
 
         $this->assertCount(1, $events);
         $this->assertSame(['x' => 1], $events[0]->toArray());
-        $this->assertSame([], $agg->pullEvents());
+        $this->assertSame([], $aggregate->pullEvents());
     }
 }

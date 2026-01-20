@@ -4,54 +4,51 @@ namespace Tests\Unit\Application\Produccion;
 
 use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use ReflectionNamedType;
+use DateTimeImmutable;
+use ReflectionClass;
 
-/**
- * Smoke tests "bulk" para cubrir handlers CRUD de maestros.
- *
- * Idea:
- * - Escanea el folder de Handlers.
- * - Para cada handler CRUD (Crear/Actualizar/Eliminar/Ver/Listar) crea mocks
- *   del repositorio y ejecuta __invoke con un Command instanciado por reflection.
- *
- * Esto sube cobertura en Application\Produccion\Handler sin escribir 60 tests a mano.
- */
 class MaestrosHandlersBulkSmokeTest extends TestCase
 {
+    /**
+     * @return TransactionAggregate
+     */
     private function tx(): TransactionAggregate
     {
-        $tm = new class implements TransactionManagerInterface {
-            public function run(callable $callback): mixed { return $callback(); }
-            public function afterCommit(callable $callback): void { /* no-op */ }
+        $transactionManager = new class implements TransactionManagerInterface {
+            public function run(callable $callback): mixed {
+                return $callback();
+            }
+
+            public function afterCommit(callable $callback): void {}
         };
 
-        return new TransactionAggregate($tm);
+        return new TransactionAggregate($transactionManager);
     }
 
     /**
-     * @dataProvider handlersProvider
+     * @param string $data
+     * @return void
      */
-    public function test_handler_se_puede_ejecutar_en_memoria(string $handlerFqcn): void
+    public function test_handler_se_puede_ejecutar_en_memoria(string $data): void
     {
-        $handlerRc = new ReflectionClass($handlerFqcn);
-        $ctor = $handlerRc->getConstructor();
+        $handlerReflectionClass = new ReflectionClass($data);
+        $constructor = $handlerReflectionClass->getConstructor();
 
         // Handler siempre: __construct(RepoInterface, TransactionAggregate)
-        $repoInterface = $ctor?->getParameters()[0]?->getType();
-        $repoFqcn = ($repoInterface instanceof ReflectionNamedType) ? $repoInterface->getName() : null;
-        $this->assertNotNull($repoFqcn, 'No se pudo inferir el repositorio del handler: '.$handlerFqcn);
+        $repoInterface = $constructor?->getParameters()[0]?->getType();
+        $repositoryReflectionName = ($repoInterface instanceof ReflectionNamedType) ? $repoInterface->getName() : null;
+        $this->assertNotNull($repositoryReflectionName, 'No se pudo inferir el repositorio del handler: '.$data);
 
-        $repo = $this->createMock($repoFqcn);
+        $repository = $this->createMock($repositoryReflectionName);
         $tx = $this->tx();
 
         // Inferimos entity name a partir del nombre del handler.
-        $baseName = $handlerRc->getShortName(); // e.g. CrearEstacionHandler
+        $baseName = $handlerReflectionClass->getShortName();
         $entityName = preg_replace('/^(Crear|Actualizar|Eliminar|Ver|Listar)/', '', $baseName);
         $entityName = preg_replace('/Handler$/', '', (string) $entityName);
-        $entityName = preg_replace('/s$/', '', (string) $entityName); // ListarDirecciones -> Direccione (no perfecto)
+        $entityName = preg_replace('/s$/', '', (string) $entityName);
 
         // Ajustes puntuales de pluralizaciones comunes
         $entityName = match ($entityName) {
@@ -64,56 +61,52 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
             default => $entityName,
         };
 
-        // Excluimos handlers con comportamiento especial ya cubiertos en tests dedicados.
         if (str_contains($baseName, 'Producto') || str_contains($baseName, 'OP') || str_contains($baseName, 'InboundEvent')) {
             $this->assertTrue(true);
             return;
         }
 
-        $entityFqcn = 'App\\Domain\\Produccion\\Entity\\'.$entityName;
-        $entity = class_exists($entityFqcn) ? $this->instantiateWithDummies($entityFqcn) : null;
+        $entityReflectionName = 'App\\Domain\\Produccion\\Entity\\'.$entityName;
+        $entity = class_exists($entityReflectionName) ? $this->instantiateWithDummies($entityReflectionName) : null;
 
-        // Setup mocks por tipo de handler
         if (str_starts_with($baseName, 'Crear')) {
-            if (method_exists($repo, 'save')) {
-                $repo->method('save')->willReturn(1);
+            if (method_exists($repository, 'save')) {
+                $repository->method('save')->willReturn(1);
             }
         } elseif (str_starts_with($baseName, 'Actualizar')) {
-            if (method_exists($repo, 'byId')) {
-                $repo->method('byId')->willReturn($entity);
+            if (method_exists($repository, 'byId')) {
+                $repository->method('byId')->willReturn($entity);
             }
-            if (method_exists($repo, 'save')) {
-                $repo->method('save')->willReturn(1);
+
+            if (method_exists($repository, 'save')) {
+                $repository->method('save')->willReturn(1);
             }
         } elseif (str_starts_with($baseName, 'Eliminar')) {
-            if (method_exists($repo, 'byId')) {
-                $repo->method('byId')->willReturn($entity);
+            if (method_exists($repository, 'byId')) {
+                $repository->method('byId')->willReturn($entity);
             }
-            if (method_exists($repo, 'delete')) {
-                $repo->method('delete')->willReturn(null);
+
+            if (method_exists($repository, 'delete')) {
+                $repository->method('delete')->willReturn(null);
             }
         } elseif (str_starts_with($baseName, 'Ver')) {
-            if (method_exists($repo, 'byId')) {
-                $repo->method('byId')->willReturn($entity);
+            if (method_exists($repository, 'byId')) {
+                $repository->method('byId')->willReturn($entity);
             }
         } elseif (str_starts_with($baseName, 'Listar')) {
-            // Algunos repos usan list() y otros listAll()/etc. En este repo es list().
-            if (method_exists($repo, 'list')) {
-                $repo->method('list')->willReturn($entity ? [$entity] : []);
+            if (method_exists($repository, 'list')) {
+                $repository->method('list')->willReturn($entity ? [$entity] : []);
             }
         }
 
-        // Creamos Command según type-hint del __invoke
-        $invoke = $handlerRc->getMethod('__invoke');
+        $invoke = $handlerReflectionClass->getMethod('__invoke');
         $cmdType = $invoke->getParameters()[0]->getType();
         $cmdFqcn = ($cmdType instanceof ReflectionNamedType) ? $cmdType->getName() : null;
         $this->assertNotNull($cmdFqcn);
         $command = $this->instantiateWithDummies($cmdFqcn);
-
-        $handler = $handlerRc->newInstanceArgs([$repo, $tx]);
+        $handler = $handlerReflectionClass->newInstanceArgs([$repository, $tx]);
         $result = $handler($command);
 
-        // Asserts suaves (solo para evitar falsos positivos).
         if (str_starts_with($baseName, 'Ver')) {
             $this->assertIsArray($result);
             $this->assertArrayHasKey('id', $result);
@@ -124,22 +117,23 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         }
     }
 
+    /**
+     * @return array
+     */
     public static function handlersProvider(): array
     {
-        $root = dirname(__DIR__, 4); // .../tests
-        $base = dirname($root);      // project root
+        $root = dirname(__DIR__, 4);
+        $base = dirname($root);
         $dir = $base.'/app/Application/Produccion/Handler/*.php';
-
         $out = [];
+
         foreach (glob($dir) ?: [] as $file) {
             $class = basename($file, '.php');
 
-            // Solo CRUD maestros
             if (!preg_match('/^(Crear|Actualizar|Eliminar|Ver|Listar)/', $class)) {
                 continue;
             }
 
-            // Excluir OP (ya tienen tests específicos)
             if (str_contains($class, 'OP')) {
                 continue;
             }
@@ -154,26 +148,32 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         return $out;
     }
 
-    private function instantiateWithDummies(string $fqcn): object
+    private function instantiateWithDummies(string $data): object
     {
-        $rc = new ReflectionClass($fqcn);
-        $ctor = $rc->getConstructor();
-
+        $reflectionClass = new ReflectionClass($data);
+        $constructor = $reflectionClass->getConstructor();
         $args = [];
-        if ($ctor) {
-            foreach ($ctor->getParameters() as $p) {
-                $t = $p->getType();
-                if ($t instanceof ReflectionNamedType) {
-                    $args[] = $this->dummyValueForType($t->getName(), $p->allowsNull());
+
+        if ($constructor) {
+            foreach ($constructor->getParameters() as $param) {
+                $type = $param->getType();
+
+                if ($type instanceof ReflectionNamedType) {
+                    $args[] = $this->dummyValueForType($type->getName(), $param->allowsNull());
                 } else {
-                    $args[] = $p->allowsNull() ? null : 'TEST';
+                    $args[] = $param->allowsNull() ? null : 'TEST';
                 }
             }
         }
 
-        return $rc->newInstanceArgs($args);
+        return $reflectionClass->newInstanceArgs($args);
     }
 
+    /**
+     * @param string $typeName
+     * @param bool $nullable
+     * @return mixed
+     */
     private function dummyValueForType(string $typeName, bool $nullable): mixed
     {
         return match ($typeName) {
@@ -187,19 +187,23 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         };
     }
 
+    /**
+     * @param string $typeName
+     * @return object
+     */
     private function dummyObject(string $typeName): object
     {
         if (class_exists($typeName)) {
-            $rc = new ReflectionClass($typeName);
-            if ($rc->isInstantiable()) {
-                $ctor = $rc->getConstructor();
-                if (!$ctor || $ctor->getNumberOfRequiredParameters() === 0) {
-                    return $rc->newInstance();
+            $reflectionClass = new ReflectionClass($typeName);
+            if ($reflectionClass->isInstantiable()) {
+                $constructor = $reflectionClass->getConstructor();
+
+                if (!$constructor || $constructor->getNumberOfRequiredParameters() === 0) {
+                    return $reflectionClass->newInstance();
                 }
             }
         }
 
-        return new class {
-        };
+        return new class {};
     }
 }

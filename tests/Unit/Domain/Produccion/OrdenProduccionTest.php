@@ -15,64 +15,55 @@ use DomainException;
 class OrdenProduccionTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_crear_inicia_en_estado_creada_y_registra_evento(): void
     {
-        $op = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'), 'SCZ-001');
-
-        $this->assertSame(EstadoOP::CREADA, $op->estado());
-        $events = $op->pullEvents();
+        $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'), 'SCZ-001');
+        $this->assertSame(EstadoOP::CREADA, $ordenProduccion->estado());
+        $events = $ordenProduccion->pullEvents();
 
         $this->assertCount(1, $events);
         $this->assertSame(OrdenProduccionCreada::class, $events[0]->name());
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_agregar_items_solo_permitido_en_creada(): void
     {
-        $op = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'), 'SCZ-001');
-        $op->agregarItems([
-            ['sku' => 'PIZZA-PEP', 'qty' => 2],
-            ['sku' => 'PIZZA-MARG', 'qty' => 1],
-        ]);
+        $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'), 'SCZ-001');
+        $ordenProduccion->agregarItems([['sku' => 'PIZZA-PEP', 'qty' => 2], ['sku' => 'PIZZA-MARG', 'qty' => 1]]);
 
-        $this->assertCount(2, $op->items());
-        $this->assertSame('PIZZA-PEP', (string) $op->items()[0]->sku()->value);
-
-        $op->planificar();
+        $this->assertCount(2, $ordenProduccion->items());
+        $this->assertSame('PIZZA-PEP', (string) $ordenProduccion->items()[0]->sku()->value);
+        $ordenProduccion->planificar();
 
         $this->expectException(DomainException::class);
-        $op->agregarItems([
-            ['sku' => 'SKU3', 'qty' => 1],
-        ]);
+        $ordenProduccion->agregarItems([['sku' => 'SKU3', 'qty' => 1]]);
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_transiciones_planificar_procesar_cerrar_registran_eventos(): void
     {
-        $op = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'), 'SCZ-001');
-        $op->agregarItems([
-            ['sku' => 'PIZZA-PEP', 'qty' => 1],
-        ]);
+        $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'), 'SCZ-001');
+        $ordenProduccion->agregarItems([['sku' => 'PIZZA-PEP', 'qty' => 1]]);
 
         // limpiamos el evento de creación para enfocarnos en transiciones
-        $op->pullEvents();
+        $ordenProduccion->pullEvents();
 
-        $op->planificar();
-        $this->assertSame(EstadoOP::PLANIFICADA, $op->estado());
+        $ordenProduccion->planificar();
+        $this->assertSame(EstadoOP::PLANIFICADA, $ordenProduccion->estado());
 
-        $op->procesar();
-        $this->assertSame(EstadoOP::EN_PROCESO, $op->estado());
+        $ordenProduccion->procesar();
+        $this->assertSame(EstadoOP::EN_PROCESO, $ordenProduccion->estado());
 
-        $op->cerrar();
-        $this->assertSame(EstadoOP::CERRADA, $op->estado());
+        $ordenProduccion->cerrar();
+        $this->assertSame(EstadoOP::CERRADA, $ordenProduccion->estado());
 
-        $events = $op->pullEvents();
+        $events = $ordenProduccion->pullEvents();
         $this->assertCount(3, $events);
         $this->assertSame(OrdenProduccionPlanificada::class, $events[0]->name());
         $this->assertSame(OrdenProduccionProcesada::class, $events[1]->name());
@@ -80,13 +71,12 @@ class OrdenProduccionTest extends TestCase
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_no_permite_transiciones_invalidas(): void
     {
-        $op = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'), 'SCZ-001');
-
+        $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'), 'SCZ-001');
         $this->expectException(DomainException::class);
-        $op->procesar();
+        $ordenProduccion->procesar();
     }
 }

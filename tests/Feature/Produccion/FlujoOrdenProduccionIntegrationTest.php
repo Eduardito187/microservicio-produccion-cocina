@@ -5,12 +5,14 @@ namespace Tests\Feature\Produccion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
-use Carbon\Carbon;
 
 class FlujoOrdenProduccionIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * @return void
+     */
     public function test_flujo_completo_generar_planificar_procesar_despachar(): void
     {
         $this->seed();
@@ -64,10 +66,7 @@ class FlujoOrdenProduccionIntegrationTest extends TestCase
         $responseGenerar = $this->postJson(route("produccion.ordenes.generar"), [
             'fecha' => '2025-11-04',
             'sucursalId' => 'SCZ-001',
-            'items' => [
-                ['sku' => 'PIZZA-PEP', 'qty' => 1],
-                ['sku' => 'PIZZA-MARG', 'qty' => 1]
-            ],
+            'items' => [['sku' => 'PIZZA-PEP', 'qty' => 1], ['sku' => 'PIZZA-MARG', 'qty' => 1]]
         ]);
 
         $responseGenerar->assertCreated()->assertJsonStructure(['ordenProduccionId']);
@@ -102,8 +101,7 @@ class FlujoOrdenProduccionIntegrationTest extends TestCase
         $this->assertDatabaseHas('orden_produccion', ['id' => $opId, 'estado' => 'CERRADA']);
         $this->assertDatabaseHas('item_despacho', ['op_id' => $opId]);
         $this->assertSame(
-            2,
-            DB::table('item_despacho')->where('op_id', $opId)->whereNotNull('paquete_id')->count()
+            2, DB::table('item_despacho')->where('op_id', $opId)->whereNotNull('paquete_id')->count()
         );
     }
 }

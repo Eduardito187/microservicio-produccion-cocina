@@ -9,7 +9,7 @@ use DomainException;
 class QtyTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_it_creates_a_valid_qty(): void
     {
@@ -18,7 +18,7 @@ class QtyTest extends TestCase
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_it_throws_exception_when_value_is_not_positive(): void
     {
@@ -27,7 +27,7 @@ class QtyTest extends TestCase
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_add_returns_new_instance_and_does_not_modify_originals(): void
     {

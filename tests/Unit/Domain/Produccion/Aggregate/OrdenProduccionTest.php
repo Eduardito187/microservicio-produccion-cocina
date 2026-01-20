@@ -12,58 +12,64 @@ use DomainException;
 class OrdenProduccionTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_crear_inicializa_la_op_en_estado_creada_y_registra_evento(): void
     {
         $fecha = new DateTimeImmutable('2025-01-01');
-        $op = OrdenProduccion::crear($fecha, 'SUC1');
-        $this->assertSame(EstadoOP::CREADA, $op->estado());
-        $this->assertSame('SUC1', $op->sucursalId());
-        $events = $op->pullEvents();
+        $ordenProduccion = OrdenProduccion::crear($fecha, 'SUC1');
+        $this->assertSame(EstadoOP::CREADA, $ordenProduccion->estado());
+        $this->assertSame('SUC1', $ordenProduccion->sucursalId());
+
+        $events = $ordenProduccion->pullEvents();
         $this->assertCount(1, $events);
         $this->assertInstanceOf(OrdenProduccionCreada::class, $events[0]);
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_agregar_items_construye_orden_items_desde_array(): void
     {
         $fecha = new DateTimeImmutable('2025-01-01');
-        $op = OrdenProduccion::crear($fecha, 'SUC1');
+        $ordenProduccion = OrdenProduccion::crear($fecha, 'SUC1');
         $items = [['sku' => 'ABC', 'qty' => 3], ['sku' => 'XYZ', 'qty' => 5]];
-        $op->agregarItems($items);
-        $this->assertCount(2, $op->items());
-        $this->assertSame('ABC', $op->items()[0]->sku()->value());
-        $this->assertSame(3, $op->items()[0]->qty()->value());
+
+        $ordenProduccion->agregarItems($items);
+        $this->assertCount(2, $ordenProduccion->items());
+        $this->assertSame('ABC', $ordenProduccion->items()[0]->sku()->value());
+        $this->assertSame(3, $ordenProduccion->items()[0]->qty()->value());
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_agregar_items_falla_si_estado_no_es_creada(): void
     {
         $fecha = new DateTimeImmutable('2025-01-01');
-        $op = OrdenProduccion::crear($fecha, 'SUC1');
-        $op->planificar();
+        $ordenProduccion = OrdenProduccion::crear($fecha, 'SUC1');
+
+        $ordenProduccion->planificar();
         $this->expectException(DomainException::class);
-        $op->agregarItems([['sku' => 'ABC', 'qty' => 3]]);
+        $ordenProduccion->agregarItems([['sku' => 'ABC', 'qty' => 3]]);
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_flujo_de_estados_planificar_procesar_cerrar(): void
     {
         $fecha = new DateTimeImmutable('2025-01-01');
-        $op = OrdenProduccion::crear($fecha, 'SUC1');
-        $this->assertNull($op->id());
-        $op->planificar();
-        $this->assertSame(EstadoOP::PLANIFICADA, $op->estado());
-        $op->procesar();
-        $this->assertSame(EstadoOP::EN_PROCESO, $op->estado());
-        $op->cerrar();
-        $this->assertSame(EstadoOP::CERRADA, $op->estado());
+        $ordenProduccion = OrdenProduccion::crear($fecha, 'SUC1');
+        $this->assertNull($ordenProduccion->id());
+
+        $ordenProduccion->planificar();
+        $this->assertSame(EstadoOP::PLANIFICADA, $ordenProduccion->estado());
+
+        $ordenProduccion->procesar();
+        $this->assertSame(EstadoOP::EN_PROCESO, $ordenProduccion->estado());
+
+        $ordenProduccion->cerrar();
+        $this->assertSame(EstadoOP::CERRADA, $ordenProduccion->estado());
     }
 }

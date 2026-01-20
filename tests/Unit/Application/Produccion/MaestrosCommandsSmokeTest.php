@@ -10,17 +10,19 @@ use ReflectionNamedType;
 final class MaestrosCommandsSmokeTest extends TestCase
 {
     /**
-     * @dataProvider commandsProvider
+     * @param string $data
+     * @return void
      */
-    public function test_commands_se_pueden_instanciar(string $fqcn): void
+    public function test_commands_se_pueden_instanciar(string $data): void
     {
-        $rc = new ReflectionClass($fqcn);
-        $ctor = $rc->getConstructor();
-
+        $reflectionClass = new ReflectionClass($data);
+        $constructor = $reflectionClass->getConstructor();
         $args = [];
-        if ($ctor) {
-            foreach ($ctor->getParameters() as $p) {
+
+        if ($constructor) {
+            foreach ($constructor->getParameters() as $p) {
                 $type = $p->getType();
+
                 if ($type instanceof ReflectionNamedType) {
                     $args[] = $this->dummyValueForType($type->getName(), $p->allowsNull());
                 } else {
@@ -29,13 +31,15 @@ final class MaestrosCommandsSmokeTest extends TestCase
             }
         }
 
-        $obj = $rc->newInstanceArgs($args);
-        $this->assertInstanceOf($fqcn, $obj);
+        $obj = $reflectionClass->newInstanceArgs($args);
+        $this->assertInstanceOf($data, $obj);
     }
 
+    /**
+     * @return array
+     */
     public static function commandsProvider(): array
     {
-        // Solo los que listaste con 0%
         $classes = [
             // Actualizar*
             'App\\Application\\Produccion\\Command\\ActualizarCalendarioItem',
@@ -82,12 +86,19 @@ final class MaestrosCommandsSmokeTest extends TestCase
         ];
 
         $out = [];
-        foreach ($classes as $fqcn) {
-            $out[$fqcn] = [$fqcn];
+
+        foreach ($classes as $data) {
+            $out[$data] = [$data];
         }
+
         return $out;
     }
 
+    /**
+     * @param string $typeName
+     * @param bool $nullable
+     * @return mixed
+     */
     private function dummyValueForType(string $typeName, bool $nullable): mixed
     {
         return match ($typeName) {
@@ -101,19 +112,24 @@ final class MaestrosCommandsSmokeTest extends TestCase
         };
     }
 
+    /**
+     * @param string $typeName
+     * @return object
+     */
     private function dummyObject(string $typeName): object
     {
         if (class_exists($typeName)) {
-            $rc = new ReflectionClass($typeName);
-            if ($rc->isInstantiable()) {
-                $ctor = $rc->getConstructor();
-                if (!$ctor || $ctor->getNumberOfRequiredParameters() === 0) {
-                    return $rc->newInstance();
+            $reflectionClass = new ReflectionClass($typeName);
+
+            if ($reflectionClass->isInstantiable()) {
+                $constructor = $reflectionClass->getConstructor();
+
+                if (!$constructor || $constructor->getNumberOfRequiredParameters() === 0) {
+                    return $reflectionClass->newInstance();
                 }
             }
         }
 
-        return new class {
-        };
+        return new class {};
     }
 }

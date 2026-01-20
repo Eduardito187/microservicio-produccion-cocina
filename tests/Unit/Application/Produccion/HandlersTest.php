@@ -22,125 +22,81 @@ use DateTimeImmutable;
 class HandlersTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return TransactionAggregate
      */
     private function transactionAggregate(): TransactionAggregate
     {
-        $tm = new class implements TransactionManagerInterface {
-            public function run(callable $callback): mixed
-            {
+        $transactionManager = new class implements TransactionManagerInterface {
+            public function run(callable $callback): mixed {
                 return $callback();
             }
 
-            public function afterCommit(callable $callback): void
-            {
-                // En unit tests no ejecutamos lógica post-commit.
-                // Si en el futuro se requiere, se puede invocar aquí.
-            }
+            public function afterCommit(callable $callback): void {}
         };
 
-        return new TransactionAggregate($tm);
+        return new TransactionAggregate($transactionManager);
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_generar_op_handler_crea_op_y_persiste(): void
     {
-        $repo = $this->createMock(OrdenProduccionRepositoryInterface::class);
-
-        $repo->expects($this->once())
-            ->method('save')
-            ->with($this->callback(function (OrdenProduccion $op): bool {
-                return $op->estado() === EstadoOP::CREADA
-                    && $op->sucursalId() === 'SCZ-001'
-                    && count($op->items()) === 2;
-            }))
-            ->willReturn(123);
-
-        $handler = new GenerarOPHandler($repo, $this->transactionAggregate());
-
+        $repository = $this->createMock(OrdenProduccionRepositoryInterface::class);
+        $repository->expects($this->once())->method('save')
+            ->with($this->callback(function (OrdenProduccion $ordenProduccion): bool {
+                return $ordenProduccion->estado() === EstadoOP::CREADA && $ordenProduccion->sucursalId() === 'SCZ-001' && count($ordenProduccion->items()) === 2;
+            }))->willReturn(123);
+        $handler = new GenerarOPHandler($repository, $this->transactionAggregate());
         $command = new GenerarOP(
             123,
-            fecha: new DateTimeImmutable('2025-11-04'),
-            sucursalId: 'SCZ-001',
-            items: [
-                ['sku' => 'PIZZA-PEP', 'qty' => 1],
-                ['sku' => 'PIZZA-MARG', 'qty' => 2],
-            ]
+            new DateTimeImmutable('2025-11-04'),
+            'SCZ-001',
+            [['sku' => 'PIZZA-PEP', 'qty' => 1], ['sku' => 'PIZZA-MARG', 'qty' => 2]]
         );
-
         $result = $handler($command);
+
         $this->assertSame(123, $result);
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_planificar_procesar_y_despachar_handlers_ejecutan_transiciones(): void
     {
-        $op = OrdenProduccion::reconstitute(
-            id: 123,
-            fecha: new DateTimeImmutable('2025-11-04'),
-            sucursalId: 'SCZ-001',
-            estado: EstadoOP::CREADA,
-            items: [],
-            batches: [],
-            itemsDespacho: []
-        );
+        $ordenProduccion = OrdenProduccion::reconstitute(123, new DateTimeImmutable('2025-11-04'), 'SCZ-001', EstadoOP::CREADA, [], [], []);
+        $ordenProduccion->agregarItems([['sku' => 'PIZZA-PEP', 'qty' => 1]]);
 
-        $op->agregarItems([
-            ['sku' => 'PIZZA-PEP', 'qty' => 1],
-        ]);
-
-        // ✅ FIX: cargar producto en los items antes de planificar (evita productoId=null)
-        foreach ($op->items() as $item) {
-            $item->loadProduct(new Products(
-                id: 1,
-                sku: 'PIZZA-PEP',
-                price: 10.0,
-                special_price: 0.0
-            ));
+        foreach ($ordenProduccion->items() as $item) {
+            $item->loadProduct(new Products(1, 'PIZZA-PEP', 10.0, 0.0));
         }
 
-        $repo = $this->createMock(OrdenProduccionRepositoryInterface::class);
-
-        // byId siempre devuelve el mismo agregado (para simplificar el test)
-        $repo->method('byId')->willReturn($op);
-        $repo->method('save')->willReturn(123);
+        $repository = $this->createMock(OrdenProduccionRepositoryInterface::class);
+        $repository->method('byId')->willReturn($ordenProduccion);
+        $repository->method('save')->willReturn(123);
 
         $tx = $this->transactionAggregate();
+        $planificar = new PlanificadorOPHandler($repository, $tx);
+        $planificar(new PlanificarOP(["ordenProduccionId" => 123, "estacionId" => 1, "recetaVersionId" => 1, "porcionId" => 1]));
 
-        $planificar = new PlanificadorOPHandler($repo, $tx);
-        $planificar(new PlanificarOP(
-            [
-                "ordenProduccionId" => 123,
-                "estacionId" => 1,
-                "recetaVersionId" => 1,
-                "porcionId" => 1
-            ]
-        ));
-        $this->assertSame(EstadoOP::PLANIFICADA, $op->estado());
-
-        $procesar = new ProcesadorOPHandler($repo, $tx);
+        $this->assertSame(EstadoOP::PLANIFICADA, $ordenProduccion->estado());
+        $procesar = new ProcesadorOPHandler($repository, $tx);
         $procesar(new ProcesadorOP(opId: 123));
-        $this->assertSame(EstadoOP::EN_PROCESO, $op->estado());
 
-        $despachar = new DespachadorOPHandler($repo, $tx);
+        $this->assertSame(EstadoOP::EN_PROCESO, $ordenProduccion->estado());
+        $despachar = new DespachadorOPHandler($repository, $tx);
         $despachar(new DespachadorOP(
             [
                 "ordenProduccionId" => 123,
                 "itemsDespacho" => [
-                    [
-                        'sku' => 'PIZZA-PEP',
-                        'recetaVersionId' => 1
-                    ]
+                    ['sku' => 'PIZZA-PEP', 'recetaVersionId' => 1]
                 ],
                 "pacienteId" => 1,
                 "direccionId" => 1,
                 "ventanaEntrega" => 1
             ]
         ));
-        $this->assertSame(EstadoOP::CERRADA, $op->estado());
+
+        $this->assertSame(EstadoOP::CERRADA, $ordenProduccion->estado());
     }
 }

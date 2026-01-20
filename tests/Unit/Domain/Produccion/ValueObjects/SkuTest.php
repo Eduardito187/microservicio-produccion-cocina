@@ -9,7 +9,7 @@ use DomainException;
 class SkuTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_it_normalizes_value_to_uppercase(): void
     {
@@ -18,7 +18,7 @@ class SkuTest extends TestCase
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_it_throws_exception_when_value_is_empty(): void
     {

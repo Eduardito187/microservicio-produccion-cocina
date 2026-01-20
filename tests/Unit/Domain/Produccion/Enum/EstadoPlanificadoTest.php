@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 class EstadoPlanificadoTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_enum_values_are_correct(): void
     {
@@ -18,7 +18,7 @@ class EstadoPlanificadoTest extends TestCase
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_enum_from_value(): void
     {

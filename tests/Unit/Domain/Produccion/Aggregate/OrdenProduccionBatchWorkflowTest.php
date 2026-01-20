@@ -14,34 +14,24 @@ use DateTimeImmutable;
 class OrdenProduccionBatchWorkflowTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_generar_batches_creates_one_batch_per_item_and_uses_item_product_id(): void
     {
-        $op = OrdenProduccion::reconstitute(
-            id: 123,
-            fecha: new DateTimeImmutable('2025-11-04'),
-            sucursalId: 'SCZ-001',
-            estado: EstadoOP::CREADA,
-            items: [],
-            batches: [],
-            itemsDespacho: []
+        $ordenProduccion = OrdenProduccion::reconstitute(
+            123, new DateTimeImmutable('2025-11-04'), 'SCZ-001', EstadoOP::CREADA, [], [], []
         );
 
-        $op->agregarItems([
-            ['sku' => 'PIZZA-PEP', 'qty' => 2], ['sku' => 'PIZZA-MARG', 'qty' => 1]
-        ]);
+        $ordenProduccion->agregarItems([['sku' => 'PIZZA-PEP', 'qty' => 2], ['sku' => 'PIZZA-MARG', 'qty' => 1]]);
+        $ordenProduccion->items()[0]->loadProduct(new Products(10, 'PIZZA-PEP', 10.0, 0.0));
+        $ordenProduccion->items()[1]->loadProduct(new Products(20, 'PIZZA-MARG', 12.0, 0.0));
 
-        $op->items()[0]->loadProduct(new Products(10, 'PIZZA-PEP', 10.0, 0.0));
-        $op->items()[1]->loadProduct(new Products(20, 'PIZZA-MARG', 12.0, 0.0));
-
-        $cmd = new PlanificarOP([
+        $command = new PlanificarOP([
             'ordenProduccionId' => 123, 'estacionId' => 1, 'recetaVersionId' => 7, 'porcionId' => 3
         ]);
 
-        $op->generarBatches($cmd);
-
-        $batches = $op->batches();
+        $ordenProduccion->generarBatches($command);
+        $batches = $ordenProduccion->batches();
         $this->assertCount(2, $batches);
 
         $this->assertSame(10, $batches[0]->productoId);
@@ -61,34 +51,24 @@ class OrdenProduccionBatchWorkflowTest extends TestCase
      */
     public function test_procesar_and_despachar_batches_transitions_all_batches(): void
     {
-        $op = OrdenProduccion::reconstitute(
-            id: 123,
-            fecha: new DateTimeImmutable('2025-11-04'),
-            sucursalId: 'SCZ-001',
-            estado: EstadoOP::CREADA,
-            items: [],
-            batches: [],
-            itemsDespacho: []
+        $ordenProduccion = OrdenProduccion::reconstitute(
+            123, new DateTimeImmutable('2025-11-04'), 'SCZ-001', EstadoOP::CREADA, [], [], []
         );
-
-        $op->agregarItems([
-            ['sku' => 'PIZZA-PEP', 'qty' => 1],
-        ]);
-        $op->items()[0]->loadProduct(new Products(10, 'PIZZA-PEP', 10.0, 0.0));
-
-        $op->generarBatches(new PlanificarOP([
+        $ordenProduccion->agregarItems([['sku' => 'PIZZA-PEP', 'qty' => 1]]);
+        $ordenProduccion->items()[0]->loadProduct(new Products(10, 'PIZZA-PEP', 10.0, 0.0));
+        $ordenProduccion->generarBatches(new PlanificarOP([
             'ordenProduccionId' => 123,
             'estacionId' => 1,
             'recetaVersionId' => 7,
-            'porcionId' => 3,
+            'porcionId' => 3
         ]));
 
-        $op->procesarBatches();
-        $this->assertSame(EstadoPlanificado::PROCESANDO, $op->batches()[0]->estado);
-        $this->assertSame(1, $op->batches()[0]->cantProducida);
+        $ordenProduccion->procesarBatches();
+        $this->assertSame(EstadoPlanificado::PROCESANDO, $ordenProduccion->batches()[0]->estado);
+        $this->assertSame(1, $ordenProduccion->batches()[0]->cantProducida);
 
-        $op->despacharBatches();
-        $this->assertSame(EstadoPlanificado::DESPACHADO, $op->batches()[0]->estado);
+        $ordenProduccion->despacharBatches();
+        $this->assertSame(EstadoPlanificado::DESPACHADO, $ordenProduccion->batches()[0]->estado);
     }
 
     /**
@@ -96,35 +76,24 @@ class OrdenProduccionBatchWorkflowTest extends TestCase
      */
     public function test_generar_items_despacho_creates_one_item_per_order_item(): void
     {
-        $op = OrdenProduccion::reconstitute(
-            id: 123,
-            fecha: new DateTimeImmutable('2025-11-04'),
-            sucursalId: 'SCZ-001',
-            estado: EstadoOP::CREADA,
-            items: [],
-            batches: [],
-            itemsDespacho: []
+        $ordenProduccion = OrdenProduccion::reconstitute(
+            123, new DateTimeImmutable('2025-11-04'), 'SCZ-001', EstadoOP::CREADA, [], [], []
         );
-
-        $op->agregarItems([
-            ['sku' => 'PIZZA-PEP', 'qty' => 1],
-            ['sku' => 'PIZZA-MARG', 'qty' => 1],
+        $ordenProduccion->agregarItems([
+            ['sku' => 'PIZZA-PEP', 'qty' => 1], ['sku' => 'PIZZA-MARG', 'qty' => 1]
         ]);
-        $op->items()[0]->loadProduct(new Products(10, 'PIZZA-PEP', 10.0, 0.0));
-        $op->items()[1]->loadProduct(new Products(20, 'PIZZA-MARG', 10.0, 0.0));
+        $ordenProduccion->items()[0]->loadProduct(new Products(10, 'PIZZA-PEP', 10.0, 0.0));
+        $ordenProduccion->items()[1]->loadProduct(new Products(20, 'PIZZA-MARG', 10.0, 0.0));
 
-        $op->generarItemsDespacho(new DespachadorOP([
+        $ordenProduccion->generarItemsDespacho(new DespachadorOP([
             'ordenProduccionId' => 123,
-            'itemsDespacho' => [
-                ['sku' => 'PIZZA-PEP', 'recetaVersionId' => 1],
-                ['sku' => 'PIZZA-MARG', 'recetaVersionId' => 1],
-            ],
+            'itemsDespacho' => [['sku' => 'PIZZA-PEP', 'recetaVersionId' => 1], ['sku' => 'PIZZA-MARG', 'recetaVersionId' => 1]],
             'pacienteId' => 1,
             'direccionId' => 1,
-            'ventanaEntrega' => 1,
+            'ventanaEntrega' => 1
         ]));
 
-        $items = $op->itemsDespacho();
+        $items = $ordenProduccion->itemsDespacho();
         $this->assertCount(2, $items);
         $this->assertSame(10, $items[0]->productId);
         $this->assertSame(20, $items[1]->productId);

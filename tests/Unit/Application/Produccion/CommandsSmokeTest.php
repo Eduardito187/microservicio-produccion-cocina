@@ -2,58 +2,54 @@
 
 namespace Tests\Unit\Application\Produccion;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use ReflectionNamedType;
+use DateTimeImmutable;
+use ReflectionClass;
 
-/**
- * Smoke tests para cubrir constructores de Commands.
- *
- * - No toca DB ni framework.
- * - Recorre todos los Commands del folder y los instancia con valores dummy
- *   según tipos del constructor.
- */
 class CommandsSmokeTest extends TestCase
 {
     /**
-     * @dataProvider commandsProvider
+     * @param string $data
+     * @return void
      */
-    public function test_commands_se_pueden_instanciar(string $fqcn): void
+    public function test_commands_se_pueden_instanciar(string $data): void
     {
-        $rc = new ReflectionClass($fqcn);
-        $ctor = $rc->getConstructor();
-
+        $reflectionClass = new ReflectionClass($data);
+        $constructor = $reflectionClass->getConstructor();
         $args = [];
-        if ($ctor) {
-            foreach ($ctor->getParameters() as $p) {
-                $type = $p->getType();
+
+        if ($constructor) {
+            foreach ($constructor->getParameters() as $param) {
+                $type = $param->getType();
+
                 if ($type instanceof ReflectionNamedType) {
-                    $args[] = $this->dummyValueForType($type->getName(), $p->allowsNull());
+                    $args[] = $this->dummyValueForType($type->getName(), $param->allowsNull());
                 } else {
-                    // fallback: null si no podemos inferir (deberia ser raro aquí)
                     $args[] = null;
                 }
             }
         }
 
-        $obj = $rc->newInstanceArgs($args);
-        $this->assertInstanceOf($fqcn, $obj);
+        $obj = $reflectionClass->newInstanceArgs($args);
+        $this->assertInstanceOf($data, $obj);
     }
 
+    /**
+     * @return array
+     */
     public static function commandsProvider(): array
     {
-        $root = dirname(__DIR__, 4); // .../tests
-        $base = dirname($root);      // project root
+        $root = dirname(__DIR__, 4);
+        $base = dirname($root);
         $dir = $base.'/app/Application/Produccion/Command/*.php';
-
         $out = [];
+
         foreach (glob($dir) ?: [] as $file) {
             $class = basename($file, '.php');
             $out[$class] = ['App\\Application\\Produccion\\Command\\'.$class];
         }
 
-        // Evita caso borde si el glob no devuelve nada por rutas.
         if ($out === []) {
             $out['CrearCalendario'] = ['App\\Application\\Produccion\\Command\\CrearCalendario'];
         }
@@ -61,6 +57,11 @@ class CommandsSmokeTest extends TestCase
         return $out;
     }
 
+    /**
+     * @param string $typeName
+     * @param bool $nullable
+     * @return mixed
+     */
     private function dummyValueForType(string $typeName, bool $nullable): mixed
     {
         return match ($typeName) {
@@ -74,21 +75,24 @@ class CommandsSmokeTest extends TestCase
         };
     }
 
+    /**
+     * @param string $typeName
+     * @return object
+     */
     private function dummyObject(string $typeName): object
     {
-        // Para casos raros donde el command recibe objetos.
         if (class_exists($typeName)) {
-            $rc = new ReflectionClass($typeName);
-            if ($rc->isInstantiable()) {
-                $ctor = $rc->getConstructor();
-                if (!$ctor || $ctor->getNumberOfRequiredParameters() === 0) {
-                    return $rc->newInstance();
+            $reflectionClass = new ReflectionClass($typeName);
+
+            if ($reflectionClass->isInstantiable()) {
+                $constructor = $reflectionClass->getConstructor();
+
+                if (!$constructor || $constructor->getNumberOfRequiredParameters() === 0) {
+                    return $reflectionClass->newInstance();
                 }
             }
         }
 
-        // fallback seguro
-        return new class {
-        };
+        return new class {};
     }
 }

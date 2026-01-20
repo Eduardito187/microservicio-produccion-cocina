@@ -4,49 +4,49 @@ namespace Tests\Unit\Domain\Produccion;
 
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
-use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use ReflectionNamedType;
+use DateTimeImmutable;
+use ReflectionClass;
 
-/**
- * Smoke tests para cubrir constructores de Entities "maestras".
- *
- * Suben cobertura de App\Domain\Produccion\Entity\*.
- */
 class MaestrosEntitiesSmokeTest extends TestCase
 {
     /**
-     * @dataProvider entitiesProvider
+     * @param string $data
+     * @return void
      */
-    public function test_entities_se_pueden_instanciar(string $fqcn): void
+    public function test_entities_se_pueden_instanciar(string $data): void
     {
-        $rc = new ReflectionClass($fqcn);
-        $ctor = $rc->getConstructor();
-
+        $reflectionClass = new ReflectionClass($data);
+        $constructor = $reflectionClass->getConstructor();
         $args = [];
-        if ($ctor) {
-            foreach ($ctor->getParameters() as $p) {
-                $type = $p->getType();
+
+        if ($constructor) {
+            foreach ($constructor->getParameters() as $param) {
+                $type = $param->getType();
+
                 if ($type instanceof ReflectionNamedType) {
-                    $args[] = $this->dummyValueForType($type->getName(), $p->allowsNull());
+                    $args[] = $this->dummyValueForType($type->getName(), $param->allowsNull());
                 } else {
                     $args[] = null;
                 }
             }
         }
 
-        $obj = $rc->newInstanceArgs($args);
-        $this->assertInstanceOf($fqcn, $obj);
+        $obj = $reflectionClass->newInstanceArgs($args);
+        $this->assertInstanceOf($data, $obj);
     }
 
+    /**
+     * @return array
+     */
     public static function entitiesProvider(): array
     {
-        $root = dirname(__DIR__, 3); // .../tests
-        $base = dirname($root);      // project root
+        $root = dirname(__DIR__, 3);
+        $base = dirname($root);
         $dir = $base.'/app/Domain/Produccion/Entity/*.php';
-
         $out = [];
+
         foreach (glob($dir) ?: [] as $file) {
             $class = basename($file, '.php');
             $out[$class] = ['App\\Domain\\Produccion\\Entity\\'.$class];
@@ -59,9 +59,13 @@ class MaestrosEntitiesSmokeTest extends TestCase
         return $out;
     }
 
+    /**
+     * @param string $typeName
+     * @param bool $nullable
+     * @return mixed
+     */
     private function dummyValueForType(string $typeName, bool $nullable): mixed
     {
-        // Value Objects explícitos (evita class@anonymous en entidades como OrdenItem)
         if ($typeName === Qty::class) {
             return new Qty(1);
         }
@@ -81,19 +85,24 @@ class MaestrosEntitiesSmokeTest extends TestCase
         };
     }
 
+    /**
+     * @param string $typeName
+     * @return object
+     */
     private function dummyObject(string $typeName): object
     {
         if (class_exists($typeName)) {
-            $rc = new ReflectionClass($typeName);
-            if ($rc->isInstantiable()) {
-                $ctor = $rc->getConstructor();
-                if (!$ctor || $ctor->getNumberOfRequiredParameters() === 0) {
-                    return $rc->newInstance();
+            $reflectionClass = new ReflectionClass($typeName);
+
+            if ($reflectionClass->isInstantiable()) {
+                $constructor = $reflectionClass->getConstructor();
+
+                if (!$constructor || $constructor->getNumberOfRequiredParameters() === 0) {
+                    return $reflectionClass->newInstance();
                 }
             }
         }
 
-        return new class {
-        };
+        return new class {};
     }
 }

@@ -11,30 +11,17 @@ use PHPUnit\Framework\TestCase;
 class ProduccionBatchCrearTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_crear_records_event_and_sets_initial_state(): void
     {
-        $b = ProduccionBatch::crear(
-            id: 1,
-            ordenProduccionId: 123,
-            productoId: 10,
-            estacionId: 2,
-            recetaVersionId: 7,
-            porcionId: 3,
-            cantPlanificada: 5,
-            cantProducida: 0,
-            mermaGr: 0,
-            estado: EstadoPlanificado::PROGRAMADO,
-            rendimiento: 0,
-            qty: new Qty(5),
-            posicion: 1,
-            ruta: []
+        $produccionBatch = ProduccionBatch::crear(
+            1, 123, 10, 2, 7, 3, 5, 0, 0, EstadoPlanificado::PROGRAMADO, 0, new Qty(5), 1, []
         );
 
-        $this->assertSame(EstadoPlanificado::PROGRAMADO, $b->estado);
+        $this->assertSame(EstadoPlanificado::PROGRAMADO, $produccionBatch->estado);
 
-        $events = $b->pullEvents();
+        $events = $produccionBatch->pullEvents();
         $this->assertCount(1, $events);
         $this->assertSame(ProduccionBatchCreado::class, $events[0]->name());
 

@@ -10,7 +10,7 @@ use DomainException;
 class ValueObjectsTest extends TestCase
 {
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_sku_normaliza_a_mayusculas_y_trim(): void
     {
@@ -19,7 +19,7 @@ class ValueObjectsTest extends TestCase
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_sku_vacio_lanza_excepcion(): void
     {
@@ -28,7 +28,7 @@ class ValueObjectsTest extends TestCase
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_qty_rechaza_cero_o_negativo(): void
     {
@@ -37,7 +37,7 @@ class ValueObjectsTest extends TestCase
     }
 
     /**
-     * @inheritDoc
+     * @return void
      */
     public function test_qty_acepta_positivo(): void
     {
