@@ -28,8 +28,7 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
     }
 
     /**
-     * @param string $data
-     * @return void
+     * @dataProvider handlersProvider
      */
     public function test_handler_se_puede_ejecutar_en_memoria(string $data): void
     {

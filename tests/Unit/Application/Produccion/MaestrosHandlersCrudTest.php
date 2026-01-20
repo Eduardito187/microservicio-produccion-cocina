@@ -149,8 +149,7 @@ class MaestrosHandlersCrudTest extends TestCase
     }
 
     /**
-     * @param array $data
-     * @return void
+     * @dataProvider maestrosProvider
      */
     public function test_crear_handler_llama_save_y_devuelve_id(array $data): void
     {
@@ -164,8 +163,7 @@ class MaestrosHandlersCrudTest extends TestCase
     }
 
     /**
-     * @param array $data
-     * @return void
+     * @dataProvider maestrosProvider
      */
     public function test_actualizar_handler_hace_byId_modifica_y_save(array $data): void
     {
@@ -190,8 +188,7 @@ class MaestrosHandlersCrudTest extends TestCase
     }
 
     /**
-     * @param array $data
-     * @return void
+     * @dataProvider maestrosProvider
      */
     public function test_eliminar_handler_hace_byId_y_delete(array $data): void
     {
@@ -205,8 +202,7 @@ class MaestrosHandlersCrudTest extends TestCase
     }
 
     /**
-     * @param array $data
-     * @return void
+     * @dataProvider maestrosProvider
      */
     public function test_ver_handler_mapea_correcto(array $data): void
     {
@@ -219,8 +215,7 @@ class MaestrosHandlersCrudTest extends TestCase
     }
 
     /**
-     * @param array $data
-     * @return void
+     * @dataProvider maestrosProvider
      */
     public function test_listar_handler_mapea_lista_correcto(array $data): void
     {

@@ -10,8 +10,7 @@ use ReflectionClass;
 class CommandsSmokeTest extends TestCase
 {
     /**
-     * @param string $data
-     * @return void
+     * @dataProvider commandsProvider
      */
     public function test_commands_se_pueden_instanciar(string $data): void
     {

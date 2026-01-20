@@ -12,8 +12,7 @@ use ReflectionClass;
 class MaestrosEntitiesSmokeTest extends TestCase
 {
     /**
-     * @param string $data
-     * @return void
+     * @dataProvider entitiesProvider
      */
     public function test_entities_se_pueden_instanciar(string $data): void
     {

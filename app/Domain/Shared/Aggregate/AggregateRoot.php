@@ -33,16 +33,17 @@ trait AggregateRoot
     }
 
     /**
+     * @param mixed $persistenceId
      * @return void
      */
-    public function publishOutbox($persistenceId): void
+    public function publishOutbox(mixed $persistenceId): void
     {
         foreach ($this->pullEvents() as $event) {
             OutboxStore::append(
-                name: $event->name(),
-                aggregateId: $persistenceId,
-                occurredOn: $event->occurredOn(),
-                payload: $event->toArray()
+                $event->name(),
+                $persistenceId ?? null,
+                $event->occurredOn(),
+                $event->toArray()
             );
         }
     }

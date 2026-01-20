@@ -7,7 +7,7 @@
       "description": "POST generar OP",
       "providerStates": [
         {
-          "name": "product SKU1 exists"
+          "name": "product PIZZA-PEP exists"
         }
       ],
       "request": {
@@ -16,7 +16,7 @@
           "items": [
             {
               "qty": 2,
-              "sku": "SKU1"
+              "sku": "PIZZA-PEP"
             }
           ],
           "sucursalId": "SCZ"

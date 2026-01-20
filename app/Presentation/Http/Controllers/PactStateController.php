@@ -26,7 +26,7 @@ class PactStateController
         try {
             DB::beginTransaction();
             switch ($state) {
-                case 'product SKU1 exists':
+                case 'product PIZZA-PEP exists':
                     $this->ensureProductSku1();
                     break;
                 case 'orden produccion 1 exists and porcion 1 exists':
@@ -52,8 +52,8 @@ class PactStateController
     private function ensureProductSku1(): void
     {
         DB::table("products")->updateOrInsert(
-            ['sku' => 'SKU1'],
-            ['sku' => 'SKU1', 'price' => 100, 'special_price' => 0, 'created_at' => now(), 'updated_at' => now()]
+            ['sku' => 'PIZZA-PEP'],
+            ['sku' => 'PIZZA-PEP', 'price' => 100, 'special_price' => 0, 'created_at' => now(), 'updated_at' => now()]
         );
     }
 

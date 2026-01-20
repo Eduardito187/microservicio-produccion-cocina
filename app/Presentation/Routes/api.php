@@ -148,6 +148,3 @@ Route::post('/event-bus', EventBusController::class);
 
 // test
 Route::post('/_pact/setup', PactStateController::class);
-
-
-

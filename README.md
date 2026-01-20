@@ -58,7 +58,7 @@ php artisan test --testsuite=Unit
 Opción A (recomendado): **Xdebug**
 
 ```bash
-XDEBUG_MODE=coverage php artisan test --testsuite=Unit --coverage-text --coverage-html=storage/coverage
+php artisan test --testsuite=Unit --coverage-text --coverage-html=storage/coverage
 ```
 
 Opción B: **PCOV** (más rápido)

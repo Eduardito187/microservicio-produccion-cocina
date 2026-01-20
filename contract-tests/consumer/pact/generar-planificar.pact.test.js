@@ -17,12 +17,12 @@ const { PactV3 } = require("@pact-foundation/pact");
   };
 
   // 1) Generar OP
-  provider.given("product SKU1 exists").uponReceiving("POST generar OP")
+  provider.given("product PIZZA-PEP exists").uponReceiving("POST generar OP")
     .withRequest({
       method: "POST",
       path: "/api/produccion/ordenes/generar",
       headers: JSON_HEADERS,
-      body: {fecha: "2025-12-19", sucursalId: "SCZ", items: [{sku: "SKU1", qty: 2}]}
+      body: {fecha: "2025-12-19", sucursalId: "SCZ", items: [{sku: "PIZZA-PEP", qty: 2}]}
     })
     .willRespondWith({
       status: 201,
@@ -46,7 +46,7 @@ const { PactV3 } = require("@pact-foundation/pact");
 
   await provider.executeTest(async (mockServer) => {
     const client = axios.create({baseURL: mockServer.url, validateStatus: () => true, headers: JSON_HEADERS});
-    const request1 = await client.post("/api/produccion/ordenes/generar", {fecha: "2025-12-19", sucursalId: "SCZ", items: [{sku: "SKU1", qty: 2}]});
+    const request1 = await client.post("/api/produccion/ordenes/generar", {fecha: "2025-12-19", sucursalId: "SCZ", items: [{sku: "PIZZA-PEP", qty: 2}]});
 
     if (request1.status !== 201 || typeof request1.data?.ordenProduccionId !== "number") {
       throw new Error(`Fallo contrato generar OP (status=${request1.status}, body=${JSON.stringify(request1.data)})`);

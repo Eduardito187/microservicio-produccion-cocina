@@ -15,10 +15,10 @@ const { Verifier } = require("@pact-foundation/pact");
         publishVerificationResult: false,
         providerVersion: process.env.PROVIDER_VERSION || "dev-local",
         stateHandlers: {
-            "product SKU1 exists": async () => {
+            "product PIZZA-PEP exists": async () => {
                 await axios.post(
                     setupUrl,
-                    {state: "product SKU1 exists"},
+                    {state: "product PIZZA-PEP exists"},
                     {timeout: 15000}
                 );
                 return Promise.resolve();
