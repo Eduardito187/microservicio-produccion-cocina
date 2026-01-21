@@ -53,18 +53,10 @@ php artisan test --testsuite=Unit
 
 ### 2) Generar Code Coverage (Unit tests)
 
-> Requisito: tener un driver de coverage habilitado (Xdebug o PCOV).
-
-Opción A (recomendado): **Xdebug**
+> Requisito: tener un driver de coverage habilitado Xdebug.
 
 ```bash
 php artisan test --testsuite=Unit --coverage-text --coverage-html=storage/coverage
-```
-
-Opción B: **PCOV** (más rápido)
-
-```bash
-php -d pcov.enabled=1 -d pcov.directory=app php artisan test --testsuite=Unit --coverage-text --coverage-html=storage/coverage
 ```
 
 El reporte HTML queda en `storage/coverage/index.html`.
