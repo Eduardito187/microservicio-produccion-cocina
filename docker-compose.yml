@@ -14,6 +14,7 @@ services:
     environment:
       DB_HOST: mysql_server
       DB_PORT: 3306
+      RUN_PACT_ON_START: "1"
     depends_on:
       mysql_server:
         condition: service_healthy
@@ -23,26 +24,6 @@ services:
       timeout: 3s
       retries: 30
       start_period: 60s
-
-  artisan:
-    container_name: artisan
-    build:
-      context: .
-      dockerfile: Dockerfile.app
-    volumes:
-      - ./:/var/www/html
-    working_dir: /var/www/html
-    environment:
-      DB_HOST: mysql_server
-      DB_PORT: 3306
-    depends_on:
-      mysql_server:
-        condition: service_healthy
-    entrypoint: ["sh", "-lc"]
-    command: >
-      php artisan migrate --force --no-interaction &&
-      php artisan db:seed --no-interaction
-    restart: "no"
 
   mysql_server:
     container_name: mysql_server
@@ -74,28 +55,6 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
-
-  pact:
-    image: node:20
-    container_name: pact
-    working_dir: /work
-    volumes:
-      - ./:/work
-    environment:
-      PROVIDER_VERSION: "dev-local"
-      PROVIDER_BASE_URL: "http://laravel_app"
-      PACT_DO_NOT_TRACK: "true"
-    depends_on:
-      laravel_app:
-        condition: service_healthy
-    command: sh -lc "
-      until curl -fsS http://laravel_app/ >/dev/null; do sleep 2; done &&
-      cd contract-tests/consumer &&
-      npm install &&
-      npm test &&
-      cd ../provider &&
-      npm install &&
-      node verify-pacts.js"
 
 volumes:
   mysql_data:
