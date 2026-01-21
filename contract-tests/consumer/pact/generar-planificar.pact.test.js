@@ -1,6 +1,7 @@
 const path = require("path");
 const axios = require("axios");
-const { PactV3 } = require("@pact-foundation/pact");
+const { PactV3, MatchersV3 } = require("@pact-foundation/pact");
+const { integer } = MatchersV3;
 
 (async () => {
   const provider = new PactV3(
@@ -22,12 +23,12 @@ const { PactV3 } = require("@pact-foundation/pact");
       method: "POST",
       path: "/api/produccion/ordenes/generar",
       headers: JSON_HEADERS,
-      body: {fecha: "2025-12-19", sucursalId: "SCZ", items: [{sku: "PIZZA-PEP", qty: 2}]}
+      body: {fecha: "2025-12-19", sucursalId: "SCZ", items: [{sku: "PIZZA-PEP", qty: 1}]}
     })
     .willRespondWith({
       status: 201,
       headers: {"Content-Type": "application/json"},
-      body: {ordenProduccionId: 1}
+      body: {ordenProduccionId: integer(1)}
     });
 
   // 2) Planificar OP
@@ -41,12 +42,12 @@ const { PactV3 } = require("@pact-foundation/pact");
     .willRespondWith({
       status: 201,
       headers: {"Content-Type": "application/json"},
-      body: {ordenProduccionId: 1}
+      body: {ordenProduccionId: integer(1)}
     });
 
   await provider.executeTest(async (mockServer) => {
     const client = axios.create({baseURL: mockServer.url, validateStatus: () => true, headers: JSON_HEADERS});
-    const request1 = await client.post("/api/produccion/ordenes/generar", {fecha: "2025-12-19", sucursalId: "SCZ", items: [{sku: "PIZZA-PEP", qty: 2}]});
+    const request1 = await client.post("/api/produccion/ordenes/generar", {fecha: "2025-12-19", sucursalId: "SCZ", items: [{sku: "PIZZA-PEP", qty: 1}]});
 
     if (request1.status !== 201 || typeof request1.data?.ordenProduccionId !== "number") {
       throw new Error(`Fallo contrato generar OP (status=${request1.status}, body=${JSON.stringify(request1.data)})`);
