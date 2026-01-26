@@ -75,13 +75,3 @@ Flujos incluidos:
 2. `EventBusIntegrationTest`: **auth + idempotencia** del endpoint `/api/event-bus`.
 
 ---
-
-## Tips para el video (entrega individual)
-
-Checklist recomendado para grabar (3–6 min):
-
-1. Mostrar estructura `/tests/Unit` y `/tests/Feature`.
-2. Ejecutar unit tests.
-3. Ejecutar coverage y abrir `storage/coverage/index.html`.
-4. Ejecutar integration tests.
-5. Mostrar rápidamente los endpoints que cubre cada flujo.
