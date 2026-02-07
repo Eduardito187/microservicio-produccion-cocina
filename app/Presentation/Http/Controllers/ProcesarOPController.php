@@ -31,7 +31,7 @@ class ProcesarOPController
      */
     public function __invoke(Request $request): JsonResponse
     {
-        $data = $request->validate(['ordenProduccionId' => ['required', 'int']]);
+        $data = $request->validate(['ordenProduccionId' => ['required', 'uuid']]);
 
         try {
             $ordenProduccionId = $this->handler->__invoke(new ProcesadorOP($data['ordenProduccionId']));

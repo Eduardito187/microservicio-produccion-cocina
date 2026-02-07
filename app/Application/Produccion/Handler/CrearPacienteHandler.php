@@ -37,9 +37,9 @@ class CrearPacienteHandler
      * @param CrearPaciente $command
      * @return int
      */
-    public function __invoke(CrearPaciente $command): int
+    public function __invoke(CrearPaciente $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $paciente = new Paciente(
                 null,
                 $command->nombre,

@@ -7,20 +7,20 @@ class CrearCalendarioItem
     /**
      * @var int
      */
-    public int $calendarioId;
+    public string $calendarioId;
 
     /**
      * @var int
      */
-    public int $itemDespachoId;
+    public string $itemDespachoId;
 
     /**
      * Constructor
      *
-     * @param int $calendarioId
-     * @param int $itemDespachoId
+     * @param string $calendarioId
+     * @param string $itemDespachoId
      */
-    public function __construct(int $calendarioId, int $itemDespachoId)
+    public function __construct(string $calendarioId, string $itemDespachoId)
     {
         $this->calendarioId = $calendarioId;
         $this->itemDespachoId = $itemDespachoId;

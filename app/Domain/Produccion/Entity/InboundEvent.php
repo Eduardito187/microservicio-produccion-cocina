@@ -5,9 +5,9 @@ namespace App\Domain\Produccion\Entity;
 class InboundEvent
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $id;
+    public string|int|null $id;
 
     /**
      * @var string
@@ -32,14 +32,14 @@ class InboundEvent
     /**
      * Constructor
      *
-     * @param int|null $id
+     * @param string|int|null $id
      * @param string $eventId
      * @param string $eventName
      * @param string|null $occurredOn
      * @param string $payload
      */
     public function __construct(
-        int|null $id,
+        string|int|null $id,
         string $eventId,
         string $eventName,
         string|null $occurredOn,

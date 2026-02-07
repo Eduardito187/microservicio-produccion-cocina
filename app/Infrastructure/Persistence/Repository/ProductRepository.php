@@ -85,7 +85,7 @@ class ProductRepository implements ProductRepositoryInterface
      * @param int $id
      * @return void
      */
-    public function delete(int $id): void
+    public function delete(string|int $id): void
     {
         ProductModel::query()->whereKey($id)->delete();
     }

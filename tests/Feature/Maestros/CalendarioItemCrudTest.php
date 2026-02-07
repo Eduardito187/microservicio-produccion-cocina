@@ -4,6 +4,7 @@ namespace Tests\Feature\Maestros;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class CalendarioItemCrudTest extends TestCase
@@ -15,14 +16,18 @@ class CalendarioItemCrudTest extends TestCase
      */
     public function test_crear_actualizar_y_eliminar_calendario_item(): void
     {
-        $calendarioId = DB::table('calendario')->insertGetId([
+        $calendarioId = (string) Str::uuid();
+        DB::table('calendario')->insert([
+            'id' => $calendarioId,
             'fecha' => '2026-01-10',
             'sucursal_id' => 'SCZ-001',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
-        $productId = DB::table('products')->insertGetId([
+        $productId = (string) Str::uuid();
+        DB::table('products')->insert([
+            'id' => $productId,
             'sku' => 'SKU-100',
             'price' => 10.0,
             'special_price' => 0,
@@ -30,7 +35,9 @@ class CalendarioItemCrudTest extends TestCase
             'updated_at' => now()
         ]);
 
-        $opId = DB::table('orden_produccion')->insertGetId([
+        $opId = (string) Str::uuid();
+        DB::table('orden_produccion')->insert([
+            'id' => $opId,
             'fecha' => '2026-01-10',
             'sucursal_id' => 'SCZ-001',
             'estado' => 'CREADA',
@@ -38,7 +45,9 @@ class CalendarioItemCrudTest extends TestCase
             'updated_at' => now()
         ]);
 
-        $itemDespachoId = DB::table('item_despacho')->insertGetId([
+        $itemDespachoId = (string) Str::uuid();
+        DB::table('item_despacho')->insert([
+            'id' => $itemDespachoId,
             'op_id' => $opId,
             'product_id' => $productId,
             'paquete_id' => null,

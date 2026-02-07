@@ -9,19 +9,10 @@ use App\Domain\Produccion\Entity\InboundEvent;
 class InboundEventRepository implements InboundEventRepositoryInterface
 {
     /**
-     * @param string $eventId
-     * @return bool
-     */
-    public function existsByEventId(string $eventId): bool
-    {
-        return InboundEventModel::query()->where('event_id', $eventId)->exists();
-    }
-
-    /**
      * @param InboundEvent $event
      * @return int
      */
-    public function save(InboundEvent $event): int
+    public function save(InboundEvent $event): string
     {
         $model = InboundEventModel::query()->create([
             'event_id' => $event->eventId,

@@ -26,15 +26,15 @@ class ActualizarPaqueteController
 
     /**
      * @param Request $request
-     * @param int $id
+     * @param string $id
      * @return JsonResponse
      */
-    public function __invoke(Request $request, int $id): JsonResponse
+    public function __invoke(Request $request, string $id): JsonResponse
     {
         $data = $request->validate([
-            'etiquetaId' => ['nullable', 'int', 'exists:etiqueta,id'],
-            'ventanaId' => ['nullable', 'int', 'exists:ventana_entrega,id'],
-            'direccionId' => ['nullable', 'int', 'exists:direccion,id'],
+            'etiquetaId' => ['nullable', 'uuid', 'exists:etiqueta,id'],
+            'ventanaId' => ['nullable', 'uuid', 'exists:ventana_entrega,id'],
+            'direccionId' => ['nullable', 'uuid', 'exists:direccion,id'],
         ]);
 
         try {

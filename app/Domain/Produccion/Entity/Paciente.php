@@ -5,9 +5,9 @@ namespace App\Domain\Produccion\Entity;
 class Paciente
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $id;
+    public string|int|null $id;
 
     /**
      * @var string
@@ -20,23 +20,23 @@ class Paciente
     public string|null $documento;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $suscripcionId;
+    public string|int|null $suscripcionId;
 
     /**
      * Constructor
      *
-     * @param int|null $id
+     * @param string|int|null $id
      * @param string $nombre
      * @param string|null $documento
-     * @param int|null $suscripcionId
+     * @param string|int|null $suscripcionId
      */
     public function __construct(
-        int|null $id,
+        string|int|null $id,
         string $nombre,
         string|null $documento = null,
-        int|null $suscripcionId = null
+        string|int|null $suscripcionId = null
     ) {
         $this->id = $id;
         $this->nombre = $nombre;

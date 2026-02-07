@@ -7,14 +7,14 @@ class VerEstacion
     /**
      * @var int
      */
-    public int $id;
+    public string $id;
 
     /**
      * Constructor
      *
-     * @param int $id
+     * @param string $id
      */
-    public function __construct(int $id)
+    public function __construct(string $id)
     {
         $this->id = $id;
     }

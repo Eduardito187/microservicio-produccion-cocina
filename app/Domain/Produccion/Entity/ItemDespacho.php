@@ -5,66 +5,66 @@ namespace App\Domain\Produccion\Entity;
 class ItemDespacho
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $id;
+    public string|int|null $id;
 
     /**
      * @var int
      */
-    public readonly int $ordenProduccionId;
+    public readonly string|int $ordenProduccionId;
 
     /**
      * @var int
      */
-    public readonly int $productId;
+    public readonly string|int $productId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public readonly int|null $paqueteId;
+    public readonly string|int|null $paqueteId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public readonly int|null $recetaVersionId;
+    public readonly string|int|null $recetaVersionId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public readonly int|null $pacienteId;
+    public readonly string|int|null $pacienteId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public readonly int|null $direccionId;
+    public readonly string|int|null $direccionId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public readonly int|null $ventanaEntregaId;
+    public readonly string|int|null $ventanaEntregaId;
 
     /**
      * Constructor
      * 
-     * @param int|null $id
-     * @param int $ordenProduccionId
-     * @param int $productId
-     * @param int|null $paqueteId
-     * @param int|null $recetaVersionId
-     * @param int|null $pacienteId
-     * @param int|null $direccionId
-     * @param int|null $ventanaEntregaId
+     * @param string|int|null $id
+     * @param string|int $ordenProduccionId
+     * @param string|int $productId
+     * @param string|int|null $paqueteId
+     * @param string|int|null $recetaVersionId
+     * @param string|int|null $pacienteId
+     * @param string|int|null $direccionId
+     * @param string|int|null $ventanaEntregaId
      */
     public function __construct(
-        int|null $id,
-        int $ordenProduccionId,
-        int $productId,
-        int|null $paqueteId,
-        int|null $recetaVersionId = null,
-        int|null $pacienteId = null,
-        int|null $direccionId = null,
-        int|null $ventanaEntregaId = null
+        string|int|null $id,
+        string|int $ordenProduccionId,
+        string|int $productId,
+        string|int|null $paqueteId,
+        string|int|null $recetaVersionId = null,
+        string|int|null $pacienteId = null,
+        string|int|null $direccionId = null,
+        string|int|null $ventanaEntregaId = null
     ) {
         $this->id = $id;
         $this->ordenProduccionId = $ordenProduccionId;

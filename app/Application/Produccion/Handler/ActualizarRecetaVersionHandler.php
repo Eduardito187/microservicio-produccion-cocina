@@ -36,9 +36,9 @@ class ActualizarRecetaVersionHandler
      * @param ActualizarRecetaVersion $command
      * @return int
      */
-    public function __invoke(ActualizarRecetaVersion $command): int
+    public function __invoke(ActualizarRecetaVersion $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $recetaVersion = $this->recetaVersionRepository->byId($command->id);
             $recetaVersion->nombre = $command->nombre;
             $recetaVersion->nutrientes = $command->nutrientes;

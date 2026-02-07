@@ -9,7 +9,7 @@ class ActualizarVentanaEntrega
     /**
      * @var int
      */
-    public int $id;
+    public string $id;
 
     /**
      * @var DateTimeImmutable
@@ -24,11 +24,11 @@ class ActualizarVentanaEntrega
     /**
      * Constructor
      *
-     * @param int $id
+     * @param string $id
      * @param DateTimeImmutable $desde
      * @param DateTimeImmutable $hasta
      */
-    public function __construct(int $id, DateTimeImmutable $desde, DateTimeImmutable $hasta)
+    public function __construct(string $id, DateTimeImmutable $desde, DateTimeImmutable $hasta)
     {
         $this->id = $id;
         $this->desde = $desde;

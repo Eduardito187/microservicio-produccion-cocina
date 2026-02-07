@@ -7,7 +7,7 @@ class ActualizarRecetaVersion
     /**
      * @var int
      */
-    public int $id;
+    public string $id;
 
     /**
      * @var string
@@ -32,14 +32,14 @@ class ActualizarRecetaVersion
     /**
      * Constructor
      *
-     * @param int $id
+     * @param string $id
      * @param string $nombre
      * @param array|null $nutrientes
      * @param array|null $ingredientes
      * @param int $version
      */
     public function __construct(
-        int $id,
+        string $id,
         string $nombre,
         array|null $nutrientes = null,
         array|null $ingredientes = null,

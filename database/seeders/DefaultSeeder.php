@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class DefaultSeeder extends Seeder
 {
@@ -17,9 +18,9 @@ class DefaultSeeder extends Seeder
         if (Schema::hasTable('products')) {
             DB::table('products')->upsert(
                 [
-                    ['sku' => 'PIZZA-PEP',  'price' => 25,   'special_price' => 20, 'created_at' => $now, 'updated_at' => $now],
-                    ['sku' => 'PIZZA-MARG', 'price' => 25,   'special_price' => 0,  'created_at' => $now, 'updated_at' => $now],
-                    ['sku' => 'PIZZA-VEG',  'price' => 27.5, 'special_price' => 25, 'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'sku' => 'PIZZA-PEP',  'price' => 25,   'special_price' => 20, 'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'sku' => 'PIZZA-MARG', 'price' => 25,   'special_price' => 0,  'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'sku' => 'PIZZA-VEG',  'price' => 27.5, 'special_price' => 25, 'created_at' => $now, 'updated_at' => $now],
                 ],
                 ['sku'], // conflict key
                 ['price', 'special_price', 'updated_at']
@@ -31,6 +32,7 @@ class DefaultSeeder extends Seeder
             DB::table('receta_version')->upsert(
                 [
                     [
+                        'id' => (string) Str::uuid(),
                         'nombre'       => 'Pizza Margarita v1',
                         'nutrientes'   => json_encode([
                             'calorias'      => 800,
@@ -49,6 +51,7 @@ class DefaultSeeder extends Seeder
                         'updated_at'  => $now,
                     ],
                     [
+                        'id' => (string) Str::uuid(),
                         'nombre'       => 'Pizza Pepperoni v1',
                         'nutrientes'   => json_encode([
                             'calorias'      => 950,
@@ -76,9 +79,9 @@ class DefaultSeeder extends Seeder
         if (Schema::hasTable('porcion')) {
             DB::table('porcion')->upsert(
                 [
-                    ['nombre' => 'Individual', 'peso_gr' => 400,  'created_at' => $now, 'updated_at' => $now],
-                    ['nombre' => 'Mediana',    'peso_gr' => 800,  'created_at' => $now, 'updated_at' => $now],
-                    ['nombre' => 'Familiar',   'peso_gr' => 1200, 'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'nombre' => 'Individual', 'peso_gr' => 400,  'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'nombre' => 'Mediana',    'peso_gr' => 800,  'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'nombre' => 'Familiar',   'peso_gr' => 1200, 'created_at' => $now, 'updated_at' => $now],
                 ],
                 ['nombre'],
                 ['peso_gr', 'updated_at']
@@ -89,10 +92,10 @@ class DefaultSeeder extends Seeder
         if (Schema::hasTable('estacion')) {
             DB::table('estacion')->upsert(
                 [
-                    ['nombre' => 'Preparación de masa', 'capacidad' => 2, 'created_at' => $now, 'updated_at' => $now],
-                    ['nombre' => 'Salsa y toppings',    'capacidad' => 2, 'created_at' => $now, 'updated_at' => $now],
-                    ['nombre' => 'Horno',               'capacidad' => 1, 'created_at' => $now, 'updated_at' => $now],
-                    ['nombre' => 'Empaque',             'capacidad' => 2, 'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'nombre' => 'Preparación de masa', 'capacidad' => 2, 'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'nombre' => 'Salsa y toppings',    'capacidad' => 2, 'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'nombre' => 'Horno',               'capacidad' => 1, 'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'nombre' => 'Empaque',             'capacidad' => 2, 'created_at' => $now, 'updated_at' => $now],
                 ],
                 ['nombre'],
                 ['capacidad', 'updated_at']

@@ -37,9 +37,9 @@ class CrearEtiquetaHandler
      * @param CrearEtiqueta $command
      * @return int
      */
-    public function __invoke(CrearEtiqueta $command): int
+    public function __invoke(CrearEtiqueta $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $etiqueta = new Etiqueta(
                 null,
                 $command->recetaVersionId,

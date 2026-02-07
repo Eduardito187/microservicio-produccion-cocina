@@ -8,6 +8,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Application\Shared\BusInterface;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 use DateTimeImmutable;
 
 class PublishOutbox implements ShouldQueue
@@ -25,15 +28,71 @@ class PublishOutbox implements ShouldQueue
      */
     public function handle(BusInterface $bus): void
     {
-        Outbox::whereNull('published_at')->orderBy('occurred_on')->limit(100)->get()->each(function (Outbox $row) use ($bus) {
-            $bus->publish(
-                $row->id,
-                $row->event_name,
-                $row->payload,
-                new DateTimeImmutable($row->occurred_on->format(DATE_ATOM))
-            );
+        $claimId = (string) Str::uuid();
+        $now = Carbon::now();
+        $lockExpiry = $now->copy()->subMinutes(5);
 
-            $row->forceFill(['published_at' => now()])->save();
+        $claimedIds = DB::transaction(function () use ($claimId, $now, $lockExpiry): array {
+            $ids = Outbox::query()
+                ->whereNull('published_at')
+                ->where(function ($query) use ($lockExpiry) {
+                    $query->whereNull('locked_at')
+                        ->orWhere('locked_at', '<', $lockExpiry);
+                })
+                ->orderBy('occurred_on')
+                ->limit(100)
+                ->pluck('id')
+                ->all();
+
+            if ($ids === []) {
+                return [];
+            }
+
+            Outbox::query()
+                ->whereIn('id', $ids)
+                ->whereNull('published_at')
+                ->where(function ($query) use ($lockExpiry) {
+                    $query->whereNull('locked_at')
+                        ->orWhere('locked_at', '<', $lockExpiry);
+                })
+                ->update([
+                    'locked_at' => $now,
+                    'locked_by' => $claimId,
+                ]);
+
+            return $ids;
         });
+
+        if ($claimedIds === []) {
+            return;
+        }
+
+        Outbox::query()
+            ->whereIn('id', $claimedIds)
+            ->where('locked_by', $claimId)
+            ->orderBy('occurred_on')
+            ->get()
+            ->each(function (Outbox $row) use ($bus, $now): void {
+                try {
+                    $bus->publish(
+                        $row->event_id,
+                        $row->event_name,
+                        $row->payload,
+                        new DateTimeImmutable($row->occurred_on->format(DATE_ATOM))
+                    );
+
+                    $row->forceFill([
+                        'published_at' => $now,
+                        'locked_at' => null,
+                        'locked_by' => null,
+                    ])->save();
+                } catch (\Throwable $e) {
+                    logger()->error('Outbox publish failed', [
+                        'event_id' => $row->event_id,
+                        'event_name' => $row->event_name,
+                        'aggregate_id' => $row->aggregate_id,
+                    ]);
+                }
+            });
     }
 }

@@ -20,6 +20,6 @@ class TransactionManager implements TransactionManagerInterface
      */
     public function afterCommit(callable $callback): void
     {
-       // DB::afterCommit($callback);
+        DB::afterCommit($callback);
     }
 }

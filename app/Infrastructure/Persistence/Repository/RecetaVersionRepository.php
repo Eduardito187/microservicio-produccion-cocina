@@ -14,7 +14,7 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
      * @throws ModelNotFoundException
      * @return RecetaVersion|null
      */
-    public function byId(int $id): ?RecetaVersion
+    public function byId(string|int $id): ?RecetaVersion
     {
         $row = RecetaVersionModel::find($id);
 
@@ -35,7 +35,7 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
      * @param RecetaVersion $recetaVersion
      * @return int
      */
-    public function save(RecetaVersion $recetaVersion): int
+    public function save(RecetaVersion $recetaVersion): string
     {
         $model = RecetaVersionModel::query()->updateOrCreate(
             ['id' => $recetaVersion->id],
@@ -74,7 +74,7 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
      * @param int $id
      * @return void
      */
-    public function delete(int $id): void
+    public function delete(string|int $id): void
     {
         RecetaVersionModel::query()->whereKey($id)->delete();
     }

@@ -27,7 +27,7 @@ class EliminarPorcionController
      * @param int $id
      * @return JsonResponse
      */
-    public function __invoke(int $id): JsonResponse
+    public function __invoke(string $id): JsonResponse
     {
         try {
             $this->handler->__invoke(new EliminarPorcion($id));

@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 interface DireccionRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param string|int $id
      * @throws ModelNotFoundException
      * @return Direccion|null
      */
-    public function byId(int $id): ?Direccion;
+    public function byId(string|int $id): ?Direccion;
 
     /**
      * @param Direccion $direccion
      * @return int
      */
-    public function save(Direccion $direccion): int;
+    public function save(Direccion $direccion): string;
 
     /**
      * @return Direccion[]
@@ -26,8 +26,8 @@ interface DireccionRepositoryInterface
     public function list(): array;
 
     /**
-     * @param int $id
+     * @param string|int $id
      * @return void
      */
-    public function delete(int $id): void;
+    public function delete(string|int $id): void;
 }

@@ -39,9 +39,14 @@ class DespachadorOPHandler
     public function __invoke(DespachadorOP $command): string|int|null
     {
         //etiqueta y paquete
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $ordenProduccion = $this->ordenProduccionRepositoryInterface->byId($command->ordenProduccionId);
-            $ordenProduccion->generarItemsDespacho($command);
+            $ordenProduccion->generarItemsDespacho(
+                $command->itemsDespacho,
+                $command->pacienteId,
+                $command->direccionId,
+                $command->ventanaEntrega
+            );
             $ordenProduccion->despacharBatches();
             $ordenProduccion->cerrar();
             return $this->ordenProduccionRepositoryInterface->save($ordenProduccion);

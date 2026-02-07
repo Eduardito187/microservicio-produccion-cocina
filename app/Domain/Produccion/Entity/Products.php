@@ -5,9 +5,9 @@ namespace App\Domain\Produccion\Entity;
 class Products
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public readonly int|null $id;
+    public readonly string|int|null $id;
 
     /**
      * @var string
@@ -27,13 +27,13 @@ class Products
     /**
      * Constructor
      * 
-     * @param int|null $id
+     * @param string|int|null $id
      * @param string $sku
      * @param float $price
      * @param float $special_price
      */
     public function __construct(
-        int|null $id,
+        string|int|null $id,
         string $sku,
         float $price,
         float $special_price

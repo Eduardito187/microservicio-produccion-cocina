@@ -5,24 +5,24 @@ namespace App\Application\Produccion\Command;
 class ActualizarEtiqueta
 {
     /**
-     * @var int
+     * @var string|int
      */
-    public int $id;
+    public string|int $id;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $recetaVersionId;
+    public string|int|null $recetaVersionId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $suscripcionId;
+    public string|int|null $suscripcionId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $pacienteId;
+    public string|int|null $pacienteId;
 
     /**
      * @var array|null
@@ -32,17 +32,17 @@ class ActualizarEtiqueta
     /**
      * Constructor
      *
-     * @param int $id
-     * @param int|null $recetaVersionId
-     * @param int|null $suscripcionId
-     * @param int|null $pacienteId
+     * @param string|int $id
+     * @param string|int|null $recetaVersionId
+     * @param string|int|null $suscripcionId
+     * @param string|int|null $pacienteId
      * @param array|null $qrPayload
      */
     public function __construct(
-        int $id,
-        int|null $recetaVersionId,
-        int|null $suscripcionId,
-        int|null $pacienteId,
+        string|int $id,
+        string|int|null $recetaVersionId,
+        string|int|null $suscripcionId,
+        string|int|null $pacienteId,
         array|null $qrPayload = null
     ) {
         $this->id = $id;

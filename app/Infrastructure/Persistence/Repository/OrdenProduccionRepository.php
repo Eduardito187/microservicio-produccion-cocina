@@ -21,6 +21,7 @@ use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
 use App\Domain\Produccion\Entity\OrdenItem;
 use App\Domain\Produccion\Enum\EstadoOP;
+use App\Application\Shared\DomainEventPublisherInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
 
@@ -42,28 +43,36 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     public readonly ProduccionBatchRepository $produccionBatchRepository;
 
     /**
+     * @var DomainEventPublisherInterface
+     */
+    private readonly DomainEventPublisherInterface $eventPublisher;
+
+    /**
      * Constructor
      * 
      * @param OrdenItemRepository $ordenItemRepository
      * @param ItemDespachoRepository $itemDespachoRepository
      * @param ProduccionBatchRepository $produccionBatchRepository
+     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         OrdenItemRepository $ordenItemRepository,
         ItemDespachoRepository $itemDespachoRepository,
-        ProduccionBatchRepository $produccionBatchRepository
+        ProduccionBatchRepository $produccionBatchRepository,
+        DomainEventPublisherInterface $eventPublisher
     ) {
         $this->ordenItemRepository = $ordenItemRepository;
         $this->itemDespachoRepository = $itemDespachoRepository;
         $this->produccionBatchRepository = $produccionBatchRepository;
+        $this->eventPublisher = $eventPublisher;
     }
 
     /**
-     * @param int|null $id
+     * @param string|null $id
      * @throws ModelNotFoundException
      * @return AggregateOrdenProduccion|null
      */
-    public function byId(int|null $id): ?AggregateOrdenProduccion
+    public function byId(string|null $id): ?AggregateOrdenProduccion
     {
         $row = OrdenProduccionModel::query()
             ->with(['items.product', 'batches', 'despachoItems'])
@@ -94,7 +103,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
      * @param AggregateOrdenProduccion $aggregateOrdenProduccion
      * @return int
      */
-    public function save(AggregateOrdenProduccion $aggregateOrdenProduccion): int
+    public function save(AggregateOrdenProduccion $aggregateOrdenProduccion): string
     {
         $model = OrdenProduccionModel::query()->updateOrCreate(
             ['id' => $aggregateOrdenProduccion->id()],
@@ -109,7 +118,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         $this->savedItems($orderId, $aggregateOrdenProduccion->items());
         $this->savedBatch($aggregateOrdenProduccion->batches());
         $this->savedDespacho($aggregateOrdenProduccion->itemsDespacho());
-        $aggregateOrdenProduccion->publishOutbox($orderId);
+        $this->eventPublisher->publish($aggregateOrdenProduccion->pullEvents(), $orderId);
 
         return $orderId;
     }
@@ -192,11 +201,11 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     }
 
     /**
-     * @param int|null $opId
+     * @param string|null $opId
      * @param OrdenItem[] $items
      * @return void
      */
-    private function savedItems(int|null $opId, array $items): void
+    private function savedItems(string|null $opId, array $items): void
     {
         foreach ($items as $item) {
             $this->ordenItemRepository->save(
@@ -212,7 +221,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     }
 
     /**
-     * @param int|null $opId
+     * @param string|null $opId
      * @param array $items
      * @return void
      */
@@ -265,9 +274,9 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
 
     /**
      * @param ItemDespacho $item
-     * @return int|null
+     * @return string|null
      */
-    private function resolvePaqueteId(ItemDespacho $item): int|null
+    private function resolvePaqueteId(ItemDespacho $item): string|null
     {
         if (
             $item->recetaVersionId === null

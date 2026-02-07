@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Infrastructure\Persistence\Outbox;
+
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Shared\OutboxStoreInterface;
+use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
+use App\Domain\Shared\Events\Interface\DomainEventInterface;
+use App\Infrastructure\Jobs\PublishOutbox;
+
+class OutboxEventPublisher implements DomainEventPublisherInterface
+{
+    /**
+     * @var OutboxStoreInterface
+     */
+    private readonly OutboxStoreInterface $outboxStore;
+
+    /**
+     * @var TransactionManagerInterface
+     */
+    private readonly TransactionManagerInterface $transactionManager;
+
+    /**
+     * Constructor
+     *
+     * @param OutboxStoreInterface $outboxStore
+     * @param TransactionManagerInterface $transactionManager
+     */
+    public function __construct(OutboxStoreInterface $outboxStore, TransactionManagerInterface $transactionManager)
+    {
+        $this->outboxStore = $outboxStore;
+        $this->transactionManager = $transactionManager;
+    }
+
+    /**
+     * @param DomainEventInterface[] $events
+     * @param mixed $aggregateId
+     * @return void
+     */
+    public function publish(array $events, mixed $aggregateId): void
+    {
+        if ($events === []) {
+            return;
+        }
+
+        foreach ($events as $event) {
+            $this->outboxStore->append(
+                $event->name(),
+                $aggregateId ?? null,
+                $event->occurredOn(),
+                $event->toArray()
+            );
+        }
+
+        $this->transactionManager->afterCommit(function (): void {
+            PublishOutbox::dispatch();
+        });
+    }
+}

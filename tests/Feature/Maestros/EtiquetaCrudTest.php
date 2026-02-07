@@ -4,6 +4,7 @@ namespace Tests\Feature\Maestros;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class EtiquetaCrudTest extends TestCase
@@ -15,11 +16,15 @@ class EtiquetaCrudTest extends TestCase
      */
     public function test_crear_actualizar_y_eliminar_etiqueta(): void
     {
-        $suscripcionId = DB::table('suscripcion')->insertGetId([
+        $suscripcionId = (string) Str::uuid();
+        DB::table('suscripcion')->insert([
+            'id' => $suscripcionId,
             'nombre' => 'Suscripcion 1', 'created_at' => now(), 'updated_at' => now()
         ]);
 
-        $pacienteId = DB::table('paciente')->insertGetId([
+        $pacienteId = (string) Str::uuid();
+        DB::table('paciente')->insert([
+            'id' => $pacienteId,
             'nombre' => 'Paciente 1',
             'documento' => 'DOC-1',
             'suscripcion_id' => $suscripcionId,
@@ -27,7 +32,9 @@ class EtiquetaCrudTest extends TestCase
             'updated_at' => now()
         ]);
 
-        $recetaVersionId = DB::table('receta_version')->insertGetId([
+        $recetaVersionId = (string) Str::uuid();
+        DB::table('receta_version')->insert([
+            'id' => $recetaVersionId,
             'nombre' => 'Receta 1', 'version' => 1, 'created_at' => now(), 'updated_at' => now()
         ]);
 

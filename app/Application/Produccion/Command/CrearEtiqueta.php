@@ -5,19 +5,19 @@ namespace App\Application\Produccion\Command;
 class CrearEtiqueta
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $recetaVersionId;
+    public string|int|null $recetaVersionId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $suscripcionId;
+    public string|int|null $suscripcionId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $pacienteId;
+    public string|int|null $pacienteId;
 
     /**
      * @var array|null
@@ -27,15 +27,15 @@ class CrearEtiqueta
     /**
      * Constructor
      *
-     * @param int|null $recetaVersionId
-     * @param int|null $suscripcionId
-     * @param int|null $pacienteId
+     * @param string|int|null $recetaVersionId
+     * @param string|int|null $suscripcionId
+     * @param string|int|null $pacienteId
      * @param array|null $qrPayload
      */
     public function __construct(
-        int|null $recetaVersionId,
-        int|null $suscripcionId,
-        int|null $pacienteId,
+        string|int|null $recetaVersionId,
+        string|int|null $suscripcionId,
+        string|int|null $pacienteId,
         array|null $qrPayload = null
     ) {
         $this->recetaVersionId = $recetaVersionId;

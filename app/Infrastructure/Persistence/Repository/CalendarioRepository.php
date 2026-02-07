@@ -16,7 +16,7 @@ class CalendarioRepository implements CalendarioRepositoryInterface
      * @throws ModelNotFoundException
      * @return Calendario|null
      */
-    public function byId(int $id): ?Calendario
+    public function byId(string|int $id): ?Calendario
     {
         $row = CalendarioModel::find($id);
 
@@ -35,7 +35,7 @@ class CalendarioRepository implements CalendarioRepositoryInterface
      * @param Calendario $calendario
      * @return int
      */
-    public function save(Calendario $calendario): int
+    public function save(Calendario $calendario): string
     {
         $model = CalendarioModel::query()->updateOrCreate(
             ['id' => $calendario->id],
@@ -70,7 +70,7 @@ class CalendarioRepository implements CalendarioRepositoryInterface
      * @param int $id
      * @return void
      */
-    public function delete(int $id): void
+    public function delete(string|int $id): void
     {
         CalendarioModel::query()->whereKey($id)->delete();
     }

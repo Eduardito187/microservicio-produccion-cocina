@@ -18,6 +18,8 @@ use App\Infrastructure\Persistence\Repository\EtiquetaRepository;
 use App\Infrastructure\Persistence\Repository\PaqueteRepository;
 use App\Infrastructure\Persistence\Repository\ProductRepository;
 use App\Infrastructure\Persistence\Repository\InboundEventRepository;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Shared\OutboxStoreInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
@@ -34,6 +36,8 @@ use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 use App\Domain\Produccion\Repository\InboundEventRepositoryInterface;
 use App\Infrastructure\Persistence\Transaction\TransactionManager;
+use App\Infrastructure\Persistence\Outbox\OutboxEventPublisher;
+use App\Infrastructure\Persistence\Outbox\OutboxStoreAdapter;
 use App\Application\Shared\BusInterface;
 use App\Infrastructure\Bus\HttpEventBus;
 use Illuminate\Support\ServiceProvider;
@@ -119,6 +123,16 @@ class MicroservicioProvider extends ServiceProvider
         $this->app->bind(
             InboundEventRepositoryInterface::class,
             InboundEventRepository::class
+        );
+
+        $this->app->bind(
+            OutboxStoreInterface::class,
+            OutboxStoreAdapter::class
+        );
+
+        $this->app->bind(
+            DomainEventPublisherInterface::class,
+            OutboxEventPublisher::class
         );
 
         $this->app->bind(

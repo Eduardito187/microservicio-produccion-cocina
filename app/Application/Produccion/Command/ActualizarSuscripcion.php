@@ -7,7 +7,7 @@ class ActualizarSuscripcion
     /**
      * @var int
      */
-    public int $id;
+    public string $id;
 
     /**
      * @var string
@@ -17,10 +17,10 @@ class ActualizarSuscripcion
     /**
      * Constructor
      *
-     * @param int $id
+     * @param string $id
      * @param string $nombre
      */
-    public function __construct(int $id, string $nombre)
+    public function __construct(string $id, string $nombre)
     {
         $this->id = $id;
         $this->nombre = $nombre;

@@ -36,9 +36,9 @@ class ActualizarPaqueteHandler
      * @param ActualizarPaquete $command
      * @return int
      */
-    public function __invoke(ActualizarPaquete $command): int
+    public function __invoke(ActualizarPaquete $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $paquete = $this->paqueteRepository->byId($command->id);
             $paquete->etiquetaId = $command->etiquetaId;
             $paquete->ventanaId = $command->ventanaId;

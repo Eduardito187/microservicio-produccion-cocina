@@ -30,7 +30,14 @@
       },
       "response": {
         "body": {
-          "ordenProduccionId": 1
+          "ordenProduccionId": "e2490de5-5bd3-43d5-b7c4-526e33f71304"
+        },
+        "generators": {
+          "body": {
+            "$.ordenProduccionId": {
+              "type": "Uuid"
+            }
+          }
         },
         "headers": {
           "Content-Type": "application/json"
@@ -41,7 +48,8 @@
               "combine": "AND",
               "matchers": [
                 {
-                  "match": "integer"
+                  "match": "regex",
+                  "regex": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
                 }
               ]
             }
@@ -54,26 +62,72 @@
       "description": "POST planificar OP",
       "providerStates": [
         {
-          "name": "orden produccion 1 exists and porcion 1 exists"
+          "name": "orden produccion 1 exists and porcion 1 exists",
+          "params": {
+            "estacionId": "9b7b5fbe-6b65-4d1d-8fdd-52f143b2552f",
+            "ordenProduccionId": "e28e9cc2-5225-40c0-b88b-2341f96d76a3",
+            "porcionId": "f7a1e0b2-2c4d-4c0a-9b8e-0a4b2f9d8f7a",
+            "recetaVersionId": "d2c3b4a5-1f3c-4b2f-9f54-7ab02d1b33c9"
+          }
         }
       ],
       "request": {
         "body": {
-          "estacionId": 1,
-          "ordenProduccionId": 1,
-          "porcionId": 1,
-          "recetaVersionId": 1
+          "estacionId": "9b7b5fbe-6b65-4d1d-8fdd-52f143b2552f",
+          "ordenProduccionId": "e28e9cc2-5225-40c0-b88b-2341f96d76a3",
+          "porcionId": "f7a1e0b2-2c4d-4c0a-9b8e-0a4b2f9d8f7a",
+          "recetaVersionId": "d2c3b4a5-1f3c-4b2f-9f54-7ab02d1b33c9"
         },
         "headers": {
           "Accept": "application/json",
           "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.estacionId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                }
+              ]
+            },
+            "$.ordenProduccionId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                }
+              ]
+            },
+            "$.porcionId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                }
+              ]
+            },
+            "$.recetaVersionId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                }
+              ]
+            }
+          }
         },
         "method": "POST",
         "path": "/api/produccion/ordenes/planificar"
       },
       "response": {
         "body": {
-          "ordenProduccionId": 1
+          "ordenProduccionId": "e28e9cc2-5225-40c0-b88b-2341f96d76a3"
         },
         "headers": {
           "Content-Type": "application/json"
@@ -84,7 +138,8 @@
               "combine": "AND",
               "matchers": [
                 {
-                  "match": "integer"
+                  "match": "regex",
+                  "regex": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
                 }
               ]
             }

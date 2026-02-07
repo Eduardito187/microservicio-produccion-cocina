@@ -6,6 +6,7 @@ use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
 use PHPUnit\Framework\TestCase;
 use ReflectionNamedType;
+use ReflectionUnionType;
 use DateTimeImmutable;
 use ReflectionClass;
 
@@ -26,9 +27,15 @@ class MaestrosEntitiesSmokeTest extends TestCase
 
                 if ($type instanceof ReflectionNamedType) {
                     $args[] = $this->dummyValueForType($type->getName(), $param->allowsNull());
-                } else {
-                    $args[] = null;
+                    continue;
                 }
+
+                if ($type instanceof ReflectionUnionType) {
+                    $args[] = $this->dummyValueForUnion($type, $param->allowsNull());
+                    continue;
+                }
+
+                $args[] = null;
             }
         }
 
@@ -103,5 +110,33 @@ class MaestrosEntitiesSmokeTest extends TestCase
         }
 
         return new class {};
+    }
+
+    /**
+     * @param ReflectionUnionType $type
+     * @param bool $nullable
+     * @return mixed
+     */
+    private function dummyValueForUnion(ReflectionUnionType $type, bool $nullable): mixed
+    {
+        $fallback = null;
+
+        foreach ($type->getTypes() as $unionType) {
+            if ($unionType instanceof ReflectionNamedType && $unionType->getName() !== 'null') {
+                $value = $this->dummyValueForType($unionType->getName(), $nullable);
+
+                if ($value !== null || $nullable) {
+                    return $value;
+                }
+
+                $fallback = $value;
+            }
+        }
+
+        if ($nullable) {
+            return null;
+        }
+
+        return $fallback ?? 'TEST';
     }
 }

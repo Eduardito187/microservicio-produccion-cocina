@@ -14,7 +14,7 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
      * @throws ModelNotFoundException
      * @return Suscripcion|null
      */
-    public function byId(int $id): ?Suscripcion
+    public function byId(string|int $id): ?Suscripcion
     {
         $row = SuscripcionModel::find($id);
 
@@ -32,7 +32,7 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
      * @param Suscripcion $suscripcion
      * @return int
      */
-    public function save(Suscripcion $suscripcion): int
+    public function save(Suscripcion $suscripcion): string
     {
         $model = SuscripcionModel::query()->updateOrCreate(
             ['id' => $suscripcion->id],
@@ -65,7 +65,7 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
      * @param int $id
      * @return void
      */
-    public function delete(int $id): void
+    public function delete(string|int $id): void
     {
         SuscripcionModel::query()->whereKey($id)->delete();
     }

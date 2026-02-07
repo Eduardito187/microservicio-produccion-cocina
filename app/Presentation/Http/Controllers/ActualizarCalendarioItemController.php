@@ -26,14 +26,14 @@ class ActualizarCalendarioItemController
 
     /**
      * @param Request $request
-     * @param int $id
+     * @param string $id
      * @return JsonResponse
      */
-    public function __invoke(Request $request, int $id): JsonResponse
+    public function __invoke(Request $request, string $id): JsonResponse
     {
         $data = $request->validate([
-            'calendarioId' => ['required', 'int', 'exists:calendario,id'],
-            'itemDespachoId' => ['required', 'int', 'exists:item_despacho,id'],
+            'calendarioId' => ['required', 'uuid', 'exists:calendario,id'],
+            'itemDespachoId' => ['required', 'uuid', 'exists:item_despacho,id'],
         ]);
 
         try {

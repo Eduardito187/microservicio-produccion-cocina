@@ -27,7 +27,7 @@ class VerPorcionController
      * @param int $id
      * @return JsonResponse
      */
-    public function __invoke(int $id): JsonResponse
+    public function __invoke(string $id): JsonResponse
     {
         try {
             $row = $this->handler->__invoke(new VerPorcion($id));

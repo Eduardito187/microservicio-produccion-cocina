@@ -14,7 +14,7 @@ class EstacionRepository implements EstacionRepositoryInterface
      * @throws ModelNotFoundException
      * @return Estacion|null
      */
-    public function byId(int $id): ?Estacion
+    public function byId(string|int $id): ?Estacion
     {
         $row = EstacionModel::find($id);
 
@@ -33,7 +33,7 @@ class EstacionRepository implements EstacionRepositoryInterface
      * @param Estacion $estacion
      * @return int
      */
-    public function save(Estacion $estacion): int
+    public function save(Estacion $estacion): string
     {
         $model = EstacionModel::query()->updateOrCreate(
             ['id' => $estacion->id],
@@ -68,7 +68,7 @@ class EstacionRepository implements EstacionRepositoryInterface
      * @param int $id
      * @return void
      */
-    public function delete(int $id): void
+    public function delete(string|int $id): void
     {
         EstacionModel::query()->whereKey($id)->delete();
     }

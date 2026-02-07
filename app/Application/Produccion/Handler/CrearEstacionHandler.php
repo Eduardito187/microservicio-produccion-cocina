@@ -37,9 +37,9 @@ class CrearEstacionHandler
      * @param CrearEstacion $command
      * @return int
      */
-    public function __invoke(CrearEstacion $command): int
+    public function __invoke(CrearEstacion $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $estacion = new Estacion(null, $command->nombre, $command->capacidad);
 
             return $this->estacionRepository->save($estacion);

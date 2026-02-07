@@ -7,22 +7,22 @@ class PlanificarOP
     /**
      * @var int
      */
-    public readonly int $ordenProduccionId;
+    public readonly string $ordenProduccionId;
 
     /**
      * @var int
      */
-    public readonly int $estacionId;
+    public readonly string $estacionId;
 
     /**
      * @var int
      */
-    public readonly int $recetaVersionId;
+    public readonly string $recetaVersionId;
 
     /**
      * @var int
      */
-    public readonly int $porcionId;
+    public readonly string $porcionId;
 
     /**
      * Constructor

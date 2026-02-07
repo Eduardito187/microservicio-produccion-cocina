@@ -5,9 +5,9 @@ namespace App\Domain\Produccion\Entity;
 class Porcion
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $id;
+    public string|int|null $id;
 
     /**
      * @var string
@@ -22,11 +22,11 @@ class Porcion
     /**
      * Constructor
      *
-     * @param int|null $id
+     * @param string|int|null $id
      * @param string $nombre
      * @param int $pesoGr
      */
-    public function __construct(int|null $id, string $nombre, int $pesoGr)
+    public function __construct(string|int|null $id, string $nombre, int $pesoGr)
     {
         $this->id = $id;
         $this->nombre = $nombre;

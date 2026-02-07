@@ -5,38 +5,38 @@ namespace App\Domain\Produccion\Entity;
 class Paquete
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $id;
+    public string|int|null $id;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $etiquetaId;
+    public string|int|null $etiquetaId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $ventanaId;
+    public string|int|null $ventanaId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $direccionId;
+    public string|int|null $direccionId;
 
     /**
      * Constructor
      *
-     * @param int|null $id
-     * @param int|null $etiquetaId
-     * @param int|null $ventanaId
-     * @param int|null $direccionId
+     * @param string|int|null $id
+     * @param string|int|null $etiquetaId
+     * @param string|int|null $ventanaId
+     * @param string|int|null $direccionId
      */
     public function __construct(
-        int|null $id,
-        int|null $etiquetaId,
-        int|null $ventanaId,
-        int|null $direccionId
+        string|int|null $id,
+        string|int|null $etiquetaId,
+        string|int|null $ventanaId,
+        string|int|null $direccionId
     ) {
         $this->id = $id;
         $this->etiquetaId = $etiquetaId;

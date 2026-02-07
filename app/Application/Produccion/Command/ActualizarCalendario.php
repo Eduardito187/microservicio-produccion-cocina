@@ -9,7 +9,7 @@ class ActualizarCalendario
     /**
      * @var int
      */
-    public int $id;
+    public string $id;
 
     /**
      * @var DateTimeImmutable
@@ -24,11 +24,11 @@ class ActualizarCalendario
     /**
      * Constructor
      *
-     * @param int $id
+     * @param string $id
      * @param DateTimeImmutable $fecha
      * @param string $sucursalId
      */
-    public function __construct(int $id, DateTimeImmutable $fecha, string $sucursalId)
+    public function __construct(string $id, DateTimeImmutable $fecha, string $sucursalId)
     {
         $this->id = $id;
         $this->fecha = $fecha;

@@ -55,44 +55,45 @@ class MaestrosHandlersCrudTest extends TestCase
      */
     public function test_calendario_crud_handlers_invocan_repositorio_y_mapean_respuesta(): void
     {
+        $id10 = '11111111-1111-1111-1111-111111111111';
         $repository = $this->createMock(CalendarioRepositoryInterface::class);
         // Crear
         $repository->expects($this->once())->method('save')
             ->with($this->callback(function (Calendario $calendario): bool {
                 return $calendario->id === null && $calendario->fecha->format('Y-m-d') === '2026-01-10' && $calendario->sucursalId === 'SCZ-001';
-            }))->willReturn(10);
+            }))->willReturn($id10);
         $crear = new CrearCalendarioHandler($repository, $this->tx());
         $id = $crear(new CrearCalendario(new DateTimeImmutable('2026-01-10'), 'SCZ-001'));
-        $this->assertSame(10, $id);
+        $this->assertSame($id10, $id);
         // Actualizar
-        $existing = new Calendario(10, new DateTimeImmutable('2026-01-10'), 'SCZ-001');
+        $existing = new Calendario($id10, new DateTimeImmutable('2026-01-10'), 'SCZ-001');
         $repository2 = $this->createMock(CalendarioRepositoryInterface::class);
-        $repository2->method('byId')->with(10)->willReturn($existing);
-        $repository2->expects($this->once())->method('save')->willReturn(10);
+        $repository2->method('byId')->with($id10)->willReturn($existing);
+        $repository2->expects($this->once())->method('save')->willReturn($id10);
         $actualizar = new ActualizarCalendarioHandler($repository2, $this->tx());
-        $actualizadoId = $actualizar(new ActualizarCalendario(10, new DateTimeImmutable('2026-01-11'), 'SCZ-002'));
-        $this->assertSame(10, $actualizadoId);
+        $actualizadoId = $actualizar(new ActualizarCalendario($id10, new DateTimeImmutable('2026-01-11'), 'SCZ-002'));
+        $this->assertSame($id10, $actualizadoId);
         $this->assertSame('2026-01-11', $existing->fecha->format('Y-m-d'));
         $this->assertSame('SCZ-002', $existing->sucursalId);
         // Ver
         $repository3 = $this->createMock(CalendarioRepositoryInterface::class);
-        $repository3->method('byId')->with(10)->willReturn($existing);
+        $repository3->method('byId')->with($id10)->willReturn($existing);
         $ver = new VerCalendarioHandler($repository3, $this->tx());
-        $data = $ver(new VerCalendario(10));
-        $this->assertSame(['id' => 10, 'fecha' => '2026-01-11', 'sucursal_id' => 'SCZ-002'], $data);
+        $data = $ver(new VerCalendario($id10));
+        $this->assertSame(['id' => $id10, 'fecha' => '2026-01-11', 'sucursal_id' => 'SCZ-002'], $data);
         // Listar
         $repository4 = $this->createMock(CalendarioRepositoryInterface::class);
         $repository4->method('list')->willReturn([$existing]);
         $listar = new ListarCalendariosHandler($repository4, $this->tx());
         $list = $listar(new ListarCalendarios());
         $this->assertCount(1, $list);
-        $this->assertSame(10, $list[0]['id']);
+        $this->assertSame($id10, $list[0]['id']);
         // Eliminar
         $repository5 = $this->createMock(CalendarioRepositoryInterface::class);
-        $repository5->method('byId')->with(10)->willReturn($existing);
-        $repository5->expects($this->once())->method('delete')->with(10);
+        $repository5->method('byId')->with($id10)->willReturn($existing);
+        $repository5->expects($this->once())->method('delete')->with($id10);
         $eliminar = new EliminarCalendarioHandler($repository5, $this->tx());
-        $eliminar(new EliminarCalendario(10));
+        $eliminar(new EliminarCalendario($id10));
         $this->assertTrue(true);
     }
 
@@ -101,36 +102,37 @@ class MaestrosHandlersCrudTest extends TestCase
      */
     public function test_direccion_crud_handlers_invocan_repositorio_y_mapean_respuesta(): void
     {
+        $id20 = '22222222-2222-2222-2222-222222222222';
         $repository = $this->createMock(DireccionRepositoryInterface::class);
         // Crear
         $repository->expects($this->once())->method('save')
             ->with($this->callback(function (Direccion $direccion): bool {
                 return $direccion->id === null && $direccion->nombre === 'Casa' && $direccion->linea1 === 'Av. Siempre Viva 123'
                     && $direccion->ciudad === 'SCZ' && $direccion->geo === ['lat' => -17.78, 'lng' => -63.18];
-            }))->willReturn(20);
+            }))->willReturn($id20);
         $crear = new CrearDireccionHandler($repository, $this->tx());
         $id = $crear(new CrearDireccion(
             'Casa','Av. Siempre Viva 123',null,'SCZ',null,'BO',['lat' => -17.78, 'lng' => -63.18]
         ));
-        $this->assertSame(20, $id);
+        $this->assertSame($id20, $id);
         // Actualizar
-        $existing = new Direccion(20, 'Casa', 'Av. Siempre Viva 123', null, 'SCZ', null, 'BO', ['lat' => -17.78, 'lng' => -63.18]);
+        $existing = new Direccion($id20, 'Casa', 'Av. Siempre Viva 123', null, 'SCZ', null, 'BO', ['lat' => -17.78, 'lng' => -63.18]);
         $repository2 = $this->createMock(DireccionRepositoryInterface::class);
-        $repository2->method('byId')->with(20)->willReturn($existing);
-        $repository2->expects($this->once())->method('save')->willReturn(20);
+        $repository2->method('byId')->with($id20)->willReturn($existing);
+        $repository2->expects($this->once())->method('save')->willReturn($id20);
         $actualizar = new ActualizarDireccionHandler($repository2, $this->tx());
         $actualizadoId = $actualizar(new ActualizarDireccion(
-            20, 'Oficina', 'Calle 1', 'Piso 2', 'LPZ', 'Murillo', 'BO', null
+            $id20, 'Oficina', 'Calle 1', 'Piso 2', 'LPZ', 'Murillo', 'BO', null
         ));
-        $this->assertSame(20, $actualizadoId);
+        $this->assertSame($id20, $actualizadoId);
         $this->assertSame('Oficina', $existing->nombre);
         $this->assertSame('LPZ', $existing->ciudad);
         // Ver
         $repository3 = $this->createMock(DireccionRepositoryInterface::class);
-        $repository3->method('byId')->with(20)->willReturn($existing);
+        $repository3->method('byId')->with($id20)->willReturn($existing);
         $ver = new VerDireccionHandler($repository3, $this->tx());
-        $data = $ver(new VerDireccion(20));
-        $this->assertSame(20, $data['id']);
+        $data = $ver(new VerDireccion($id20));
+        $this->assertSame($id20, $data['id']);
         $this->assertSame('Calle 1', $data['linea1']);
         // Listar
         $repository4 = $this->createMock(DireccionRepositoryInterface::class);
@@ -141,10 +143,10 @@ class MaestrosHandlersCrudTest extends TestCase
         $this->assertSame('Oficina', $list[0]['nombre']);
         // Eliminar
         $repository5 = $this->createMock(DireccionRepositoryInterface::class);
-        $repository5->method('byId')->with(20)->willReturn($existing);
-        $repository5->expects($this->once())->method('delete')->with(20);
+        $repository5->method('byId')->with($id20)->willReturn($existing);
+        $repository5->expects($this->once())->method('delete')->with($id20);
         $eliminar = new EliminarDireccionHandler($repository5, $this->tx());
-        $eliminar(new EliminarDireccion(20));
+        $eliminar(new EliminarDireccion($id20));
         $this->assertTrue(true);
     }
 
@@ -155,11 +157,11 @@ class MaestrosHandlersCrudTest extends TestCase
     {
         $repository = $this->createMock($data['repo']);
         $repository->expects($this->once())->method('save')
-            ->with($this->isInstanceOf($data['entity']))->willReturn(123);
+            ->with($this->isInstanceOf($data['entity']))->willReturn('33333333-3333-3333-3333-333333333333');
         $handler = new ($data['handlers']['crear'])($repository, $this->tx());
         $id = $handler($data['commands']['crear']());
 
-        $this->assertSame(123, $id);
+        $this->assertSame('33333333-3333-3333-3333-333333333333', $id);
     }
 
     /**
@@ -167,9 +169,10 @@ class MaestrosHandlersCrudTest extends TestCase
      */
     public function test_actualizar_handler_hace_byId_modifica_y_save(array $data): void
     {
+        $id10 = '11111111-1111-1111-1111-111111111111';
         $repository = $this->createMock($data['repo']);
         $entity = $data['makeEntity']();
-        $repository->expects($this->once())->method('byId')->with(10)->willReturn($entity);
+        $repository->expects($this->once())->method('byId')->with($id10)->willReturn($entity);
         $repository->expects($this->once())->method('save')
             ->with($this->callback(function ($saved) use ($data): bool {
                 if (!($saved instanceof $data['entity'])) return false;
@@ -180,11 +183,11 @@ class MaestrosHandlersCrudTest extends TestCase
                 }
 
                 return true;
-            }))->willReturn(10);
+            }))->willReturn($id10);
         $handler = new ($data['handlers']['actualizar'])($repository, $this->tx());
         $id = $handler($data['commands']['actualizar']());
 
-        $this->assertSame(10, $id);
+        $this->assertSame($id10, $id);
     }
 
     /**
@@ -192,9 +195,10 @@ class MaestrosHandlersCrudTest extends TestCase
      */
     public function test_eliminar_handler_hace_byId_y_delete(array $data): void
     {
+        $id10 = '11111111-1111-1111-1111-111111111111';
         $repository = $this->createMock($data['repo']);
-        $repository->expects($this->once())->method('byId')->with(10)->willReturn($data['makeEntity']());
-        $repository->expects($this->once())->method('delete')->with(10);
+        $repository->expects($this->once())->method('byId')->with($id10)->willReturn($data['makeEntity']());
+        $repository->expects($this->once())->method('delete')->with($id10);
         $handler = new ($data['handlers']['eliminar'])($repository, $this->tx());
         $handler($data['commands']['eliminar']());
 
@@ -206,8 +210,9 @@ class MaestrosHandlersCrudTest extends TestCase
      */
     public function test_ver_handler_mapea_correcto(array $data): void
     {
+        $id10 = '11111111-1111-1111-1111-111111111111';
         $repository = $this->createMock($data['repo']);
-        $repository->expects($this->once())->method('byId')->with(10)->willReturn($data['makeEntity']());
+        $repository->expects($this->once())->method('byId')->with($id10)->willReturn($data['makeEntity']());
         $handler = new ($data['handlers']['ver'])($repository, $this->tx());
         $out = $handler($data['commands']['ver']());
 
@@ -234,6 +239,17 @@ class MaestrosHandlersCrudTest extends TestCase
     {
         $dtDesde = new DateTimeImmutable('2026-01-10 10:00:00');
         $dtHasta = new DateTimeImmutable('2026-01-10 12:00:00');
+        $id10 = '11111111-1111-1111-1111-111111111111';
+        $id20 = '22222222-2222-2222-2222-222222222222';
+        $id123 = '33333333-3333-3333-3333-333333333333';
+        $idCal = '44444444-4444-4444-4444-444444444444';
+        $idItem = '55555555-5555-5555-5555-555555555555';
+        $idReceta = '66666666-6666-6666-6666-666666666666';
+        $idSuscripcion = '77777777-7777-7777-7777-777777777777';
+        $idPaciente = '88888888-8888-8888-8888-888888888888';
+        $idEtiqueta = '99999999-9999-9999-9999-999999999999';
+        $idVentana = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+        $idDireccion = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
 
         return [
             'CalendarioItem' => [
@@ -248,15 +264,15 @@ class MaestrosHandlersCrudTest extends TestCase
                         'listar' => \App\Application\Produccion\Handler\ListarCalendarioItemsHandler::class
                     ],
                     'commands' => [
-                        'crear' => fn() => new \App\Application\Produccion\Command\CrearCalendarioItem(1, 2),
-                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarCalendarioItem(10, 1, 2),
-                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarCalendarioItem(10),
-                        'ver' => fn() => new \App\Application\Produccion\Command\VerCalendarioItem(10),
+                        'crear' => fn() => new \App\Application\Produccion\Command\CrearCalendarioItem($idCal, $idItem),
+                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarCalendarioItem($id10, $idCal, $idItem),
+                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarCalendarioItem($id10),
+                        'ver' => fn() => new \App\Application\Produccion\Command\VerCalendarioItem($id10),
                         'listar' => fn() => new \App\Application\Produccion\Command\ListarCalendarioItems()
                     ],
-                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\CalendarioItem(10, 1, 2),
-                    'expectedAfterUpdate' => fn() => ['calendarioId' => 1, 'itemDespachoId' => 2],
-                    'expectedView' => fn() => ['id' => 10, 'calendario_id' => 1, 'item_despacho_id' => 2]
+                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\CalendarioItem($id10, $idCal, $idItem),
+                    'expectedAfterUpdate' => fn() => ['calendarioId' => $idCal, 'itemDespachoId' => $idItem],
+                    'expectedView' => fn() => ['id' => $id10, 'calendario_id' => $idCal, 'item_despacho_id' => $idItem]
                 ]
             ],
             'Estacion' => [
@@ -272,14 +288,14 @@ class MaestrosHandlersCrudTest extends TestCase
                     ],
                     'commands' => [
                         'crear' => fn() => new \App\Application\Produccion\Command\CrearEstacion('Estacion 1', 5),
-                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarEstacion(10, 'Estacion 1', 5),
-                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarEstacion(10),
-                        'ver' => fn() => new \App\Application\Produccion\Command\VerEstacion(10),
+                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarEstacion($id10, 'Estacion 1', 5),
+                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarEstacion($id10),
+                        'ver' => fn() => new \App\Application\Produccion\Command\VerEstacion($id10),
                         'listar' => fn() => new \App\Application\Produccion\Command\ListarEstaciones()
                     ],
-                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Estacion(10, 'Estacion 1', 5),
+                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Estacion($id10, 'Estacion 1', 5),
                     'expectedAfterUpdate' => fn() => ['nombre' => 'Estacion 1', 'capacidad' => 5],
-                    'expectedView' => fn() => ['id' => 10, 'nombre' => 'Estacion 1', 'capacidad' => 5],
+                    'expectedView' => fn() => ['id' => $id10, 'nombre' => 'Estacion 1', 'capacidad' => 5],
                 ]
             ],
             'Etiqueta' => [
@@ -294,15 +310,15 @@ class MaestrosHandlersCrudTest extends TestCase
                         'listar' => \App\Application\Produccion\Handler\ListarEtiquetasHandler::class
                     ],
                     'commands' => [
-                        'crear' => fn() => new \App\Application\Produccion\Command\CrearEtiqueta(1, 2, 3, ['qr' => 'x']),
-                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarEtiqueta(10, 1, 2, 3, ['qr' => 'x']),
-                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarEtiqueta(10),
-                        'ver' => fn() => new \App\Application\Produccion\Command\VerEtiqueta(10),
+                        'crear' => fn() => new \App\Application\Produccion\Command\CrearEtiqueta($idReceta, $idSuscripcion, $idPaciente, ['qr' => 'x']),
+                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarEtiqueta($id10, $idReceta, $idSuscripcion, $idPaciente, ['qr' => 'x']),
+                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarEtiqueta($id10),
+                        'ver' => fn() => new \App\Application\Produccion\Command\VerEtiqueta($id10),
                         'listar' => fn() => new \App\Application\Produccion\Command\ListarEtiquetas()
                     ],
-                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Etiqueta(10, 1, 2, 3, ['qr' => 'x']),
-                    'expectedAfterUpdate' => fn() => ['recetaVersionId' => 1, 'suscripcionId' => 2, 'pacienteId' => 3, 'qrPayload' => ['qr' => 'x']],
-                    'expectedView' => fn() => ['id' => 10,'receta_version_id' => 1, 'suscripcion_id' => 2, 'paciente_id' => 3, 'qr_payload' => ['qr' => 'x']]
+                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Etiqueta($id10, $idReceta, $idSuscripcion, $idPaciente, ['qr' => 'x']),
+                    'expectedAfterUpdate' => fn() => ['recetaVersionId' => $idReceta, 'suscripcionId' => $idSuscripcion, 'pacienteId' => $idPaciente, 'qrPayload' => ['qr' => 'x']],
+                    'expectedView' => fn() => ['id' => $id10,'receta_version_id' => $idReceta, 'suscripcion_id' => $idSuscripcion, 'paciente_id' => $idPaciente, 'qr_payload' => ['qr' => 'x']]
                 ]
             ],
             'Paciente' => [
@@ -317,15 +333,15 @@ class MaestrosHandlersCrudTest extends TestCase
                         'listar' => \App\Application\Produccion\Handler\ListarPacientesHandler::class
                     ],
                     'commands' => [
-                        'crear' => fn() => new \App\Application\Produccion\Command\CrearPaciente('Juan', 'CI-1', 2),
-                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarPaciente(10, 'Juan', 'CI-1', 2),
-                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarPaciente(10),
-                        'ver' => fn() => new \App\Application\Produccion\Command\VerPaciente(10),
+                        'crear' => fn() => new \App\Application\Produccion\Command\CrearPaciente('Juan', 'CI-1', $idSuscripcion),
+                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarPaciente($id10, 'Juan', 'CI-1', $idSuscripcion),
+                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarPaciente($id10),
+                        'ver' => fn() => new \App\Application\Produccion\Command\VerPaciente($id10),
                         'listar' => fn() => new \App\Application\Produccion\Command\ListarPacientes()
                     ],
-                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Paciente(10, 'Juan', 'CI-1', 2),
-                    'expectedAfterUpdate' => fn() => ['nombre' => 'Juan', 'documento' => 'CI-1', 'suscripcionId' => 2],
-                    'expectedView' => fn() => ['id' => 10, 'nombre' => 'Juan', 'documento' => 'CI-1', 'suscripcion_id' => 2]
+                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Paciente($id10, 'Juan', 'CI-1', $idSuscripcion),
+                    'expectedAfterUpdate' => fn() => ['nombre' => 'Juan', 'documento' => 'CI-1', 'suscripcionId' => $idSuscripcion],
+                    'expectedView' => fn() => ['id' => $id10, 'nombre' => 'Juan', 'documento' => 'CI-1', 'suscripcion_id' => $idSuscripcion]
                 ]
             ],
             'Paquete' => [
@@ -340,15 +356,15 @@ class MaestrosHandlersCrudTest extends TestCase
                         'listar' => \App\Application\Produccion\Handler\ListarPaquetesHandler::class
                     ],
                     'commands' => [
-                        'crear' => fn() => new \App\Application\Produccion\Command\CrearPaquete(1, 2, 3),
-                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarPaquete(10, 1, 2, 3),
-                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarPaquete(10),
-                        'ver' => fn() => new \App\Application\Produccion\Command\VerPaquete(10),
+                        'crear' => fn() => new \App\Application\Produccion\Command\CrearPaquete($idEtiqueta, $idVentana, $idDireccion),
+                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarPaquete($id10, $idEtiqueta, $idVentana, $idDireccion),
+                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarPaquete($id10),
+                        'ver' => fn() => new \App\Application\Produccion\Command\VerPaquete($id10),
                         'listar' => fn() => new \App\Application\Produccion\Command\ListarPaquetes()
                     ],
-                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Paquete(10, 1, 2, 3),
-                    'expectedAfterUpdate' => fn() => ['etiquetaId' => 1, 'ventanaId' => 2, 'direccionId' => 3],
-                    'expectedView' => fn() => ['id' => 10, 'etiqueta_id' => 1, 'ventana_id' => 2, 'direccion_id' => 3]
+                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Paquete($id10, $idEtiqueta, $idVentana, $idDireccion),
+                    'expectedAfterUpdate' => fn() => ['etiquetaId' => $idEtiqueta, 'ventanaId' => $idVentana, 'direccionId' => $idDireccion],
+                    'expectedView' => fn() => ['id' => $id10, 'etiqueta_id' => $idEtiqueta, 'ventana_id' => $idVentana, 'direccion_id' => $idDireccion]
                 ]
             ],
             'Porcion' => [
@@ -364,14 +380,14 @@ class MaestrosHandlersCrudTest extends TestCase
                     ],
                     'commands' => [
                         'crear' => fn() => new \App\Application\Produccion\Command\CrearPorcion('P1', 100),
-                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarPorcion(10, 'P1', 100),
-                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarPorcion(10),
-                        'ver' => fn() => new \App\Application\Produccion\Command\VerPorcion(10),
+                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarPorcion($id10, 'P1', 100),
+                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarPorcion($id10),
+                        'ver' => fn() => new \App\Application\Produccion\Command\VerPorcion($id10),
                         'listar' => fn() => new \App\Application\Produccion\Command\ListarPorciones()
                     ],
-                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Porcion(10, 'P1', 100),
+                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Porcion($id10, 'P1', 100),
                     'expectedAfterUpdate' => fn() => ['nombre' => 'P1', 'pesoGr' => 100],
-                    'expectedView' => fn() => ['id' => 10,'nombre' => 'P1', 'peso_gr' => 100]
+                    'expectedView' => fn() => ['id' => $id10,'nombre' => 'P1', 'peso_gr' => 100]
                 ]
             ],
             'RecetaVersion' => [
@@ -387,12 +403,12 @@ class MaestrosHandlersCrudTest extends TestCase
                     ],
                     'commands' => [
                         'crear' => fn() => new \App\Application\Produccion\Command\CrearRecetaVersion('R1', ['n' => 1], ['i' => 1], 1),
-                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarRecetaVersion(10, 'R1', ['n' => 1], ['i' => 1], 1),
-                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarRecetaVersion(10),
-                        'ver' => fn() => new \App\Application\Produccion\Command\VerRecetaVersion(10),
+                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarRecetaVersion($id10, 'R1', ['n' => 1], ['i' => 1], 1),
+                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarRecetaVersion($id10),
+                        'ver' => fn() => new \App\Application\Produccion\Command\VerRecetaVersion($id10),
                         'listar' => fn() => new \App\Application\Produccion\Command\ListarRecetasVersion()
                     ],
-                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\RecetaVersion(10, 'R1', ['n' => 1], ['i' => 1], 1),
+                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\RecetaVersion($id10, 'R1', ['n' => 1], ['i' => 1], 1),
                     'expectedAfterUpdate' => fn() => [
                         'nombre' => 'R1',
                         'nutrientes' => ['n' => 1],
@@ -400,7 +416,7 @@ class MaestrosHandlersCrudTest extends TestCase
                         'version' => 1
                     ],
                     'expectedView' => fn() => [
-                        'id' => 10,
+                        'id' => $id10,
                         'nombre' => 'R1',
                         'nutrientes' => ['n' => 1],
                         'ingredientes' => ['i' => 1],
@@ -420,14 +436,14 @@ class MaestrosHandlersCrudTest extends TestCase
                 ],
                 'commands' => [
                     'crear' => fn() => new \App\Application\Produccion\Command\CrearSuscripcion('S1'),
-                    'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarSuscripcion(10, 'S1'),
-                    'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarSuscripcion(10),
-                    'ver' => fn() => new \App\Application\Produccion\Command\VerSuscripcion(10),
+                    'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarSuscripcion($id10, 'S1'),
+                    'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarSuscripcion($id10),
+                    'ver' => fn() => new \App\Application\Produccion\Command\VerSuscripcion($id10),
                     'listar' => fn() => new \App\Application\Produccion\Command\ListarSuscripciones()
                 ],
-                'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Suscripcion(10, 'S1'),
+                'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Suscripcion($id10, 'S1'),
                 'expectedAfterUpdate' => fn() => ['nombre' => 'S1'],
-                'expectedView' => fn() => ['id' => 10, 'nombre' => 'S1']
+                'expectedView' => fn() => ['id' => $id10, 'nombre' => 'S1']
             ]],
             'VentanaEntrega' => [
                 [
@@ -442,15 +458,15 @@ class MaestrosHandlersCrudTest extends TestCase
                     ],
                     'commands' => [
                         'crear' => fn() => new \App\Application\Produccion\Command\CrearVentanaEntrega($dtDesde, $dtHasta),
-                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarVentanaEntrega(10, $dtDesde, $dtHasta),
-                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarVentanaEntrega(10),
-                        'ver' => fn() => new \App\Application\Produccion\Command\VerVentanaEntrega(10),
+                        'actualizar' => fn() => new \App\Application\Produccion\Command\ActualizarVentanaEntrega($id10, $dtDesde, $dtHasta),
+                        'eliminar' => fn() => new \App\Application\Produccion\Command\EliminarVentanaEntrega($id10),
+                        'ver' => fn() => new \App\Application\Produccion\Command\VerVentanaEntrega($id10),
                         'listar' => fn() => new \App\Application\Produccion\Command\ListarVentanasEntrega()
                     ],
-                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\VentanaEntrega(10, $dtDesde, $dtHasta),
+                    'makeEntity' => fn() => new \App\Domain\Produccion\Entity\VentanaEntrega($id10, $dtDesde, $dtHasta),
                     'expectedAfterUpdate' => fn() => ['desde' => $dtDesde, 'hasta' => $dtHasta],
                     'expectedView' => fn() => [
-                        'id' => 10, 'desde' => $dtDesde->format('Y-m-d H:i:s'), 'hasta' => $dtHasta->format('Y-m-d H:i:s')
+                        'id' => $id10, 'desde' => $dtDesde->format('Y-m-d H:i:s'), 'hasta' => $dtHasta->format('Y-m-d H:i:s')
                     ]
                 ]
             ],

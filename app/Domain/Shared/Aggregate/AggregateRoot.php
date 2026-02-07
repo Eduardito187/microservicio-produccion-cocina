@@ -3,7 +3,6 @@
 namespace App\Domain\Shared\Aggregate;
 
 use App\Domain\Shared\Events\Interface\DomainEventInterface;
-use App\Infrastructure\Persistence\Outbox\OutboxStore;
 
 trait AggregateRoot
 {
@@ -32,19 +31,4 @@ trait AggregateRoot
         return $e;
     }
 
-    /**
-     * @param mixed $persistenceId
-     * @return void
-     */
-    public function publishOutbox(mixed $persistenceId): void
-    {
-        foreach ($this->pullEvents() as $event) {
-            OutboxStore::append(
-                $event->name(),
-                $persistenceId ?? null,
-                $event->occurredOn(),
-                $event->toArray()
-            );
-        }
-    }
 }

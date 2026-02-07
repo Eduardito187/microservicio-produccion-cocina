@@ -36,9 +36,9 @@ class ActualizarSuscripcionHandler
      * @param ActualizarSuscripcion $command
      * @return int
      */
-    public function __invoke(ActualizarSuscripcion $command): int
+    public function __invoke(ActualizarSuscripcion $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $suscripcion = $this->suscripcionRepository->byId($command->id);
             $suscripcion->nombre = $command->nombre;
 

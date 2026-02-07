@@ -7,7 +7,7 @@ class ActualizarDireccion
     /**
      * @var int
      */
-    public int $id;
+    public string $id;
 
     /**
      * @var string|null
@@ -47,7 +47,7 @@ class ActualizarDireccion
     /**
      * Constructor
      *
-     * @param int $id
+     * @param string $id
      * @param string|null $nombre
      * @param string $linea1
      * @param string|null $linea2
@@ -57,7 +57,7 @@ class ActualizarDireccion
      * @param array|null $geo
      */
     public function __construct(
-        int $id,
+        string $id,
         string|null $nombre,
         string $linea1,
         string|null $linea2 = null,

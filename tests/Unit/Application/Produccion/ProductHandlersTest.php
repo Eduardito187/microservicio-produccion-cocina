@@ -41,6 +41,7 @@ class ProductHandlersTest extends TestCase
      */
     public function test_crear_producto_persiste_y_devuelve_id_por_sku(): void
     {
+        $productId = 'e28e9cc2-5225-40c0-b88b-2341f96d76a3';
         $repository = $this->createMock(ProductRepositoryInterface::class);
         $repository->expects($this->once())->method('save')
             ->with($this->callback(function (Products $product): bool {
@@ -48,11 +49,11 @@ class ProductHandlersTest extends TestCase
                     && $product->price === 100.0 && $product->special_price === 80.0;
             }));
         $repository->expects($this->once())->method('bySku')
-            ->with('PIZZA-PEP')->willReturn(new Products(id: 99, sku: 'PIZZA-PEP', price: 100.0, special_price: 80.0));
+            ->with('PIZZA-PEP')->willReturn(new Products(id: $productId, sku: 'PIZZA-PEP', price: 100.0, special_price: 80.0));
         $handler = new CrearProductoHandler($repository, $this->tx());
         $id = $handler(new CrearProducto('PIZZA-PEP', 100.0, 80.0));
 
-        $this->assertSame(99, $id);
+        $this->assertSame($productId, $id);
     }
 
     /**
@@ -60,18 +61,19 @@ class ProductHandlersTest extends TestCase
      */
     public function test_actualizar_producto_valida_existencia_y_persiste(): void
     {
+        $productId = '0d61b6de-30b1-45db-9f52-b5c1e3e3f1c3';
         $repository = $this->createMock(ProductRepositoryInterface::class);
         $repository->expects($this->once())->method('byId')
-            ->with('10')->willReturn(new Products(id: 10, sku: 'SKU-OLD', price: 1.0, special_price: 0.0));
+            ->with($productId)->willReturn(new Products(id: $productId, sku: 'SKU-OLD', price: 1.0, special_price: 0.0));
         $repository->expects($this->once())->method('save')
-            ->with($this->callback(function (Products $product): bool {
-                return $product->id === 10 && $product->sku === 'SKU-NEW'
+            ->with($this->callback(function (Products $product) use ($productId): bool {
+                return $product->id === $productId && $product->sku === 'SKU-NEW'
                     && $product->price === 200.0 && $product->special_price === 0.0;
             }));
         $handler = new ActualizarProductoHandler($repository, $this->tx());
-        $id = $handler(new ActualizarProducto(10, 'SKU-NEW', 200.0, 0.0));
+        $id = $handler(new ActualizarProducto($productId, 'SKU-NEW', 200.0, 0.0));
 
-        $this->assertSame(10, $id);
+        $this->assertSame($productId, $id);
     }
 
     /**
@@ -79,13 +81,14 @@ class ProductHandlersTest extends TestCase
      */
     public function test_ver_y_listar_producto_mapean_campos(): void
     {
-        $product = new Products(id: 7, sku: 'SKU-007', price: 50.0, special_price: 0.0);
+        $productId = '2fbd6b2a-462d-4a9a-a22f-efc7c83ec4a5';
+        $product = new Products(id: $productId, sku: 'SKU-007', price: 50.0, special_price: 0.0);
 
         $repository = $this->createMock(ProductRepositoryInterface::class);
-        $repository->method('byId')->with('7')->willReturn($product);
+        $repository->method('byId')->with($productId)->willReturn($product);
         $ver = new VerProductoHandler($repository, $this->tx());
-        $data = $ver(new VerProducto(7));
-        $this->assertSame(['id' => 7, 'sku' => 'SKU-007', 'price' => 50.0, 'special_price' => 0.0], $data);
+        $data = $ver(new VerProducto($productId));
+        $this->assertSame(['id' => $productId, 'sku' => 'SKU-007', 'price' => 50.0, 'special_price' => 0.0], $data);
 
         $repository2 = $this->createMock(ProductRepositoryInterface::class);
         $repository2->method('list')->willReturn([$product]);
@@ -101,11 +104,12 @@ class ProductHandlersTest extends TestCase
      */
     public function test_eliminar_producto_invoca_delete(): void
     {
+        $productId = '5b7dcd16-c4e5-455c-bad2-2be581bfc0f9';
         $repository = $this->createMock(ProductRepositoryInterface::class);
-        $repository->method('byId')->with('5')->willReturn(new Products(id: 5, sku: 'SKU-005', price: 1.0, special_price: 0.0));
-        $repository->expects($this->once())->method('delete')->with(5);
+        $repository->method('byId')->with($productId)->willReturn(new Products(id: $productId, sku: 'SKU-005', price: 1.0, special_price: 0.0));
+        $repository->expects($this->once())->method('delete')->with($productId);
         $handler = new EliminarProductoHandler($repository, $this->tx());
-        $handler(new EliminarProducto(5));
+        $handler(new EliminarProducto($productId));
 
         $this->assertTrue(true);
     }

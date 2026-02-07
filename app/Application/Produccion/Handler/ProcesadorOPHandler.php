@@ -38,7 +38,7 @@ class ProcesadorOPHandler
      */
     public function __invoke(ProcesadorOP $command): string|int|null
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $ordenProduccion = $this->ordenProduccionRepository->byId($command->opId);
             $ordenProduccion->procesarBatches();
             $ordenProduccion->procesar();

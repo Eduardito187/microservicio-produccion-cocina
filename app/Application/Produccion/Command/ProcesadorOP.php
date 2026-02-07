@@ -7,15 +7,15 @@ class ProcesadorOP
     /**
      * @var int
      */
-    public readonly int $opId;
+    public readonly string $opId;
 
     /**
      * Constructor
      * 
-     * @param int $opId
+     * @param string $opId
      */
     public function __construct(
-        int $opId
+        string $opId
     ) {
         $this->opId = $opId;
     }

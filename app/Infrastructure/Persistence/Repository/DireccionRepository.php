@@ -14,7 +14,7 @@ class DireccionRepository implements DireccionRepositoryInterface
      * @throws ModelNotFoundException
      * @return Direccion|null
      */
-    public function byId(int $id): ?Direccion
+    public function byId(string|int $id): ?Direccion
     {
         $row = DireccionModel::find($id);
 
@@ -38,7 +38,7 @@ class DireccionRepository implements DireccionRepositoryInterface
      * @param Direccion $direccion
      * @return int
      */
-    public function save(Direccion $direccion): int
+    public function save(Direccion $direccion): string
     {
         $model = DireccionModel::query()->updateOrCreate(
             ['id' => $direccion->id],
@@ -83,7 +83,7 @@ class DireccionRepository implements DireccionRepositoryInterface
      * @param int $id
      * @return void
      */
-    public function delete(int $id): void
+    public function delete(string|int $id): void
     {
         DireccionModel::query()->whereKey($id)->delete();
     }

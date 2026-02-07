@@ -36,9 +36,9 @@ class ActualizarCalendarioItemHandler
      * @param ActualizarCalendarioItem $command
      * @return int
      */
-    public function __invoke(ActualizarCalendarioItem $command): int
+    public function __invoke(ActualizarCalendarioItem $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $item = $this->calendarioItemRepository->byId($command->id);
             $item->calendarioId = $command->calendarioId;
             $item->itemDespachoId = $command->itemDespachoId;

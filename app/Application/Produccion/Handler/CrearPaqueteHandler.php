@@ -37,9 +37,9 @@ class CrearPaqueteHandler
      * @param CrearPaquete $command
      * @return int
      */
-    public function __invoke(CrearPaquete $command): int
+    public function __invoke(CrearPaquete $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $paquete = new Paquete(
                 null,
                 $command->etiquetaId,

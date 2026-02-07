@@ -37,9 +37,9 @@ class CrearDireccionHandler
      * @param CrearDireccion $command
      * @return int
      */
-    public function __invoke(CrearDireccion $command): int
+    public function __invoke(CrearDireccion $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $direccion = new Direccion(
                 null,
                 $command->nombre,

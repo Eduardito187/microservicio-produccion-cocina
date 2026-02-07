@@ -14,7 +14,7 @@ class PacienteRepository implements PacienteRepositoryInterface
      * @throws ModelNotFoundException
      * @return Paciente|null
      */
-    public function byId(int $id): ?Paciente
+    public function byId(string|int $id): ?Paciente
     {
         $row = PacienteModel::find($id);
 
@@ -34,7 +34,7 @@ class PacienteRepository implements PacienteRepositoryInterface
      * @param Paciente $paciente
      * @return int
      */
-    public function save(Paciente $paciente): int
+    public function save(Paciente $paciente): string
     {
         $model = PacienteModel::query()->updateOrCreate(
             ['id' => $paciente->id],
@@ -71,7 +71,7 @@ class PacienteRepository implements PacienteRepositoryInterface
      * @param int $id
      * @return void
      */
-    public function delete(int $id): void
+    public function delete(string|int $id): void
     {
         PacienteModel::query()->whereKey($id)->delete();
     }

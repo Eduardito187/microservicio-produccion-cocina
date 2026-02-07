@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 interface CalendarioItemRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param string|int $id
      * @throws ModelNotFoundException
      * @return CalendarioItem|null
      */
-    public function byId(int $id): ?CalendarioItem;
+    public function byId(string|int $id): ?CalendarioItem;
 
     /**
      * @param CalendarioItem $item
      * @return int
      */
-    public function save(CalendarioItem $item): int;
+    public function save(CalendarioItem $item): string;
 
     /**
      * @return CalendarioItem[]
@@ -26,8 +26,8 @@ interface CalendarioItemRepositoryInterface
     public function list(): array;
 
     /**
-     * @param int $id
+     * @param string|int $id
      * @return void
      */
-    public function delete(int $id): void;
+    public function delete(string|int $id): void;
 }

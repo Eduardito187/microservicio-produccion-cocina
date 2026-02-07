@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 interface VentanaEntregaRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param string|int $id
      * @throws ModelNotFoundException
      * @return VentanaEntrega|null
      */
-    public function byId(int $id): ?VentanaEntrega;
+    public function byId(string|int $id): ?VentanaEntrega;
 
     /**
      * @param VentanaEntrega $ventanaEntrega
      * @return int
      */
-    public function save(VentanaEntrega $ventanaEntrega): int;
+    public function save(VentanaEntrega $ventanaEntrega): string;
 
     /**
      * @return VentanaEntrega[]
@@ -26,8 +26,8 @@ interface VentanaEntregaRepositoryInterface
     public function list(): array;
 
     /**
-     * @param int $id
+     * @param string|int $id
      * @return void
      */
-    public function delete(int $id): void;
+    public function delete(string|int $id): void;
 }

@@ -5,8 +5,8 @@ namespace App\Presentation\Http\Controllers;
 use App\Application\Produccion\Handler\GenerarOPHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Application\Produccion\Command\GenerarOP;
+use App\Presentation\Http\Requests\GenerarOPRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use DateTimeImmutable;
 use DomainException;
 
@@ -30,13 +30,15 @@ class GenerarOPController
      * @param Request $request
      * @return JsonResponse
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(GenerarOPRequest $request): JsonResponse
     {
-        $data = $request->validate([
-            'fecha' => ['required','date'],
-            'sucursalId' => ['required','string'],
-            'items' => ['array']
-        ]);
+        $data = $request->validated();
+        $items = array_map(function (array $item): array {
+            return [
+                'sku' => (string) $item['sku'],
+                'qty' => (int) $item['qty'],
+            ];
+        }, $data['items']);
 
         try {
             $ordenProduccionId = $this->handler->__invoke(
@@ -44,7 +46,7 @@ class GenerarOPController
                     $data['id'] ?? null,
                     new DateTimeImmutable($data['fecha']),
                     $data['sucursalId'],
-                    $data['items'] ?? []
+                    $items
                 )
             );
 

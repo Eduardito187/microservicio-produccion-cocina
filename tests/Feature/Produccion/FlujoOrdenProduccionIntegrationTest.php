@@ -4,6 +4,7 @@ namespace Tests\Feature\Produccion;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class FlujoOrdenProduccionIntegrationTest extends TestCase
@@ -17,25 +18,39 @@ class FlujoOrdenProduccionIntegrationTest extends TestCase
     {
         $this->seed();
 
-        $estacionId = DB::table('estacion')->insertGetId([
+        $estacionId = (string) Str::uuid();
+        DB::table('estacion')->insert([
+            'id' => $estacionId,
             'nombre' => 'Estación 1', 'created_at' => now(), 'updated_at' => now()
         ]);
-        $recetaVersion1Id = DB::table('receta_version')->insertGetId([
+        $recetaVersion1Id = (string) Str::uuid();
+        DB::table('receta_version')->insert([
+            'id' => $recetaVersion1Id,
             'nombre' => 'Pizza Pepperoni v1.0', 'created_at' => now(), 'updated_at' => now()
         ]);
-        $recetaVersion2Id = DB::table('receta_version')->insertGetId([
+        $recetaVersion2Id = (string) Str::uuid();
+        DB::table('receta_version')->insert([
+            'id' => $recetaVersion2Id,
             'nombre' => 'Pizza Margarita v2.0', 'created_at' => now(), 'updated_at' => now()
         ]);
-        $porcionId = DB::table('porcion')->insertGetId([
+        $porcionId = (string) Str::uuid();
+        DB::table('porcion')->insert([
+            'id' => $porcionId,
             'nombre' => 'Porción estándar', 'peso_gr' => 50, 'created_at' => now(), 'updated_at' => now()
         ]);
-        $pacienteId = DB::table('paciente')->insertGetId([
+        $pacienteId = (string) Str::uuid();
+        DB::table('paciente')->insert([
+            'id' => $pacienteId,
             'nombre' => 'Paciente Demo', 'created_at' => now(), 'updated_at' => now()
         ]);
-        $ventanaEntregaId = DB::table('ventana_entrega')->insertGetId([
+        $ventanaEntregaId = (string) Str::uuid();
+        DB::table('ventana_entrega')->insert([
+            'id' => $ventanaEntregaId,
             'desde' => now(), 'hasta' => now(), 'created_at' => now(), 'updated_at' => now()
         ]);
-        $direccionId = DB::table('direccion')->insertGetId([
+        $direccionId = (string) Str::uuid();
+        DB::table('direccion')->insert([
+            'id' => $direccionId,
             'nombre' => 'Test',
             'linea1' => 'Test',
             'linea2' => 'Test',
@@ -46,11 +61,15 @@ class FlujoOrdenProduccionIntegrationTest extends TestCase
             'created_at' => now(),
             'updated_at' => now()
         ]);
-        $suscripcionId = DB::table('suscripcion')->insertGetId([
+        $suscripcionId = (string) Str::uuid();
+        DB::table('suscripcion')->insert([
+            'id' => $suscripcionId,
             'nombre' => 'Suscripción Demo', 'created_at' => now(), 'updated_at' => now()
         ]);
 
-        $etiquetaId = DB::table('etiqueta')->insertGetId([
+        $etiquetaId = (string) Str::uuid();
+        DB::table('etiqueta')->insert([
+            'id' => $etiquetaId,
             'receta_version_id' => $recetaVersion1Id,
             'suscripcion_id' => $suscripcionId,
             'paciente_id' => $pacienteId,

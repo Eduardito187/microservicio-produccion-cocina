@@ -36,9 +36,9 @@ class ActualizarVentanaEntregaHandler
      * @param ActualizarVentanaEntrega $command
      * @return int
      */
-    public function __invoke(ActualizarVentanaEntrega $command): int
+    public function __invoke(ActualizarVentanaEntrega $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $ventana = $this->ventanaEntregaRepository->byId($command->id);
             $ventana->desde = $command->desde;
             $ventana->hasta = $command->hasta;

@@ -36,9 +36,9 @@ class ActualizarEtiquetaHandler
      * @param ActualizarEtiqueta $command
      * @return int
      */
-    public function __invoke(ActualizarEtiqueta $command): int
+    public function __invoke(ActualizarEtiqueta $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $etiqueta = $this->etiquetaRepository->byId($command->id);
             $etiqueta->recetaVersionId = $command->recetaVersionId;
             $etiqueta->suscripcionId = $command->suscripcionId;

@@ -7,26 +7,26 @@ class ActualizarCalendarioItem
     /**
      * @var int
      */
-    public int $id;
+    public string $id;
 
     /**
      * @var int
      */
-    public int $calendarioId;
+    public string $calendarioId;
 
     /**
      * @var int
      */
-    public int $itemDespachoId;
+    public string $itemDespachoId;
 
     /**
      * Constructor
      *
-     * @param int $id
-     * @param int $calendarioId
-     * @param int $itemDespachoId
+     * @param string $id
+     * @param string $calendarioId
+     * @param string $itemDespachoId
      */
-    public function __construct(int $id, int $calendarioId, int $itemDespachoId)
+    public function __construct(string $id, string $calendarioId, string $itemDespachoId)
     {
         $this->id = $id;
         $this->calendarioId = $calendarioId;

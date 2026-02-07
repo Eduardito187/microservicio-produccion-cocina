@@ -17,6 +17,7 @@ class GenerarOPHandlerTest extends TestCase
      */
     public function test_handler_crea_y_guarda_la_orden_en_una_transaccion(): void
     {
+        $orderId = 'e28e9cc2-5225-40c0-b88b-2341f96d76a3';
         $repository = $this->createMock(OrdenProduccionRepositoryInterface::class);
         $transactionAggregate = $this->createMock(TransactionAggregate::class);
         $fecha = new DateTimeImmutable('2025-01-01');
@@ -27,7 +28,7 @@ class GenerarOPHandlerTest extends TestCase
                 $this->assertEquals($fecha, $op->fecha());
                 $this->assertCount(1, $op->items());
                 return true;
-            }))->willReturn(10);
+            }))->willReturn($orderId);
         $transactionAggregate->expects($this->once())->method('runTransaction')
             ->with($this->isInstanceOf(\Closure::class))
             ->willReturnCallback(function (callable $callback) {
@@ -35,6 +36,6 @@ class GenerarOPHandlerTest extends TestCase
             });
         $handler = new GenerarOPHandler($repository, $transactionAggregate);
         $result = $handler($command);
-        $this->assertSame(10, $result);
+        $this->assertSame($orderId, $result);
     }
 }

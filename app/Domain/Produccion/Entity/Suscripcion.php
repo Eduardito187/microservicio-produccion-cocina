@@ -5,9 +5,9 @@ namespace App\Domain\Produccion\Entity;
 class Suscripcion
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $id;
+    public string|int|null $id;
 
     /**
      * @var string
@@ -17,10 +17,10 @@ class Suscripcion
     /**
      * Constructor
      *
-     * @param int|null $id
+     * @param string|int|null $id
      * @param string $nombre
      */
-    public function __construct(int|null $id, string $nombre)
+    public function __construct(string|int|null $id, string $nombre)
     {
         $this->id = $id;
         $this->nombre = $nombre;

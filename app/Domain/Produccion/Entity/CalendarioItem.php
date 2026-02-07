@@ -5,28 +5,28 @@ namespace App\Domain\Produccion\Entity;
 class CalendarioItem
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $id;
+    public string|int|null $id;
 
     /**
      * @var int
      */
-    public int $calendarioId;
+    public string|int $calendarioId;
 
     /**
      * @var int
      */
-    public int $itemDespachoId;
+    public string|int $itemDespachoId;
 
     /**
      * Constructor
      *
-     * @param int|null $id
-     * @param int $calendarioId
-     * @param int $itemDespachoId
+     * @param string|int|null $id
+     * @param string|int $calendarioId
+     * @param string|int $itemDespachoId
      */
-    public function __construct(int|null $id, int $calendarioId, int $itemDespachoId)
+    public function __construct(string|int|null $id, string|int $calendarioId, string|int $itemDespachoId)
     {
         $this->id = $id;
         $this->calendarioId = $calendarioId;

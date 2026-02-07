@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class DireccionesPacientesSeeder extends Seeder
 {
@@ -18,9 +19,9 @@ class DireccionesPacientesSeeder extends Seeder
         if (Schema::hasTable('suscripcion')) {
             DB::table('suscripcion')->upsert(
                 [
-                    ['nombre' => 'Mantener peso', 'created_at' => $now, 'updated_at' => $now],
-                    ['nombre' => 'Masa muscular', 'created_at' => $now, 'updated_at' => $now],
-                    ['nombre' => 'Bajar peso',    'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'nombre' => 'Mantener peso', 'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'nombre' => 'Masa muscular', 'created_at' => $now, 'updated_at' => $now],
+                    ['id' => (string) Str::uuid(), 'nombre' => 'Bajar peso',    'created_at' => $now, 'updated_at' => $now],
                 ],
                 ['nombre'],          // clave única (asegúrate que en la migración suscripcion.nombre sea UNIQUE)
                 ['updated_at']       // columnas a actualizar
@@ -41,6 +42,7 @@ class DireccionesPacientesSeeder extends Seeder
                 DB::table('paciente')->upsert(
                     [
                         [
+                            'id'              => (string) Str::uuid(),
                             'nombre'          => 'Estelo',
                             'documento'       => 'CI-8178772',
                             'suscripcion_id'  => $suscripciones['Mantener peso'] ?? null,
@@ -48,6 +50,7 @@ class DireccionesPacientesSeeder extends Seeder
                             'updated_at'      => $now,
                         ],
                         [
+                            'id'              => (string) Str::uuid(),
                             'nombre'          => 'Pepe',
                             'documento'       => 'CI-8214882',
                             'suscripcion_id'  => $suscripciones['Masa muscular'] ?? null,
@@ -55,6 +58,7 @@ class DireccionesPacientesSeeder extends Seeder
                             'updated_at'      => $now,
                         ],
                         [
+                            'id'              => (string) Str::uuid(),
                             'nombre'          => 'Din',
                             'documento'       => 'CI-6358965',
                             'suscripcion_id'  => $suscripciones['Bajar peso'] ?? null,
@@ -73,6 +77,7 @@ class DireccionesPacientesSeeder extends Seeder
             DB::table('direccion')->upsert(
                 [
                     [
+                        'id'          => (string) Str::uuid(),
                         'nombre'      => 'Casa Juan',
                         'linea1'      => 'Av. 16 de Julio 123',
                         'linea2'      => 'Depto 4B',
@@ -84,6 +89,7 @@ class DireccionesPacientesSeeder extends Seeder
                         'updated_at'  => $now,
                     ],
                     [
+                        'id'          => (string) Str::uuid(),
                         'nombre'      => 'Oficina María',
                         'linea1'      => 'Calle España 456',
                         'linea2'      => null,
@@ -95,6 +101,7 @@ class DireccionesPacientesSeeder extends Seeder
                         'updated_at'  => $now,
                     ],
                     [
+                        'id'          => (string) Str::uuid(),
                         'nombre'      => 'Casa Luis',
                         'linea1'      => 'Av. Cristo Redentor Km 6.5',
                         'linea2'      => 'Zona Norte',
@@ -115,18 +122,21 @@ class DireccionesPacientesSeeder extends Seeder
         if (Schema::hasTable('ventana_entrega')) {
             DB::table('ventana_entrega')->insert([
                 [
+                    'id'         => (string) Str::uuid(),
                     'desde'      => $today->copy()->setTime(8, 0, 0),
                     'hasta'      => $today->copy()->setTime(12, 0, 0),
                     'created_at' => $now,
                     'updated_at' => $now,
                 ],
                 [
+                    'id'         => (string) Str::uuid(),
                     'desde'      => $today->copy()->setTime(13, 0, 0),
                     'hasta'      => $today->copy()->setTime(17, 0, 0),
                     'created_at' => $now,
                     'updated_at' => $now,
                 ],
                 [
+                    'id'         => (string) Str::uuid(),
                     'desde'      => $today->copy()->setTime(18, 0, 0),
                     'hasta'      => $today->copy()->setTime(21, 0, 0),
                     'created_at' => $now,

@@ -30,8 +30,8 @@ class CrearCalendarioItemController
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'calendarioId' => ['required', 'int', 'exists:calendario,id'],
-            'itemDespachoId' => ['required', 'int', 'exists:item_despacho,id'],
+            'calendarioId' => ['required', 'uuid', 'exists:calendario,id'],
+            'itemDespachoId' => ['required', 'uuid', 'exists:item_despacho,id'],
         ]);
 
         $calendarioItemId = $this->handler->__invoke(new CrearCalendarioItem(

@@ -7,8 +7,6 @@ use App\Domain\Produccion\Events\OrdenProduccionPlanificada;
 use App\Domain\Produccion\Events\OrdenProduccionProcesada;
 use App\Domain\Produccion\Events\OrdenProduccionCerrada;
 use App\Domain\Produccion\Events\OrdenProduccionCreada;
-use App\Application\Produccion\Command\DespachadorOP;
-use App\Application\Produccion\Command\PlanificarOP;
 use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Shared\Aggregate\AggregateRoot;
 use App\Domain\Produccion\Entity\ItemDespacho;
@@ -24,9 +22,9 @@ class OrdenProduccion
     use AggregateRoot;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    private int|null $id;
+    private string|int|null $id;
 
     /**
      * @var string|DateTimeImmutable
@@ -61,7 +59,7 @@ class OrdenProduccion
     /**
      * Constructor
      * 
-     * @param int|null $id
+     * @param string|int|null $id
      * @param DateTimeImmutable $fecha
      * @param int|string $sucursalId
      * @param EstadoOP $estado
@@ -70,7 +68,7 @@ class OrdenProduccion
      * @param array $itemsDespacho
      */
     private function __construct(
-        int|null $id,
+        string|int|null $id,
         DateTimeImmutable $fecha,
         int|string $sucursalId,
         EstadoOP $estado,
@@ -93,7 +91,7 @@ class OrdenProduccion
      * @param array $items
      * @param array $batches
      * @param array $itemsDespacho
-     * @param int|null $id
+     * @param string|int|null $id
      * @return OrdenProduccion
      */
     public static function crear(
@@ -102,7 +100,7 @@ class OrdenProduccion
         array $items =  [],
         array $batches = [],
         array $itemsDespacho = [],
-        int|null $id = null
+        string|int|null $id = null
     ): self {
         $self = new self($id, $fecha, $sucursalId, EstadoOP::CREADA, $items, $batches, $itemsDespacho);
 
@@ -126,7 +124,7 @@ class OrdenProduccion
      * @return OrdenProduccion
      */
     public static function reconstitute(
-        int $id,
+        string|int|null $id,
         DateTimeImmutable $fecha,
         string $sucursalId,
         EstadoOP $estado,
@@ -208,10 +206,12 @@ class OrdenProduccion
     }
 
     /**
-     * @param PlanificarOP $command
-     * @return ItemDespacho[]
+     * @param string|int $estacionId
+     * @param string|int $recetaVersionId
+     * @param string|int $porcionId
+     * @return void
      */
-    public function generarBatches(PlanificarOP $command): void
+    public function generarBatches(string|int $estacionId, string|int $recetaVersionId, string|int $porcionId): void
     {
         $items = [];
 
@@ -220,9 +220,9 @@ class OrdenProduccion
                 null,
                 $this->id,
                 $item->productId,
-                $command->estacionId,
-                $command->recetaVersionId,
-                $command->porcionId,
+                $estacionId,
+                $recetaVersionId,
+                $porcionId,
                 $item->qty()->value,
                 0,
                 50,
@@ -237,14 +237,22 @@ class OrdenProduccion
     }
 
     /**
-     * @param DespachadorOP $command
+     * @param array $itemsDespacho
+     * @param string|int|null $pacienteId
+     * @param string|int|null $direccionId
+     * @param string|int|null $ventanaEntregaId
      * @return void
      */
-    public function generarItemsDespacho(DespachadorOP $command): void
+    public function generarItemsDespacho(
+        array $itemsDespacho,
+        string|int|null $pacienteId,
+        string|int|null $direccionId,
+        string|int|null $ventanaEntregaId
+    ): void
     {
         $itemsDespachoBySku = [];
 
-        foreach ($command->itemsDespacho as $item) {
+        foreach ($itemsDespacho as $item) {
             if (!isset($item['sku'], $item['recetaVersionId'])) {
                 continue;
             }
@@ -264,9 +272,9 @@ class OrdenProduccion
                 $item->productId,
                 null,
                 $recetaVersionId,
-                $command->pacienteId,
-                $command->direccionId,
-                $command->ventanaEntrega
+                $pacienteId,
+                $direccionId,
+                $ventanaEntregaId
             );
         }
 
@@ -294,9 +302,9 @@ class OrdenProduccion
     }
 
     /**
-     * @return int|null
+     * @return string|int|null
      */
-    public function id(): int|null
+    public function id(): string|int|null
     {
         return $this->id;
     }

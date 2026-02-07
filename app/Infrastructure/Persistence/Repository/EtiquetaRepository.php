@@ -14,7 +14,7 @@ class EtiquetaRepository implements EtiquetaRepositoryInterface
      * @throws ModelNotFoundException
      * @return Etiqueta|null
      */
-    public function byId(int $id): ?Etiqueta
+    public function byId(string|int $id): ?Etiqueta
     {
         $row = EtiquetaModel::find($id);
 
@@ -35,7 +35,7 @@ class EtiquetaRepository implements EtiquetaRepositoryInterface
      * @param Etiqueta $etiqueta
      * @return int
      */
-    public function save(Etiqueta $etiqueta): int
+    public function save(Etiqueta $etiqueta): string
     {
         $model = EtiquetaModel::query()->updateOrCreate(
             ['id' => $etiqueta->id],
@@ -74,7 +74,7 @@ class EtiquetaRepository implements EtiquetaRepositoryInterface
      * @param int $id
      * @return void
      */
-    public function delete(int $id): void
+    public function delete(string|int $id): void
     {
         EtiquetaModel::query()->whereKey($id)->delete();
     }

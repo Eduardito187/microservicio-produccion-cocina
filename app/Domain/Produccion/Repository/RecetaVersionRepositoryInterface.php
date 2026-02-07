@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 interface RecetaVersionRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param string|int $id
      * @throws ModelNotFoundException
      * @return RecetaVersion|null
      */
-    public function byId(int $id): ?RecetaVersion;
+    public function byId(string|int $id): ?RecetaVersion;
 
     /**
      * @param RecetaVersion $recetaVersion
      * @return int
      */
-    public function save(RecetaVersion $recetaVersion): int;
+    public function save(RecetaVersion $recetaVersion): string;
 
     /**
      * @return RecetaVersion[]
@@ -26,8 +26,8 @@ interface RecetaVersionRepositoryInterface
     public function list(): array;
 
     /**
-     * @param int $id
+     * @param string|int $id
      * @return void
      */
-    public function delete(int $id): void;
+    public function delete(string|int $id): void;
 }

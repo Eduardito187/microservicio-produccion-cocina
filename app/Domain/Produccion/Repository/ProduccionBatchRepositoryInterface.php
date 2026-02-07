@@ -7,20 +7,20 @@ use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
 interface ProduccionBatchRepositoryInterface
 {
     /**
-     * @param int|null $id
+     * @param string|null $id
      * @return AggregateProduccionBatch|null
      */
-    public function byId(int|null $id): ? AggregateProduccionBatch;
+    public function byId(string|null $id): ? AggregateProduccionBatch;
 
     /**
-     * @param int|null $ordenProduccionId
+     * @param string|null $ordenProduccionId
      * @return AggregateProduccionBatch[]
      */
-    public function byOrderId(int|null $ordenProduccionId): array;
+    public function byOrderId(string|null $ordenProduccionId): array;
 
     /**
      * @param AggregateProduccionBatch $pb
      * @return int
      */
-    public function save(AggregateProduccionBatch $pb): int;
+    public function save(AggregateProduccionBatch $pb): string;
 }

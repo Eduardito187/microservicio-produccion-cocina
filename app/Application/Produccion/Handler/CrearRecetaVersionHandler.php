@@ -37,9 +37,9 @@ class CrearRecetaVersionHandler
      * @param CrearRecetaVersion $command
      * @return int
      */
-    public function __invoke(CrearRecetaVersion $command): int
+    public function __invoke(CrearRecetaVersion $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $recetaVersion = new RecetaVersion(
                 null,
                 $command->nombre,

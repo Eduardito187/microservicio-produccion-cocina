@@ -39,7 +39,7 @@ class GenerarOPHandler
      */
     public function __invoke(GenerarOP $command): string|int|null
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $ordenProduccion = AggregateOrdenProduccion::crear( 
                 $command->fecha,
                 $command->sucursalId

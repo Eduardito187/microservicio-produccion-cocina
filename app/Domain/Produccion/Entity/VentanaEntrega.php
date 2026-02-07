@@ -7,9 +7,9 @@ use DateTimeImmutable;
 class VentanaEntrega
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $id;
+    public string|int|null $id;
 
     /**
      * @var DateTimeImmutable
@@ -24,12 +24,12 @@ class VentanaEntrega
     /**
      * Constructor
      *
-     * @param int|null $id
+     * @param string|int|null $id
      * @param DateTimeImmutable $desde
      * @param DateTimeImmutable $hasta
      */
     public function __construct(
-        int|null $id,
+        string|int|null $id,
         DateTimeImmutable $desde,
         DateTimeImmutable $hasta
     ) {

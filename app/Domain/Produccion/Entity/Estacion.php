@@ -5,9 +5,9 @@ namespace App\Domain\Produccion\Entity;
 class Estacion
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $id;
+    public string|int|null $id;
 
     /**
      * @var string
@@ -22,11 +22,11 @@ class Estacion
     /**
      * Constructor
      *
-     * @param int|null $id
+     * @param string|int|null $id
      * @param string $nombre
      * @param int|null $capacidad
      */
-    public function __construct(int|null $id, string $nombre, int|null $capacidad = null)
+    public function __construct(string|int|null $id, string $nombre, int|null $capacidad = null)
     {
         $this->id = $id;
         $this->nombre = $nombre;

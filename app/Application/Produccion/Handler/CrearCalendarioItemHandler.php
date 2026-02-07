@@ -37,9 +37,9 @@ class CrearCalendarioItemHandler
      * @param CrearCalendarioItem $command
      * @return int
      */
-    public function __invoke(CrearCalendarioItem $command): int
+    public function __invoke(CrearCalendarioItem $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $item = new CalendarioItem(null, $command->calendarioId, $command->itemDespachoId);
 
             return $this->calendarioItemRepository->save($item);

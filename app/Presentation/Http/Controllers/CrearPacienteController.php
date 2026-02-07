@@ -32,7 +32,7 @@ class CrearPacienteController
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:150'],
             'documento' => ['nullable', 'string', 'max:100'],
-            'suscripcionId' => ['nullable', 'int', 'exists:suscripcion,id'],
+            'suscripcionId' => ['nullable', 'uuid', 'exists:suscripcion,id'],
         ]);
 
         $pacienteId = $this->handler->__invoke(new CrearPaciente(

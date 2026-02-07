@@ -12,11 +12,11 @@ use App\Domain\Produccion\ValueObjects\Qty;
 class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
 {
     /**
-     * @param int|null $id
+     * @param string|null $id
      * @throws ModelNotFoundException
      * @return AggregateProduccionBatch|null
      */
-    public function byId(int|null $id): ?AggregateProduccionBatch
+    public function byId(string|null $id): ?AggregateProduccionBatch
     {
         $row = ProduccionBatchModel::find($id);
 
@@ -44,10 +44,10 @@ class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
 
     
     /**
-     * @param int|null $ordenProduccionId
+     * @param string|null $ordenProduccionId
      * @return AggregateProduccionBatch[]
      */
-    public function byOrderId(int|null $ordenProduccionId): array
+    public function byOrderId(string|null $ordenProduccionId): array
     {
         if ($ordenProduccionId == null) {
             return [];
@@ -87,7 +87,7 @@ class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
      * @param AggregateProduccionBatch $pb
      * @return int
      */
-    public function save(AggregateProduccionBatch $pb): int
+    public function save(AggregateProduccionBatch $pb): string
     {
         $model = ProduccionBatchModel::query()->updateOrCreate(
             ['id' => $pb->id],

@@ -37,9 +37,9 @@ class CrearProductoHandler
      * @param CrearProducto $command
      * @return int
      */
-    public function __invoke(CrearProducto $command): int
+    public function __invoke(CrearProducto $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $product = new Products(
                 null,
                 $command->sku,

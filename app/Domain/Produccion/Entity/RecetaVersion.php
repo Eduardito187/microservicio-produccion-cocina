@@ -5,9 +5,9 @@ namespace App\Domain\Produccion\Entity;
 class RecetaVersion
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $id;
+    public string|int|null $id;
 
     /**
      * @var string
@@ -32,14 +32,14 @@ class RecetaVersion
     /**
      * Constructor
      *
-     * @param int|null $id
+     * @param string|int|null $id
      * @param string $nombre
      * @param array|null $nutrientes
      * @param array|null $ingredientes
      * @param int $version
      */
     public function __construct(
-        int|null $id,
+        string|int|null $id,
         string $nombre,
         array|null $nutrientes = null,
         array|null $ingredientes = null,

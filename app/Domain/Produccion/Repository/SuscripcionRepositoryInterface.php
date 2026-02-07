@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 interface SuscripcionRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param string|int $id
      * @throws ModelNotFoundException
      * @return Suscripcion|null
      */
-    public function byId(int $id): ?Suscripcion;
+    public function byId(string|int $id): ?Suscripcion;
 
     /**
      * @param Suscripcion $suscripcion
      * @return int
      */
-    public function save(Suscripcion $suscripcion): int;
+    public function save(Suscripcion $suscripcion): string;
 
     /**
      * @return Suscripcion[]
@@ -26,8 +26,8 @@ interface SuscripcionRepositoryInterface
     public function list(): array;
 
     /**
-     * @param int $id
+     * @param string|int $id
      * @return void
      */
-    public function delete(int $id): void;
+    public function delete(string|int $id): void;
 }

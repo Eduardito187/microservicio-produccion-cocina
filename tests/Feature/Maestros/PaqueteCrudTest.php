@@ -4,6 +4,7 @@ namespace Tests\Feature\Maestros;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class PaqueteCrudTest extends TestCase
@@ -15,13 +16,17 @@ class PaqueteCrudTest extends TestCase
      */
     public function test_crear_actualizar_y_eliminar_paquete(): void
     {
-        $suscripcionId = DB::table('suscripcion')->insertGetId([
+        $suscripcionId = (string) Str::uuid();
+        DB::table('suscripcion')->insert([
+            'id' => $suscripcionId,
             'nombre' => 'Suscripcion 1',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
-        $pacienteId = DB::table('paciente')->insertGetId([
+        $pacienteId = (string) Str::uuid();
+        DB::table('paciente')->insert([
+            'id' => $pacienteId,
             'nombre' => 'Paciente 1',
             'documento' => 'DOC-1',
             'suscripcion_id' => $suscripcionId,
@@ -29,14 +34,18 @@ class PaqueteCrudTest extends TestCase
             'updated_at' => now()
         ]);
 
-        $recetaVersionId = DB::table('receta_version')->insertGetId([
+        $recetaVersionId = (string) Str::uuid();
+        DB::table('receta_version')->insert([
+            'id' => $recetaVersionId,
             'nombre' => 'Receta 1',
             'version' => 1,
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
-        $etiquetaId = DB::table('etiqueta')->insertGetId([
+        $etiquetaId = (string) Str::uuid();
+        DB::table('etiqueta')->insert([
+            'id' => $etiquetaId,
             'receta_version_id' => $recetaVersionId,
             'suscripcion_id' => $suscripcionId,
             'paciente_id' => $pacienteId,
@@ -45,7 +54,9 @@ class PaqueteCrudTest extends TestCase
             'updated_at' => now()
         ]);
 
-        $direccionId = DB::table('direccion')->insertGetId([
+        $direccionId = (string) Str::uuid();
+        DB::table('direccion')->insert([
+            'id' => $direccionId,
             'nombre' => 'Casa',
             'linea1' => 'Calle 1',
             'linea2' => null,
@@ -57,7 +68,9 @@ class PaqueteCrudTest extends TestCase
             'updated_at' => now()
         ]);
 
-        $ventanaId = DB::table('ventana_entrega')->insertGetId([
+        $ventanaId = (string) Str::uuid();
+        DB::table('ventana_entrega')->insert([
+            'id' => $ventanaId,
             'desde' => '2026-01-01 08:00:00', 'hasta' => '2026-01-01 12:00:00', 'created_at' => now(), 'updated_at' => now()
         ]);
         $create = $this->postJson(route('paquetes.crear'), [

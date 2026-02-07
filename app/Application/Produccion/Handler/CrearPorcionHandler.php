@@ -37,9 +37,9 @@ class CrearPorcionHandler
      * @param CrearPorcion $command
      * @return int
      */
-    public function __invoke(CrearPorcion $command): int
+    public function __invoke(CrearPorcion $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $porcion = new Porcion(null, $command->nombre, $command->pesoGr);
 
             return $this->porcionRepository->save($porcion);

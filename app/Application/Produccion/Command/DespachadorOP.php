@@ -5,9 +5,9 @@ namespace App\Application\Produccion\Command;
 class DespachadorOP
 {
     /**
-     * @var int
+     * @var string|int
      */
-    public readonly int $ordenProduccionId;
+    public readonly string $ordenProduccionId;
 
     /**
      * @var array
@@ -15,19 +15,19 @@ class DespachadorOP
     public readonly array $itemsDespacho;
 
     /**
-     * @var int
+     * @var string|int|null
      */
-    public readonly int $pacienteId;
+    public readonly string|int|null $pacienteId;
 
     /**
-     * @var int
+     * @var string|int|null
      */
-    public readonly int $direccionId;
+    public readonly string|int|null $direccionId;
 
     /**
-     * @var int
+     * @var string|int|null
      */
-    public readonly int $ventanaEntrega;
+    public readonly string|int|null $ventanaEntrega;
 
     /**
      * Constructor

@@ -9,19 +9,19 @@ use App\Domain\Produccion\Entity\Products;
 class OrdenItem
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public readonly int|null $id;
+    public readonly string|int|null $id;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $ordenProduccionId;
+    public string|int|null $ordenProduccionId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $productId;
+    public string|int|null $productId;
 
     /**
      * @var Qty
@@ -46,18 +46,18 @@ class OrdenItem
     /**
      * Constructor
      * 
-     * @param int|null $id
-     * @param int|null $ordenProduccionId
-     * @param int|null $productId
+     * @param string|int|null $id
+     * @param string|int|null $ordenProduccionId
+     * @param string|int|null $productId
      * @param Qty $qty
      * @param Sku $sku
      * @param float $price
      * @param float $finalPrice
      */
     public function __construct(
-        int|null $id,
-        int|null $ordenProduccionId,
-        int|null $productId,
+        string|int|null $id,
+        string|int|null $ordenProduccionId,
+        string|int|null $productId,
         Qty $qty,
         Sku $sku,
         float $price = 0,

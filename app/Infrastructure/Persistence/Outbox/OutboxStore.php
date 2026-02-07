@@ -18,6 +18,7 @@ class OutboxStore
   public static function append(string $name, string|int|null $aggregateId, DateTimeImmutable $occurredOn, array $payload): void
   {
     Outbox::create([
+      'event_id' => (string) Str::uuid(),
       'event_name' => $name,
       'aggregate_id' => $aggregateId ?? (string) Str::uuid(),
       'payload' => $payload,

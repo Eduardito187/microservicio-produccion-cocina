@@ -2,8 +2,6 @@
 
 namespace Tests\Unit\Domain\Produccion\Aggregate;
 
-use App\Application\Produccion\Command\DespachadorOP;
-use App\Application\Produccion\Command\PlanificarOP;
 use App\Domain\Produccion\Aggregate\OrdenProduccion;
 use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Produccion\Entity\Products;
@@ -26,11 +24,7 @@ class OrdenProduccionBatchWorkflowTest extends TestCase
         $ordenProduccion->items()[0]->loadProduct(new Products(10, 'PIZZA-PEP', 10.0, 0.0));
         $ordenProduccion->items()[1]->loadProduct(new Products(20, 'PIZZA-MARG', 12.0, 0.0));
 
-        $command = new PlanificarOP([
-            'ordenProduccionId' => 123, 'estacionId' => 1, 'recetaVersionId' => 7, 'porcionId' => 3
-        ]);
-
-        $ordenProduccion->generarBatches($command);
+        $ordenProduccion->generarBatches(1, 7, 3);
         $batches = $ordenProduccion->batches();
         $this->assertCount(2, $batches);
 
@@ -56,12 +50,7 @@ class OrdenProduccionBatchWorkflowTest extends TestCase
         );
         $ordenProduccion->agregarItems([['sku' => 'PIZZA-PEP', 'qty' => 1]]);
         $ordenProduccion->items()[0]->loadProduct(new Products(10, 'PIZZA-PEP', 10.0, 0.0));
-        $ordenProduccion->generarBatches(new PlanificarOP([
-            'ordenProduccionId' => 123,
-            'estacionId' => 1,
-            'recetaVersionId' => 7,
-            'porcionId' => 3
-        ]));
+        $ordenProduccion->generarBatches(1, 7, 3);
 
         $ordenProduccion->procesarBatches();
         $this->assertSame(EstadoPlanificado::PROCESANDO, $ordenProduccion->batches()[0]->estado);
@@ -85,13 +74,15 @@ class OrdenProduccionBatchWorkflowTest extends TestCase
         $ordenProduccion->items()[0]->loadProduct(new Products(10, 'PIZZA-PEP', 10.0, 0.0));
         $ordenProduccion->items()[1]->loadProduct(new Products(20, 'PIZZA-MARG', 10.0, 0.0));
 
-        $ordenProduccion->generarItemsDespacho(new DespachadorOP([
-            'ordenProduccionId' => 123,
-            'itemsDespacho' => [['sku' => 'PIZZA-PEP', 'recetaVersionId' => 1], ['sku' => 'PIZZA-MARG', 'recetaVersionId' => 1]],
-            'pacienteId' => 1,
-            'direccionId' => 1,
-            'ventanaEntrega' => 1
-        ]));
+        $ordenProduccion->generarItemsDespacho(
+            [
+                ['sku' => 'PIZZA-PEP', 'recetaVersionId' => 1],
+                ['sku' => 'PIZZA-MARG', 'recetaVersionId' => 1],
+            ],
+            1,
+            1,
+            1
+        );
 
         $items = $ordenProduccion->itemsDespacho();
         $this->assertCount(2, $items);

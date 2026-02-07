@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 interface EtiquetaRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param string|int $id
      * @throws ModelNotFoundException
      * @return Etiqueta|null
      */
-    public function byId(int $id): ?Etiqueta;
+    public function byId(string|int $id): ?Etiqueta;
 
     /**
      * @param Etiqueta $etiqueta
      * @return int
      */
-    public function save(Etiqueta $etiqueta): int;
+    public function save(Etiqueta $etiqueta): string;
 
     /**
      * @return Etiqueta[]
@@ -26,8 +26,8 @@ interface EtiquetaRepositoryInterface
     public function list(): array;
 
     /**
-     * @param int $id
+     * @param string|int $id
      * @return void
      */
-    public function delete(int $id): void;
+    public function delete(string|int $id): void;
 }

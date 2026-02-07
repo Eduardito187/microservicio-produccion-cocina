@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 interface EstacionRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param string|int $id
      * @throws ModelNotFoundException
      * @return Estacion|null
      */
-    public function byId(int $id): ?Estacion;
+    public function byId(string|int $id): ?Estacion;
 
     /**
      * @param Estacion $estacion
      * @return int
      */
-    public function save(Estacion $estacion): int;
+    public function save(Estacion $estacion): string;
 
     /**
      * @return Estacion[]
@@ -26,8 +26,8 @@ interface EstacionRepositoryInterface
     public function list(): array;
 
     /**
-     * @param int $id
+     * @param string|int $id
      * @return void
      */
-    public function delete(int $id): void;
+    public function delete(string|int $id): void;
 }

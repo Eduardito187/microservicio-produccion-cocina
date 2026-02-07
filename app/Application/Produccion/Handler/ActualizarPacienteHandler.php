@@ -36,9 +36,9 @@ class ActualizarPacienteHandler
      * @param ActualizarPaciente $command
      * @return int
      */
-    public function __invoke(ActualizarPaciente $command): int
+    public function __invoke(ActualizarPaciente $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $paciente = $this->pacienteRepository->byId($command->id);
             $paciente->nombre = $command->nombre;
             $paciente->documento = $command->documento;

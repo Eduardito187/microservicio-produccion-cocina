@@ -14,7 +14,7 @@ class PorcionRepository implements PorcionRepositoryInterface
      * @throws ModelNotFoundException
      * @return Porcion|null
      */
-    public function byId(int $id): ?Porcion
+    public function byId(string|int $id): ?Porcion
     {
         $row = PorcionModel::find($id);
 
@@ -33,7 +33,7 @@ class PorcionRepository implements PorcionRepositoryInterface
      * @param Porcion $porcion
      * @return int
      */
-    public function save(Porcion $porcion): int
+    public function save(Porcion $porcion): string
     {
         $model = PorcionModel::query()->updateOrCreate(
             ['id' => $porcion->id],
@@ -68,7 +68,7 @@ class PorcionRepository implements PorcionRepositoryInterface
      * @param int $id
      * @return void
      */
-    public function delete(int $id): void
+    public function delete(string|int $id): void
     {
         PorcionModel::query()->whereKey($id)->delete();
     }

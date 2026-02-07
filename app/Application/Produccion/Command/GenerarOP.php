@@ -9,7 +9,7 @@ class GenerarOP
     /** 
      * @var int|null
      */
-    public ?int $id;
+    public ?string $id;
 
     /** 
      * @var DateTimeImmutable
@@ -34,7 +34,7 @@ class GenerarOP
      * @param int|string $sucursalId
      * @param array $items
      */
-    public function __construct(?int $id, DateTimeImmutable $fecha, int|string $sucursalId, array $items)
+    public function __construct(?string $id, DateTimeImmutable $fecha, int|string $sucursalId, array $items)
     {
         $this->id = $id;
         $this->fecha = $fecha;

@@ -9,37 +9,37 @@ class Paquete
     use AggregateRoot;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    private int|null $id;
+    private string|int|null $id;
 
     /**
      * @var int
      */
-    private int $etiquetaId;
+    private string|int $etiquetaId;
 
     /**
      * @var int
      */
-    private int $ventanaId;
+    private string|int $ventanaId;
 
     /**
      * @var int
      */
-    private int $direccionId;
+    private string|int $direccionId;
 
     /**
      * Constructor
-     * @param int|null $id
-     * @param int $etiquetaId
-     * @param int $ventanaId
-     * @param int $direccionId
+     * @param string|int|null $id
+     * @param string|int $etiquetaId
+     * @param string|int $ventanaId
+     * @param string|int $direccionId
      */
     public function __construct(
-        int|null $id,
-        int $etiquetaId,
-        int $ventanaId,
-        int $direccionId
+        string|int|null $id,
+        string|int $etiquetaId,
+        string|int $ventanaId,
+        string|int $direccionId
     ) {
         $this->id = $id;
         $this->etiquetaId = $etiquetaId;
@@ -48,17 +48,17 @@ class Paquete
     }
 
     /**
-     * @param int|null $id
-     * @param int $etiquetaId
-     * @param int $ventanaId
-     * @param int $direccionId
+     * @param string|int|null $id
+     * @param string|int $etiquetaId
+     * @param string|int $ventanaId
+     * @param string|int $direccionId
      * @return Paquete
      */
     public static function crear(
-        int|null $id,
-        int $etiquetaId,
-        int $ventanaId,
-        int $direccionId
+        string|int|null $id,
+        string|int $etiquetaId,
+        string|int $ventanaId,
+        string|int $direccionId
     ): self {
         $self = new self(
             $id,
@@ -74,16 +74,16 @@ class Paquete
 
     /**
      * @param int $id
-     * @param int $etiquetaId
-     * @param int $ventanaId
-     * @param int $direccionId
+     * @param string|int $etiquetaId
+     * @param string|int $ventanaId
+     * @param string|int $direccionId
      * @return Paquete
      */
     public static function reconstitute(
         int $id,
-        int $etiquetaId,
-        int $ventanaId,
-        int $direccionId
+        string|int $etiquetaId,
+        string|int $ventanaId,
+        string|int $direccionId
     ): self {
         $self = new self(
             $id,

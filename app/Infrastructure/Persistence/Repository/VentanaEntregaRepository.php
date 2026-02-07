@@ -16,7 +16,7 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
      * @throws ModelNotFoundException
      * @return VentanaEntrega|null
      */
-    public function byId(int $id): ?VentanaEntrega
+    public function byId(string|int $id): ?VentanaEntrega
     {
         $row = VentanaEntregaModel::find($id);
 
@@ -35,7 +35,7 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
      * @param VentanaEntrega $ventanaEntrega
      * @return int
      */
-    public function save(VentanaEntrega $ventanaEntrega): int
+    public function save(VentanaEntrega $ventanaEntrega): string
     {
         $model = VentanaEntregaModel::query()->updateOrCreate(
             ['id' => $ventanaEntrega->id],
@@ -70,7 +70,7 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
      * @param int $id
      * @return void
      */
-    public function delete(int $id): void
+    public function delete(string|int $id): void
     {
         VentanaEntregaModel::query()->whereKey($id)->delete();
     }

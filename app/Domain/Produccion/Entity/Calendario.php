@@ -7,9 +7,9 @@ use DateTimeImmutable;
 class Calendario
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $id;
+    public string|int|null $id;
 
     /**
      * @var DateTimeImmutable
@@ -24,11 +24,11 @@ class Calendario
     /**
      * Constructor
      *
-     * @param int|null $id
+     * @param string|int|null $id
      * @param DateTimeImmutable $fecha
      * @param string $sucursalId
      */
-    public function __construct(int|null $id, DateTimeImmutable $fecha, string $sucursalId)
+    public function __construct(string|int|null $id, DateTimeImmutable $fecha, string $sucursalId)
     {
         $this->id = $id;
         $this->fecha = $fecha;

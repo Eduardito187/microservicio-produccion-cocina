@@ -7,7 +7,7 @@ class ActualizarPorcion
     /**
      * @var int
      */
-    public int $id;
+    public string $id;
 
     /**
      * @var string
@@ -22,11 +22,11 @@ class ActualizarPorcion
     /**
      * Constructor
      *
-     * @param int $id
+     * @param string $id
      * @param string $nombre
      * @param int $pesoGr
      */
-    public function __construct(int $id, string $nombre, int $pesoGr)
+    public function __construct(string $id, string $nombre, int $pesoGr)
     {
         $this->id = $id;
         $this->nombre = $nombre;

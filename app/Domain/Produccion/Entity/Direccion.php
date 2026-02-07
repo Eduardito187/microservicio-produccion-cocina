@@ -5,9 +5,9 @@ namespace App\Domain\Produccion\Entity;
 class Direccion
 {
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $id;
+    public string|int|null $id;
 
     /**
      * @var string|null
@@ -47,7 +47,7 @@ class Direccion
     /**
      * Constructor
      *
-     * @param int|null $id
+     * @param string|int|null $id
      * @param string|null $nombre
      * @param string $linea1
      * @param string|null $linea2
@@ -57,7 +57,7 @@ class Direccion
      * @param array|null $geo
      */
     public function __construct(
-        int|null $id,
+        string|int|null $id,
         string|null $nombre,
         string $linea1,
         string|null $linea2 = null,

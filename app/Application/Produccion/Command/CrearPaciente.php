@@ -15,21 +15,21 @@ class CrearPaciente
     public string|null $documento;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $suscripcionId;
+    public string|int|null $suscripcionId;
 
     /**
      * Constructor
      *
      * @param string $nombre
      * @param string|null $documento
-     * @param int|null $suscripcionId
+     * @param string|int|null $suscripcionId
      */
     public function __construct(
         string $nombre,
         string|null $documento = null,
-        int|null $suscripcionId = null
+        string|int|null $suscripcionId = null
     ) {
         $this->nombre = $nombre;
         $this->documento = $documento;

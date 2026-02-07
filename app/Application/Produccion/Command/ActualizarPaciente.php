@@ -5,9 +5,9 @@ namespace App\Application\Produccion\Command;
 class ActualizarPaciente
 {
     /**
-     * @var int
+     * @var string|int
      */
-    public int $id;
+    public string|int $id;
 
     /**
      * @var string
@@ -20,23 +20,23 @@ class ActualizarPaciente
     public string|null $documento;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $suscripcionId;
+    public string|int|null $suscripcionId;
 
     /**
      * Constructor
      *
-     * @param int $id
+     * @param string|int $id
      * @param string $nombre
      * @param string|null $documento
-     * @param int|null $suscripcionId
+     * @param string|int|null $suscripcionId
      */
     public function __construct(
-        int $id,
+        string|int $id,
         string $nombre,
         string|null $documento = null,
-        int|null $suscripcionId = null
+        string|int|null $suscripcionId = null
     ) {
         $this->id = $id;
         $this->nombre = $nombre;

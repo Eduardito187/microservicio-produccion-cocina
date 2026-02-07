@@ -30,9 +30,9 @@ class CrearPaqueteController
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'etiquetaId' => ['nullable', 'int', 'exists:etiqueta,id'],
-            'ventanaId' => ['nullable', 'int', 'exists:ventana_entrega,id'],
-            'direccionId' => ['nullable', 'int', 'exists:direccion,id'],
+            'etiquetaId' => ['nullable', 'uuid', 'exists:etiqueta,id'],
+            'ventanaId' => ['nullable', 'uuid', 'exists:ventana_entrega,id'],
+            'direccionId' => ['nullable', 'uuid', 'exists:direccion,id'],
         ]);
 
         $paqueteId = $this->handler->__invoke(new CrearPaquete(

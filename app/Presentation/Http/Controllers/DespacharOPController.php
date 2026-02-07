@@ -33,11 +33,11 @@ class DespacharOPController
     {
         $data = $request->validate(
             [
-                'ordenProduccionId' => ['required', 'int'],
+                'ordenProduccionId' => ['required', 'uuid'],
                 'itemsDespacho' => ['required', 'array'],
-                'pacienteId' => ['required', 'int'],
-                'direccionId' => ['required', 'int'],
-                'ventanaEntrega' => ['required', 'int']
+                'pacienteId' => ['required', 'uuid'],
+                'direccionId' => ['required', 'uuid'],
+                'ventanaEntrega' => ['required', 'uuid']
             ]
         );
 

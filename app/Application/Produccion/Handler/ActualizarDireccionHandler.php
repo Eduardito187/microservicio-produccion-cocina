@@ -36,9 +36,9 @@ class ActualizarDireccionHandler
      * @param ActualizarDireccion $command
      * @return int
      */
-    public function __invoke(ActualizarDireccion $command): int
+    public function __invoke(ActualizarDireccion $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $direccion = $this->direccionRepository->byId($command->id);
             $direccion->nombre = $command->nombre;
             $direccion->linea1 = $command->linea1;

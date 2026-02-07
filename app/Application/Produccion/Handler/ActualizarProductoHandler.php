@@ -37,9 +37,9 @@ class ActualizarProductoHandler
      * @param ActualizarProducto $command
      * @return int
      */
-    public function __invoke(ActualizarProducto $command): int
+    public function __invoke(ActualizarProducto $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $this->productRepository->byId((string) $command->id);
 
             $product = new Products(

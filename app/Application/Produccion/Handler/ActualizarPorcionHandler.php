@@ -36,9 +36,9 @@ class ActualizarPorcionHandler
      * @param ActualizarPorcion $command
      * @return int
      */
-    public function __invoke(ActualizarPorcion $command): int
+    public function __invoke(ActualizarPorcion $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $porcion = $this->porcionRepository->byId($command->id);
             $porcion->nombre = $command->nombre;
             $porcion->pesoGr = $command->pesoGr;

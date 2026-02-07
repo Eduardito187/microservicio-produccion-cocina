@@ -70,7 +70,7 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
 
         if (str_starts_with($baseName, 'Crear')) {
             if (method_exists($repository, 'save')) {
-                $repository->method('save')->willReturn(1);
+                $repository->method('save')->willReturn('e28e9cc2-5225-40c0-b88b-2341f96d76a3');
             }
         } elseif (str_starts_with($baseName, 'Actualizar')) {
             if (method_exists($repository, 'byId')) {
@@ -78,7 +78,7 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
             }
 
             if (method_exists($repository, 'save')) {
-                $repository->method('save')->willReturn(1);
+                $repository->method('save')->willReturn('e28e9cc2-5225-40c0-b88b-2341f96d76a3');
             }
         } elseif (str_starts_with($baseName, 'Eliminar')) {
             if (method_exists($repository, 'byId')) {

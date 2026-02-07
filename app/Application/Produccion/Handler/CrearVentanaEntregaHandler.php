@@ -37,9 +37,9 @@ class CrearVentanaEntregaHandler
      * @param CrearVentanaEntrega $command
      * @return int
      */
-    public function __invoke(CrearVentanaEntrega $command): int
+    public function __invoke(CrearVentanaEntrega $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $ventana = new VentanaEntrega(
                 null,
                 $command->desde,

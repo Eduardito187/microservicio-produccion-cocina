@@ -14,7 +14,7 @@ class PaqueteRepository implements PaqueteRepositoryInterface
      * @throws ModelNotFoundException
      * @return Paquete|null
      */
-    public function byId(int $id): ?Paquete
+    public function byId(string|int $id): ?Paquete
     {
         $row = PaqueteModel::find($id);
 
@@ -34,7 +34,7 @@ class PaqueteRepository implements PaqueteRepositoryInterface
      * @param Paquete $paquete
      * @return int
      */
-    public function save(Paquete $paquete): int
+    public function save(Paquete $paquete): string
     {
         $model = PaqueteModel::query()->updateOrCreate(
             ['id' => $paquete->id],
@@ -71,7 +71,7 @@ class PaqueteRepository implements PaqueteRepositoryInterface
      * @param int $id
      * @return void
      */
-    public function delete(int $id): void
+    public function delete(string|int $id): void
     {
         PaqueteModel::query()->whereKey($id)->delete();
     }

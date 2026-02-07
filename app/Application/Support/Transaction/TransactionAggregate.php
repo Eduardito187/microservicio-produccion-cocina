@@ -27,6 +27,15 @@ class TransactionAggregate
     {
         return $this->transactionManager->run($callback);
     }
+
+    /**
+     * @param callable $callback
+     * @return void
+     */
+    public function afterCommit(callable $callback): void
+    {
+        $this->transactionManager->afterCommit($callback);
+    }
 }
 
 

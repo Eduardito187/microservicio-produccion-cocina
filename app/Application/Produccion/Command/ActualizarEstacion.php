@@ -7,7 +7,7 @@ class ActualizarEstacion
     /**
      * @var int
      */
-    public int $id;
+    public string $id;
 
     /**
      * @var string
@@ -22,11 +22,11 @@ class ActualizarEstacion
     /**
      * Constructor
      *
-     * @param int $id
+     * @param string $id
      * @param string $nombre
      * @param int|null $capacidad
      */
-    public function __construct(int $id, string $nombre, int|null $capacidad = null)
+    public function __construct(string $id, string $nombre, int|null $capacidad = null)
     {
         $this->id = $id;
         $this->nombre = $nombre;

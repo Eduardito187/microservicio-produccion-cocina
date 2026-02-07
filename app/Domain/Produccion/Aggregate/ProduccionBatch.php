@@ -13,34 +13,34 @@ class ProduccionBatch
     use AggregateRoot;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public readonly int|null $id;
+    public readonly string|int|null $id;
 
     /**
      * @var int
      */
-    public readonly int $ordenProduccionId;
+    public readonly string|int $ordenProduccionId;
 
     /**
      * @var int
      */
-    public readonly int $productoId;
+    public readonly string|int $productoId;
 
     /**
      * @var int
      */
-    public readonly int $estacionId;
+    public readonly string|int $estacionId;
 
     /**
      * @var int
      */
-    public readonly int $recetaVersionId;
+    public readonly string|int $recetaVersionId;
 
     /**
      * @var int
      */
-    public readonly int $porcionId;
+    public readonly string|int $porcionId;
 
     /**
      * @var int
@@ -85,12 +85,12 @@ class ProduccionBatch
     /**
      * Constructor
      * 
-     * @param int|null $id
-     * @param int $ordenProduccionId
-     * @param int $productoId
-     * @param int $estacionId
-     * @param int $recetaVersionId
-     * @param int $porcionId
+     * @param string|int|null $id
+     * @param string|int $ordenProduccionId
+     * @param string|int $productoId
+     * @param string|int $estacionId
+     * @param string|int $recetaVersionId
+     * @param string|int $porcionId
      * @param int $cantPlanificada
      * @param int $cantProducida
      * @param int $mermaGr
@@ -101,12 +101,12 @@ class ProduccionBatch
      * @param array|null $ruta
      */
     public function __construct(
-        int|null $id,
-        int $ordenProduccionId,
-        int $productoId,
-        int $estacionId,
-        int $recetaVersionId,
-        int $porcionId,
+        string|int|null $id,
+        string|int $ordenProduccionId,
+        string|int $productoId,
+        string|int $estacionId,
+        string|int $recetaVersionId,
+        string|int $porcionId,
         int $cantPlanificada,
         int $cantProducida,
         int $mermaGr,
@@ -133,12 +133,12 @@ class ProduccionBatch
     }
 
     /**
-     * @param int|null $id
-     * @param int $ordenProduccionId
-     * @param int $productoId
-     * @param int $estacionId
-     * @param int $recetaVersionId
-     * @param int $porcionId
+     * @param string|int|null $id
+     * @param string|int $ordenProduccionId
+     * @param string|int $productoId
+     * @param string|int $estacionId
+     * @param string|int $recetaVersionId
+     * @param string|int $porcionId
      * @param int $cantPlanificada
      * @param int $cantProducida
      * @param int $mermaGr
@@ -150,12 +150,12 @@ class ProduccionBatch
      * @return ProduccionBatch
      */
     public static function crear(
-        int|null $id,
-        int $ordenProduccionId,
-        int $productoId,
-        int $estacionId,
-        int $recetaVersionId,
-        int $porcionId,
+        string|int|null $id,
+        string|int $ordenProduccionId,
+        string|int $productoId,
+        string|int $estacionId,
+        string|int $recetaVersionId,
+        string|int $porcionId,
         int $cantPlanificada,
         int $cantProducida,
         int $mermaGr,

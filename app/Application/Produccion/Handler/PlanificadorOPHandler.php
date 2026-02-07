@@ -38,9 +38,13 @@ class PlanificadorOPHandler
      */
     public function __invoke(PlanificarOP $command): string|int|null
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $ordenProduccion = $this->ordenProduccionRepository->byId($command->ordenProduccionId);
-            $ordenProduccion->generarBatches($command);
+            $ordenProduccion->generarBatches(
+                $command->estacionId,
+                $command->recetaVersionId,
+                $command->porcionId
+            );
             $ordenProduccion->planificar();
             return $this->ordenProduccionRepository->save($ordenProduccion);
         });

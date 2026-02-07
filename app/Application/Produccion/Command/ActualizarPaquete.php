@@ -5,38 +5,38 @@ namespace App\Application\Produccion\Command;
 class ActualizarPaquete
 {
     /**
-     * @var int
+     * @var string|int
      */
-    public int $id;
+    public string|int $id;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $etiquetaId;
+    public string|int|null $etiquetaId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $ventanaId;
+    public string|int|null $ventanaId;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    public int|null $direccionId;
+    public string|int|null $direccionId;
 
     /**
      * Constructor
      *
-     * @param int $id
-     * @param int|null $etiquetaId
-     * @param int|null $ventanaId
-     * @param int|null $direccionId
+     * @param string|int $id
+     * @param string|int|null $etiquetaId
+     * @param string|int|null $ventanaId
+     * @param string|int|null $direccionId
      */
     public function __construct(
-        int $id,
-        int|null $etiquetaId,
-        int|null $ventanaId,
-        int|null $direccionId
+        string|int $id,
+        string|int|null $etiquetaId,
+        string|int|null $ventanaId,
+        string|int|null $direccionId
     ) {
         $this->id = $id;
         $this->etiquetaId = $etiquetaId;

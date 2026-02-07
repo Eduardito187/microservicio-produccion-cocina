@@ -16,5 +16,6 @@ class Outbox extends BaseModel
         'payload' => 'array',
         'occurred_on' => 'datetime',
         'published_at' => 'datetime',
+        'locked_at' => 'datetime',
     ];
 }

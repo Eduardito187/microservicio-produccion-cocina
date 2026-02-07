@@ -9,24 +9,24 @@ class Etiqueta
     use AggregateRoot;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
-    private int|null $id;
+    private string|int|null $id;
 
     /**
      * @var int
      */
-    private int $recetaVersionId;
+    private string|int $recetaVersionId;
 
     /**
      * @var int
      */
-    private int $suscripcionId;
+    private string|int $suscripcionId;
 
     /**
      * @var int
      */
-    private int $pacienteId;
+    private string|int $pacienteId;
 
     /**
      * @var array
@@ -36,17 +36,17 @@ class Etiqueta
     /**
      * Constructor
      * 
-     * @param int|null $id
-     * @param int $recetaVersionId
-     * @param int $suscripcionId
-     * @param int $pacienteId
+     * @param string|int|null $id
+     * @param string|int $recetaVersionId
+     * @param string|int $suscripcionId
+     * @param string|int $pacienteId
      * @param array $qrPayload
      */
     public function __construct(
-        int|null $id,
-        int $recetaVersionId,
-        int $suscripcionId,
-        int $pacienteId,
+        string|int|null $id,
+        string|int $recetaVersionId,
+        string|int $suscripcionId,
+        string|int $pacienteId,
         array $qrPayload = []
     ) {
         $this->id = $id;
@@ -57,18 +57,18 @@ class Etiqueta
     }
 
     /**
-     * @param int|null $id
-     * @param int $recetaVersionId
-     * @param int $suscripcionId
-     * @param int $pacienteId
+     * @param string|int|null $id
+     * @param string|int $recetaVersionId
+     * @param string|int $suscripcionId
+     * @param string|int $pacienteId
      * @param array $qrPayload
      * @return Etiqueta
      */
     public static function crear(
-        int|null $id,
-        int $recetaVersionId,
-        int $suscripcionId,
-        int $pacienteId,
+        string|int|null $id,
+        string|int $recetaVersionId,
+        string|int $suscripcionId,
+        string|int $pacienteId,
         array $qrPayload = []
     ): self {
         $self = new self(
@@ -86,17 +86,17 @@ class Etiqueta
 
     /**
      * @param int $id
-     * @param int $recetaVersionId
-     * @param int $suscripcionId
-     * @param int $pacienteId
+     * @param string|int $recetaVersionId
+     * @param string|int $suscripcionId
+     * @param string|int $pacienteId
      * @param array $qrPayload
      * @return Etiqueta
      */
     public static function reconstitute(
         int $id,
-        int $recetaVersionId,
-        int $suscripcionId,
-        int $pacienteId,
+        string|int $recetaVersionId,
+        string|int $suscripcionId,
+        string|int $pacienteId,
         array $qrPayload
     ): self {
         $self = new self(

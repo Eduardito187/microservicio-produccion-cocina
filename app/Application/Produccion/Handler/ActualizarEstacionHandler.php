@@ -36,9 +36,9 @@ class ActualizarEstacionHandler
      * @param ActualizarEstacion $command
      * @return int
      */
-    public function __invoke(ActualizarEstacion $command): int
+    public function __invoke(ActualizarEstacion $command): string
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): int {
+        return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $estacion = $this->estacionRepository->byId($command->id);
             $estacion->nombre = $command->nombre;
             $estacion->capacidad = $command->capacidad;
