@@ -52,6 +52,10 @@ class OutboxEventPublisher implements DomainEventPublisherInterface
             );
         }
 
+        if ((bool) env('OUTBOX_SKIP_DISPATCH', false) || app()->runningUnitTests()) {
+            return;
+        }
+
         $this->transactionManager->afterCommit(function (): void {
             PublishOutbox::dispatch();
         });

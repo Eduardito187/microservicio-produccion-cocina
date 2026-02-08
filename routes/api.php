@@ -2,6 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Presentation\Http\Controllers\LoginController;
+use App\Presentation\Http\Controllers\RefreshController;
+use App\Presentation\Http\Controllers\ProxyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/login', LoginController::class);
+Route::post('/refresh', RefreshController::class);
+
+Route::middleware('keycloak.jwt')->group(function () {
+    Route::get('/users', [ProxyController::class, 'users']);
+    Route::get('/posts', [ProxyController::class, 'posts']);
 });

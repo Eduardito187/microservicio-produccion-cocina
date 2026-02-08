@@ -12,6 +12,8 @@ use App\Presentation\Http\Middleware\TrustProxies;
 use App\Presentation\Http\Middleware\Authenticate;
 use App\Presentation\Http\Middleware\TrimStrings;
 use App\Presentation\Http\Middleware\TrustHosts;
+use App\Presentation\Http\Middleware\RequireRoleMiddleware;
+use App\Presentation\Http\Middleware\DenyUsersMiddleware;
 
 class Kernel extends HttpKernel
 {
@@ -73,6 +75,9 @@ class Kernel extends HttpKernel
         'signed' => ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'keycloak.jwt' => \App\Presentation\Http\Middleware\KeycloakJwtMiddleware::class,
+        'role' => RequireRoleMiddleware::class,
+        'deny.users' => DenyUsersMiddleware::class,
     ];
 }
 

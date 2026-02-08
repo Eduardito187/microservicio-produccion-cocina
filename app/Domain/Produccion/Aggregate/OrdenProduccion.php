@@ -257,7 +257,11 @@ class OrdenProduccion
                 continue;
             }
 
-            $itemsDespachoBySku[strtoupper(trim($item['sku']))] = (int) $item['recetaVersionId'];
+            $recetaVersionId = $item['recetaVersionId'];
+            if (is_string($recetaVersionId)) {
+                $recetaVersionId = trim($recetaVersionId);
+            }
+            $itemsDespachoBySku[strtoupper(trim($item['sku']))] = $recetaVersionId;
         }
 
         $items = [];

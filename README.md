@@ -38,6 +38,99 @@ Los eventos de dominio (p. ej., OrdenProduccionCreada, OrdenProduccionPlanificad
 
 ---
 
+## API Gateway (Laravel + Keycloak)
+
+Endpoints:
+
+- `POST /api/login` (sin token)
+- `GET /api/users` (con token Keycloak)
+- `GET /api/posts` (con token Keycloak)
+
+### Keycloak (OIDC/OAuth2)
+
+- Realm: `classroom`
+- Client: `api-gateway`
+- User: `student` / `student123`
+- URL interna (docker): `http://keycloak:8080`
+- Token endpoint: `/realms/classroom/protocol/openid-connect/token`
+- JWKS endpoint: `/realms/classroom/protocol/openid-connect/certs`
+- Issuer esperado: `http://keycloak:8080/realms/classroom`
+
+### Levantar con Docker
+
+```bash
+docker compose up --build
+```
+
+### Ejemplos curl
+
+Login:
+
+```bash
+curl -s -X POST http://localhost:8000/api/login \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"student","password":"student123"}'
+```
+
+Users (reemplaza `$TOKEN`):
+
+```bash
+curl -s http://localhost:8000/api/users \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+Posts:
+
+```bash
+curl -s http://localhost:8000/api/posts \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+## Outbox -> RabbitMQ (opcional)
+
+Puedes publicar eventos del outbox a RabbitMQ en lugar de HTTP.
+
+### Requisitos
+- Instalar librería: `composer require php-amqplib/php-amqplib`
+- Configurar driver:
+  - `EVENTBUS_DRIVER=rabbitmq`
+
+### Variables de entorno
+```
+EVENTBUS_DRIVER=rabbitmq
+RABBITMQ_HOST=154.38.180.80
+RABBITMQ_PORT=5672
+RABBITMQ_USER=admin
+RABBITMQ_PASSWORD=rabbit_mq
+RABBITMQ_VHOST=/
+RABBITMQ_EXCHANGE=outbox.events
+RABBITMQ_EXCHANGE_TYPE=fanout
+RABBITMQ_EXCHANGE_DURABLE=true
+RABBITMQ_ROUTING_KEY=
+RABBITMQ_QUEUE=
+RABBITMQ_QUEUE_DURABLE=true
+RABBITMQ_QUEUE_EXCLUSIVE=false
+RABBITMQ_QUEUE_AUTO_DELETE=false
+RABBITMQ_BINDING_KEY=
+RABBITMQ_PUBLISH_RETRIES=3
+RABBITMQ_PUBLISH_BACKOFF_MS=250
+```
+
+### Payload publicado
+```json
+{
+  "event_id": "<uuid>",
+  "event": "OrdenProduccionCreada",
+  "occurred_on": "2026-02-08T00:00:00+00:00",
+  "payload": { "...": "..." }
+}
+```
+
+### Routing key y binding
+- Si `RABBITMQ_ROUTING_KEY` está vacío, se usa el nombre del evento normalizado como routing key.
+- Si configuras `RABBITMQ_QUEUE`, se declara la cola y se hace bind automático:
+  - `RABBITMQ_BINDING_KEY` si está definido, o el routing key calculado.
+
 ## Actividad 4 – Capa de testing (Unit + Integration) + Coverage >=80%
 
 Este repositorio incluye:

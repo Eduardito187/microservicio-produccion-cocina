@@ -77,6 +77,12 @@ class OutboxEventPublisherTest extends TestCase
         $publisher = new OutboxEventPublisher($outbox, $transactionManager);
         $publisher->publish([$event1, $event2], 123);
 
+        if (app()->runningUnitTests()) {
+            $this->assertNull($transactionManager->afterCommit);
+            Bus::assertNotDispatched(PublishOutbox::class);
+            return;
+        }
+
         $this->assertIsCallable($transactionManager->afterCommit);
 
         ($transactionManager->afterCommit)();

@@ -40,6 +40,7 @@ use App\Infrastructure\Persistence\Outbox\OutboxEventPublisher;
 use App\Infrastructure\Persistence\Outbox\OutboxStoreAdapter;
 use App\Application\Shared\BusInterface;
 use App\Infrastructure\Bus\HttpEventBus;
+use App\Infrastructure\Bus\RabbitMqEventBus;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -135,10 +136,10 @@ class MicroservicioProvider extends ServiceProvider
             OutboxEventPublisher::class
         );
 
-        $this->app->bind(
-            BusInterface::class,
-            HttpEventBus::class
-        );
+        $this->app->bind(BusInterface::class, function () {
+            $driver = env('EVENTBUS_DRIVER', 'http');
+            return $driver === 'rabbitmq' ? new RabbitMqEventBus() : new HttpEventBus();
+        });
 
         $this->app->bind(
             TransactionManagerInterface::class,

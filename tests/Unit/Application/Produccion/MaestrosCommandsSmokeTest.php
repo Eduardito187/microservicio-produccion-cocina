@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionNamedType;
+use ReflectionUnionType;
 
 final class MaestrosCommandsSmokeTest extends TestCase
 {
@@ -24,6 +25,8 @@ final class MaestrosCommandsSmokeTest extends TestCase
 
                 if ($type instanceof ReflectionNamedType) {
                     $args[] = $this->dummyValueForType($type->getName(), $p->allowsNull());
+                } elseif ($type instanceof ReflectionUnionType) {
+                    $args[] = $this->dummyValueForUnion($type, $p->allowsNull());
                 } else {
                     $args[] = null;
                 }
@@ -130,5 +133,33 @@ final class MaestrosCommandsSmokeTest extends TestCase
         }
 
         return new class {};
+    }
+
+    /**
+     * @param ReflectionUnionType $type
+     * @param bool $nullable
+     * @return mixed
+     */
+    private function dummyValueForUnion(ReflectionUnionType $type, bool $nullable): mixed
+    {
+        $fallback = null;
+
+        foreach ($type->getTypes() as $unionType) {
+            if ($unionType instanceof ReflectionNamedType && $unionType->getName() !== 'null') {
+                $value = $this->dummyValueForType($unionType->getName(), $nullable);
+
+                if ($value !== null || $nullable) {
+                    return $value;
+                }
+
+                $fallback = $value;
+            }
+        }
+
+        if ($nullable) {
+            return null;
+        }
+
+        return $fallback ?? 'TEST';
     }
 }

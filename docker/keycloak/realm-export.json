@@ -1,0 +1,31 @@
+{
+  "realm": "classroom",
+  "enabled": true,
+  "displayName": "classroom",
+  "clients": [
+    {
+      "clientId": "api-gateway",
+      "name": "api-gateway",
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"]
+    }
+  ],
+  "users": [
+    {
+      "username": "student",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "student123",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}

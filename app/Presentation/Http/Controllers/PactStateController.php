@@ -86,79 +86,96 @@ class PactStateController
      */
     private function ensureOrdenAndPorcion(array $params): void
     {
+        if ($params === []) {
+            $params = [
+                'ordenProduccionId' => 'e28e9cc2-5225-40c0-b88b-2341f96d76a3',
+                'estacionId' => '9b7b5fbe-6b65-4d1d-8fdd-52f143b2552f',
+                'recetaVersionId' => 'a99e307d-3ca9-44a7-a475-42f0f86d7d04',
+                'porcionId' => 'f7a1e0b2-2c4d-4c0a-9b8e-0a4b2f9d8f7a',
+            ];
+        }
+
         $porcionTable = "porcion";
-        $cols = Schema::getColumnListing($porcionTable);
         $row = [];
         $porcionId = $params['porcionId'] ?? $params['porcion_id'] ?? (string) Str::uuid();
-        DB::table($porcionTable)->where('nombre', 'porcion_test')->delete();
-        if (in_array('id', $cols, true)) $row['id'] = $porcionId;
-        if (in_array('nombre', $cols, true)) $row['nombre'] = 'porcion_test';
-        if (in_array('peso_gr', $cols, true)) $row['peso_gr'] = 1;
-        if (in_array('created_at', $cols, true)) $row['created_at'] = now();
-        if (in_array('updated_at', $cols, true)) $row['updated_at'] = now();
+        $existingPorcionId = DB::table($porcionTable)->where('nombre', 'porcion_test')->value('id');
+        if ($existingPorcionId && $existingPorcionId !== $porcionId) {
+            DB::table('produccion_batch')->where('porcion_id', $existingPorcionId)->delete();
+            DB::table($porcionTable)->where('id', $existingPorcionId)->delete();
+        }
+        $row['id'] = $porcionId;
+        $row['nombre'] = 'porcion_test';
+        $row['peso_gr'] = 1;
+        $row['created_at'] = now();
+        $row['updated_at'] = now();
         DB::table($porcionTable)->updateOrInsert(['id' => $porcionId], $row);
 
         $recetaTable = "receta_version";
-        $cols = Schema::getColumnListing($recetaTable);
         $row = [];
         $recetaVersionId = $params['recetaVersionId'] ?? $params['receta_version_id'] ?? (string) Str::uuid();
-        DB::table($recetaTable)->where('nombre', 'receta_version_test')->delete();
-        if (in_array('id', $cols, true)) $row['id'] = $recetaVersionId;
-        if (in_array('nombre', $cols, true)) $row['nombre'] = 'receta_version_test';
-        if (in_array('version', $cols, true)) $row['version'] = 1;
-        if (in_array('created_at', $cols, true)) $row['created_at'] = now();
-        if (in_array('updated_at', $cols, true)) $row['updated_at'] = now();
+        $existingRecetaId = DB::table($recetaTable)->where('nombre', 'receta_version_test')->value('id');
+        if ($existingRecetaId && $existingRecetaId !== $recetaVersionId) {
+            DB::table('produccion_batch')->where('receta_version_id', $existingRecetaId)->delete();
+            DB::table($recetaTable)->where('id', $existingRecetaId)->delete();
+        }
+        $row['id'] = $recetaVersionId;
+        $row['nombre'] = 'receta_version_test';
+        $row['version'] = 1;
+        $row['created_at'] = now();
+        $row['updated_at'] = now();
         DB::table($recetaTable)->updateOrInsert(['id' => $recetaVersionId], $row);
 
         $estacionTable = "estacion";
-        $cols = Schema::getColumnListing($estacionTable);
         $row = [];
         $estacionId = $params['estacionId'] ?? $params['estacion_id'] ?? (string) Str::uuid();
-        DB::table($estacionTable)->where('nombre', 'estacion_test')->delete();
-        if (in_array('id', $cols, true)) $row['id'] = $estacionId;
-        if (in_array('nombre', $cols, true)) $row['nombre'] = 'estacion_test';
-        if (in_array('capacidad', $cols, true)) $row['capacidad'] = 10;
-        if (in_array('created_at', $cols, true)) $row['created_at'] = now();
-        if (in_array('updated_at', $cols, true)) $row['updated_at'] = now();
+        $existingEstacionId = DB::table($estacionTable)->where('nombre', 'estacion_test')->value('id');
+        if ($existingEstacionId && $existingEstacionId !== $estacionId) {
+            DB::table('produccion_batch')->where('estacion_id', $existingEstacionId)->delete();
+            DB::table($estacionTable)->where('id', $existingEstacionId)->delete();
+        }
+        $row['id'] = $estacionId;
+        $row['nombre'] = 'estacion_test';
+        $row['capacidad'] = 10;
+        $row['created_at'] = now();
+        $row['updated_at'] = now();
         DB::table($estacionTable)->updateOrInsert(['id' => $estacionId], $row);
 
         $productTable = "products";
-        $cols = Schema::getColumnListing($productTable);
         $existingProductId = DB::table($productTable)->where('sku', 'PIZZA-PEP')->value('id');
         $productId = $existingProductId ?: ($params['productId'] ?? $params['product_id'] ?? (string) Str::uuid());
         $row = [];
-        if (in_array('id', $cols, true)) $row['id'] = $productId;
-        if (in_array('sku', $cols, true)) $row['sku'] = 'PIZZA-PEP';
-        if (in_array('price', $cols, true)) $row['price'] = 100;
-        if (in_array('special_price', $cols, true)) $row['special_price'] = 0;
-        if (in_array('created_at', $cols, true)) $row['created_at'] = now();
-        if (in_array('updated_at', $cols, true)) $row['updated_at'] = now();
+        $row['id'] = $productId;
+        $row['sku'] = 'PIZZA-PEP';
+        $row['price'] = 100;
+        $row['special_price'] = 0;
+        $row['created_at'] = now();
+        $row['updated_at'] = now();
         DB::table($productTable)->updateOrInsert(['id' => $productId], $row);
 
         $orderTable = "orden_produccion";
-        $cols = Schema::getColumnListing($orderTable);
         $row = [];
         $ordenId = $params['ordenProduccionId'] ?? $params['orden_produccion_id'] ?? (string) Str::uuid();
-        if (in_array('id', $cols, true)) $row['id'] = $ordenId;
-        if (in_array('estado', $cols, true)) $row['estado'] = 'CREADA';
-        if (in_array('sucursal_id', $cols, true)) $row['sucursal_id'] = 'SCZ';
-        if (in_array('fecha', $cols, true)) $row['fecha'] = now()->toDateString();
-        if (in_array('created_at', $cols, true)) $row['created_at'] = now();
-        if (in_array('updated_at', $cols, true)) $row['updated_at'] = now();
+        DB::table('produccion_batch')->where('op_id', $ordenId)->delete();
+        DB::table('order_item')->where('op_id', $ordenId)->delete();
+        $row['id'] = $ordenId;
+        $row['estado'] = 'CREADA';
+        $row['sucursal_id'] = 'SCZ';
+        $row['fecha'] = now()->toDateString();
+        $row['created_at'] = now();
+        $row['updated_at'] = now();
         DB::table($orderTable)->updateOrInsert(['id' => $ordenId], $row);
 
         $orderItemTable = "order_item";
-        $cols = Schema::getColumnListing($orderItemTable);
         $row = [];
         $orderItemId = (string) Str::uuid();
-        if (in_array('id', $cols, true)) $row['id'] = $orderItemId;
-        if (in_array('op_id', $cols, true)) $row['op_id'] = $ordenId;
-        if (in_array('p_id', $cols, true)) $row['p_id'] = $productId;
-        if (in_array('qty', $cols, true)) $row['qty'] = 1;
-        if (in_array('price', $cols, true)) $row['price'] = 100;
-        if (in_array('final_price', $cols, true)) $row['final_price'] = 100;
-        if (in_array('created_at', $cols, true)) $row['created_at'] = now();
-        if (in_array('updated_at', $cols, true)) $row['updated_at'] = now();
+        $row['id'] = $orderItemId;
+        $row['op_id'] = $ordenId;
+        $row['p_id'] = $productId;
+        $row['qty'] = 1;
+        $row['price'] = 100;
+        $row['final_price'] = 100;
+        $row['created_at'] = now();
+        $row['updated_at'] = now();
         DB::table($orderItemTable)->updateOrInsert(['id' => $orderItemId], $row);
     }
 }
