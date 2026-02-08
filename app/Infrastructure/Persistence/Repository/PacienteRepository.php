@@ -44,7 +44,6 @@ class PacienteRepository implements PacienteRepositoryInterface
                 'suscripcion_id' => $paciente->suscripcionId,
             ]
         );
-
         return $model->id;
     }
 

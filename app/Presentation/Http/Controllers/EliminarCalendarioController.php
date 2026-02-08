@@ -24,7 +24,7 @@ class EliminarCalendarioController
     }
 
     /**
-     * @param int $id
+     * @param string $id
      * @return JsonResponse
      */
     public function __invoke(string $id): JsonResponse

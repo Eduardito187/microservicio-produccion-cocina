@@ -17,11 +17,13 @@ use App\Infrastructure\Persistence\Model\VentanaEntrega as VentanaEntregaModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Produccion\Entity\ItemDespacho;
+use App\Domain\Produccion\Events\PaqueteParaDespachoCreado;
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
 use App\Domain\Produccion\Entity\OrdenItem;
 use App\Domain\Produccion\Enum\EstadoOP;
 use App\Application\Shared\DomainEventPublisherInterface;
+use App\Domain\Produccion\Events\ProduccionBatchCreado;
 use DateTimeImmutable;
 use DateTimeInterface;
 
@@ -228,7 +230,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     private function savedBatch(array $items): void
     {
         foreach ($items as $key => $item) {
-            $this->produccionBatchRepository->save(
+            $batchId = $this->produccionBatchRepository->save(
                 new AggregateProduccionBatch(
                     $item->id,
                     $item->ordenProduccionId,
@@ -245,6 +247,26 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                     $item->posicion
                 )
             );
+
+            $events = [];
+            foreach ($item->pullEvents() as $event) {
+                if ($event instanceof ProduccionBatchCreado && $event->aggregateId() === null) {
+                    $events[] = new ProduccionBatchCreado(
+                        $batchId,
+                        $item->ordenProduccionId,
+                        $item->estacionId,
+                        $item->productoId,
+                        $item->recetaVersionId,
+                        $item->porcionId,
+                        $item->qty,
+                        $item->posicion
+                    );
+                } else {
+                    $events[] = $event;
+                }
+            }
+
+            $this->eventPublisher->publish($events, $item->ordenProduccionId);
         }
     }
 
@@ -320,6 +342,19 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                 'direccion_id' => $direccion->id,
             ]
         );
+
+        if ($paquete->wasRecentlyCreated) {
+            $event = new PaqueteParaDespachoCreado(
+                $paquete->id,
+                $etiqueta->id,
+                $ventana->id,
+                $direccion->id,
+                $paciente->id,
+                $etiqueta->receta_version_id,
+                $etiqueta->suscripcion_id
+            );
+            $this->eventPublisher->publish([$event], $paquete->id);
+        }
 
         return $paquete->id;
     }

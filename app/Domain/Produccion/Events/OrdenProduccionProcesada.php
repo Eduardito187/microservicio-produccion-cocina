@@ -8,9 +8,9 @@ use DateTimeImmutable;
 class OrdenProduccionProcesada extends BaseDomainEvent
 {
     /**
-     * @var string
+     * @var DateTimeImmutable
      */
-    private readonly DateTimeImmutable $fecha;
+    private $fecha;
 
     /**
      * Constructor
@@ -22,8 +22,8 @@ class OrdenProduccionProcesada extends BaseDomainEvent
         string|int|null $opId,
         DateTimeImmutable $fecha
     ) {
-        $this->fecha = $fecha;
         parent::__construct($opId);
+        $this->fecha = $fecha;
     }
 
     /**
@@ -32,8 +32,7 @@ class OrdenProduccionProcesada extends BaseDomainEvent
     public function toArray(): array
     {
         return [
-            'op_id' => $this->aggregateId(),
-            'fecha' => $this->fecha
+            'fecha' => $this->fecha->format(DATE_ATOM)
         ];
     }
 }

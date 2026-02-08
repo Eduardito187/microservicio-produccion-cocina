@@ -44,7 +44,6 @@ class CalendarioRepository implements CalendarioRepositoryInterface
                 'sucursal_id' => $calendario->sucursalId,
             ]
         );
-
         return $model->id;
     }
 

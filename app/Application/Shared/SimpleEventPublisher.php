@@ -22,6 +22,6 @@ class SimpleEventPublisher
 
     public function publish(string $eventId, string $name, array $payload): void
     {
-        $this->bus->publish($eventId, $name, $payload, new DateTimeImmutable());
+        $this->bus->publish($eventId, $name, $payload, new DateTimeImmutable(), []);
     }
 }

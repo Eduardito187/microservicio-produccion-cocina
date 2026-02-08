@@ -44,11 +44,13 @@ class OutboxEventPublisher implements DomainEventPublisherInterface
         }
 
         foreach ($events as $event) {
+            $payload = $event->toArray();
+
             $this->outboxStore->append(
                 $event->name(),
                 $aggregateId ?? null,
                 $event->occurredOn(),
-                $event->toArray()
+                $payload
             );
         }
 

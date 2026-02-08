@@ -17,5 +17,6 @@ class Outbox extends BaseModel
         'occurred_on' => 'datetime',
         'published_at' => 'datetime',
         'locked_at' => 'datetime',
+        'schema_version' => 'integer',
     ];
 }

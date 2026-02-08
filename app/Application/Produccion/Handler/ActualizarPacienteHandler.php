@@ -5,6 +5,8 @@ namespace App\Application\Produccion\Handler;
 use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ActualizarPaciente;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Domain\Produccion\Events\PacienteActualizado;
 
 class ActualizarPacienteHandler
 {
@@ -19,17 +21,25 @@ class ActualizarPacienteHandler
     private readonly TransactionAggregate $transactionAggregate;
 
     /**
+     * @var DomainEventPublisherInterface
+     */
+    private readonly DomainEventPublisherInterface $eventPublisher;
+
+    /**
      * Constructor
      *
      * @param PacienteRepositoryInterface $pacienteRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         PacienteRepositoryInterface $pacienteRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        DomainEventPublisherInterface $eventPublisher
     ) {
         $this->pacienteRepository = $pacienteRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->eventPublisher = $eventPublisher;
     }
 
     /**
@@ -44,7 +54,11 @@ class ActualizarPacienteHandler
             $paciente->documento = $command->documento;
             $paciente->suscripcionId = $command->suscripcionId;
 
-            return $this->pacienteRepository->save($paciente);
+            $id = $this->pacienteRepository->save($paciente);
+            $event = new PacienteActualizado($id, $paciente->nombre, $paciente->documento, $paciente->suscripcionId);
+            $this->eventPublisher->publish([$event], $id);
+
+            return $id;
         });
     }
 }

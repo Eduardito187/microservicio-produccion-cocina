@@ -5,6 +5,8 @@ namespace App\Application\Produccion\Handler;
 use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ActualizarDireccion;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Domain\Produccion\Events\DireccionActualizada;
 
 class ActualizarDireccionHandler
 {
@@ -19,17 +21,25 @@ class ActualizarDireccionHandler
     private readonly TransactionAggregate $transactionAggregate;
 
     /**
+     * @var DomainEventPublisherInterface
+     */
+    private readonly DomainEventPublisherInterface $eventPublisher;
+
+    /**
      * Constructor
      *
      * @param DireccionRepositoryInterface $direccionRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         DireccionRepositoryInterface $direccionRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        DomainEventPublisherInterface $eventPublisher
     ) {
         $this->direccionRepository = $direccionRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->eventPublisher = $eventPublisher;
     }
 
     /**
@@ -48,7 +58,20 @@ class ActualizarDireccionHandler
             $direccion->pais = $command->pais;
             $direccion->geo = $command->geo;
 
-            return $this->direccionRepository->save($direccion);
+            $id = $this->direccionRepository->save($direccion);
+            $event = new DireccionActualizada(
+                $id,
+                $direccion->nombre,
+                $direccion->linea1,
+                $direccion->linea2,
+                $direccion->ciudad,
+                $direccion->provincia,
+                $direccion->pais,
+                $direccion->geo
+            );
+            $this->eventPublisher->publish([$event], $id);
+
+            return $id;
         });
     }
 }

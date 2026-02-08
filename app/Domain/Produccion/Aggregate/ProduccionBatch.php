@@ -188,6 +188,9 @@ class ProduccionBatch
                 $id,
                 $ordenProduccionId,
                 $estacionId,
+                $productoId,
+                $recetaVersionId,
+                $porcionId,
                 $qty,
                 $posicion
             )

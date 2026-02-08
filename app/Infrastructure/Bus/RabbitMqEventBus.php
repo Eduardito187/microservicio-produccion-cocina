@@ -10,12 +10,15 @@ use DateTimeImmutable;
 
 class RabbitMqEventBus implements BusInterface
 {
-    public function publish(string $eventId, string $name, array $payload, DateTimeImmutable $occurredOn): void
+    public function publish(string $eventId, string $name, array $payload, DateTimeImmutable $occurredOn, array $meta = []): void
     {
         $messageBody = json_encode([
             'event_id' => $eventId,
             'event' => $name,
             'occurred_on' => $occurredOn->format(DATE_ATOM),
+            'schema_version' => $meta['schema_version'] ?? null,
+            'correlation_id' => $meta['correlation_id'] ?? null,
+            'aggregate_id' => $meta['aggregate_id'] ?? null,
             'payload' => $payload,
         ], JSON_UNESCAPED_SLASHES);
 
@@ -23,7 +26,9 @@ class RabbitMqEventBus implements BusInterface
             throw new \RuntimeException('Unable to encode outbox message');
         }
 
-        $routingKey = $this->resolveRoutingKey($name);
+        $queueMap = config('rabbitmq.event_queues', []);
+        $mappedQueue = is_array($queueMap) ? ($queueMap[$name] ?? null) : null;
+        $routingKey = $this->resolveRoutingKey($name, $mappedQueue);
         $retries = (int) config('rabbitmq.publish_retries', 3);
         $backoffMs = (int) config('rabbitmq.publish_backoff_ms', 250);
 
@@ -64,7 +69,10 @@ class RabbitMqEventBus implements BusInterface
                     );
                 }
 
-                $queue = config('rabbitmq.queue');
+                $queue = is_string($mappedQueue) && $mappedQueue !== ''
+                    ? $mappedQueue
+                    : config('rabbitmq.queue');
+
                 if (is_string($queue) && $queue !== '') {
                     $channel->queue_declare(
                         $queue,
@@ -75,6 +83,9 @@ class RabbitMqEventBus implements BusInterface
                     );
 
                     $bindingKey = (string) config('rabbitmq.binding_key', $routingKey);
+                    if (is_string($mappedQueue) && $mappedQueue !== '') {
+                        $bindingKey = $routingKey;
+                    }
                     $channel->queue_bind($queue, $exchange, $bindingKey);
                 }
 
@@ -84,6 +95,17 @@ class RabbitMqEventBus implements BusInterface
                 ]);
 
                 $channel->basic_publish($message, $exchange, $routingKey);
+                Log::info('RabbitMQ publish success', [
+                    'event_id' => $eventId,
+                    'event_name' => $name,
+                    'exchange' => $exchange,
+                    'routing_key' => $routingKey,
+                    'queue' => $queue ?? null,
+                    'schema_version' => $meta['schema_version'] ?? null,
+                    'correlation_id' => $meta['correlation_id'] ?? null,
+                    'aggregate_id' => $meta['aggregate_id'] ?? null,
+                    'payload' => $payload,
+                ]);
                 return;
             } catch (\Throwable $e) {
                 Log::error('RabbitMQ publish failed', [
@@ -91,6 +113,7 @@ class RabbitMqEventBus implements BusInterface
                     'event_name' => $name,
                     'attempt' => $attempt,
                     'error' => $e->getMessage(),
+                    'payload' => $payload,
                 ]);
 
                 if ($attempt > $retries) {
@@ -111,8 +134,12 @@ class RabbitMqEventBus implements BusInterface
         }
     }
 
-    private function resolveRoutingKey(string $eventName): string
+    private function resolveRoutingKey(string $eventName, ?string $mappedQueue): string
     {
+        if (is_string($mappedQueue) && $mappedQueue !== '') {
+            return $mappedQueue;
+        }
+
         $explicit = config('rabbitmq.routing_key');
         if (is_string($explicit) && $explicit !== '') {
             return $explicit;

@@ -9,46 +9,70 @@ class ProduccionBatchCreado extends BaseDomainEvent
 {
 
     /**
-     * @var string
+     * @var string|int|null
      */
-    private readonly string $ordenProduccionId;
+    private $ordenProduccionId;
 
     /**
-     * @var int
+     * @var string|int|null
      */
-    public readonly int $estacionId;
+    public $estacionId;
+
+    /**
+     * @var string|int|null
+     */
+    public $productoId;
+
+    /**
+     * @var string|int|null
+     */
+    public $recetaVersionId;
+
+    /**
+     * @var string|int|null
+     */
+    public $porcionId;
 
     /**
      * @var Qty
      */
-    private readonly Qty $qty;
+    private $qty;
 
     /**
      * @var int
      */
-    public readonly int $posicion;
+    public $posicion;
 
     /**
      * Constructor
      * 
-     * @param int $id
-     * @param int $ordenProduccionId
-     * @param int $estacionId
+     * @param string|int|null $id
+     * @param string|int|null $ordenProduccionId
+     * @param string|int|null $estacionId
+     * @param string|int|null $productoId
+     * @param string|int|null $recetaVersionId
+     * @param string|int|null $porcionId
      * @param Qty $qty
      * @param int $posicion
      */
     public function __construct(
-        int $id,
-        int $ordenProduccionId,
-        int $estacionId,
+        string|int|null $id,
+        string|int|null $ordenProduccionId,
+        string|int|null $estacionId,
+        string|int|null $productoId,
+        string|int|null $recetaVersionId,
+        string|int|null $porcionId,
         Qty $qty,
         int $posicion
     ) {
+        parent::__construct($id);
         $this->ordenProduccionId = $ordenProduccionId;
         $this->estacionId = $estacionId;
+        $this->productoId = $productoId;
+        $this->recetaVersionId = $recetaVersionId;
+        $this->porcionId = $porcionId;
         $this->qty = $qty;
         $this->posicion = $posicion;
-        parent::__construct($id);
     }
 
     /**
@@ -57,9 +81,11 @@ class ProduccionBatchCreado extends BaseDomainEvent
     public function toArray(): array
     {
         return [
-            'batch_id' => $this->aggregateId(),
-            'ordenProduccionId' => $this->ordenProduccionId,
+            'ordenProduccionId' => $this->ordenProduccionId !== null ? (string) $this->ordenProduccionId : null,
             'estacionId' => $this->estacionId,
+            'productoId' => $this->productoId !== null ? (string) $this->productoId : null,
+            'recetaVersionId' => $this->recetaVersionId !== null ? (string) $this->recetaVersionId : null,
+            'porcionId' => $this->porcionId !== null ? (string) $this->porcionId : null,
             'qty' => $this->qty->value(),
             'posicion' => $this->posicion
         ];

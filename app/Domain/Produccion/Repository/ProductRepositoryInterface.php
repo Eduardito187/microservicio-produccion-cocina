@@ -20,9 +20,9 @@ interface ProductRepositoryInterface
 
     /**
      * @param Products $product
-     * @return void
+     * @return string
      */
-    public function save(Products $product): void;
+    public function save(Products $product): string;
 
     /**
      * @return Products[]

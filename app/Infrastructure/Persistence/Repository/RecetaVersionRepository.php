@@ -46,7 +46,6 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
                 'version' => $recetaVersion->version,
             ]
         );
-
         return $model->id;
     }
 

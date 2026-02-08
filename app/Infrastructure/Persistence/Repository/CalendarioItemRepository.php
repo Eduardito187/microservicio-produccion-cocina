@@ -42,7 +42,6 @@ class CalendarioItemRepository implements CalendarioItemRepositoryInterface
                 'item_despacho_id' => $item->itemDespachoId,
             ]
         );
-
         return $model->id;
     }
 

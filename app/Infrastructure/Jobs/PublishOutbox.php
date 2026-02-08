@@ -60,10 +60,16 @@ class PublishOutbox implements ShouldQueue
                     'locked_by' => $claimId,
                 ]);
 
+            logger()->info('Outbox claimed', [
+                'claim_id' => $claimId,
+                'count' => count($ids),
+            ]);
+
             return $ids;
         });
 
         if ($claimedIds === []) {
+            logger()->info('Outbox empty', ['claim_id' => $claimId]);
             return;
         }
 
@@ -74,11 +80,25 @@ class PublishOutbox implements ShouldQueue
             ->get()
             ->each(function (Outbox $row) use ($bus, $now): void {
                 try {
+                    logger()->info('Outbox publishing', [
+                        'event_id' => $row->event_id,
+                        'event_name' => $row->event_name,
+                        'aggregate_id' => $row->aggregate_id,
+                        'schema_version' => $row->schema_version,
+                        'correlation_id' => $row->correlation_id,
+                        'payload' => $row->payload,
+                    ]);
+
                     $bus->publish(
                         $row->event_id,
                         $row->event_name,
                         $row->payload,
-                        new DateTimeImmutable($row->occurred_on->format(DATE_ATOM))
+                        new DateTimeImmutable($row->occurred_on->format(DATE_ATOM)),
+                        [
+                            'aggregate_id' => $row->aggregate_id,
+                            'correlation_id' => $row->correlation_id,
+                            'schema_version' => $row->schema_version,
+                        ]
                     );
 
                     $row->forceFill([
@@ -86,11 +106,18 @@ class PublishOutbox implements ShouldQueue
                         'locked_at' => null,
                         'locked_by' => null,
                     ])->save();
+
+                    logger()->info('Outbox published', [
+                        'event_id' => $row->event_id,
+                        'event_name' => $row->event_name,
+                        'aggregate_id' => $row->aggregate_id,
+                    ]);
                 } catch (\Throwable $e) {
                     logger()->error('Outbox publish failed', [
                         'event_id' => $row->event_id,
                         'event_name' => $row->event_name,
                         'aggregate_id' => $row->aggregate_id,
+                        'payload' => $row->payload,
                     ]);
                 }
             });

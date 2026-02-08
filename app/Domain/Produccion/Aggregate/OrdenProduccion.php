@@ -7,6 +7,7 @@ use App\Domain\Produccion\Events\OrdenProduccionPlanificada;
 use App\Domain\Produccion\Events\OrdenProduccionProcesada;
 use App\Domain\Produccion\Events\OrdenProduccionCerrada;
 use App\Domain\Produccion\Events\OrdenProduccionCreada;
+use App\Domain\Produccion\Events\OrdenProduccionDespachada;
 use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Shared\Aggregate\AggregateRoot;
 use App\Domain\Produccion\Entity\ItemDespacho;
@@ -216,7 +217,7 @@ class OrdenProduccion
         $items = [];
 
         foreach ($this->items() as $key => $item) {
-            $items[] = new AggregateProduccionBatch(
+            $items[] = AggregateProduccionBatch::crear(
                 null,
                 $this->id,
                 $item->productId,
@@ -229,7 +230,8 @@ class OrdenProduccion
                 EstadoPlanificado::PROGRAMADO,
                 0,
                 $item->qty,
-                $key + 1
+                $key + 1,
+                []
             );
         }
 
@@ -283,6 +285,7 @@ class OrdenProduccion
         }
 
         $this->itemsDespacho = $items;
+        $this->record(new OrdenProduccionDespachada($this->id, $this->fecha, count($items)));
     }
 
     /**

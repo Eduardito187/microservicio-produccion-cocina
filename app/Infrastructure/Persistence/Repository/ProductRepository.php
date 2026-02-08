@@ -52,14 +52,15 @@ class ProductRepository implements ProductRepositoryInterface
 
     /**
      * @param Products $product
-     * @return void
+     * @return string
      */
-    public function save(Products $product): void
+    public function save(Products $product): string
     {
-        ProductModel::updateOrCreate(
+        $model = ProductModel::query()->updateOrCreate(
             ['id' => $product->id],
             ['sku' => $product->sku, 'price' => $product->price, 'special_price' => $product->special_price]
         );
+        return $model->id;
     }
 
     /**

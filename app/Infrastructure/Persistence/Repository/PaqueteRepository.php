@@ -44,7 +44,6 @@ class PaqueteRepository implements PaqueteRepositoryInterface
                 'direccion_id' => $paquete->direccionId,
             ]
         );
-
         return $model->id;
     }
 

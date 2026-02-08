@@ -6,6 +6,8 @@ use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ActualizarProducto;
 use App\Domain\Produccion\Entity\Products;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Domain\Produccion\Events\ProductoActualizado;
 
 class ActualizarProductoHandler
 {
@@ -20,17 +22,25 @@ class ActualizarProductoHandler
     private readonly TransactionAggregate $transactionAggregate;
 
     /**
+     * @var DomainEventPublisherInterface
+     */
+    private readonly DomainEventPublisherInterface $eventPublisher;
+
+    /**
      * Constructor
      *
      * @param ProductRepositoryInterface $productRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         ProductRepositoryInterface $productRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        DomainEventPublisherInterface $eventPublisher
     ) {
         $this->productRepository = $productRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->eventPublisher = $eventPublisher;
     }
 
     /**
@@ -49,9 +59,11 @@ class ActualizarProductoHandler
                 special_price: $command->specialPrice
             );
 
-            $this->productRepository->save($product);
+            $id = $this->productRepository->save($product);
+            $event = new ProductoActualizado($id, $command->sku, $command->price, $command->specialPrice);
+            $this->eventPublisher->publish([$event], $id);
 
-            return $command->id;
+            return $id;
         });
     }
 }

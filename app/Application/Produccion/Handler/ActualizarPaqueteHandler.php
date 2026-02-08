@@ -5,6 +5,8 @@ namespace App\Application\Produccion\Handler;
 use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ActualizarPaquete;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Domain\Produccion\Events\PaqueteActualizado;
 
 class ActualizarPaqueteHandler
 {
@@ -19,17 +21,25 @@ class ActualizarPaqueteHandler
     private readonly TransactionAggregate $transactionAggregate;
 
     /**
+     * @var DomainEventPublisherInterface
+     */
+    private readonly DomainEventPublisherInterface $eventPublisher;
+
+    /**
      * Constructor
      *
      * @param PaqueteRepositoryInterface $paqueteRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         PaqueteRepositoryInterface $paqueteRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        DomainEventPublisherInterface $eventPublisher
     ) {
         $this->paqueteRepository = $paqueteRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->eventPublisher = $eventPublisher;
     }
 
     /**
@@ -44,7 +54,11 @@ class ActualizarPaqueteHandler
             $paquete->ventanaId = $command->ventanaId;
             $paquete->direccionId = $command->direccionId;
 
-            return $this->paqueteRepository->save($paquete);
+            $id = $this->paqueteRepository->save($paquete);
+            $event = new PaqueteActualizado($id, $paquete->etiquetaId, $paquete->ventanaId, $paquete->direccionId);
+            $this->eventPublisher->publish([$event], $id);
+
+            return $id;
         });
     }
 }

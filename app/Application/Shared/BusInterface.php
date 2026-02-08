@@ -17,6 +17,7 @@ interface BusInterface
         string $eventId,
         string $name,
         array $payload,
-        DateTimeImmutable $occurredOn
+        DateTimeImmutable $occurredOn,
+        array $meta = []
     ): void;
 }

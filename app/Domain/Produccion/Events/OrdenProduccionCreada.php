@@ -8,14 +8,14 @@ use DateTimeImmutable;
 class OrdenProduccionCreada extends BaseDomainEvent
 {
     /**
-     * @var string
+     * @var DateTimeImmutable
      */
-    private readonly DateTimeImmutable $fecha;
+    private $fecha;
 
     /**
-     * @var string
+     * @var int|string
      */
-    private readonly int|string $sucursalId;
+    private $sucursalId;
 
     /**
      * Constructor
@@ -29,9 +29,9 @@ class OrdenProduccionCreada extends BaseDomainEvent
         DateTimeImmutable $fecha,
         int|string $sucursalId
     ) {
+        parent::__construct($opId);
         $this->fecha = $fecha;
         $this->sucursalId = $sucursalId;
-        parent::__construct($opId);
     }
 
     /**
@@ -40,8 +40,7 @@ class OrdenProduccionCreada extends BaseDomainEvent
     public function toArray(): array
     {
         return [
-            'op_id' => $this->aggregateId(),
-            'fecha' => $this->fecha,
+            'fecha' => $this->fecha->format(DATE_ATOM),
             'sucursalId' => $this->sucursalId
         ];
     }

@@ -28,6 +28,7 @@ use App\Application\Produccion\Command\VerCalendario;
 use App\Application\Produccion\Command\VerDireccion;
 use App\Domain\Produccion\Entity\Calendario;
 use App\Domain\Produccion\Entity\Direccion;
+use App\Application\Shared\DomainEventPublisherInterface;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 
@@ -51,6 +52,26 @@ class MaestrosHandlersCrudTest extends TestCase
     }
 
     /**
+     * @return DomainEventPublisherInterface
+     */
+    private function eventPublisher(): DomainEventPublisherInterface
+    {
+        return $this->createMock(DomainEventPublisherInterface::class);
+    }
+
+    /**
+     * @param class-string $handlerClass
+     */
+    private function makeHandler(string $handlerClass, object $repository, TransactionAggregate $tx, bool $needsEventPublisher): object
+    {
+        if ($needsEventPublisher) {
+            return new $handlerClass($repository, $tx, $this->eventPublisher());
+        }
+
+        return new $handlerClass($repository, $tx);
+    }
+
+    /**
      * @return void
      */
     public function test_calendario_crud_handlers_invocan_repositorio_y_mapean_respuesta(): void
@@ -62,7 +83,7 @@ class MaestrosHandlersCrudTest extends TestCase
             ->with($this->callback(function (Calendario $calendario): bool {
                 return $calendario->id === null && $calendario->fecha->format('Y-m-d') === '2026-01-10' && $calendario->sucursalId === 'SCZ-001';
             }))->willReturn($id10);
-        $crear = new CrearCalendarioHandler($repository, $this->tx());
+        $crear = new CrearCalendarioHandler($repository, $this->tx(), $this->eventPublisher());
         $id = $crear(new CrearCalendario(new DateTimeImmutable('2026-01-10'), 'SCZ-001'));
         $this->assertSame($id10, $id);
         // Actualizar
@@ -70,7 +91,7 @@ class MaestrosHandlersCrudTest extends TestCase
         $repository2 = $this->createMock(CalendarioRepositoryInterface::class);
         $repository2->method('byId')->with($id10)->willReturn($existing);
         $repository2->expects($this->once())->method('save')->willReturn($id10);
-        $actualizar = new ActualizarCalendarioHandler($repository2, $this->tx());
+        $actualizar = new ActualizarCalendarioHandler($repository2, $this->tx(), $this->eventPublisher());
         $actualizadoId = $actualizar(new ActualizarCalendario($id10, new DateTimeImmutable('2026-01-11'), 'SCZ-002'));
         $this->assertSame($id10, $actualizadoId);
         $this->assertSame('2026-01-11', $existing->fecha->format('Y-m-d'));
@@ -110,7 +131,7 @@ class MaestrosHandlersCrudTest extends TestCase
                 return $direccion->id === null && $direccion->nombre === 'Casa' && $direccion->linea1 === 'Av. Siempre Viva 123'
                     && $direccion->ciudad === 'SCZ' && $direccion->geo === ['lat' => -17.78, 'lng' => -63.18];
             }))->willReturn($id20);
-        $crear = new CrearDireccionHandler($repository, $this->tx());
+        $crear = new CrearDireccionHandler($repository, $this->tx(), $this->eventPublisher());
         $id = $crear(new CrearDireccion(
             'Casa','Av. Siempre Viva 123',null,'SCZ',null,'BO',['lat' => -17.78, 'lng' => -63.18]
         ));
@@ -120,7 +141,7 @@ class MaestrosHandlersCrudTest extends TestCase
         $repository2 = $this->createMock(DireccionRepositoryInterface::class);
         $repository2->method('byId')->with($id20)->willReturn($existing);
         $repository2->expects($this->once())->method('save')->willReturn($id20);
-        $actualizar = new ActualizarDireccionHandler($repository2, $this->tx());
+        $actualizar = new ActualizarDireccionHandler($repository2, $this->tx(), $this->eventPublisher());
         $actualizadoId = $actualizar(new ActualizarDireccion(
             $id20, 'Oficina', 'Calle 1', 'Piso 2', 'LPZ', 'Murillo', 'BO', null
         ));
@@ -158,7 +179,7 @@ class MaestrosHandlersCrudTest extends TestCase
         $repository = $this->createMock($data['repo']);
         $repository->expects($this->once())->method('save')
             ->with($this->isInstanceOf($data['entity']))->willReturn('33333333-3333-3333-3333-333333333333');
-        $handler = new ($data['handlers']['crear'])($repository, $this->tx());
+        $handler = $this->makeHandler($data['handlers']['crear'], $repository, $this->tx(), $data['needsEventPublisher'] ?? false);
         $id = $handler($data['commands']['crear']());
 
         $this->assertSame('33333333-3333-3333-3333-333333333333', $id);
@@ -184,7 +205,7 @@ class MaestrosHandlersCrudTest extends TestCase
 
                 return true;
             }))->willReturn($id10);
-        $handler = new ($data['handlers']['actualizar'])($repository, $this->tx());
+        $handler = $this->makeHandler($data['handlers']['actualizar'], $repository, $this->tx(), $data['needsEventPublisher'] ?? false);
         $id = $handler($data['commands']['actualizar']());
 
         $this->assertSame($id10, $id);
@@ -199,7 +220,7 @@ class MaestrosHandlersCrudTest extends TestCase
         $repository = $this->createMock($data['repo']);
         $repository->expects($this->once())->method('byId')->with($id10)->willReturn($data['makeEntity']());
         $repository->expects($this->once())->method('delete')->with($id10);
-        $handler = new ($data['handlers']['eliminar'])($repository, $this->tx());
+        $handler = $this->makeHandler($data['handlers']['eliminar'], $repository, $this->tx(), false);
         $handler($data['commands']['eliminar']());
 
         $this->assertTrue(true);
@@ -213,7 +234,7 @@ class MaestrosHandlersCrudTest extends TestCase
         $id10 = '11111111-1111-1111-1111-111111111111';
         $repository = $this->createMock($data['repo']);
         $repository->expects($this->once())->method('byId')->with($id10)->willReturn($data['makeEntity']());
-        $handler = new ($data['handlers']['ver'])($repository, $this->tx());
+        $handler = $this->makeHandler($data['handlers']['ver'], $repository, $this->tx(), false);
         $out = $handler($data['commands']['ver']());
 
         $this->assertSame($data['expectedView'](), $out);
@@ -226,7 +247,7 @@ class MaestrosHandlersCrudTest extends TestCase
     {
         $repository = $this->createMock($data['repo']);
         $repository->expects($this->once())->method('list')->willReturn([$data['makeEntity']()]);
-        $handler = new ($data['handlers']['listar'])($repository, $this->tx());
+        $handler = $this->makeHandler($data['handlers']['listar'], $repository, $this->tx(), false);
         $out = $handler($data['commands']['listar']());
 
         $this->assertSame([$data['expectedView']()], $out);
@@ -256,6 +277,7 @@ class MaestrosHandlersCrudTest extends TestCase
                 [
                     'entity' => \App\Domain\Produccion\Entity\CalendarioItem::class,
                     'repo' => \App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface::class,
+                    'needsEventPublisher' => true,
                     'handlers' => [
                         'crear' => \App\Application\Produccion\Handler\CrearCalendarioItemHandler::class,
                         'actualizar' => \App\Application\Produccion\Handler\ActualizarCalendarioItemHandler::class,
@@ -325,6 +347,7 @@ class MaestrosHandlersCrudTest extends TestCase
                 [
                     'entity' => \App\Domain\Produccion\Entity\Paciente::class,
                     'repo' => \App\Domain\Produccion\Repository\PacienteRepositoryInterface::class,
+                    'needsEventPublisher' => true,
                     'handlers' => [
                         'crear' => \App\Application\Produccion\Handler\CrearPacienteHandler::class,
                         'actualizar' => \App\Application\Produccion\Handler\ActualizarPacienteHandler::class,
@@ -348,6 +371,7 @@ class MaestrosHandlersCrudTest extends TestCase
                 [
                     'entity' => \App\Domain\Produccion\Entity\Paquete::class,
                     'repo' => \App\Domain\Produccion\Repository\PaqueteRepositoryInterface::class,
+                    'needsEventPublisher' => true,
                     'handlers' => [
                         'crear' => \App\Application\Produccion\Handler\CrearPaqueteHandler::class,
                         'actualizar' => \App\Application\Produccion\Handler\ActualizarPaqueteHandler::class,
@@ -394,6 +418,7 @@ class MaestrosHandlersCrudTest extends TestCase
                 [
                     'entity' => \App\Domain\Produccion\Entity\RecetaVersion::class,
                     'repo' => \App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface::class,
+                    'needsEventPublisher' => true,
                     'handlers' => [
                         'crear' => \App\Application\Produccion\Handler\CrearRecetaVersionHandler::class,
                         'actualizar' => \App\Application\Produccion\Handler\ActualizarRecetaVersionHandler::class,
@@ -427,6 +452,7 @@ class MaestrosHandlersCrudTest extends TestCase
             'Suscripcion' => [[
                 'entity' => \App\Domain\Produccion\Entity\Suscripcion::class,
                 'repo' => \App\Domain\Produccion\Repository\SuscripcionRepositoryInterface::class,
+                'needsEventPublisher' => true,
                 'handlers' => [
                     'crear' => \App\Application\Produccion\Handler\CrearSuscripcionHandler::class,
                     'actualizar' => \App\Application\Produccion\Handler\ActualizarSuscripcionHandler::class,

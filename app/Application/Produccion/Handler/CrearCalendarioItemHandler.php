@@ -6,6 +6,8 @@ use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\CrearCalendarioItem;
 use App\Domain\Produccion\Entity\CalendarioItem;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Domain\Produccion\Events\CalendarioItemCreado;
 
 class CrearCalendarioItemHandler
 {
@@ -20,17 +22,25 @@ class CrearCalendarioItemHandler
     private readonly TransactionAggregate $transactionAggregate;
 
     /**
+     * @var DomainEventPublisherInterface
+     */
+    private readonly DomainEventPublisherInterface $eventPublisher;
+
+    /**
      * Constructor
      *
      * @param CalendarioItemRepositoryInterface $calendarioItemRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         CalendarioItemRepositoryInterface $calendarioItemRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        DomainEventPublisherInterface $eventPublisher
     ) {
         $this->calendarioItemRepository = $calendarioItemRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->eventPublisher = $eventPublisher;
     }
 
     /**
@@ -42,7 +52,11 @@ class CrearCalendarioItemHandler
         return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $item = new CalendarioItem(null, $command->calendarioId, $command->itemDespachoId);
 
-            return $this->calendarioItemRepository->save($item);
+            $id = $this->calendarioItemRepository->save($item);
+            $event = new CalendarioItemCreado($id, $command->calendarioId, $command->itemDespachoId);
+            $this->eventPublisher->publish([$event], $id);
+
+            return $id;
         });
     }
 }

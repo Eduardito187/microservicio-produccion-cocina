@@ -16,6 +16,7 @@ use App\Application\Produccion\Command\ListarProductos;
 use App\Application\Produccion\Command\CrearProducto;
 use App\Application\Produccion\Command\VerProducto;
 use App\Domain\Produccion\Entity\Products;
+use App\Application\Shared\DomainEventPublisherInterface;
 use PHPUnit\Framework\TestCase;
 
 class ProductHandlersTest extends TestCase
@@ -36,6 +37,11 @@ class ProductHandlersTest extends TestCase
         return new TransactionAggregate($transactionManager);
     }
 
+    private function eventPublisher(): DomainEventPublisherInterface
+    {
+        return $this->createMock(DomainEventPublisherInterface::class);
+    }
+
     /**
      * @return void
      */
@@ -47,10 +53,8 @@ class ProductHandlersTest extends TestCase
             ->with($this->callback(function (Products $product): bool {
                 return $product->id === null && $product->sku === 'PIZZA-PEP'
                     && $product->price === 100.0 && $product->special_price === 80.0;
-            }));
-        $repository->expects($this->once())->method('bySku')
-            ->with('PIZZA-PEP')->willReturn(new Products(id: $productId, sku: 'PIZZA-PEP', price: 100.0, special_price: 80.0));
-        $handler = new CrearProductoHandler($repository, $this->tx());
+            }))->willReturn($productId);
+        $handler = new CrearProductoHandler($repository, $this->tx(), $this->eventPublisher());
         $id = $handler(new CrearProducto('PIZZA-PEP', 100.0, 80.0));
 
         $this->assertSame($productId, $id);
@@ -69,8 +73,8 @@ class ProductHandlersTest extends TestCase
             ->with($this->callback(function (Products $product) use ($productId): bool {
                 return $product->id === $productId && $product->sku === 'SKU-NEW'
                     && $product->price === 200.0 && $product->special_price === 0.0;
-            }));
-        $handler = new ActualizarProductoHandler($repository, $this->tx());
+            }))->willReturn($productId);
+        $handler = new ActualizarProductoHandler($repository, $this->tx(), $this->eventPublisher());
         $id = $handler(new ActualizarProducto($productId, 'SKU-NEW', 200.0, 0.0));
 
         $this->assertSame($productId, $id);

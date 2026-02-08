@@ -6,6 +6,8 @@ use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\CrearProducto;
 use App\Domain\Produccion\Entity\Products;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Domain\Produccion\Events\ProductoCreado;
 
 class CrearProductoHandler
 {
@@ -20,17 +22,25 @@ class CrearProductoHandler
     private readonly TransactionAggregate $transactionAggregate;
 
     /**
+     * @var DomainEventPublisherInterface
+     */
+    private readonly DomainEventPublisherInterface $eventPublisher;
+
+    /**
      * Constructor
      *
      * @param ProductRepositoryInterface $productRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         ProductRepositoryInterface $productRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        DomainEventPublisherInterface $eventPublisher
     ) {
         $this->productRepository = $productRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->eventPublisher = $eventPublisher;
     }
 
     /**
@@ -47,10 +57,11 @@ class CrearProductoHandler
                 $command->specialPrice
             );
 
-            $this->productRepository->save($product);
-            $saved = $this->productRepository->bySku($command->sku);
+            $id = $this->productRepository->save($product);
+            $event = new ProductoCreado($id, $command->sku, $command->price, $command->specialPrice);
+            $this->eventPublisher->publish([$event], $id);
 
-            return $saved->id;
+            return $id;
         });
     }
 }

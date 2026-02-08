@@ -6,6 +6,8 @@ use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\CrearPaquete;
 use App\Domain\Produccion\Entity\Paquete;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Domain\Produccion\Events\PaqueteCreado;
 
 class CrearPaqueteHandler
 {
@@ -20,17 +22,25 @@ class CrearPaqueteHandler
     private readonly TransactionAggregate $transactionAggregate;
 
     /**
+     * @var DomainEventPublisherInterface
+     */
+    private readonly DomainEventPublisherInterface $eventPublisher;
+
+    /**
      * Constructor
      *
      * @param PaqueteRepositoryInterface $paqueteRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         PaqueteRepositoryInterface $paqueteRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        DomainEventPublisherInterface $eventPublisher
     ) {
         $this->paqueteRepository = $paqueteRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->eventPublisher = $eventPublisher;
     }
 
     /**
@@ -47,7 +57,11 @@ class CrearPaqueteHandler
                 $command->direccionId
             );
 
-            return $this->paqueteRepository->save($paquete);
+            $id = $this->paqueteRepository->save($paquete);
+            $event = new PaqueteCreado($id, $command->etiquetaId, $command->ventanaId, $command->direccionId);
+            $this->eventPublisher->publish([$event], $id);
+
+            return $id;
         });
     }
 }

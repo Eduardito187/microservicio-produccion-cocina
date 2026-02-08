@@ -26,10 +26,10 @@ class ActualizarDireccionController
 
     /**
      * @param Request $request
-     * @param int $id
+     * @param string $id
      * @return JsonResponse
      */
-    public function __invoke(Request $request, int $id): JsonResponse
+    public function __invoke(Request $request, string $id): JsonResponse
     {
         $data = $request->validate([
             'nombre' => ['nullable', 'string', 'max:150'],

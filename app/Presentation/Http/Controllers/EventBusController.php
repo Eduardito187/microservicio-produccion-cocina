@@ -44,6 +44,9 @@ class EventBusController
             'occurred_on' => ['nullable','string'],
             'payload' => ['required','array'],
             'event_id' => ['nullable','string','max:100'],
+            'schema_version' => ['nullable','integer'],
+            'correlation_id' => ['nullable','string','max:100'],
+            'aggregate_id' => ['nullable','string','max:100'],
         ]);
 
         $eventId = $data['event_id'] ?? $this->hashEnvelope($data);

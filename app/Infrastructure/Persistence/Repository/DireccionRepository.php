@@ -52,7 +52,6 @@ class DireccionRepository implements DireccionRepositoryInterface
                 'geo' => $direccion->geo,
             ]
         );
-
         return $model->id;
     }
 

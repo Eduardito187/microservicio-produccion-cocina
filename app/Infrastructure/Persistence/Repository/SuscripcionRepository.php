@@ -40,7 +40,6 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
                 'nombre' => $suscripcion->nombre,
             ]
         );
-
         return $model->id;
     }
 

@@ -25,8 +25,7 @@ class DomainEventsTest extends TestCase
         $this->assertSame(123, $ordenProduccionCreada->aggregateId());
 
         $payload = $ordenProduccionCreada->toArray();
-        $this->assertSame(123, $payload['op_id']);
-        $this->assertSame($fecha, $payload['fecha']);
+        $this->assertSame($fecha->format(DATE_ATOM), $payload['fecha']);
         $this->assertSame('SCZ-001', $payload['sucursalId']);
     }
 
@@ -38,13 +37,13 @@ class DomainEventsTest extends TestCase
         $fecha = new DateTimeImmutable('2025-11-04');
 
         $ordenProduccionPlanificada = new OrdenProduccionPlanificada(1, $fecha);
-        $this->assertSame(1, $ordenProduccionPlanificada->toArray()['op_id']);
+        $this->assertSame($fecha->format(DATE_ATOM), $ordenProduccionPlanificada->toArray()['fecha']);
 
         $ordenProduccionProcesada = new OrdenProduccionProcesada(1, $fecha);
-        $this->assertSame(1, $ordenProduccionProcesada->toArray()['op_id']);
+        $this->assertSame($fecha->format(DATE_ATOM), $ordenProduccionProcesada->toArray()['fecha']);
 
         $ordenProduccionCerrada = new OrdenProduccionCerrada(1, $fecha);
-        $this->assertSame(1, $ordenProduccionCerrada->toArray()['op_id']);
+        $this->assertSame($fecha->format(DATE_ATOM), $ordenProduccionCerrada->toArray()['fecha']);
     }
 
     /**
@@ -52,12 +51,14 @@ class DomainEventsTest extends TestCase
      */
     public function test_produccion_batch_creado_to_array_contains_expected_fields(): void
     {
-        $productionBatchCreado = new ProduccionBatchCreado(10, 123, 7, new Qty(2), 1);
+        $productionBatchCreado = new ProduccionBatchCreado(10, 123, 7, 99, 9, 11, new Qty(2), 1);
 
         $payload = $productionBatchCreado->toArray();
-        $this->assertSame(10, $payload['batch_id']);
         $this->assertSame('123', $payload['ordenProduccionId']);
         $this->assertSame(7, $payload['estacionId']);
+        $this->assertSame('99', $payload['productoId']);
+        $this->assertSame('9', $payload['recetaVersionId']);
+        $this->assertSame('11', $payload['porcionId']);
         $this->assertSame(2, $payload['qty']);
         $this->assertSame(1, $payload['posicion']);
     }

@@ -62,6 +62,9 @@ Endpoints:
 docker compose up --build
 ```
 
+php artisan queue:work
+
+
 ### Ejemplos curl
 
 Login:
@@ -122,14 +125,56 @@ RABBITMQ_PUBLISH_BACKOFF_MS=250
   "event_id": "<uuid>",
   "event": "OrdenProduccionCreada",
   "occurred_on": "2026-02-08T00:00:00+00:00",
+  "schema_version": 1,
+  "correlation_id": "<uuid>",
+  "aggregate_id": "<uuid>",
   "payload": { "...": "..." }
 }
 ```
+
+### Envelope oficial (Outbox/RabbitMQ)
+- `event_id` (uuid)
+- `event` (nombre de clase)
+- `occurred_on` (ISO 8601)
+- `schema_version` (int)
+- `correlation_id` (uuid)
+- `aggregate_id` (uuid)
+- `payload` (camelCase)
+
+Nota: el identificador principal del recurso es `aggregate_id`. El payload no repite ese valor para evitar duplicidad.
 
 ### Routing key y binding
 - Si `RABBITMQ_ROUTING_KEY` está vacío, se usa el nombre del evento normalizado como routing key.
 - Si configuras `RABBITMQ_QUEUE`, se declara la cola y se hace bind automático:
   - `RABBITMQ_BINDING_KEY` si está definido, o el routing key calculado.
+
+### Queues por evento (default)
+Cada evento de dominio se publica en su propia cola:
+- `ProductoCreado` → `produccion.producto-creado`
+- `ProductoActualizado` → `produccion.producto-actualizado`
+- `RecetaVersionCreada` → `produccion.receta-creada`
+- `RecetaVersionActualizada` → `produccion.receta-actualizada`
+- `DireccionCreada` → `produccion.direccion-creada`
+- `DireccionActualizada` → `produccion.direccion-actualizada`
+- `PacienteCreado` → `produccion.paciente-creado`
+- `PacienteActualizado` → `produccion.paciente-actualizado`
+- `SuscripcionCreada` → `produccion.suscripcion-creada`
+- `SuscripcionActualizada` → `produccion.suscripcion-actualizada`
+- `PaqueteCreado` → `produccion.paquete-creado`
+- `PaqueteActualizado` → `produccion.paquete-actualizado`
+- `PaqueteParaDespachoCreado` → `produccion.paquete-despacho-creado`
+- `CalendarioCreado` → `produccion.calendario-creado`
+- `CalendarioActualizado` → `produccion.calendario-actualizado`
+- `CalendarioItemCreado` → `produccion.calendario-item-creado`
+- `CalendarioItemActualizado` → `produccion.calendario-item-actualizado`
+- `OrdenProduccionCreada` → `produccion.orden-creada`
+- `OrdenProduccionPlanificada` → `produccion.orden-planificada`
+- `OrdenProduccionProcesada` → `produccion.orden-procesada`
+- `OrdenProduccionCerrada` → `produccion.orden-cerrada`
+- `OrdenProduccionDespachada` → `produccion.orden-despachada`
+- `ProduccionBatchCreado` → `produccion.batch-orden-creado`
+
+Si quieres otra cola por evento, edita `config/rabbitmq.php` en `event_queues`.
 
 ## Actividad 4 – Capa de testing (Unit + Integration) + Coverage >=80%
 

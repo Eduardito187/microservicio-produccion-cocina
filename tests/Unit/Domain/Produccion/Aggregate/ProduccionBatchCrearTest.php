@@ -26,9 +26,11 @@ class ProduccionBatchCrearTest extends TestCase
         $this->assertSame(ProduccionBatchCreado::class, $events[0]->name());
 
         $payload = $events[0]->toArray();
-        $this->assertSame(1, $payload['batch_id']);
         $this->assertSame('123', $payload['ordenProduccionId']);
         $this->assertSame(2, $payload['estacionId']);
+        $this->assertSame('10', $payload['productoId']);
+        $this->assertSame('7', $payload['recetaVersionId']);
+        $this->assertSame('3', $payload['porcionId']);
         $this->assertSame(5, $payload['qty']);
         $this->assertSame(1, $payload['posicion']);
     }

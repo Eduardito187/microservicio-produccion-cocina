@@ -35,13 +35,17 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         $handlerReflectionClass = new ReflectionClass($data);
         $constructor = $handlerReflectionClass->getConstructor();
 
-        // Handler siempre: __construct(RepoInterface, TransactionAggregate)
+        // Handler: __construct(RepoInterface, TransactionAggregate, ?DomainEventPublisherInterface)
         $repoInterface = $constructor?->getParameters()[0]?->getType();
         $repositoryReflectionName = ($repoInterface instanceof ReflectionNamedType) ? $repoInterface->getName() : null;
         $this->assertNotNull($repositoryReflectionName, 'No se pudo inferir el repositorio del handler: '.$data);
 
         $repository = $this->createMock($repositoryReflectionName);
         $tx = $this->tx();
+        $eventPublisher = null;
+        if ($constructor && count($constructor->getParameters()) >= 3) {
+            $eventPublisher = $this->createMock(\App\Application\Shared\DomainEventPublisherInterface::class);
+        }
 
         // Inferimos entity name a partir del nombre del handler.
         $baseName = $handlerReflectionClass->getShortName();
@@ -103,7 +107,11 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         $cmdFqcn = ($cmdType instanceof ReflectionNamedType) ? $cmdType->getName() : null;
         $this->assertNotNull($cmdFqcn);
         $command = $this->instantiateWithDummies($cmdFqcn);
-        $handler = $handlerReflectionClass->newInstanceArgs([$repository, $tx]);
+        $args = [$repository, $tx];
+        if ($eventPublisher !== null) {
+            $args[] = $eventPublisher;
+        }
+        $handler = $handlerReflectionClass->newInstanceArgs($args);
         $result = $handler($command);
 
         if (str_starts_with($baseName, 'Ver')) {
