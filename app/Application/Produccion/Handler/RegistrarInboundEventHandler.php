@@ -9,6 +9,8 @@ use App\Domain\Produccion\Repository\InboundEventRepositoryInterface;
 use Illuminate\Database\QueryException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 class RegistrarInboundEventHandler
 {
@@ -51,12 +53,17 @@ class RegistrarInboundEventHandler
     public function __invoke(RegistrarInboundEvent $command): bool
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): bool {
+            $schemaVersion = $this->resolveSchemaVersion($command->schemaVersion);
+            $correlationId = $command->correlationId ?: (string) Str::uuid();
+
             $event = new InboundEvent(
                 null,
                 $command->eventId,
                 $command->eventName,
                 $command->occurredOn,
-                $command->payload
+                $command->payload,
+                $schemaVersion,
+                $correlationId
             );
 
             try {
@@ -66,12 +73,14 @@ class RegistrarInboundEventHandler
                     $this->logger->info('Inbound event duplicate', [
                         'event_id' => $command->eventId,
                         'event_name' => $command->eventName,
+                        'correlation_id' => $correlationId,
                     ]);
                     return true;
                 }
                 $this->logger->error('Inbound event insert failed', [
                     'event_id' => $command->eventId,
                     'event_name' => $command->eventName,
+                    'correlation_id' => $correlationId,
                     'error' => $e->getMessage(),
                     'exception' => $e,
                 ]);
@@ -100,5 +109,36 @@ class RegistrarInboundEventHandler
 
         return str_contains($message, 'inbound_events_event_id_unique')
             || str_contains($message, 'event_id');
+    }
+
+    /**
+     * @param int|null $schemaVersion
+     * @return int
+     */
+    private function resolveSchemaVersion(?int $schemaVersion): int
+    {
+        if ($schemaVersion === null) {
+            throw new InvalidArgumentException('schema_version is required');
+        }
+        $supported = '1';
+        if (function_exists('config')) {
+            try {
+                $supported = config('rabbitmq.inbound.schema_versions', '1');
+            } catch (\Throwable $e) {
+                $supported = '1';
+            }
+        }
+        $supportedList = array_filter(array_map('trim', explode(',', (string) $supported)));
+        $supportedInts = array_map('intval', $supportedList);
+        if ($supportedInts === []) {
+            $supportedInts = [1];
+        }
+
+        $version = $schemaVersion ?? $supportedInts[0];
+        if (!in_array($version, $supportedInts, true)) {
+            throw new InvalidArgumentException('Unsupported schema_version: ' . $version);
+        }
+
+        return $version;
     }
 }

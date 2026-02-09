@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use DateTimeImmutable;
+use App\Infrastructure\Persistence\Model\EventStore;
 
 class PublishOutbox implements ShouldQueue
 {
@@ -80,6 +81,18 @@ class PublishOutbox implements ShouldQueue
             ->get()
             ->each(function (Outbox $row) use ($bus, $now): void {
                 try {
+                    EventStore::query()->firstOrCreate(
+                        ['event_id' => $row->event_id],
+                        [
+                            'event_name' => $row->event_name,
+                            'aggregate_id' => $row->aggregate_id,
+                            'payload' => $row->payload,
+                            'occurred_on' => $row->occurred_on,
+                            'schema_version' => $row->schema_version,
+                            'correlation_id' => $row->correlation_id,
+                        ]
+                    );
+
                     logger()->info('Outbox publishing', [
                         'event_id' => $row->event_id,
                         'event_name' => $row->event_name,
@@ -117,6 +130,7 @@ class PublishOutbox implements ShouldQueue
                         'event_id' => $row->event_id,
                         'event_name' => $row->event_name,
                         'aggregate_id' => $row->aggregate_id,
+                        'correlation_id' => $row->correlation_id,
                         'payload' => $row->payload,
                     ]);
                 }

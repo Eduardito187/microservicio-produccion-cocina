@@ -7,6 +7,7 @@ use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 
 class EventBusController
 {
@@ -43,19 +44,28 @@ class EventBusController
             'event' => ['required','string','max:150'],
             'occurred_on' => ['nullable','string'],
             'payload' => ['required','array'],
-            'event_id' => ['nullable','string','max:100'],
-            'schema_version' => ['nullable','integer'],
-            'correlation_id' => ['nullable','string','max:100'],
+            'event_id' => ['nullable','uuid'],
+            'schema_version' => ['required','integer'],
+            'correlation_id' => ['nullable','uuid'],
             'aggregate_id' => ['nullable','string','max:100'],
         ]);
 
-        $eventId = $data['event_id'] ?? $this->hashEnvelope($data);
-        $isDuplicate = $this->handler->__invoke(new RegistrarInboundEvent(
-            $eventId,
-            $data['event'],
-            $data['occurred_on'] ?? null,
-            json_encode($data['payload'])
-        ));
+        $eventId = $data['event_id'] ?? (string) \Illuminate\Support\Str::uuid();
+        try {
+            $isDuplicate = $this->handler->__invoke(new RegistrarInboundEvent(
+                $eventId,
+                $data['event'],
+                $data['occurred_on'] ?? null,
+                json_encode($data['payload']),
+                $data['schema_version'] ?? null,
+                $data['correlation_id'] ?? null
+            ));
+        } catch (InvalidArgumentException $e) {
+            return response()->json(
+                ['message' => $e->getMessage()],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
 
         if ($isDuplicate) {
             return response()->json(['status' => 'duplicate'], Response::HTTP_OK);

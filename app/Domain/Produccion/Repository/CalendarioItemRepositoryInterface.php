@@ -30,4 +30,10 @@ interface CalendarioItemRepositoryInterface
      * @return void
      */
     public function delete(string|int $id): void;
+
+    /**
+     * @param string|int $calendarioId
+     * @return void
+     */
+    public function deleteByCalendarioId(string|int $calendarioId): void;
 }

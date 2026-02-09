@@ -12,4 +12,8 @@ class InboundEvent extends BaseModel
 {
     protected $table = 'inbound_events';
     protected $guarded = [];
+
+    protected $casts = [
+        'schema_version' => 'integer',
+    ];
 }

@@ -19,6 +19,8 @@ class InboundEventRepository implements InboundEventRepositoryInterface
             'event_name' => $event->eventName,
             'occurred_on' => $event->occurredOn,
             'payload' => $event->payload,
+            'schema_version' => $event->schemaVersion,
+            'correlation_id' => $event->correlationId,
         ]);
 
         return $model->id;

@@ -71,4 +71,13 @@ class CalendarioItemRepository implements CalendarioItemRepositoryInterface
     {
         CalendarioItemModel::query()->whereKey($id)->delete();
     }
+
+    /**
+     * @param string|int $calendarioId
+     * @return void
+     */
+    public function deleteByCalendarioId(string|int $calendarioId): void
+    {
+        CalendarioItemModel::query()->where('calendario_id', $calendarioId)->delete();
+    }
 }

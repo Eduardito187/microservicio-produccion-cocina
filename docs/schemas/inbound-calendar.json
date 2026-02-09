@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://produccion-cocina.local/schemas/inbound-calendar.json",
+  "title": "InboundCalendarEvents",
+  "oneOf": [
+    {
+      "title": "CalendarioEntregaCreado",
+      "type": "object",
+      "required": ["calendarioId", "fecha", "sucursalId"],
+      "properties": {
+        "calendarioId": { "type": "string", "format": "uuid" },
+        "fecha": { "type": "string" },
+        "sucursalId": { "type": "string" }
+      }
+    },
+    {
+      "title": "EntregaProgramada",
+      "type": "object",
+      "required": ["calendarioId", "itemDespachoId"],
+      "properties": {
+        "calendarioId": { "type": "string", "format": "uuid" },
+        "itemDespachoId": { "type": "string", "format": "uuid" },
+        "ordenProduccionId": { "type": "string", "format": "uuid" },
+        "items": { "type": "array" },
+        "itemsDespacho": { "type": "array" }
+      }
+    },
+    {
+      "title": "DiaSinEntregaMarcado",
+      "type": "object",
+      "required": ["calendarioId"],
+      "properties": {
+        "calendarioId": { "type": "string", "format": "uuid" },
+        "fecha": { "type": "string" },
+        "sucursalId": { "type": "string" }
+      }
+    },
+    {
+      "title": "DireccionEntregaCambiada",
+      "type": "object",
+      "required": ["direccionId"],
+      "properties": {
+        "paqueteId": { "type": "string", "format": "uuid" },
+        "itemDespachoId": { "type": "string", "format": "uuid" },
+        "direccionId": { "type": "string", "format": "uuid" }
+      }
+    }
+  ]
+}

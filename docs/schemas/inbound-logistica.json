@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://produccion-cocina.local/schemas/inbound-logistica.json",
+  "title": "InboundLogisticaEvents",
+  "oneOf": [
+    {
+      "title": "EntregaConfirmada",
+      "type": "object",
+      "required": ["paqueteId"],
+      "properties": {
+        "paqueteId": { "type": "string", "format": "uuid" },
+        "fotoUrl": { "type": "string" },
+        "geo": { "type": "object" },
+        "occurredOn": { "type": "string" }
+      }
+    },
+    {
+      "title": "EntregaFallida",
+      "type": "object",
+      "required": ["paqueteId"],
+      "properties": {
+        "paqueteId": { "type": "string", "format": "uuid" },
+        "motivo": { "type": "string" },
+        "occurredOn": { "type": "string" }
+      }
+    },
+    {
+      "title": "PaqueteEnRuta",
+      "type": "object",
+      "required": ["paqueteId"],
+      "properties": {
+        "paqueteId": { "type": "string", "format": "uuid" },
+        "rutaId": { "type": "string", "format": "uuid" },
+        "occurredOn": { "type": "string" }
+      }
+    }
+  ]
+}

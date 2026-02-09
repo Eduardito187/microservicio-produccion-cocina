@@ -33,10 +33,10 @@ class PlanificarOPController
     {
         $data = $request->validate(
             [
-                'ordenProduccionId' => ['required', 'uuid'],
-                'estacionId' => ['required', 'uuid'],
-                'recetaVersionId' => ['required', 'uuid'],
-                'porcionId' => ['required', 'uuid']
+                'ordenProduccionId' => ['required', 'uuid', 'exists:orden_produccion,id'],
+                'estacionId' => ['required', 'uuid', 'exists:estacion,id'],
+                'recetaVersionId' => ['required', 'uuid', 'exists:receta_version,id'],
+                'porcionId' => ['required', 'uuid', 'exists:porcion,id']
             ]
         );
 

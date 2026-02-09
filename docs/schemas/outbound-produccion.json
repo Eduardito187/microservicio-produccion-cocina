@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://produccion-cocina.local/schemas/outbound-produccion.json",
+  "title": "OutboundProduccionPayloads",
+  "oneOf": [
+    {
+      "title": "OrdenProduccionCreada",
+      "type": "object",
+      "required": ["fecha", "sucursalId"],
+      "properties": {
+        "fecha": { "type": "string" },
+        "sucursalId": { "type": "string" }
+      }
+    },
+    {
+      "title": "OrdenProduccionPlanificada",
+      "type": "object",
+      "required": ["fecha"],
+      "properties": {
+        "fecha": { "type": "string" }
+      }
+    },
+    {
+      "title": "OrdenProduccionProcesada",
+      "type": "object",
+      "required": ["fecha"],
+      "properties": {
+        "fecha": { "type": "string" }
+      }
+    },
+    {
+      "title": "OrdenProduccionCerrada",
+      "type": "object",
+      "required": ["fecha"],
+      "properties": {
+        "fecha": { "type": "string" }
+      }
+    },
+    {
+      "title": "ProduccionBatchCreado",
+      "type": "object",
+      "required": ["ordenProduccionId", "estacionId", "qty", "posicion"],
+      "properties": {
+        "ordenProduccionId": { "type": "string" },
+        "estacionId": { "type": "string" },
+        "productoId": { "type": "string" },
+        "recetaVersionId": { "type": "string" },
+        "porcionId": { "type": "string" },
+        "qty": { "type": "integer", "minimum": 1 },
+        "posicion": { "type": "integer", "minimum": 1 }
+      }
+    },
+    {
+      "title": "PaqueteParaDespachoCreado",
+      "type": "object",
+      "properties": {
+        "etiquetaId": { "type": "string" },
+        "ventanaId": { "type": "string" },
+        "direccionId": { "type": "string" },
+        "pacienteId": { "type": "string" },
+        "recetaVersionId": { "type": "string" },
+        "suscripcionId": { "type": "string" }
+      }
+    },
+    {
+      "title": "ProductoCreado",
+      "type": "object",
+      "properties": {
+        "sku": { "type": "string" },
+        "price": { "type": "number" },
+        "special_price": { "type": "number" }
+      }
+    },
+    {
+      "title": "ProductoActualizado",
+      "type": "object",
+      "properties": {
+        "sku": { "type": "string" },
+        "price": { "type": "number" },
+        "special_price": { "type": "number" }
+      }
+    }
+  ]
+}

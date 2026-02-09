@@ -39,7 +39,7 @@ class RegistrarInboundEventHandlerTest extends TestCase
             ->willThrowException($this->duplicateQueryException());
         $handler = new RegistrarInboundEventHandler($repository, $this->tx());
         $duplicate = $handler(new RegistrarInboundEvent(
-            'evt-1', 'SomeEvent', '2026-01-10T10:00:00Z', '{"x":1}'
+            'evt-1', 'SomeEvent', '2026-01-10T10:00:00Z', '{"x":1}', 1
         ));
 
         $this->assertTrue($duplicate);
@@ -61,7 +61,8 @@ class RegistrarInboundEventHandlerTest extends TestCase
             'evt-3',
             'SomeEvent',
             '2026-01-10T10:00:00Z',
-            '{"x":3}'
+            '{"x":3}',
+            1
         ));
     }
 
@@ -74,7 +75,8 @@ class RegistrarInboundEventHandlerTest extends TestCase
         $repository->expects($this->once())->method('save')
             ->with($this->callback(function (InboundEvent $event): bool {
                 return $event->id === null && $event->eventId === 'evt-2' && $event->eventName === 'SomeEvent' 
-                        && $event->occurredOn === '2026-01-10T10:00:00Z' && $event->payload === '{"x":2}';
+                        && $event->occurredOn === '2026-01-10T10:00:00Z' && $event->payload === '{"x":2}'
+                        && $event->schemaVersion === 1 && is_string($event->correlationId) && $event->correlationId !== '';
             }))
             ->willReturn('e28e9cc2-5225-40c0-b88b-2341f96d76a3');
         $handler = new RegistrarInboundEventHandler($repository, $this->tx());
@@ -82,10 +84,50 @@ class RegistrarInboundEventHandlerTest extends TestCase
             'evt-2',
             'SomeEvent',
             '2026-01-10T10:00:00Z',
-            '{"x":2}'
+            '{"x":2}',
+            1
         ));
 
         $this->assertFalse($duplicate);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_schema_version_no_soportada_lanza_excepcion(): void
+    {
+        $repository = $this->createMock(InboundEventRepositoryInterface::class);
+        $repository->expects($this->never())->method('save');
+        $handler = new RegistrarInboundEventHandler($repository, $this->tx());
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $handler(new RegistrarInboundEvent(
+            'evt-4',
+            'SomeEvent',
+            '2026-01-10T10:00:00Z',
+            '{"x":4}',
+            99
+        ));
+    }
+
+    /**
+     * @return void
+     */
+    public function test_schema_version_requerida_lanza_excepcion(): void
+    {
+        $repository = $this->createMock(InboundEventRepositoryInterface::class);
+        $repository->expects($this->never())->method('save');
+        $handler = new RegistrarInboundEventHandler($repository, $this->tx());
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $handler(new RegistrarInboundEvent(
+            'evt-5',
+            'SomeEvent',
+            '2026-01-10T10:00:00Z',
+            '{"x":5}'
+        ));
     }
 
     /**

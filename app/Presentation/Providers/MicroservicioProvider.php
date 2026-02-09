@@ -18,6 +18,7 @@ use App\Infrastructure\Persistence\Repository\EtiquetaRepository;
 use App\Infrastructure\Persistence\Repository\PaqueteRepository;
 use App\Infrastructure\Persistence\Repository\ProductRepository;
 use App\Infrastructure\Persistence\Repository\InboundEventRepository;
+use App\Infrastructure\Persistence\Repository\ItemDespachoRepository;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Shared\OutboxStoreInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
@@ -35,12 +36,33 @@ use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
 use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 use App\Domain\Produccion\Repository\InboundEventRepositoryInterface;
+use App\Domain\Produccion\Repository\ItemDespachoRepositoryInterface;
 use App\Infrastructure\Persistence\Transaction\TransactionManager;
 use App\Infrastructure\Persistence\Outbox\OutboxEventPublisher;
 use App\Infrastructure\Persistence\Outbox\OutboxStoreAdapter;
 use App\Application\Shared\BusInterface;
 use App\Infrastructure\Bus\HttpEventBus;
 use App\Infrastructure\Bus\RabbitMqEventBus;
+use App\Application\Integration\IntegrationEventRouter;
+use App\Application\Integration\Handlers\DireccionCreadaHandler;
+use App\Application\Integration\Handlers\DireccionActualizadaHandler;
+use App\Application\Integration\Handlers\DireccionGeocodificadaHandler;
+use App\Application\Integration\Handlers\PacienteCreadoHandler;
+use App\Application\Integration\Handlers\PacienteActualizadoHandler;
+use App\Application\Integration\Handlers\SuscripcionCreadaHandler;
+use App\Application\Integration\Handlers\SuscripcionActualizadaHandler;
+use App\Application\Integration\Handlers\RecetaActualizadaHandler;
+use App\Application\Integration\Handlers\CalendarioEntregaCreadoHandler;
+use App\Application\Integration\Handlers\EntregaProgramadaHandler;
+use App\Application\Integration\Handlers\DiaSinEntregaMarcadoHandler;
+use App\Application\Integration\Handlers\DireccionEntregaCambiadaHandler;
+use App\Application\Integration\Handlers\EntregaConfirmadaHandler;
+use App\Application\Integration\Handlers\EntregaFallidaHandler;
+use App\Application\Integration\Handlers\PaqueteEnRutaHandler;
+use App\Application\Analytics\KpiRepositoryInterface;
+use App\Infrastructure\Persistence\Repository\KpiRepository;
+use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
+use App\Infrastructure\Persistence\Repository\EntregaEvidenciaRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -117,6 +139,11 @@ class MicroservicioProvider extends ServiceProvider
         );
 
         $this->app->bind(
+            ItemDespachoRepositoryInterface::class,
+            ItemDespachoRepository::class
+        );
+
+        $this->app->bind(
             ProductRepositoryInterface::class,
             ProductRepository::class
         );
@@ -124,6 +151,16 @@ class MicroservicioProvider extends ServiceProvider
         $this->app->bind(
             InboundEventRepositoryInterface::class,
             InboundEventRepository::class
+        );
+
+        $this->app->bind(
+            KpiRepositoryInterface::class,
+            KpiRepository::class
+        );
+
+        $this->app->bind(
+            EntregaEvidenciaRepositoryInterface::class,
+            EntregaEvidenciaRepository::class
         );
 
         $this->app->bind(
@@ -139,6 +176,33 @@ class MicroservicioProvider extends ServiceProvider
         $this->app->bind(BusInterface::class, function () {
             $driver = env('EVENTBUS_DRIVER', 'http');
             return $driver === 'rabbitmq' ? new RabbitMqEventBus() : new HttpEventBus();
+        });
+
+        $this->app->singleton(IntegrationEventRouter::class, function ($app) {
+            $router = new IntegrationEventRouter();
+
+            $router->register('DireccionCreada', $app->make(DireccionCreadaHandler::class));
+            $router->register('DireccionActualizada', $app->make(DireccionActualizadaHandler::class));
+            $router->register('DireccionGeocodificada', $app->make(DireccionGeocodificadaHandler::class));
+
+            $router->register('PacienteCreado', $app->make(PacienteCreadoHandler::class));
+            $router->register('PacienteActualizado', $app->make(PacienteActualizadoHandler::class));
+
+            $router->register('SuscripcionCreada', $app->make(SuscripcionCreadaHandler::class));
+            $router->register('SuscripcionActualizada', $app->make(SuscripcionActualizadaHandler::class));
+
+            $router->register('RecetaActualizada', $app->make(RecetaActualizadaHandler::class));
+
+            $router->register('CalendarioEntregaCreado', $app->make(CalendarioEntregaCreadoHandler::class));
+            $router->register('EntregaProgramada', $app->make(EntregaProgramadaHandler::class));
+            $router->register('DiaSinEntregaMarcado', $app->make(DiaSinEntregaMarcadoHandler::class));
+            $router->register('DireccionEntregaCambiada', $app->make(DireccionEntregaCambiadaHandler::class));
+
+            $router->register('EntregaConfirmada', $app->make(EntregaConfirmadaHandler::class));
+            $router->register('EntregaFallida', $app->make(EntregaFallidaHandler::class));
+            $router->register('PaqueteEnRuta', $app->make(PaqueteEnRutaHandler::class));
+
+            return $router;
         });
 
         $this->app->bind(
