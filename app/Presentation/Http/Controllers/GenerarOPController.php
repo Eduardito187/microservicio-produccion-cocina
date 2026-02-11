@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -10,6 +13,10 @@ use Illuminate\Http\JsonResponse;
 use DateTimeImmutable;
 use DomainException;
 
+/**
+ * @class GenerarOPController
+ * @package App\Presentation\Http\Controllers
+ */
 class GenerarOPController
 {
     /**
@@ -19,7 +26,7 @@ class GenerarOPController
 
     /**
      * Constructor
-     * 
+     *
      * @param GenerarOPHandler $handler
      */
     public function __construct(GenerarOPHandler $handler) {
@@ -58,6 +65,3 @@ class GenerarOPController
         }
     }
 }
-
-
-

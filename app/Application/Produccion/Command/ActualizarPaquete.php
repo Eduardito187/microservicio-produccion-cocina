@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class ActualizarPaquete
+ * @package App\Application\Produccion\Command
+ */
 class ActualizarPaquete
 {
     /**
@@ -44,6 +51,3 @@ class ActualizarPaquete
         $this->direccionId = $direccionId;
     }
 }
-
-
-

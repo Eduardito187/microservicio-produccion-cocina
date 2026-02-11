@@ -1,19 +1,26 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Jobs;
 
+use App\Infrastructure\Persistence\Model\EventStore;
 use App\Infrastructure\Persistence\Model\Outbox;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Application\Shared\BusInterface;
-use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Illuminate\Bus\Queueable;
+use Illuminate\Support\Str;
 use DateTimeImmutable;
-use App\Infrastructure\Persistence\Model\EventStore;
 
+/**
+ * @class PublishOutbox
+ * @package App\Infrastructure\Jobs
+ */
 class PublishOutbox implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;

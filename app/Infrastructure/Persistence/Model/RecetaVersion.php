@@ -10,9 +10,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @package App\Infrastructure\Persistence\Model
  */
+
+/**
+ * @class RecetaVersion
+ * @package App\Infrastructure\Persistence\Model
+ */
 class RecetaVersion extends BaseModel
 {
+    /**
+     * @var mixed
+     */
     protected $table = 'receta_version';
+    /**
+     * @var mixed
+     */
     protected $guarded = [];
     protected $casts = [
         'nutrientes' => 'array',

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Application\Shared;
 
@@ -7,6 +10,10 @@ use App\Application\Shared\BusInterface;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 
+/**
+ * @class BusTest
+ * @package Tests\Unit\Application\Shared
+ */
 class BusTest extends TestCase
 {
     /**

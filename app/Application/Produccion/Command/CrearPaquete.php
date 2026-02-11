@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class CrearPaquete
+ * @package App\Application\Produccion\Command
+ */
 class CrearPaquete
 {
     /**
@@ -36,6 +43,3 @@ class CrearPaquete
         $this->direccionId = $direccionId;
     }
 }
-
-
-

@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class EliminarEtiqueta
+ * @package App\Application\Produccion\Command
+ */
 class EliminarEtiqueta
 {
     /**
@@ -19,6 +26,3 @@ class EliminarEtiqueta
         $this->id = $id;
     }
 }
-
-
-

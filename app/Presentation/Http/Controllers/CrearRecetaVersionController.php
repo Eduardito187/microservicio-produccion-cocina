@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\CrearRecetaVersion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @class CrearRecetaVersionController
+ * @package App\Presentation\Http\Controllers
+ */
 class CrearRecetaVersionController
 {
     /**
@@ -46,6 +53,3 @@ class CrearRecetaVersionController
         return response()->json(['recetaVersionId' => $recetaVersionId], 201);
     }
 }
-
-
-

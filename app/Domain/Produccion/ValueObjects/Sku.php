@@ -1,20 +1,28 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\ValueObjects;
 
 use App\Domain\Shared\ValueObjects\ValueObject;
 use DomainException;
 
+/**
+ * @class Sku
+ * @package App\Domain\Produccion\ValueObjects
+ */
 class Sku extends ValueObject
 {
-    /** @var string */
-    public readonly string $value;
+    /** 
+     * @var string
+     */
+    public $value;
 
     /**
      * Constructor
-     * 
+     *
      * @param string $value
-     * @throws DomainException
      */
     public function __construct(string $value)
     {

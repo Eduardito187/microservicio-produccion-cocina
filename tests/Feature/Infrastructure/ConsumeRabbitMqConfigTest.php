@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\Infrastructure;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @class ConsumeRabbitMqConfigTest
+ * @package Tests\Feature\Infrastructure
+ */
 class ConsumeRabbitMqConfigTest extends TestCase
 {
     use RefreshDatabase;

@@ -1,25 +1,34 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+/**
+ * @class IntegrationEventRouter
+ * @package App\Application\Integration
+ */
 class IntegrationEventRouter
 {
     /**
-     * @var array<string, IntegrationEventHandlerInterface>
+     * @var array
      */
-    private array $handlers;
+    private $handlers;
 
     /**
      * @var LoggerInterface
      */
-    private LoggerInterface $logger;
+    private $logger;
 
     /**
-     * @param array<string, IntegrationEventHandlerInterface> $handlers
-     * @param LoggerInterface|null $logger
+     * Constructor
+     *
+     * @param array $handlers
+     * @param ?LoggerInterface $logger
      */
     public function __construct(array $handlers = [], ?LoggerInterface $logger = null)
     {

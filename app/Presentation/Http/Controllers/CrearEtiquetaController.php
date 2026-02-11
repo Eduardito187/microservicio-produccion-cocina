@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\CrearEtiqueta;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @class CrearEtiquetaController
+ * @package App\Presentation\Http\Controllers
+ */
 class CrearEtiquetaController
 {
     /**
@@ -46,6 +53,3 @@ class CrearEtiquetaController
         return response()->json(['etiquetaId' => $etiquetaId], 201);
     }
 }
-
-
-

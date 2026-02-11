@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Repository;
 
 use App\Application\Analytics\KpiRepositoryInterface;
 use App\Infrastructure\Persistence\Model\KpiOperativo;
 
+/**
+ * @class KpiRepository
+ * @package App\Infrastructure\Persistence\Repository
+ */
 class KpiRepository implements KpiRepositoryInterface
 {
     /**

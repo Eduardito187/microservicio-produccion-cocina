@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Domain\Produccion;
 
@@ -6,6 +9,10 @@ use App\Domain\Produccion\ValueObjects\Capacidad;
 use PHPUnit\Framework\TestCase;
 use DomainException;
 
+/**
+ * @class CapacidadTest
+ * @package Tests\Unit\Domain\Produccion
+ */
 class CapacidadTest extends TestCase
 {
     /**

@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Events;
 
 use App\Domain\Shared\Events\BaseDomainEvent;
 
+/**
+ * @class SuscripcionCreada
+ * @package App\Domain\Produccion\Events
+ */
 class SuscripcionCreada extends BaseDomainEvent
 {
     /**
@@ -13,7 +20,7 @@ class SuscripcionCreada extends BaseDomainEvent
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $suscripcionId
      * @param string $nombre
      */

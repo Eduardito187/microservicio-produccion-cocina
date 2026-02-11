@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Repository;
 
@@ -7,6 +10,10 @@ use App\Domain\Produccion\Repository\ItemDespachoRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Produccion\Entity\ItemDespacho;
 
+/**
+ * @class ItemDespachoRepository
+ * @package App\Infrastructure\Persistence\Repository
+ */
 class ItemDespachoRepository implements ItemDespachoRepositoryInterface
 {
     /**

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\VerDireccion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @class VerDireccionController
+ * @package App\Presentation\Http\Controllers
+ */
 class VerDireccionController
 {
     /**
@@ -37,6 +44,3 @@ class VerDireccionController
         }
     }
 }
-
-
-

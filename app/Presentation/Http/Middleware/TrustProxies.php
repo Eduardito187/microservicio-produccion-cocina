@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Middleware;
 
 use Illuminate\Http\Middleware\TrustProxies as Middleware;
 use Illuminate\Http\Request;
 
+/**
+ * @class TrustProxies
+ * @package App\Presentation\Http\Middleware
+ */
 class TrustProxies extends Middleware
 {
     /**
@@ -26,6 +33,3 @@ class TrustProxies extends Middleware
         Request::HEADER_X_FORWARDED_PROTO |
         Request::HEADER_X_FORWARDED_AWS_ELB;
 }
-
-
-

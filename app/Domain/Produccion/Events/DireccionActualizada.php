@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Events;
 
 use App\Domain\Shared\Events\BaseDomainEvent;
 
+/**
+ * @class DireccionActualizada
+ * @package App\Domain\Produccion\Events
+ */
 class DireccionActualizada extends BaseDomainEvent
 {
     /**
@@ -43,7 +50,7 @@ class DireccionActualizada extends BaseDomainEvent
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $direccionId
      * @param string|null $nombre
      * @param string $linea1

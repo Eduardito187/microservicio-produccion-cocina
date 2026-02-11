@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -8,22 +11,26 @@ use App\Application\Produccion\Command\ActualizarSuscripcion;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Domain\Produccion\Events\SuscripcionActualizada;
 
+/**
+ * @class ActualizarSuscripcionHandler
+ * @package App\Application\Produccion\Handler
+ */
 class ActualizarSuscripcionHandler
 {
     /**
      * @var SuscripcionRepositoryInterface
      */
-    public readonly SuscripcionRepositoryInterface $suscripcionRepository;
+    private SuscripcionRepositoryInterface $suscripcionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private readonly DomainEventPublisherInterface $eventPublisher;
+    private DomainEventPublisherInterface $eventPublisher;
 
     /**
      * Constructor
@@ -60,11 +67,3 @@ class ActualizarSuscripcionHandler
         });
     }
 }
-
-
-
-
-
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Application\Produccion;
 
@@ -9,6 +12,10 @@ use ReflectionNamedType;
 use DateTimeImmutable;
 use ReflectionClass;
 
+/**
+ * @class MaestrosHandlersBulkSmokeTest
+ * @package Tests\Unit\Application\Produccion
+ */
 class MaestrosHandlersBulkSmokeTest extends TestCase
 {
     /**
@@ -17,10 +24,21 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
     private function tx(): TransactionAggregate
     {
         $transactionManager = new class implements TransactionManagerInterface {
+            /**
+             * @param callable $callback
+             * @return mixed
+             */
             public function run(callable $callback): mixed {
                 return $callback();
             }
 
+            /**
+             * @param callable $callback): void {}
+        };
+
+        return new TransactionAggregate( $transactionManager
+             * @return mixed
+             */
             public function afterCommit(callable $callback): void {}
         };
 
@@ -155,6 +173,10 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         return $out;
     }
 
+    /**
+     * @param string $data
+     * @return object
+     */
     private function instantiateWithDummies(string $data): object
     {
         $reflectionClass = new ReflectionClass($data);

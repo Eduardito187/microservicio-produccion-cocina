@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -8,17 +11,21 @@ use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Porcion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * @class VerPorcionHandler
+ * @package App\Application\Produccion\Handler
+ */
 class VerPorcionHandler
 {
     /**
      * @var PorcionRepositoryInterface
      */
-    public readonly PorcionRepositoryInterface $porcionRepository;
+    private PorcionRepositoryInterface $porcionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
@@ -59,11 +66,3 @@ class VerPorcionHandler
         ];
     }
 }
-
-
-
-
-
-
-
-

@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Events;
 
 use App\Domain\Shared\Events\BaseDomainEvent;
 use DateTimeImmutable;
 
+/**
+ * @class CalendarioActualizado
+ * @package App\Domain\Produccion\Events
+ */
 class CalendarioActualizado extends BaseDomainEvent
 {
     /**
@@ -19,7 +26,7 @@ class CalendarioActualizado extends BaseDomainEvent
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $calendarioId
      * @param DateTimeImmutable $fecha
      * @param string $sucursalId

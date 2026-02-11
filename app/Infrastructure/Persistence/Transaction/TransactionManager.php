@@ -1,9 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
+
 namespace App\Infrastructure\Persistence\Transaction;
 
 use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @class TransactionManager
+ * @package App\Infrastructure\Persistence\Transaction
+ */
 class TransactionManager implements TransactionManagerInterface
 {
     /**

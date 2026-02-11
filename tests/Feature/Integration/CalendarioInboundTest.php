@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\Integration;
 
@@ -14,6 +17,10 @@ use App\Infrastructure\Persistence\Model\Direccion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @class CalendarioInboundTest
+ * @package Tests\Feature\Integration
+ */
 class CalendarioInboundTest extends TestCase
 {
     use RefreshDatabase;

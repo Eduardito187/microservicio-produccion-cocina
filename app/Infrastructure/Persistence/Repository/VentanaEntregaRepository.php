@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Repository;
 
@@ -9,6 +12,10 @@ use App\Domain\Produccion\Entity\VentanaEntrega;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+/**
+ * @class VentanaEntregaRepository
+ * @package App\Infrastructure\Persistence\Repository
+ */
 class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
 {
     /**

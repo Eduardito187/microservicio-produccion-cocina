@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Support\Transaction\Interface;
 
+/**
+ * @class TransactionManagerInterface
+ * @package App\Application\Support\Transaction\Interface
+ */
 interface TransactionManagerInterface
 {
     /**
@@ -16,5 +23,3 @@ interface TransactionManagerInterface
      */
     public function afterCommit(callable $callback): void;
 }
-
-

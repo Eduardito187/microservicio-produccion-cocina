@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Repository;
 
 use App\Domain\Produccion\Entity\Direccion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * @class DireccionRepositoryInterface
+ * @package App\Domain\Produccion\Repository
+ */
 interface DireccionRepositoryInterface
 {
     /**

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\CrearProducto;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @class CrearProductoController
+ * @package App\Presentation\Http\Controllers
+ */
 class CrearProductoController
 {
     /**
@@ -44,6 +51,3 @@ class CrearProductoController
         return response()->json(['productId' => $productId], 201);
     }
 }
-
-
-

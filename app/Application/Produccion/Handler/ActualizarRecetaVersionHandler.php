@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -8,22 +11,26 @@ use App\Application\Produccion\Command\ActualizarRecetaVersion;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Domain\Produccion\Events\RecetaVersionActualizada;
 
+/**
+ * @class ActualizarRecetaVersionHandler
+ * @package App\Application\Produccion\Handler
+ */
 class ActualizarRecetaVersionHandler
 {
     /**
      * @var RecetaVersionRepositoryInterface
      */
-    public readonly RecetaVersionRepositoryInterface $recetaVersionRepository;
+    private RecetaVersionRepositoryInterface $recetaVersionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private readonly DomainEventPublisherInterface $eventPublisher;
+    private DomainEventPublisherInterface $eventPublisher;
 
     /**
      * Constructor
@@ -69,11 +76,3 @@ class ActualizarRecetaVersionHandler
         });
     }
 }
-
-
-
-
-
-
-
-

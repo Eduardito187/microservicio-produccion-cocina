@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -6,6 +9,10 @@ use App\Application\Produccion\Handler\ListarCalendariosHandler;
 use App\Application\Produccion\Command\ListarCalendarios;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @class ListarCalendariosController
+ * @package App\Presentation\Http\Controllers
+ */
 class ListarCalendariosController
 {
     /**
@@ -32,6 +39,3 @@ class ListarCalendariosController
         return response()->json($rows);
     }
 }
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Aggregate;
 
@@ -8,6 +11,10 @@ use App\Domain\Shared\Aggregate\AggregateRoot;
 use App\Domain\Produccion\ValueObjects\Qty;
 use DomainException;
 
+/**
+ * @class ProduccionBatch
+ * @package App\Domain\Produccion\Aggregate
+ */
 class ProduccionBatch
 {
     use AggregateRoot;
@@ -15,76 +22,76 @@ class ProduccionBatch
     /**
      * @var string|int|null
      */
-    public readonly string|int|null $id;
+    public $id;
+
+    /**
+     * @var string|int
+     */
+    public $ordenProduccionId;
+
+    /**
+     * @var string|int
+     */
+    public $productoId;
+
+    /**
+     * @var string|int
+     */
+    public $estacionId;
+
+    /**
+     * @var string|int
+     */
+    public $recetaVersionId;
+
+    /**
+     * @var string|int
+     */
+    public $porcionId;
 
     /**
      * @var int
      */
-    public readonly string|int $ordenProduccionId;
+    public $cantPlanificada;
 
     /**
      * @var int
      */
-    public readonly string|int $productoId;
+    public $cantProducida;
 
     /**
      * @var int
      */
-    public readonly string|int $estacionId;
-
-    /**
-     * @var int
-     */
-    public readonly string|int $recetaVersionId;
-
-    /**
-     * @var int
-     */
-    public readonly string|int $porcionId;
-
-    /**
-     * @var int
-     */
-    public readonly int $cantPlanificada;
-
-    /**
-     * @var int
-     */
-    public int $cantProducida;
-
-    /**
-     * @var int
-     */
-    public readonly int $mermaGr;
+    public $mermaGr;
 
     /**
      * @var EstadoPlanificado
      */
-    public EstadoPlanificado $estado;
+    public $estado;
 
     /**
      * @var float
      */
-    public float $rendimiento;
+    public $rendimiento;
 
     /**
      * @var Qty
      */
-    public readonly Qty $qty;
+    public $qty;
 
     /**
      * @var int
      */
-    public readonly int $posicion;
+    public $posicion;
 
     /**
      * @var array|null
      */
-    public readonly array|null $ruta;
+    public $ruta;
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $id
      * @param string|int $ordenProduccionId
      * @param string|int $productoId

@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class EliminarPaciente
+ * @package App\Application\Produccion\Command
+ */
 class EliminarPaciente
 {
     /**
@@ -19,6 +26,3 @@ class EliminarPaciente
         $this->id = $id;
     }
 }
-
-
-

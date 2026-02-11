@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -6,17 +9,21 @@ use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\EliminarEtiqueta;
 
+/**
+ * @class EliminarEtiquetaHandler
+ * @package App\Application\Produccion\Handler
+ */
 class EliminarEtiquetaHandler
 {
     /**
      * @var EtiquetaRepositoryInterface
      */
-    public readonly EtiquetaRepositoryInterface $etiquetaRepository;
+    private EtiquetaRepositoryInterface $etiquetaRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
@@ -44,11 +51,3 @@ class EliminarEtiquetaHandler
         });
     }
 }
-
-
-
-
-
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\EliminarEstacion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @class EliminarEstacionController
+ * @package App\Presentation\Http\Controllers
+ */
 class EliminarEstacionController
 {
     /**
@@ -37,6 +44,3 @@ class EliminarEstacionController
         }
     }
 }
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Application\Integration;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Handler\GenerarOPHandler;
 use App\Application\Produccion\Handler\DespachadorOPHandler;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @class RecalculoProduccionServiceTest
+ * @package Tests\Unit\Application\Integration
+ */
 class RecalculoProduccionServiceTest extends TestCase
 {
     /**

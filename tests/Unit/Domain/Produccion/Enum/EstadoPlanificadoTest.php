@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Domain\Produccion\Enum;
 
 use App\Domain\Produccion\Enum\EstadoPlanificado;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @class EstadoPlanificadoTest
+ * @package Tests\Unit\Domain\Produccion\Enum
+ */
 class EstadoPlanificadoTest extends TestCase
 {
     /**

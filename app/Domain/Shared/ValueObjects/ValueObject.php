@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Shared\ValueObjects;
 
+/**
+ * @class ValueObject
+ * @package App\Domain\Shared\ValueObjects
+ */
 class ValueObject
 {
     /**

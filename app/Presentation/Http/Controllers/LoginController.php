@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -9,8 +12,16 @@ use Firebase\JWT\JWT;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @class LoginController
+ * @package App\Presentation\Http\Controllers
+ */
 class LoginController
 {
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -66,6 +77,11 @@ class LoginController
         return response()->json($body, $response->status());
     }
 
+    /**
+     * @param string $url
+     * @param string $method
+     * @return string
+     */
     private function buildDpopProof(string $url, string $method): string
     {
         $key = openssl_pkey_new([
@@ -103,6 +119,10 @@ class LoginController
         ]);
     }
 
+    /**
+     * @param string $data
+     * @return string
+     */
     private function base64UrlEncode(string $data): string
     {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');

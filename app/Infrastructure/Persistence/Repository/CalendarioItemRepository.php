@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Repository;
 
@@ -7,6 +10,10 @@ use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Produccion\Entity\CalendarioItem;
 
+/**
+ * @class CalendarioItemRepository
+ * @package App\Infrastructure\Persistence\Repository
+ */
 class CalendarioItemRepository implements CalendarioItemRepositoryInterface
 {
     /**

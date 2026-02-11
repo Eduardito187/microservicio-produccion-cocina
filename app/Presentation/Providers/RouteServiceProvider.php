@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Providers;
 
@@ -8,6 +11,10 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
+/**
+ * @class RouteServiceProvider
+ * @package App\Presentation\Providers
+ */
 class RouteServiceProvider extends ServiceProvider
 {
     /**
@@ -38,6 +45,3 @@ class RouteServiceProvider extends ServiceProvider
         });
     }
 }
-
-
-

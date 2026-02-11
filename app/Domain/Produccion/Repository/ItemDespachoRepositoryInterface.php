@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Repository;
 
 use App\Domain\Produccion\Entity\ItemDespacho;
 
+/**
+ * @class ItemDespachoRepositoryInterface
+ * @package App\Domain\Produccion\Repository
+ */
 interface ItemDespachoRepositoryInterface
 {
     /**

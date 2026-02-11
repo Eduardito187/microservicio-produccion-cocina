@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Application\Produccion;
 
@@ -7,6 +10,10 @@ use ReflectionNamedType;
 use DateTimeImmutable;
 use ReflectionClass;
 
+/**
+ * @class CommandsSmokeTest
+ * @package Tests\Unit\Application\Produccion
+ */
 class CommandsSmokeTest extends TestCase
 {
     /**

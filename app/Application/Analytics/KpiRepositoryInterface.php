@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Analytics;
 
+/**
+ * @class KpiRepositoryInterface
+ * @package App\Application\Analytics
+ */
 interface KpiRepositoryInterface
 {
     /**

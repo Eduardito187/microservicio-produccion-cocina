@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\Produccion;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @class GenerarOPValidationTest
+ * @package Tests\Feature\Produccion
+ */
 class GenerarOPValidationTest extends TestCase
 {
     use RefreshDatabase;

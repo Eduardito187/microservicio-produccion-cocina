@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Repository;
 
@@ -10,15 +13,20 @@ use App\Domain\Produccion\Entity\OrdenItem;
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
 
+/**
+ * @class OrdenItemRepository
+ * @package App\Infrastructure\Persistence\Repository
+ */
 class OrdenItemRepository implements OrdenItemRepositoryInterface
 {
     /**
      * @var ProductRepository
      */
-    public readonly ProductRepository $productRepository;
+    private ProductRepository $productRepository;
 
     /**
      * Constructor
+     *
      * @param ProductRepository $productRepository
      */
     public function __construct(ProductRepository $productRepository) {

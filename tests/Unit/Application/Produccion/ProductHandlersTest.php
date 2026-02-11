@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Application\Produccion;
 
@@ -19,6 +22,10 @@ use App\Domain\Produccion\Entity\Products;
 use App\Application\Shared\DomainEventPublisherInterface;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @class ProductHandlersTest
+ * @package Tests\Unit\Application\Produccion
+ */
 class ProductHandlersTest extends TestCase
 {
     /**
@@ -27,16 +34,30 @@ class ProductHandlersTest extends TestCase
     private function tx(): TransactionAggregate
     {
         $transactionManager = new class implements TransactionManagerInterface {
+            /**
+             * @param callable $callback
+             * @return mixed
+             */
             public function run(callable $callback): mixed {
                 return $callback();
             }
 
+            /**
+             * @param callable $callback): void {}
+        };
+
+        return new TransactionAggregate( $transactionManager
+             * @return mixed
+             */
             public function afterCommit(callable $callback): void {}
         };
 
         return new TransactionAggregate($transactionManager);
     }
 
+    /**
+     * @return DomainEventPublisherInterface
+     */
     private function eventPublisher(): DomainEventPublisherInterface
     {
         return $this->createMock(DomainEventPublisherInterface::class);

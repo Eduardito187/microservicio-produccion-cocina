@@ -1,23 +1,60 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration\Handlers;
 
-use App\Application\Integration\IntegrationEventHandlerInterface;
-use App\Application\Integration\Events\PaqueteEnRutaEvent;
 use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
-use App\Application\Analytics\KpiRepositoryInterface;
+use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Application\Integration\Events\PaqueteEnRutaEvent;
+use App\Application\Analytics\KpiRepositoryInterface;
 use DateTimeImmutable;
 
+/**
+ * @class PaqueteEnRutaHandler
+ * @package App\Application\Integration\Handlers
+ */
 class PaqueteEnRutaHandler implements IntegrationEventHandlerInterface
 {
+    /**
+     * @var EntregaEvidenciaRepositoryInterface
+     */
+    private $evidenciaRepository;
+
+    /**
+     * @var KpiRepositoryInterface
+     */
+    private $kpiRepository;
+
+    /**
+     * @var TransactionAggregate
+     */
+    private $transactionAggregate;
+
+    /**
+     * Constructor
+     *
+     * @param EntregaEvidenciaRepositoryInterface $evidenciaRepository
+     * @param KpiRepositoryInterface $kpiRepository
+     * @param TransactionAggregate $transactionAggregate
+     */
     public function __construct(
-        private readonly EntregaEvidenciaRepositoryInterface $evidenciaRepository,
-        private readonly KpiRepositoryInterface $kpiRepository,
-        private readonly TransactionAggregate $transactionAggregate
+        EntregaEvidenciaRepositoryInterface $evidenciaRepository,
+        KpiRepositoryInterface $kpiRepository,
+        TransactionAggregate $transactionAggregate
     ) {
+        $this->evidenciaRepository = $evidenciaRepository;
+        $this->kpiRepository = $kpiRepository;
+        $this->transactionAggregate = $transactionAggregate;
     }
 
+    /**
+     * @param array $payload
+     * @param array $meta
+     * @return void
+     */
     public function handle(array $payload, array $meta = []): void
     {
         $eventId = $meta['event_id'] ?? null;

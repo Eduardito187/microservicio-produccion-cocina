@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class ActualizarDireccion
+ * @package App\Application\Produccion\Command
+ */
 class ActualizarDireccion
 {
     /**
@@ -76,6 +83,3 @@ class ActualizarDireccion
         $this->geo = $geo;
     }
 }
-
-
-

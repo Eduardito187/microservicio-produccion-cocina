@@ -1,16 +1,48 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration\Events;
 
 use App\Application\Integration\Events\Support\Payload;
 
+/**
+ * @class DireccionEntregaCambiadaEvent
+ * @package App\Application\Integration\Events
+ */
 class DireccionEntregaCambiadaEvent
 {
+        /**
+     * @var ?string
+     */
+    public $paqueteId;
+
+    /**
+     * @var ?string
+     */
+    public $itemDespachoId;
+
+    /**
+     * @var ?string
+     */
+    public $direccionId;
+
+    /**
+     * Constructor
+     *
+     * @param ?string $paqueteId
+     * @param ?string $itemDespachoId
+     * @param ?string $direccionId
+     */
     public function __construct(
-        public readonly ?string $paqueteId,
-        public readonly ?string $itemDespachoId,
-        public readonly ?string $direccionId
+        ?string $paqueteId,
+        ?string $itemDespachoId,
+        ?string $direccionId
     ) {
+        $this->paqueteId = $paqueteId;
+        $this->itemDespachoId = $itemDespachoId;
+        $this->direccionId = $direccionId;
     }
 
     /**

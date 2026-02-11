@@ -1,17 +1,24 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class ProcesadorOP
+ * @package App\Application\Produccion\Command
+ */
 class ProcesadorOP
 {
     /**
      * @var int
      */
-    public readonly string $opId;
+    public string $opId;
 
     /**
      * Constructor
-     * 
+     *
      * @param string $opId
      */
     public function __construct(
@@ -20,6 +27,3 @@ class ProcesadorOP
         $this->opId = $opId;
     }
 }
-
-
-

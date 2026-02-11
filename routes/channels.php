@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 use Illuminate\Support\Facades\Broadcast;
 

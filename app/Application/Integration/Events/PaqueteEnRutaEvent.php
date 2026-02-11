@@ -1,16 +1,48 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration\Events;
 
 use App\Application\Integration\Events\Support\Payload;
 
+/**
+ * @class PaqueteEnRutaEvent
+ * @package App\Application\Integration\Events
+ */
 class PaqueteEnRutaEvent
 {
+        /**
+     * @var string
+     */
+    public $paqueteId;
+
+    /**
+     * @var ?string
+     */
+    public $rutaId;
+
+    /**
+     * @var ?string
+     */
+    public $occurredOn;
+
+    /**
+     * Constructor
+     *
+     * @param string $paqueteId
+     * @param ?string $rutaId
+     * @param ?string $occurredOn
+     */
     public function __construct(
-        public readonly string $paqueteId,
-        public readonly ?string $rutaId,
-        public readonly ?string $occurredOn
+        string $paqueteId,
+        ?string $rutaId,
+        ?string $occurredOn
     ) {
+        $this->paqueteId = $paqueteId;
+        $this->rutaId = $rutaId;
+        $this->occurredOn = $occurredOn;
     }
 
     /**

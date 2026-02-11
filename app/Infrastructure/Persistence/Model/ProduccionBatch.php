@@ -11,9 +11,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @package App\Infrastructure\Persistence\Model
  */
+
+/**
+ * @class ProduccionBatch
+ * @package App\Infrastructure\Persistence\Model
+ */
 class ProduccionBatch extends BaseModel
 {
+    /**
+     * @var mixed
+     */
     protected $table = 'produccion_batch';
+    /**
+     * @var mixed
+     */
     protected $guarded = [];
     protected $casts = [
         'ruta' => 'array',

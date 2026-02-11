@@ -1,25 +1,69 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration\Handlers;
 
+use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
+use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Integration\Events\DiaSinEntregaMarcadoEvent;
-use App\Application\Integration\CalendarProcessManager;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
-use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Integration\CalendarProcessManager;
 
+/**
+ * @class DiaSinEntregaMarcadoHandler
+ * @package App\Application\Integration\Handlers
+ */
 class DiaSinEntregaMarcadoHandler implements IntegrationEventHandlerInterface
 {
+    /**
+     * @var CalendarioRepositoryInterface
+     */
+    private $calendarioRepository;
+
+    /**
+     * @var CalendarioItemRepositoryInterface
+     */
+    private $calendarioItemRepository;
+
+    /**
+     * @var TransactionAggregate
+     */
+    private $transactionAggregate;
+
+    /**
+     * @var CalendarProcessManager
+     */
+    private $calendarProcessManager;
+
+    /**
+     * Constructor
+     *
+     * @param CalendarioRepositoryInterface $calendarioRepository
+     * @param CalendarioItemRepositoryInterface $calendarioItemRepository
+     * @param TransactionAggregate $transactionAggregate
+     * @param CalendarProcessManager $calendarProcessManager
+     */
     public function __construct(
-        private readonly CalendarioRepositoryInterface $calendarioRepository,
-        private readonly CalendarioItemRepositoryInterface $calendarioItemRepository,
-        private readonly TransactionAggregate $transactionAggregate,
-        private readonly CalendarProcessManager $calendarProcessManager
+        CalendarioRepositoryInterface $calendarioRepository,
+        CalendarioItemRepositoryInterface $calendarioItemRepository,
+        TransactionAggregate $transactionAggregate,
+        CalendarProcessManager $calendarProcessManager
     ) {
+        $this->calendarioRepository = $calendarioRepository;
+        $this->calendarioItemRepository = $calendarioItemRepository;
+        $this->transactionAggregate = $transactionAggregate;
+        $this->calendarProcessManager = $calendarProcessManager;
     }
 
+    /**
+     * @param array $payload
+     * @param array $meta
+     * @return void
+     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = DiaSinEntregaMarcadoEvent::fromPayload($payload);

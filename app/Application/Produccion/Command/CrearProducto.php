@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class CrearProducto
+ * @package App\Application\Produccion\Command
+ */
 class CrearProducto
 {
     /**
@@ -33,6 +40,3 @@ class CrearProducto
         $this->specialPrice = $specialPrice;
     }
 }
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -8,6 +11,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @class ActualizarEstacionController
+ * @package App\Presentation\Http\Controllers
+ */
 class ActualizarEstacionController
 {
     /**
@@ -49,6 +56,3 @@ class ActualizarEstacionController
         }
     }
 }
-
-
-

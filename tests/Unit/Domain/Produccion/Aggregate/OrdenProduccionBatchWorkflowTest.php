@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Domain\Produccion\Aggregate;
 
@@ -9,6 +12,10 @@ use App\Domain\Produccion\Enum\EstadoOP;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 
+/**
+ * @class OrdenProduccionBatchWorkflowTest
+ * @package Tests\Unit\Domain\Produccion\Aggregate
+ */
 class OrdenProduccionBatchWorkflowTest extends TestCase
 {
     /**

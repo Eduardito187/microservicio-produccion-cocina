@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Entity;
 
 use DateTimeImmutable;
 
+/**
+ * @class VentanaEntrega
+ * @package App\Domain\Produccion\Entity
+ */
 class VentanaEntrega
 {
     /**

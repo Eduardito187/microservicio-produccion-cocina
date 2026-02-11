@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class EliminarDireccion
+ * @package App\Application\Produccion\Command
+ */
 class EliminarDireccion
 {
     /**
@@ -19,6 +26,3 @@ class EliminarDireccion
         $this->id = $id;
     }
 }
-
-
-

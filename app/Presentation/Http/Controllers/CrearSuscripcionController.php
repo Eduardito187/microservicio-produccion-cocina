@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\CrearSuscripcion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @class CrearSuscripcionController
+ * @package App\Presentation\Http\Controllers
+ */
 class CrearSuscripcionController
 {
     /**
@@ -40,6 +47,3 @@ class CrearSuscripcionController
         return response()->json(['suscripcionId' => $suscripcionId], 201);
     }
 }
-
-
-

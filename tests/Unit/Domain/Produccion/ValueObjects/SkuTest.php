@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Domain\Produccion\ValueObjects;
 
@@ -6,6 +9,10 @@ use App\Domain\Produccion\ValueObjects\Sku;
 use PHPUnit\Framework\TestCase;
 use DomainException;
 
+/**
+ * @class SkuTest
+ * @package Tests\Unit\Domain\Produccion\ValueObjects
+ */
 class SkuTest extends TestCase
 {
     /**

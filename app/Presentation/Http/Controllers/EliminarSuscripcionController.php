@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\EliminarSuscripcion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @class EliminarSuscripcionController
+ * @package App\Presentation\Http\Controllers
+ */
 class EliminarSuscripcionController
 {
     /**
@@ -37,6 +44,3 @@ class EliminarSuscripcionController
         }
     }
 }
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -8,22 +11,26 @@ use App\Application\Produccion\Command\ActualizarCalendarioItem;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Domain\Produccion\Events\CalendarioItemActualizado;
 
+/**
+ * @class ActualizarCalendarioItemHandler
+ * @package App\Application\Produccion\Handler
+ */
 class ActualizarCalendarioItemHandler
 {
     /**
      * @var CalendarioItemRepositoryInterface
      */
-    public readonly CalendarioItemRepositoryInterface $calendarioItemRepository;
+    private CalendarioItemRepositoryInterface $calendarioItemRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private readonly DomainEventPublisherInterface $eventPublisher;
+    private DomainEventPublisherInterface $eventPublisher;
 
     /**
      * Constructor
@@ -61,11 +68,3 @@ class ActualizarCalendarioItemHandler
         });
     }
 }
-
-
-
-
-
-
-
-

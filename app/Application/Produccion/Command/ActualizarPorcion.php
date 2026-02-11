@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class ActualizarPorcion
+ * @package App\Application\Produccion\Command
+ */
 class ActualizarPorcion
 {
     /**
@@ -33,6 +40,3 @@ class ActualizarPorcion
         $this->pesoGr = $pesoGr;
     }
 }
-
-
-

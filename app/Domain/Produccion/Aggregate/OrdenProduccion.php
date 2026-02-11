@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Aggregate;
 
@@ -18,6 +21,10 @@ use App\Domain\Produccion\Enum\EstadoOP;
 use DateTimeImmutable;
 use DomainException;
 
+/**
+ * @class OrdenProduccion
+ * @package App\Domain\Produccion\Aggregate
+ */
 class OrdenProduccion
 {
     use AggregateRoot;
@@ -25,41 +32,41 @@ class OrdenProduccion
     /**
      * @var string|int|null
      */
-    private string|int|null $id;
+    private $id;
 
     /**
-     * @var string|DateTimeImmutable
+     * @var DateTimeImmutable
      */
-    private DateTimeImmutable $fecha;
+    private $fecha;
 
     /**
-     * @var string
+     * @var int|string
      */
-    private int|string $sucursalId;
+    private $sucursalId;
 
     /**
      * @var EstadoOP
      */
-    private EstadoOP $estado;
+    private $estado;
 
     /**
      * @var array
      */
-    private array $items;
+    private $items;
 
     /**
      * @var array
      */
-    private array $batches;
+    private $batches;
 
     /**
      * @var array
      */
-    private array $itemsDespacho;
+    private $itemsDespacho;
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $id
      * @param DateTimeImmutable $fecha
      * @param int|string $sucursalId

@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class VerPaciente
+ * @package App\Application\Produccion\Command
+ */
 class VerPaciente
 {
     /**
@@ -19,6 +26,3 @@ class VerPaciente
         $this->id = $id;
     }
 }
-
-
-

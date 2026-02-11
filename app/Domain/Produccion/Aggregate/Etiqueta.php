@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Aggregate;
 
 use App\Domain\Shared\Aggregate\AggregateRoot;
 
+/**
+ * @class Etiqueta
+ * @package App\Domain\Produccion\Aggregate
+ */
 class Etiqueta
 {
     use AggregateRoot;
@@ -11,31 +18,31 @@ class Etiqueta
     /**
      * @var string|int|null
      */
-    private string|int|null $id;
+    private $id;
 
     /**
-     * @var int
+     * @var string|int
      */
-    private string|int $recetaVersionId;
+    private $recetaVersionId;
 
     /**
-     * @var int
+     * @var string|int
      */
-    private string|int $suscripcionId;
+    private $suscripcionId;
 
     /**
-     * @var int
+     * @var string|int
      */
-    private string|int $pacienteId;
+    private $pacienteId;
 
     /**
      * @var array
      */
-    private array $qrPayload;
+    private $qrPayload;
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $id
      * @param string|int $recetaVersionId
      * @param string|int $suscripcionId

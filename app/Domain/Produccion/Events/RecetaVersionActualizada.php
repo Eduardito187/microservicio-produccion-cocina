@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Events;
 
 use App\Domain\Shared\Events\BaseDomainEvent;
 
+/**
+ * @class RecetaVersionActualizada
+ * @package App\Domain\Produccion\Events
+ */
 class RecetaVersionActualizada extends BaseDomainEvent
 {
     /**
@@ -28,7 +35,7 @@ class RecetaVersionActualizada extends BaseDomainEvent
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $recetaVersionId
      * @param string $nombre
      * @param int $version

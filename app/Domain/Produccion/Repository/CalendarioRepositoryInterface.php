@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Repository;
 
 use App\Domain\Produccion\Entity\Calendario;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * @class CalendarioRepositoryInterface
+ * @package App\Domain\Produccion\Repository
+ */
 interface CalendarioRepositoryInterface
 {
     /**

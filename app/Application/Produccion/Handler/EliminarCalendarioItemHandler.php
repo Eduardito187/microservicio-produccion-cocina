@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -6,17 +9,21 @@ use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\EliminarCalendarioItem;
 
+/**
+ * @class EliminarCalendarioItemHandler
+ * @package App\Application\Produccion\Handler
+ */
 class EliminarCalendarioItemHandler
 {
     /**
      * @var CalendarioItemRepositoryInterface
      */
-    public readonly CalendarioItemRepositoryInterface $calendarioItemRepository;
+    private CalendarioItemRepositoryInterface $calendarioItemRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
@@ -44,11 +51,3 @@ class EliminarCalendarioItemHandler
         });
     }
 }
-
-
-
-
-
-
-
-

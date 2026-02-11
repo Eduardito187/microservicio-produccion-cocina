@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Domain\Produccion\Aggregate;
 
@@ -8,6 +11,10 @@ use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 use DomainException;
 
+/**
+ * @class OrdenProduccionInvalidTransitionsExtraTest
+ * @package Tests\Unit\Domain\Produccion\Aggregate
+ */
 class OrdenProduccionInvalidTransitionsExtraTest extends TestCase
 {
     /**

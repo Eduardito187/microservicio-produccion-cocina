@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class ActualizarRecetaVersion
+ * @package App\Application\Produccion\Command
+ */
 class ActualizarRecetaVersion
 {
     /**
@@ -52,6 +59,3 @@ class ActualizarRecetaVersion
         $this->version = $version;
     }
 }
-
-
-

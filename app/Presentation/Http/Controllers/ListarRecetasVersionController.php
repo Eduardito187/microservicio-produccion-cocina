@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -6,6 +9,10 @@ use App\Application\Produccion\Handler\ListarRecetasVersionHandler;
 use App\Application\Produccion\Command\ListarRecetasVersion;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @class ListarRecetasVersionController
+ * @package App\Presentation\Http\Controllers
+ */
 class ListarRecetasVersionController
 {
     /**
@@ -32,6 +39,3 @@ class ListarRecetasVersionController
         return response()->json($rows);
     }
 }
-
-
-

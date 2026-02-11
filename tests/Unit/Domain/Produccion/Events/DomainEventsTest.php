@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Domain\Produccion\Events;
 
@@ -11,6 +14,10 @@ use App\Domain\Produccion\ValueObjects\Qty;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 
+/**
+ * @class DomainEventsTest
+ * @package Tests\Unit\Domain\Produccion\Events
+ */
 class DomainEventsTest extends TestCase
 {
     /**

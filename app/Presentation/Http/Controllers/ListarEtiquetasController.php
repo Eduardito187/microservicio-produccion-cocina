@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -6,6 +9,10 @@ use App\Application\Produccion\Handler\ListarEtiquetasHandler;
 use App\Application\Produccion\Command\ListarEtiquetas;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @class ListarEtiquetasController
+ * @package App\Presentation\Http\Controllers
+ */
 class ListarEtiquetasController
 {
     /**
@@ -32,6 +39,3 @@ class ListarEtiquetasController
         return response()->json($rows);
     }
 }
-
-
-

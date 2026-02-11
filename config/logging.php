@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;

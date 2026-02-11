@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class CrearEtiqueta
+ * @package App\Application\Produccion\Command
+ */
 class CrearEtiqueta
 {
     /**
@@ -44,6 +51,3 @@ class CrearEtiqueta
         $this->qrPayload = $qrPayload;
     }
 }
-
-
-

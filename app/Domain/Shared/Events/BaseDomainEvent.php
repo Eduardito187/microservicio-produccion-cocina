@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Shared\Events;
 
 use App\Domain\Shared\Events\Interface\DomainEventInterface;
 use DateTimeImmutable;
 
+/**
+ * @class BaseDomainEvent
+ * @package App\Domain\Shared\Events
+ */
 class BaseDomainEvent implements DomainEventInterface
 {
     /**
@@ -13,15 +20,15 @@ class BaseDomainEvent implements DomainEventInterface
     protected $aggregateId;
 
     /**
-     * @var DateTimeImmutable
+     * @var ?DateTimeImmutable
      */
     protected $occurredOn;
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $aggregateId
-     * @param mixed $occurredOn
+     * @param ?DateTimeImmutable $occurredOn
      */
     public function __construct(
         string|int|null $aggregateId,

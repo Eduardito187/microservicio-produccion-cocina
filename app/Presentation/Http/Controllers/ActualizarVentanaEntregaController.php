@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -9,6 +12,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use DateTimeImmutable;
 
+/**
+ * @class ActualizarVentanaEntregaController
+ * @package App\Presentation\Http\Controllers
+ */
 class ActualizarVentanaEntregaController
 {
     /**
@@ -50,6 +57,3 @@ class ActualizarVentanaEntregaController
         }
     }
 }
-
-
-

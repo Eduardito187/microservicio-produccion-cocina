@@ -10,9 +10,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @package App\Infrastructure\Persistence\Model
  */
+
+/**
+ * @class OrderItem
+ * @package App\Infrastructure\Persistence\Model
+ */
 class OrderItem extends BaseModel
 {
+    /**
+     * @var mixed
+     */
     protected $table = 'order_item';
+    /**
+     * @var mixed
+     */
     protected $guarded = [];
 
     /**

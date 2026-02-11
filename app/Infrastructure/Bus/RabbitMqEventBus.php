@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Bus;
 
@@ -8,8 +11,20 @@ use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Support\Facades\Log;
 use DateTimeImmutable;
 
+/**
+ * @class RabbitMqEventBus
+ * @package App\Infrastructure\Bus
+ */
 class RabbitMqEventBus implements BusInterface
 {
+    /**
+     * @param string $eventId
+     * @param string $name
+     * @param array $payload
+     * @param DateTimeImmutable $occurredOn
+     * @param array $meta
+     * @return void
+     */
     public function publish(string $eventId, string $name, array $payload, DateTimeImmutable $occurredOn, array $meta = []): void
     {
         $messageBody = json_encode([
@@ -134,6 +149,11 @@ class RabbitMqEventBus implements BusInterface
         }
     }
 
+    /**
+     * @param string $eventName
+     * @param ?string $mappedQueue
+     * @return string
+     */
     private function resolveRoutingKey(string $eventName, ?string $mappedQueue): string
     {
         if (is_string($mappedQueue) && $mappedQueue !== '') {

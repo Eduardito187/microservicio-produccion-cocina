@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class EliminarRecetaVersion
+ * @package App\Application\Produccion\Command
+ */
 class EliminarRecetaVersion
 {
     /**
@@ -19,6 +26,3 @@ class EliminarRecetaVersion
         $this->id = $id;
     }
 }
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -9,6 +12,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use DomainException;
 
+/**
+ * @class PlanificarOPController
+ * @package App\Presentation\Http\Controllers
+ */
 class PlanificarOPController
 {
     /**
@@ -18,7 +25,7 @@ class PlanificarOPController
 
     /**
      * Constructor
-     * 
+     *
      * @param PlanificadorOPHandler $handler
      */
     public function __construct(PlanificadorOPHandler $handler) {
@@ -51,6 +58,3 @@ class PlanificarOPController
         }
     }
 }
-
-
-

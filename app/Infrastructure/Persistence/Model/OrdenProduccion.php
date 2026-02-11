@@ -10,9 +10,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @package App\Infrastructure\Persistence\Model
  */
+
+/**
+ * @class OrdenProduccion
+ * @package App\Infrastructure\Persistence\Model
+ */
 class OrdenProduccion extends BaseModel
 {
+    /**
+     * @var mixed
+     */
     protected $table = 'orden_produccion';
+    /**
+     * @var mixed
+     */
     protected $guarded = [];
 
     /**

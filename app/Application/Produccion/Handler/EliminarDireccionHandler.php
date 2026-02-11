@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -6,17 +9,21 @@ use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\EliminarDireccion;
 
+/**
+ * @class EliminarDireccionHandler
+ * @package App\Application\Produccion\Handler
+ */
 class EliminarDireccionHandler
 {
     /**
      * @var DireccionRepositoryInterface
      */
-    public readonly DireccionRepositoryInterface $direccionRepository;
+    private DireccionRepositoryInterface $direccionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
@@ -44,11 +51,3 @@ class EliminarDireccionHandler
         });
     }
 }
-
-
-
-
-
-
-
-

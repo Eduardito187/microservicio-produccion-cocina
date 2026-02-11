@@ -1,12 +1,30 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration;
 
+/**
+ * @class CalendarProcessManager
+ * @package App\Application\Integration
+ */
 class CalendarProcessManager
 {
+    /**
+     * @var RecalculoProduccionService
+     */
+    private $recalculoProduccionService;
+
+    /**
+     * Constructor
+     *
+     * @param RecalculoProduccionService $recalculoProduccionService
+     */
     public function __construct(
-        private readonly RecalculoProduccionService $recalculoProduccionService
+        RecalculoProduccionService $recalculoProduccionService
     ) {
+        $this->recalculoProduccionService = $recalculoProduccionService;
     }
 
     /**

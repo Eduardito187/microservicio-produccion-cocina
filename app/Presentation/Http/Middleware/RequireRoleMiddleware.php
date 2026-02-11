@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Middleware;
 
@@ -7,8 +10,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @class RequireRoleMiddleware
+ * @package App\Presentation\Http\Middleware
+ */
 class RequireRoleMiddleware
 {
+    /**
+     * @param Request $request
+     * @param Closure $next
+     * @param string $roles
+     * @return Response
+     */
     public function handle(Request $request, Closure $next, string $roles): Response
     {
         if ($this->shouldBypassForPact($request) || $this->shouldBypassForTests()) {
@@ -41,25 +54,36 @@ class RequireRoleMiddleware
         return response()->json(['message' => 'Forbidden'], 403);
     }
 
+    /**
+     * @param Request $request
+     * @return bool
+     */
     private function shouldBypassForPact(Request $request): bool
     {
-        if ((bool) env('PACT_BYPASS_AUTH', false)) {
+        if (app()->environment(['local', 'testing']) && (bool) env('PACT_BYPASS_AUTH', false)) {
             return $request->is('api/_pact/*') || $request->is('api/produccion/ordenes/*');
         }
 
         $pactHeader = $request->header('X-Pact-Request');
-        if (is_string($pactHeader) && strtolower($pactHeader) === 'true') {
+        if (app()->environment(['local', 'testing']) && is_string($pactHeader) && strtolower($pactHeader) === 'true') {
             return true;
         }
 
         return false;
     }
 
+    /**
+     * @return bool
+     */
     private function shouldBypassForTests(): bool
     {
         return app()->runningUnitTests();
     }
 
+    /**
+     * @param string $roles
+     * @return array
+     */
     private function parseRoles(string $roles): array
     {
         $roles = str_replace('|', ',', $roles);
@@ -67,6 +91,10 @@ class RequireRoleMiddleware
         return array_values(array_filter($items, fn ($r) => $r !== ''));
     }
 
+    /**
+     * @param array $claims
+     * @return array
+     */
     private function extractRoles(array $claims): array
     {
         $roles = [];

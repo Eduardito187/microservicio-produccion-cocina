@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\CrearCalendarioItem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @class CrearCalendarioItemController
+ * @package App\Presentation\Http\Controllers
+ */
 class CrearCalendarioItemController
 {
     /**
@@ -42,6 +49,3 @@ class CrearCalendarioItemController
         return response()->json(['calendarioItemId' => $calendarioItemId], 201);
     }
 }
-
-
-

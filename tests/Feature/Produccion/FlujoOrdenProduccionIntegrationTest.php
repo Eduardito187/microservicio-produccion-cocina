@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\Produccion;
 
@@ -7,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
+/**
+ * @class FlujoOrdenProduccionIntegrationTest
+ * @package Tests\Feature\Produccion
+ */
 class FlujoOrdenProduccionIntegrationTest extends TestCase
 {
     use RefreshDatabase;

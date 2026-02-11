@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @class ExampleTest
+ * @package Tests\Unit
+ */
 class ExampleTest extends TestCase
 {
     /**

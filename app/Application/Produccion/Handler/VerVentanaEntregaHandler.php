@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -8,17 +11,21 @@ use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\VentanaEntrega;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * @class VerVentanaEntregaHandler
+ * @package App\Application\Produccion\Handler
+ */
 class VerVentanaEntregaHandler
 {
     /**
      * @var VentanaEntregaRepositoryInterface
      */
-    public readonly VentanaEntregaRepositoryInterface $ventanaEntregaRepository;
+    private VentanaEntregaRepositoryInterface $ventanaEntregaRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
@@ -59,11 +66,3 @@ class VerVentanaEntregaHandler
         ];
     }
 }
-
-
-
-
-
-
-
-

@@ -10,9 +10,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @package App\Infrastructure\Persistence\Model
  */
+
+/**
+ * @class Suscripcion
+ * @package App\Infrastructure\Persistence\Model
+ */
 class Suscripcion extends BaseModel
 {
+    /**
+     * @var mixed
+     */
     protected $table = 'suscripcion';
+    /**
+     * @var mixed
+     */
     protected $guarded = [];
 
     /**

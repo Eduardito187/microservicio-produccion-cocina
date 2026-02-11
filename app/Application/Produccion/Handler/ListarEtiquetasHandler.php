@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -7,17 +10,21 @@ use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Etiqueta;
 
+/**
+ * @class ListarEtiquetasHandler
+ * @package App\Application\Produccion\Handler
+ */
 class ListarEtiquetasHandler
 {
     /**
      * @var EtiquetaRepositoryInterface
      */
-    public readonly EtiquetaRepositoryInterface $etiquetaRepository;
+    private EtiquetaRepositoryInterface $etiquetaRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
@@ -59,11 +66,3 @@ class ListarEtiquetasHandler
         ];
     }
 }
-
-
-
-
-
-
-
-

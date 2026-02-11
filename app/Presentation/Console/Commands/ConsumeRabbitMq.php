@@ -1,17 +1,24 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Application\Produccion\Command\RegistrarInboundEvent;
 use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
+use App\Application\Produccion\Command\RegistrarInboundEvent;
 use App\Application\Integration\IntegrationEventRouter;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use Illuminate\Console\Command;
 use PhpAmqpLib\Wire\AMQPTable;
-use DateTimeImmutable;
 use Illuminate\Support\Str;
+use DateTimeImmutable;
 
+/**
+ * @class ConsumeRabbitMq
+ * @package App\Presentation\Console\Commands
+ */
 class ConsumeRabbitMq extends Command
 {
     /**
@@ -32,14 +39,34 @@ class ConsumeRabbitMq extends Command
      */
     protected $description = 'Consume messages from RabbitMQ using INBOUND_RABBITMQ_* configuration';
 
+    /**
+     * @var RegistrarInboundEventHandler
+     */
+    private $registrarInboundEventHandler;
+
+    /**
+     * @var IntegrationEventRouter
+     */
+    private $integrationEventRouter;
+
+    /**
+     * Constructor
+     *
+     * @param RegistrarInboundEventHandler $registrarInboundEventHandler
+     * @param IntegrationEventRouter $integrationEventRouter
+     */
     public function __construct(
-        private readonly RegistrarInboundEventHandler $registrarInboundEventHandler,
-        private readonly IntegrationEventRouter $integrationEventRouter
-    )
-    {
+        RegistrarInboundEventHandler $registrarInboundEventHandler,
+        IntegrationEventRouter $integrationEventRouter
+    ) {
+        $this->registrarInboundEventHandler = $registrarInboundEventHandler;
+        $this->integrationEventRouter = $integrationEventRouter;
         parent::__construct();
     }
 
+    /**
+     * @return int
+     */
     public function handle(): int
     {
         $inbound = config('rabbitmq.inbound', []);
@@ -195,11 +222,22 @@ class ConsumeRabbitMq extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * @param AMQPMessage $msg
+     * @return void
+     */
     public function testProcessMessage(AMQPMessage $msg): void
     {
         $this->processMessage($msg, '', '', '');
     }
 
+    /**
+     * @param AMQPMessage $msg
+     * @param string $retryExchange
+     * @param string $retryQueue
+     * @param string $retryRoutingKey
+     * @return void
+     */
     private function processMessage(AMQPMessage $msg, string $retryExchange, string $retryQueue, string $retryRoutingKey): void
     {
         $payload = $msg->getBody();
@@ -345,6 +383,10 @@ class ConsumeRabbitMq extends Command
         return (int) $first['count'];
     }
 
+    /**
+     * @param int $retryCount
+     * @return int
+     */
     private function resolveRetryDelay(int $retryCount): int
     {
         $raw = '10,60,300';
@@ -365,6 +407,9 @@ class ConsumeRabbitMq extends Command
         return $ints[$index];
     }
 
+    /**
+     * @return int
+     */
     private function getInboundMaxRetries(): int
     {
         if (function_exists('config')) {
@@ -377,6 +422,13 @@ class ConsumeRabbitMq extends Command
         return 3;
     }
 
+    /**
+     * @param AMQPMessage $msg
+     * @param string $retryExchange
+     * @param string $retryRoutingKey
+     * @param int $delaySeconds
+     * @return void
+     */
     private function publishToRetry(AMQPMessage $msg, string $retryExchange, string $retryRoutingKey, int $delaySeconds): void
     {
         $headers = $msg->get('application_headers');
@@ -397,6 +449,12 @@ class ConsumeRabbitMq extends Command
         ]);
     }
 
+    /**
+     * @param string $queue
+     * @param string $exchange
+     * @param string $bindingKeys
+     * @return bool
+     */
     private function isSelfConsumeConfig(string $queue, string $exchange, string $bindingKeys): bool
     {
         $outboxExchange = (string) config('rabbitmq.exchange', '');
@@ -423,6 +481,11 @@ class ConsumeRabbitMq extends Command
         return false;
     }
 
+    /**
+     * @param string $eventName
+     * @param array $payload
+     * @return void
+     */
     private function validatePayload(string $eventName, array $payload): void
     {
         $requirements = [
@@ -451,6 +514,10 @@ class ConsumeRabbitMq extends Command
         }
     }
 
+    /**
+     * @param \Throwable $e
+     * @return bool
+     */
     private function isNonRetryable(\Throwable $e): bool
     {
         $message = $e->getMessage();

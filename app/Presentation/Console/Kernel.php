@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Console;
 
@@ -6,6 +9,10 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Infrastructure\Jobs\PublishOutbox;
 
+/**
+ * @class Kernel
+ * @package App\Presentation\Console
+ */
 class Kernel extends ConsoleKernel
 {
     /**
@@ -26,6 +33,3 @@ class Kernel extends ConsoleKernel
         require base_path('routes/console.php');
     }
 }
-
-
-

@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Events;
 
 use App\Domain\Shared\Events\BaseDomainEvent;
 use DateTimeImmutable;
 
+/**
+ * @class OrdenProduccionDespachada
+ * @package App\Domain\Produccion\Events
+ */
 class OrdenProduccionDespachada extends BaseDomainEvent
 {
     /**

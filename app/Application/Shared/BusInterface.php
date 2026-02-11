@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Shared;
 
 use DateTimeImmutable;
 
+/**
+ * @class BusInterface
+ * @package App\Application\Shared
+ */
 interface BusInterface
 {
     /**

@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Logistica\Repository;
 
+/**
+ * @class EntregaEvidenciaRepositoryInterface
+ * @package App\Application\Logistica\Repository
+ */
 interface EntregaEvidenciaRepositoryInterface
 {
     /**

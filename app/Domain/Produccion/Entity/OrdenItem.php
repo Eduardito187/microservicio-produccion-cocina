@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Entity;
 
@@ -6,12 +9,16 @@ use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
 use App\Domain\Produccion\Entity\Products;
 
+/**
+ * @class OrdenItem
+ * @package App\Domain\Produccion\Entity
+ */
 class OrdenItem
 {
     /**
      * @var string|int|null
      */
-    public readonly string|int|null $id;
+    public string|int|null $id;
 
     /**
      * @var string|int|null
@@ -26,12 +33,12 @@ class OrdenItem
     /**
      * @var Qty
      */
-    public readonly Qty $qty;
+    public Qty $qty;
 
     /**
      * @var Sku
      */
-    public readonly Sku $sku;
+    public Sku $sku;
 
     /**
      * @var float
@@ -45,7 +52,7 @@ class OrdenItem
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $id
      * @param string|int|null $ordenProduccionId
      * @param string|int|null $productId

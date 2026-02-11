@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Domain\Produccion;
 
@@ -8,6 +11,10 @@ use App\Domain\Produccion\ValueObjects\Sku;
 use App\Domain\Produccion\Entity\Products;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @class OrdenItemTest
+ * @package Tests\Unit\Domain\Produccion
+ */
 class OrdenItemTest extends TestCase
 {
     /**

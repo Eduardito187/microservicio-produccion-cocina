@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Events;
 
 use App\Domain\Shared\Events\BaseDomainEvent;
 
+/**
+ * @class PaqueteParaDespachoCreado
+ * @package App\Domain\Produccion\Events
+ */
 class PaqueteParaDespachoCreado extends BaseDomainEvent
 {
     /**
@@ -38,7 +45,7 @@ class PaqueteParaDespachoCreado extends BaseDomainEvent
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $paqueteId
      * @param string|int|null $etiquetaId
      * @param string|int|null $ventanaId

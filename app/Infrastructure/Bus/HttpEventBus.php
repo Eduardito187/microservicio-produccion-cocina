@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Bus;
 
@@ -6,6 +9,10 @@ use App\Application\Shared\BusInterface;
 use Illuminate\Support\Facades\Http;
 use DateTimeImmutable;
 
+/**
+ * @class HttpEventBus
+ * @package App\Infrastructure\Bus
+ */
 class HttpEventBus implements BusInterface
 {
     /**
@@ -20,7 +27,7 @@ class HttpEventBus implements BusInterface
         Http::retry(3, 500, throw: false)->connectTimeout(3)->timeout(env('EVENTBUS_TIMEOUT'))->acceptJson()
             ->asJson()->withHeaders(['X-EventBus-Token' => env('EVENTBUS_SECRET')])
             ->post(
-                env("EVENTBUS_ENDPOINT"), 
+                env("EVENTBUS_ENDPOINT"),
                 [
                     'event' => $name,
                     'occurred_on' => $occurredOn->format(DATE_ATOM),

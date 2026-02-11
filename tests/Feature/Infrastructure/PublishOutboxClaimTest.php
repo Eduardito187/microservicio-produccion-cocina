@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\Infrastructure;
 
@@ -10,6 +13,10 @@ use Illuminate\Support\Str;
 use Tests\TestCase;
 use DateTimeImmutable;
 
+/**
+ * @class PublishOutboxClaimTest
+ * @package Tests\Feature\Infrastructure
+ */
 class PublishOutboxClaimTest extends TestCase
 {
     use RefreshDatabase;
@@ -22,13 +29,28 @@ class PublishOutboxClaimTest extends TestCase
         $published = [];
 
         $this->app->instance(BusInterface::class, new class($published) implements BusInterface {
+            /**
+             * @var array
+             */
             private array $published;
 
+            /**
+             * Constructor
+             *
+             * @param array & $published
+             */
             public function __construct(array &$published)
             {
                 $this->published = &$published;
             }
 
+            /**
+             * @param string $eventId
+             * @param string $name
+             * @param array $payload
+             * @param DateTimeImmutable $occurredOn
+             * @return void
+             */
             public function publish(string $eventId, string $name, array $payload, DateTimeImmutable $occurredOn): void
             {
                 $this->published[] = $eventId;

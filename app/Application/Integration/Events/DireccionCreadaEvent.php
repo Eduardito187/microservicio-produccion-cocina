@@ -1,21 +1,88 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration\Events;
 
 use App\Application\Integration\Events\Support\Payload;
 
+/**
+ * @class DireccionActualizadaEvent
+ * @package App\Application\Integration\Events
+ */
 class DireccionCreadaEvent
 {
+    /**
+     * @var string
+     */
+    public $id;
+
+    /**
+     * @var ?string
+     */
+    public $nombre;
+
+    /**
+     * @var string
+     */
+    public $linea1;
+
+    /**
+     * @var ?string
+     */
+    public $linea2;
+
+    /**
+     * @var ?string
+     */
+    public $ciudad;
+
+    /**
+     * @var ?string
+     */
+    public $provincia;
+
+    /**
+     * @var ?string
+     */
+    public $pais;
+
+    /**
+     * @var ?array
+     */
+    public $geo;
+
+    /**
+     * Constructor
+     *
+     * @param string $id
+     * @param ?string $nombre
+     * @param string $linea1
+     * @param ?string $linea2
+     * @param ?string $ciudad
+     * @param ?string $provincia
+     * @param ?string $pais
+     * @param ?array $geo
+     */
     public function __construct(
-        public readonly string $id,
-        public readonly ?string $nombre,
-        public readonly string $linea1,
-        public readonly ?string $linea2,
-        public readonly ?string $ciudad,
-        public readonly ?string $provincia,
-        public readonly ?string $pais,
-        public readonly ?array $geo
+        string $id,
+        ?string $nombre,
+        string $linea1,
+        ?string $linea2,
+        ?string $ciudad,
+        ?string $provincia,
+        ?string $pais,
+        ?array $geo
     ) {
+        $this->id = $id;
+        $this->nombre = $nombre;
+        $this->linea1 = $linea1;
+        $this->linea2 = $linea2;
+        $this->ciudad = $ciudad;
+        $this->provincia = $provincia;
+        $this->pais = $pais;
+        $this->geo = $geo;
     }
 
     /**

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\Integration;
 
@@ -8,6 +11,10 @@ use App\Application\Integration\Handlers\PaqueteEnRutaHandler;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @class LogisticaInboundTest
+ * @package Tests\Feature\Integration
+ */
 class LogisticaInboundTest extends TestCase
 {
     use RefreshDatabase;

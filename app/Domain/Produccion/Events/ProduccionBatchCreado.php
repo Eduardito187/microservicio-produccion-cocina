@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Events;
 
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Shared\Events\BaseDomainEvent;
 
+/**
+ * @class ProduccionBatchCreado
+ * @package App\Domain\Produccion\Events
+ */
 class ProduccionBatchCreado extends BaseDomainEvent
 {
 
@@ -45,7 +52,7 @@ class ProduccionBatchCreado extends BaseDomainEvent
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $id
      * @param string|int|null $ordenProduccionId
      * @param string|int|null $estacionId

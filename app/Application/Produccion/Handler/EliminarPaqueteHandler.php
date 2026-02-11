@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -6,17 +9,21 @@ use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\EliminarPaquete;
 
+/**
+ * @class EliminarPaqueteHandler
+ * @package App\Application\Produccion\Handler
+ */
 class EliminarPaqueteHandler
 {
     /**
      * @var PaqueteRepositoryInterface
      */
-    public readonly PaqueteRepositoryInterface $paqueteRepository;
+    private PaqueteRepositoryInterface $paqueteRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
@@ -44,11 +51,3 @@ class EliminarPaqueteHandler
         });
     }
 }
-
-
-
-
-
-
-
-

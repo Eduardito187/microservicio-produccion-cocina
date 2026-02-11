@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Database\Seeders;
 
@@ -8,8 +11,15 @@ use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
+/**
+ * @class DireccionesPacientesSeeder
+ * @package Database\Seeders
+ */
 class DireccionesPacientesSeeder extends Seeder
 {
+    /**
+     * @return void
+     */
     public function run(): void
     {
         $now = Carbon::now('America/La_Paz');

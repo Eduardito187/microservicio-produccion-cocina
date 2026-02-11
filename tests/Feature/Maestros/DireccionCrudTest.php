@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\Maestros;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @class DireccionCrudTest
+ * @package Tests\Feature\Maestros
+ */
 class DireccionCrudTest extends TestCase
 {
     use RefreshDatabase;

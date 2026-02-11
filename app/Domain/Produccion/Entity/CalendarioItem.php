@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Entity;
 
+/**
+ * @class CalendarioItem
+ * @package App\Domain\Produccion\Entity
+ */
 class CalendarioItem
 {
     /**

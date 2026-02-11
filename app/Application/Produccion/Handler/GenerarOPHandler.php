@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -7,21 +10,25 @@ use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\GenerarOP;
 
+/**
+ * @class GenerarOPHandler
+ * @package App\Application\Produccion\Handler
+ */
 class GenerarOPHandler
 {
     /**
      * @var OrdenProduccionRepositoryInterface
      */
-    public readonly OrdenProduccionRepositoryInterface $ordenProduccionRepository;
+    private OrdenProduccionRepositoryInterface $ordenProduccionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
-     * 
+     *
      * @param OrdenProduccionRepositoryInterface $ordenProduccionRepository
      * @param TransactionAggregate $transactionAggregate
      */
@@ -40,7 +47,7 @@ class GenerarOPHandler
     public function __invoke(GenerarOP $command): string|int|null
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): string {
-            $ordenProduccion = AggregateOrdenProduccion::crear( 
+            $ordenProduccion = AggregateOrdenProduccion::crear(
                 $command->fecha,
                 $command->sucursalId
             );
@@ -49,11 +56,3 @@ class GenerarOPHandler
         });
     }
 }
-
-
-
-
-
-
-
-

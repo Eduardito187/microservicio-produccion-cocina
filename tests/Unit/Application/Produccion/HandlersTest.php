@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Application\Produccion;
 
@@ -19,6 +22,10 @@ use App\Domain\Produccion\Entity\Products;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 
+/**
+ * @class HandlersTest
+ * @package Tests\Unit\Application\Produccion
+ */
 class HandlersTest extends TestCase
 {
     /**
@@ -27,10 +34,21 @@ class HandlersTest extends TestCase
     private function transactionAggregate(): TransactionAggregate
     {
         $transactionManager = new class implements TransactionManagerInterface {
+            /**
+             * @param callable $callback
+             * @return mixed
+             */
             public function run(callable $callback): mixed {
                 return $callback();
             }
 
+            /**
+             * @param callable $callback): void {}
+        };
+
+        return new TransactionAggregate( $transactionManager
+             * @return mixed
+             */
             public function afterCommit(callable $callback): void {}
         };
 

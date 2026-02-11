@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Outbox;
 
 use App\Application\Shared\OutboxStoreInterface;
 use DateTimeImmutable;
 
+/**
+ * @class OutboxStoreAdapter
+ * @package App\Infrastructure\Persistence\Outbox
+ */
 class OutboxStoreAdapter implements OutboxStoreInterface
 {
     /**

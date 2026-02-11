@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class CrearCalendarioItem
+ * @package App\Application\Produccion\Command
+ */
 class CrearCalendarioItem
 {
     /**
@@ -26,6 +33,3 @@ class CrearCalendarioItem
         $this->itemDespachoId = $itemDespachoId;
     }
 }
-
-
-

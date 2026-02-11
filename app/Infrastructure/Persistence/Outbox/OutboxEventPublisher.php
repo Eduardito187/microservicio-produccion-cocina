@@ -1,24 +1,31 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Outbox;
 
-use App\Application\Shared\DomainEventPublisherInterface;
-use App\Application\Shared\OutboxStoreInterface;
 use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
 use App\Domain\Shared\Events\Interface\DomainEventInterface;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Shared\OutboxStoreInterface;
 use App\Infrastructure\Jobs\PublishOutbox;
 
+/**
+ * @class OutboxEventPublisher
+ * @package App\Infrastructure\Persistence\Outbox
+ */
 class OutboxEventPublisher implements DomainEventPublisherInterface
 {
     /**
      * @var OutboxStoreInterface
      */
-    private readonly OutboxStoreInterface $outboxStore;
+    private $outboxStore;
 
     /**
      * @var TransactionManagerInterface
      */
-    private readonly TransactionManagerInterface $transactionManager;
+    private $transactionManager;
 
     /**
      * Constructor

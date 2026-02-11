@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Providers;
 
@@ -66,6 +69,10 @@ use App\Infrastructure\Persistence\Repository\EntregaEvidenciaRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * @class MicroservicioProvider
+ * @package App\Presentation\Providers
+ */
 class MicroservicioProvider extends ServiceProvider
 {
     /**
@@ -221,6 +228,3 @@ class MicroservicioProvider extends ServiceProvider
         //
     }
 }
-
-
-

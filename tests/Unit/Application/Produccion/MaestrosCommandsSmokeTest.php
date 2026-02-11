@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Application\Produccion;
 
@@ -8,6 +11,10 @@ use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionUnionType;
 
+/**
+ * @class MaestrosCommandsSmokeTest
+ * @package Tests\Unit\Application\Produccion
+ */
 final class MaestrosCommandsSmokeTest extends TestCase
 {
     /**

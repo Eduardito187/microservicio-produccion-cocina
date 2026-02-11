@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
+/**
+ * @class Handler
+ * @package App\Presentation\Exceptions
+ */
 class Handler extends ExceptionHandler
 {
     /**
@@ -28,6 +35,3 @@ class Handler extends ExceptionHandler
         });
     }
 }
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Repository;
 
@@ -9,6 +12,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Produccion\ValueObjects\Qty;
 
+/**
+ * @class ProduccionBatchRepository
+ * @package App\Infrastructure\Persistence\Repository
+ */
 class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
 {
     /**
@@ -42,7 +49,6 @@ class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
         );
     }
 
-    
     /**
      * @param string|null $ordenProduccionId
      * @return AggregateProduccionBatch[]

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Repository;
 
@@ -9,6 +12,10 @@ use App\Domain\Produccion\Entity\Calendario;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+/**
+ * @class CalendarioRepository
+ * @package App\Infrastructure\Persistence\Repository
+ */
 class CalendarioRepository implements CalendarioRepositoryInterface
 {
     /**

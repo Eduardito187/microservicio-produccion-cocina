@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -7,17 +10,21 @@ use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Calendario;
 
+/**
+ * @class ListarCalendariosHandler
+ * @package App\Application\Produccion\Handler
+ */
 class ListarCalendariosHandler
 {
     /**
      * @var CalendarioRepositoryInterface
      */
-    public readonly CalendarioRepositoryInterface $calendarioRepository;
+    private CalendarioRepositoryInterface $calendarioRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
@@ -57,11 +64,3 @@ class ListarCalendariosHandler
         ];
     }
 }
-
-
-
-
-
-
-
-

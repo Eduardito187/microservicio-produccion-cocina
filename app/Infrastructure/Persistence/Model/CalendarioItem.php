@@ -10,9 +10,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @package App\Infrastructure\Persistence\Model
  */
+
+/**
+ * @class CalendarioItem
+ * @package App\Infrastructure\Persistence\Model
+ */
 class CalendarioItem extends BaseModel
 {
+    /**
+     * @var mixed
+     */
     protected $table = 'calendario_item';
+    /**
+     * @var mixed
+     */
     protected $guarded = [];
 
     /**

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\CrearEstacion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @class CrearEstacionController
+ * @package App\Presentation\Http\Controllers
+ */
 class CrearEstacionController
 {
     /**
@@ -42,6 +49,3 @@ class CrearEstacionController
         return response()->json(['estacionId' => $estacionId], 201);
     }
 }
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests;
 
@@ -17,4 +20,4 @@ trait CreatesApplication
 
         return $app;
     }
-} 
+}

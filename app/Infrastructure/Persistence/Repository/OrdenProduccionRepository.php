@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Repository;
 
@@ -27,31 +30,35 @@ use App\Domain\Produccion\Events\ProduccionBatchCreado;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+/**
+ * @class OrdenProduccionRepository
+ * @package App\Infrastructure\Persistence\Repository
+ */
 class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
 {
     /**
      * @var OrdenItemRepository
      */
-    public readonly OrdenItemRepository $ordenItemRepository;
+    private OrdenItemRepository $ordenItemRepository;
 
     /**
      * @var ItemDespachoRepository
      */
-    public readonly ItemDespachoRepository $itemDespachoRepository;
+    private ItemDespachoRepository $itemDespachoRepository;
 
     /**
      * @var ProduccionBatchRepository
      */
-    public readonly ProduccionBatchRepository $produccionBatchRepository;
+    private ProduccionBatchRepository $produccionBatchRepository;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private readonly DomainEventPublisherInterface $eventPublisher;
+    private DomainEventPublisherInterface $eventPublisher;
 
     /**
      * Constructor
-     * 
+     *
      * @param OrdenItemRepository $ordenItemRepository
      * @param ItemDespachoRepository $itemDespachoRepository
      * @param ProduccionBatchRepository $produccionBatchRepository

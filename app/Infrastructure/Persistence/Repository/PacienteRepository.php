@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Repository;
 
@@ -7,6 +10,10 @@ use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Produccion\Entity\Paciente;
 
+/**
+ * @class PacienteRepository
+ * @package App\Infrastructure\Persistence\Repository
+ */
 class PacienteRepository implements PacienteRepositoryInterface
 {
     /**

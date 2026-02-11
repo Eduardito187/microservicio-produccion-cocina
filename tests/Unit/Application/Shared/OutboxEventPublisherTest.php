@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Application\Shared;
 
@@ -11,6 +14,10 @@ use DateTimeImmutable;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
+/**
+ * @class OutboxEventPublisherTest
+ * @package Tests\Unit\Application\Shared
+ */
 class OutboxEventPublisherTest extends TestCase
 {
     /**
@@ -20,13 +27,24 @@ class OutboxEventPublisherTest extends TestCase
     {
         $outbox = $this->createMock(OutboxStoreInterface::class);
         $transactionManager = new class implements TransactionManagerInterface {
+            /**
+             * @var ?\Closure
+             */
             public ?\Closure $afterCommit = null;
 
+            /**
+             * @param callable $callback
+             * @return mixed
+             */
             public function run(callable $callback): mixed
             {
                 return $callback();
             }
 
+            /**
+             * @param callable $callback
+             * @return void
+             */
             public function afterCommit(callable $callback): void
             {
                 $this->afterCommit = $callback instanceof \Closure ? $callback : \Closure::fromCallable($callback);
@@ -37,6 +55,10 @@ class OutboxEventPublisherTest extends TestCase
         $t2 = new DateTimeImmutable('2025-01-01 11:00:00');
 
         $event1 = new class($t1) implements DomainEventInterface {
+            /**
+             * Constructor
+             *
+             */
             public function __construct(private DateTimeImmutable $t) {}
             public function name(): string { return 'E1'; }
             public function occurredOn(): DateTimeImmutable { return $this->t; }
@@ -45,6 +67,10 @@ class OutboxEventPublisherTest extends TestCase
         };
 
         $event2 = new class($t2) implements DomainEventInterface {
+            /**
+             * Constructor
+             *
+             */
             public function __construct(private DateTimeImmutable $t) {}
             public function name(): string { return 'E2'; }
             public function occurredOn(): DateTimeImmutable { return $this->t; }

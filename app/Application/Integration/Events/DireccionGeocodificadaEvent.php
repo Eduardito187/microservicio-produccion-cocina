@@ -1,15 +1,40 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration\Events;
 
 use App\Application\Integration\Events\Support\Payload;
 
+/**
+ * @class DireccionGeocodificadaEvent
+ * @package App\Application\Integration\Events
+ */
 class DireccionGeocodificadaEvent
 {
+    /**
+     * @var string
+     */
+    public $id;
+
+    /**
+     * @var ?array
+     */
+    public $geo;
+
+    /**
+     * Constructor
+     *
+     * @param string $id
+     * @param ?array $geo
+     */
     public function __construct(
-        public readonly string $id,
-        public readonly ?array $geo
+        string $id,
+        ?array $geo
     ) {
+        $this->id = $id;
+        $this->geo = $geo;
     }
 
     /**

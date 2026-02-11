@@ -10,9 +10,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @package App\Infrastructure\Persistence\Model
  */
+
+/**
+ * @class Direccion
+ * @package App\Infrastructure\Persistence\Model
+ */
 class Direccion extends BaseModel
 {
+    /**
+     * @var mixed
+     */
     protected $table = 'direccion';
+    /**
+     * @var mixed
+     */
     protected $guarded = [];
 
     protected $casts = [

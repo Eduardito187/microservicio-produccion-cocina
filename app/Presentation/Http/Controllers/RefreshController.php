@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -9,8 +12,16 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
+/**
+ * @class RefreshController
+ * @package App\Presentation\Http\Controllers
+ */
 class RefreshController
 {
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -59,6 +70,11 @@ class RefreshController
         return response()->json($body, $response->status());
     }
 
+    /**
+     * @param string $url
+     * @param string $method
+     * @return string
+     */
     private function buildDpopProof(string $url, string $method): string
     {
         $key = openssl_pkey_new([
@@ -96,6 +112,10 @@ class RefreshController
         ]);
     }
 
+    /**
+     * @param string $data
+     * @return string
+     */
     private function base64UrlEncode(string $data): string
     {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');

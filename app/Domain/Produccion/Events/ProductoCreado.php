@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Events;
 
 use App\Domain\Shared\Events\BaseDomainEvent;
 
+/**
+ * @class ProductoCreado
+ * @package App\Domain\Produccion\Events
+ */
 class ProductoCreado extends BaseDomainEvent
 {
     /**
@@ -23,7 +30,7 @@ class ProductoCreado extends BaseDomainEvent
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $productoId
      * @param string $sku
      * @param float $price

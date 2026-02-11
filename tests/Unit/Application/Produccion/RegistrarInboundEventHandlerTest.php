@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Application\Produccion;
 
@@ -11,6 +14,10 @@ use App\Domain\Produccion\Entity\InboundEvent;
 use Illuminate\Database\QueryException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @class RegistrarInboundEventHandlerTest
+ * @package Tests\Unit\Application\Produccion
+ */
 class RegistrarInboundEventHandlerTest extends TestCase
 {
     /**
@@ -19,10 +26,21 @@ class RegistrarInboundEventHandlerTest extends TestCase
     private function tx(): TransactionAggregate
     {
         $transactionManager = new class implements TransactionManagerInterface {
+            /**
+             * @param callable $callback
+             * @return mixed
+             */
             public function run(callable $callback): mixed {
                 return $callback();
             }
 
+            /**
+             * @param callable $callback): void {}
+        };
+
+        return new TransactionAggregate( $transactionManager
+             * @return mixed
+             */
             public function afterCommit(callable $callback): void {}
         };
 
@@ -74,7 +92,7 @@ class RegistrarInboundEventHandlerTest extends TestCase
         $repository = $this->createMock(InboundEventRepositoryInterface::class);
         $repository->expects($this->once())->method('save')
             ->with($this->callback(function (InboundEvent $event): bool {
-                return $event->id === null && $event->eventId === 'evt-2' && $event->eventName === 'SomeEvent' 
+                return $event->id === null && $event->eventId === 'evt-2' && $event->eventName === 'SomeEvent'
                         && $event->occurredOn === '2026-01-10T10:00:00Z' && $event->payload === '{"x":2}'
                         && $event->schemaVersion === 1 && is_string($event->correlationId) && $event->correlationId !== '';
             }))

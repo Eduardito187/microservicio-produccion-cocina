@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
 use DateTimeImmutable;
 
+/**
+ * @class CrearVentanaEntrega
+ * @package App\Application\Produccion\Command
+ */
 class CrearVentanaEntrega
 {
     /**
@@ -28,6 +35,3 @@ class CrearVentanaEntrega
         $this->hasta = $hasta;
     }
 }
-
-
-

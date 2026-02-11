@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -9,22 +12,26 @@ use App\Domain\Produccion\Entity\Suscripcion;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Domain\Produccion\Events\SuscripcionCreada;
 
+/**
+ * @class CrearSuscripcionHandler
+ * @package App\Application\Produccion\Handler
+ */
 class CrearSuscripcionHandler
 {
     /**
      * @var SuscripcionRepositoryInterface
      */
-    public readonly SuscripcionRepositoryInterface $suscripcionRepository;
+    private SuscripcionRepositoryInterface $suscripcionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private readonly DomainEventPublisherInterface $eventPublisher;
+    private DomainEventPublisherInterface $eventPublisher;
 
     /**
      * Constructor
@@ -60,11 +67,3 @@ class CrearSuscripcionHandler
         });
     }
 }
-
-
-
-
-
-
-
-

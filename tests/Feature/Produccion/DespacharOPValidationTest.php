@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\Produccion;
 
@@ -6,6 +9,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
+/**
+ * @class DespacharOPValidationTest
+ * @package Tests\Feature\Produccion
+ */
 class DespacharOPValidationTest extends TestCase
 {
     use RefreshDatabase;

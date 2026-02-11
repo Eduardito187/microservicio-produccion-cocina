@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Repository;
 
 use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
 
+/**
+ * @class ProduccionBatchRepositoryInterface
+ * @package App\Domain\Produccion\Repository
+ */
 interface ProduccionBatchRepositoryInterface
 {
     /**

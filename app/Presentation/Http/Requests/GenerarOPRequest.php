@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @class GenerarOPRequest
+ * @package App\Presentation\Http\Requests
+ */
 class GenerarOPRequest extends FormRequest
 {
     /**

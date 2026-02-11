@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Events;
 
@@ -8,14 +11,27 @@ class SuscripcionActualizada extends BaseDomainEvent
 {
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $suscripcionId
      * @param string $nombre
      */
-    public function __construct(
+        /**
+     * @var string
+     */
+    private $nombre;
+
+/**
+ * Constructor
+ *
+ * @param string|int|null $suscripcionId
+ * @param string $nombre
+ */
+public function __construct(
         string|int|null $suscripcionId,
-        private readonly string $nombre
+        string $nombre
     ) {
+        $this->nombre = $nombre;
+
         parent::__construct($suscripcionId);
     }
 

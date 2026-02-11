@@ -1,22 +1,52 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration\Handlers;
 
 use App\Application\Integration\IntegrationEventHandlerInterface;
+use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 use App\Application\Integration\Events\PacienteActualizadoEvent;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\Paciente;
-use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Produccion\Entity\Paciente;
 
+/**
+ * @class PacienteActualizadoHandler
+ * @package App\Application\Integration\Handlers
+ */
 class PacienteActualizadoHandler implements IntegrationEventHandlerInterface
 {
+    /**
+     * @var PacienteRepositoryInterface
+     */
+    private $pacienteRepository;
+
+    /**
+     * @var TransactionAggregate
+     */
+    private $transactionAggregate;
+
+    /**
+     * Constructor
+     *
+     * @param PacienteRepositoryInterface $pacienteRepository
+     * @param TransactionAggregate $transactionAggregate
+     */
     public function __construct(
-        private readonly PacienteRepositoryInterface $pacienteRepository,
-        private readonly TransactionAggregate $transactionAggregate
+        PacienteRepositoryInterface $pacienteRepository,
+        TransactionAggregate $transactionAggregate
     ) {
+        $this->pacienteRepository = $pacienteRepository;
+        $this->transactionAggregate = $transactionAggregate;
     }
 
+    /**
+     * @param array $payload
+     * @param array $meta
+     * @return void
+     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = PacienteActualizadoEvent::fromPayload($payload);

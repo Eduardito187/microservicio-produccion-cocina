@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Shared\Events\Interface;
 
 use DateTimeImmutable;
 
+/**
+ * @class DomainEventInterface
+ * @package App\Domain\Shared\Events\Interface
+ */
 interface DomainEventInterface
 {
     /**

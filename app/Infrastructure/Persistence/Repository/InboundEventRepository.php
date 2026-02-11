@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Repository;
 
@@ -6,6 +9,10 @@ use App\Infrastructure\Persistence\Model\InboundEvent as InboundEventModel;
 use App\Domain\Produccion\Repository\InboundEventRepositoryInterface;
 use App\Domain\Produccion\Entity\InboundEvent;
 
+/**
+ * @class InboundEventRepository
+ * @package App\Infrastructure\Persistence\Repository
+ */
 class InboundEventRepository implements InboundEventRepositoryInterface
 {
     /**

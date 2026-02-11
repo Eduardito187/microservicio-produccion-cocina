@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\Infrastructure;
 
@@ -9,6 +12,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use DateTimeImmutable;
 
+/**
+ * @class EventStoreTest
+ * @package Tests\Feature\Infrastructure
+ */
 class EventStoreTest extends TestCase
 {
     use RefreshDatabase;
@@ -30,6 +37,14 @@ class EventStoreTest extends TestCase
         ]);
 
         $bus = new class implements BusInterface {
+            /**
+             * @param string $eventId
+             * @param string $eventName
+             * @param array $payload
+             * @param \DateTimeImmutable $occurredOn
+             * @param array $meta
+             * @return void
+             */
             public function publish(string $eventId, string $eventName, array $payload, \DateTimeImmutable $occurredOn, array $meta = []): void
             {
             }

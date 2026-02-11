@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Application\Produccion;
 
@@ -32,7 +35,10 @@ use App\Application\Shared\DomainEventPublisherInterface;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 
-
+/**
+ * @class MaestrosHandlersCrudTest
+ * @package Tests\Unit\Application\Produccion
+ */
 class MaestrosHandlersCrudTest extends TestCase
 {
     /**
@@ -41,10 +47,21 @@ class MaestrosHandlersCrudTest extends TestCase
     private function tx(): TransactionAggregate
     {
         $transactionManager = new class implements TransactionManagerInterface {
+            /**
+             * @param callable $callback
+             * @return mixed
+             */
             public function run(callable $callback): mixed {
                 return $callback();
             }
 
+            /**
+             * @param callable $callback): void {}
+        };
+
+        return new TransactionAggregate( $transactionManager
+             * @return mixed
+             */
             public function afterCommit(callable $callback): void {}
         };
 

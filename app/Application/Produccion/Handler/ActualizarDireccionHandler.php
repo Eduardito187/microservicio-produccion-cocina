@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -8,22 +11,26 @@ use App\Application\Produccion\Command\ActualizarDireccion;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Domain\Produccion\Events\DireccionActualizada;
 
+/**
+ * @class ActualizarDireccionHandler
+ * @package App\Application\Produccion\Handler
+ */
 class ActualizarDireccionHandler
 {
     /**
      * @var DireccionRepositoryInterface
      */
-    public readonly DireccionRepositoryInterface $direccionRepository;
+    private DireccionRepositoryInterface $direccionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private readonly DomainEventPublisherInterface $eventPublisher;
+    private DomainEventPublisherInterface $eventPublisher;
 
     /**
      * Constructor
@@ -75,11 +82,3 @@ class ActualizarDireccionHandler
         });
     }
 }
-
-
-
-
-
-
-
-

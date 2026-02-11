@@ -1,22 +1,28 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\ValueObjects;
 
 use App\Domain\Shared\ValueObjects\ValueObject;
 use DomainException;
 
+/**
+ * @class Qty
+ * @package App\Domain\Produccion\ValueObjects
+ */
 class Qty extends ValueObject
 {
     /**
      * @var int
      */
-    public readonly int $value;
+    public $value;
 
     /**
      * Constructor
-     * 
+     *
      * @param int $value
-     * @throws DomainException
      */
     public function __construct(int $value)
     {

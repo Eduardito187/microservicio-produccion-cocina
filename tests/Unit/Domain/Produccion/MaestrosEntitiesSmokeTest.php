@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Domain\Produccion;
 
@@ -10,6 +13,10 @@ use ReflectionUnionType;
 use DateTimeImmutable;
 use ReflectionClass;
 
+/**
+ * @class MaestrosEntitiesSmokeTest
+ * @package Tests\Unit\Domain\Produccion
+ */
 class MaestrosEntitiesSmokeTest extends TestCase
 {
     /**

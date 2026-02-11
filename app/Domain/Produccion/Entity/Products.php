@@ -1,32 +1,39 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Entity;
 
+/**
+ * @class Products
+ * @package App\Domain\Produccion\Entity
+ */
 class Products
 {
     /**
      * @var string|int|null
      */
-    public readonly string|int|null $id;
+    public string|int|null $id;
 
     /**
      * @var string
      */
-    public readonly string $sku;
+    public string $sku;
 
     /**
      * @var string
      */
-    public readonly float $price;
+    public float $price;
 
     /**
      * @var string
      */
-    public readonly float $special_price;
+    public float $special_price;
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $id
      * @param string $sku
      * @param float $price

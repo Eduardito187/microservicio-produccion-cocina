@@ -10,9 +10,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @package App\Infrastructure\Persistence\Model
  */
+
+/**
+ * @class Calendario
+ * @package App\Infrastructure\Persistence\Model
+ */
 class Calendario extends BaseModel
 {
+    /**
+     * @var mixed
+     */
     protected $table = 'calendario';
+    /**
+     * @var mixed
+     */
     protected $guarded = [];
 
     protected $casts = [

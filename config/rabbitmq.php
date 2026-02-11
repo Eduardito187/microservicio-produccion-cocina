@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 return [
     'host' => env('RABBITMQ_HOST', '127.0.0.1'),

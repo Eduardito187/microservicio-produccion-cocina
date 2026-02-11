@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -8,6 +11,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use DateTimeImmutable;
 
+/**
+ * @class CrearCalendarioController
+ * @package App\Presentation\Http\Controllers
+ */
 class CrearCalendarioController
 {
     /**
@@ -43,6 +50,3 @@ class CrearCalendarioController
         return response()->json(['calendarioId' => $calendarioId], 201);
     }
 }
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\Maestros;
 
@@ -7,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
+/**
+ * @class EtiquetaCrudTest
+ * @package Tests\Feature\Maestros
+ */
 class EtiquetaCrudTest extends TestCase
 {
     use RefreshDatabase;

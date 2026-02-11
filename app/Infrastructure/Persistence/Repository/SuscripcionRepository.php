@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Repository;
 
@@ -7,6 +10,10 @@ use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Domain\Produccion\Entity\Suscripcion;
 
+/**
+ * @class SuscripcionRepository
+ * @package App\Infrastructure\Persistence\Repository
+ */
 class SuscripcionRepository implements SuscripcionRepositoryInterface
 {
     /**

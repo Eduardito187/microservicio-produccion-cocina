@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 return [
     'base_url' => env('KEYCLOAK_BASE_URL', 'http://keycloak:8080'),

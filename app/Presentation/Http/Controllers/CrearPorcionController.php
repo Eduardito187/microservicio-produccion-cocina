@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\CrearPorcion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @class CrearPorcionController
+ * @package App\Presentation\Http\Controllers
+ */
 class CrearPorcionController
 {
     /**
@@ -42,6 +49,3 @@ class CrearPorcionController
         return response()->json(['porcionId' => $porcionId], 201);
     }
 }
-
-
-

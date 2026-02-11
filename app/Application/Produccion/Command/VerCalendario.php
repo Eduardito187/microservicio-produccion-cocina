@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class VerCalendario
+ * @package App\Application\Produccion\Command
+ */
 class VerCalendario
 {
     /**
@@ -19,6 +26,3 @@ class VerCalendario
         $this->id = $id;
     }
 }
-
-
-

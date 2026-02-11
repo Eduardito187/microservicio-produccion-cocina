@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -9,22 +12,26 @@ use App\Domain\Produccion\Entity\RecetaVersion;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Domain\Produccion\Events\RecetaVersionCreada;
 
+/**
+ * @class CrearRecetaVersionHandler
+ * @package App\Application\Produccion\Handler
+ */
 class CrearRecetaVersionHandler
 {
     /**
      * @var RecetaVersionRepositoryInterface
      */
-    public readonly RecetaVersionRepositoryInterface $recetaVersionRepository;
+    private RecetaVersionRepositoryInterface $recetaVersionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private readonly DomainEventPublisherInterface $eventPublisher;
+    private DomainEventPublisherInterface $eventPublisher;
 
     /**
      * Constructor
@@ -72,11 +79,3 @@ class CrearRecetaVersionHandler
         });
     }
 }
-
-
-
-
-
-
-
-

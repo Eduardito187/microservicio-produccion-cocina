@@ -1,35 +1,42 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
 use DateTimeImmutable;
 
+/**
+ * @class GenerarOP
+ * @package App\Application\Produccion\Command
+ */
 class GenerarOP
 {
-    /** 
+    /**
      * @var int|null
      */
     public ?string $id;
 
-    /** 
+    /**
      * @var DateTimeImmutable
      */
     public DateTimeImmutable $fecha;
 
-    /** 
+    /**
      * @var int|string
      */
     public int|string $sucursalId;
 
-    /** 
+    /**
      * @var array
      */
     public array $items;
 
     /**
      * Constructor
-     * 
-     * @param mixed $id
+     *
+     * @param ?string $id
      * @param DateTimeImmutable $fecha
      * @param int|string $sucursalId
      * @param array $items
@@ -42,6 +49,3 @@ class GenerarOP
         $this->items = $items;
     }
 }
-
-
-

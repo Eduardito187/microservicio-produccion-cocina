@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Domain\Shared;
 
@@ -7,6 +10,10 @@ use App\Domain\Shared\Events\BaseDomainEvent;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 
+/**
+ * @class SharedKernelTest
+ * @package Tests\Unit\Domain\Shared
+ */
 class SharedKernelTest extends TestCase
 {
     /**
@@ -32,6 +39,11 @@ class SharedKernelTest extends TestCase
     public function test_value_object_equals_uses_state_equality(): void
     {
         $value = new class(1) extends ValueObject {
+            /**
+             * Constructor
+             *
+             * @param int $aux
+             */
             public function __construct(public int $aux) {}
         };
 

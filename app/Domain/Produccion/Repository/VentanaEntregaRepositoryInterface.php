@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Repository;
 
 use App\Domain\Produccion\Entity\VentanaEntrega;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * @class VentanaEntregaRepositoryInterface
+ * @package App\Domain\Produccion\Repository
+ */
 interface VentanaEntregaRepositoryInterface
 {
     /**

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Infrastructure\Persistence\Outbox;
 
@@ -6,6 +9,10 @@ use App\Infrastructure\Persistence\Model\Outbox;
 use Illuminate\Support\Str;
 use DateTimeImmutable;
 
+/**
+ * @class OutboxStore
+ * @package App\Infrastructure\Persistence\Outbox
+ */
 class OutboxStore
 {
   /**

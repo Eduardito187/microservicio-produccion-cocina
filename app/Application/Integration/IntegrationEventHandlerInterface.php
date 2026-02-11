@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration;
 
+/**
+ * @class IntegrationEventHandlerInterface
+ * @package App\Application\Integration
+ */
 interface IntegrationEventHandlerInterface
 {
     /**

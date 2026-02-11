@@ -1,19 +1,26 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Support\Transaction;
 
 use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
 
+/**
+ * @class TransactionAggregate
+ * @package App\Application\Support\Transaction
+ */
 class TransactionAggregate
 {
     /**
      * @var TransactionManagerInterface
      */
-    private readonly TransactionManagerInterface $transactionManager;
+    private TransactionManagerInterface $transactionManager;
 
     /**
      * Constructor
-     * 
+     *
      * @param TransactionManagerInterface $transactionManager
      */
     public function __construct(TransactionManagerInterface $transactionManager) {
@@ -37,5 +44,3 @@ class TransactionAggregate
         $this->transactionManager->afterCommit($callback);
     }
 }
-
-

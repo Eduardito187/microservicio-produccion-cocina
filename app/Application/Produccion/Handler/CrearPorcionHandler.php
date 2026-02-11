@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -7,17 +10,21 @@ use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\CrearPorcion;
 use App\Domain\Produccion\Entity\Porcion;
 
+/**
+ * @class CrearPorcionHandler
+ * @package App\Application\Produccion\Handler
+ */
 class CrearPorcionHandler
 {
     /**
      * @var PorcionRepositoryInterface
      */
-    public readonly PorcionRepositoryInterface $porcionRepository;
+    private PorcionRepositoryInterface $porcionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
@@ -46,11 +53,3 @@ class CrearPorcionHandler
         });
     }
 }
-
-
-
-
-
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Middleware;
 
@@ -7,8 +10,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @class DenyUsersMiddleware
+ * @package App\Presentation\Http\Middleware
+ */
 class DenyUsersMiddleware
 {
+    /**
+     * @param Request $request
+     * @param Closure $next
+     * @param string $users
+     * @return Response
+     */
     public function handle(Request $request, Closure $next, string $users): Response
     {
         if ($this->shouldBypassForPact($request) || $this->shouldBypassForTests()) {
@@ -40,6 +53,10 @@ class DenyUsersMiddleware
         return $next($request);
     }
 
+    /**
+     * @param Request $request
+     * @return bool
+     */
     private function shouldBypassForPact(Request $request): bool
     {
         if ((bool) env('PACT_BYPASS_AUTH', false)) {
@@ -54,11 +71,18 @@ class DenyUsersMiddleware
         return false;
     }
 
+    /**
+     * @return bool
+     */
     private function shouldBypassForTests(): bool
     {
         return app()->runningUnitTests();
     }
 
+    /**
+     * @param string $users
+     * @return array
+     */
     private function parseUsers(string $users): array
     {
         $users = str_replace('|', ',', $users);

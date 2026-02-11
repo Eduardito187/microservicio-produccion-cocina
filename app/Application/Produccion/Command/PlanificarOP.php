@@ -1,32 +1,39 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class PlanificarOP
+ * @package App\Application\Produccion\Command
+ */
 class PlanificarOP
 {
     /**
      * @var int
      */
-    public readonly string $ordenProduccionId;
+    public string $ordenProduccionId;
 
     /**
      * @var int
      */
-    public readonly string $estacionId;
+    public string $estacionId;
 
     /**
      * @var int
      */
-    public readonly string $recetaVersionId;
+    public string $recetaVersionId;
 
     /**
      * @var int
      */
-    public readonly string $porcionId;
+    public string $porcionId;
 
     /**
      * Constructor
-     * 
+     *
      * @param array $dataApi
      */
     public function __construct(
@@ -38,6 +45,3 @@ class PlanificarOP
         $this->porcionId = $dataApi["porcionId"];
     }
 }
-
-
-

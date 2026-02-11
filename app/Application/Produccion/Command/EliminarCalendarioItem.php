@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class EliminarCalendarioItem
+ * @package App\Application\Produccion\Command
+ */
 class EliminarCalendarioItem
 {
     /**
@@ -19,6 +26,3 @@ class EliminarCalendarioItem
         $this->id = $id;
     }
 }
-
-
-

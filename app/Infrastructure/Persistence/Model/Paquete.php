@@ -11,9 +11,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @package App\Infrastructure\Persistence\Model
  */
+
+/**
+ * @class Paquete
+ * @package App\Infrastructure\Persistence\Model
+ */
 class Paquete extends BaseModel
 {
+    /**
+     * @var mixed
+     */
     protected $table = 'paquete';
+    /**
+     * @var mixed
+     */
     protected $guarded = [];
 
     /**

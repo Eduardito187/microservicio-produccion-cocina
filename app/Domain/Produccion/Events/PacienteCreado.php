@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Events;
 
 use App\Domain\Shared\Events\BaseDomainEvent;
 
+/**
+ * @class PacienteCreado
+ * @package App\Domain\Produccion\Events
+ */
 class PacienteCreado extends BaseDomainEvent
 {
     /**
@@ -23,6 +30,7 @@ class PacienteCreado extends BaseDomainEvent
 
     /**
      * Constructor
+     *
      * @param string|int|null $pacienteId
      * @param string $nombre
      * @param string|null $documento

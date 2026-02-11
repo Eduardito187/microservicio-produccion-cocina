@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -7,17 +10,21 @@ use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Suscripcion;
 
+/**
+ * @class ListarSuscripcionesHandler
+ * @package App\Application\Produccion\Handler
+ */
 class ListarSuscripcionesHandler
 {
     /**
      * @var SuscripcionRepositoryInterface
      */
-    public readonly SuscripcionRepositoryInterface $suscripcionRepository;
+    private SuscripcionRepositoryInterface $suscripcionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
@@ -56,11 +63,3 @@ class ListarSuscripcionesHandler
         ];
     }
 }
-
-
-
-
-
-
-
-

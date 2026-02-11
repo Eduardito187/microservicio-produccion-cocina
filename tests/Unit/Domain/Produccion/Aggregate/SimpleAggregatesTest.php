@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Domain\Produccion\Aggregate;
 
@@ -6,6 +9,10 @@ use App\Domain\Produccion\Aggregate\Etiqueta;
 use App\Domain\Produccion\Aggregate\Paquete;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @class SimpleAggregatesTest
+ * @package Tests\Unit\Domain\Produccion\Aggregate
+ */
 class SimpleAggregatesTest extends TestCase
 {
     /**

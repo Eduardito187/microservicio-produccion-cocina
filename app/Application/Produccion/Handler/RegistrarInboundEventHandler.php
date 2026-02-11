@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -12,29 +15,33 @@ use Psr\Log\NullLogger;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 
+/**
+ * @class RegistrarInboundEventHandler
+ * @package App\Application\Produccion\Handler
+ */
 class RegistrarInboundEventHandler
 {
     /**
      * @var InboundEventRepositoryInterface
      */
-    public readonly InboundEventRepositoryInterface $inboundEventRepository;
+    private InboundEventRepositoryInterface $inboundEventRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * @var LoggerInterface
      */
-    private readonly LoggerInterface $logger;
+    private LoggerInterface $logger;
 
     /**
      * Constructor
      *
      * @param InboundEventRepositoryInterface $inboundEventRepository
      * @param TransactionAggregate $transactionAggregate
-     * @param LoggerInterface|null $logger
+     * @param ?LoggerInterface $logger
      */
     public function __construct(
         InboundEventRepositoryInterface $inboundEventRepository,

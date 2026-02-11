@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class EliminarVentanaEntrega
+ * @package App\Application\Produccion\Command
+ */
 class EliminarVentanaEntrega
 {
     /**
@@ -19,6 +26,3 @@ class EliminarVentanaEntrega
         $this->id = $id;
     }
 }
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -7,17 +10,21 @@ use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\CrearVentanaEntrega;
 use App\Domain\Produccion\Entity\VentanaEntrega;
 
+/**
+ * @class CrearVentanaEntregaHandler
+ * @package App\Application\Produccion\Handler
+ */
 class CrearVentanaEntregaHandler
 {
     /**
      * @var VentanaEntregaRepositoryInterface
      */
-    public readonly VentanaEntregaRepositoryInterface $ventanaEntregaRepository;
+    private VentanaEntregaRepositoryInterface $ventanaEntregaRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
@@ -50,11 +57,3 @@ class CrearVentanaEntregaHandler
         });
     }
 }
-
-
-
-
-
-
-
-

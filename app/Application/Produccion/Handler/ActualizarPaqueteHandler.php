@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -8,22 +11,26 @@ use App\Application\Produccion\Command\ActualizarPaquete;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Domain\Produccion\Events\PaqueteActualizado;
 
+/**
+ * @class ActualizarPaqueteHandler
+ * @package App\Application\Produccion\Handler
+ */
 class ActualizarPaqueteHandler
 {
     /**
      * @var PaqueteRepositoryInterface
      */
-    public readonly PaqueteRepositoryInterface $paqueteRepository;
+    private PaqueteRepositoryInterface $paqueteRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private readonly DomainEventPublisherInterface $eventPublisher;
+    private DomainEventPublisherInterface $eventPublisher;
 
     /**
      * Constructor
@@ -62,11 +69,3 @@ class ActualizarPaqueteHandler
         });
     }
 }
-
-
-
-
-
-
-
-

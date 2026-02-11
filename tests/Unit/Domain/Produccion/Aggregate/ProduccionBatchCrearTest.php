@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Domain\Produccion\Aggregate;
 
@@ -8,6 +11,10 @@ use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Produccion\ValueObjects\Qty;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @class ProduccionBatchCrearTest
+ * @package Tests\Unit\Domain\Produccion\Aggregate
+ */
 class ProduccionBatchCrearTest extends TestCase
 {
     /**

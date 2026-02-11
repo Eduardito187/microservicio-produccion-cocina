@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Application\Produccion\Handler;
 
@@ -10,6 +13,10 @@ use App\Application\Produccion\Command\GenerarOP;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 
+/**
+ * @class GenerarOPHandlerTest
+ * @package Tests\Unit\Application\Produccion\Handler
+ */
 class GenerarOPHandlerTest extends TestCase
 {
     /**

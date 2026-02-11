@@ -1,10 +1,17 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\EventBus;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * @class EventBusIntegrationTest
+ * @package Tests\Feature\EventBus
+ */
 class EventBusIntegrationTest extends TestCase
 {
     use RefreshDatabase;

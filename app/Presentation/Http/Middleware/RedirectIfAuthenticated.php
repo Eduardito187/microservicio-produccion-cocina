@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Middleware;
 
@@ -8,6 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @class RedirectIfAuthenticated
+ * @package App\Presentation\Http\Middleware
+ */
 class RedirectIfAuthenticated
 {
     /**
@@ -28,6 +35,3 @@ class RedirectIfAuthenticated
         return $next($request);
     }
 }
-
-
-

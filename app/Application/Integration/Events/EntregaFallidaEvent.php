@@ -1,16 +1,48 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration\Events;
 
 use App\Application\Integration\Events\Support\Payload;
 
+/**
+ * @class EntregaFallidaEvent
+ * @package App\Application\Integration\Events
+ */
 class EntregaFallidaEvent
 {
+        /**
+     * @var string
+     */
+    public $paqueteId;
+
+    /**
+     * @var ?string
+     */
+    public $motivo;
+
+    /**
+     * @var ?string
+     */
+    public $occurredOn;
+
+    /**
+     * Constructor
+     *
+     * @param string $paqueteId
+     * @param ?string $motivo
+     * @param ?string $occurredOn
+     */
     public function __construct(
-        public readonly string $paqueteId,
-        public readonly ?string $motivo,
-        public readonly ?string $occurredOn
+        string $paqueteId,
+        ?string $motivo,
+        ?string $occurredOn
     ) {
+        $this->paqueteId = $paqueteId;
+        $this->motivo = $motivo;
+        $this->occurredOn = $occurredOn;
     }
 
     /**

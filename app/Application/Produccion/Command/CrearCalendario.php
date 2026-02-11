@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
 use DateTimeImmutable;
 
+/**
+ * @class CrearCalendario
+ * @package App\Application\Produccion\Command
+ */
 class CrearCalendario
 {
     /**
@@ -28,6 +35,3 @@ class CrearCalendario
         $this->sucursalId = $sucursalId;
     }
 }
-
-
-

@@ -1,9 +1,16 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Events;
 
 use App\Domain\Shared\Events\BaseDomainEvent;
 
+/**
+ * @class CalendarioItemCreado
+ * @package App\Domain\Produccion\Events
+ */
 class CalendarioItemCreado extends BaseDomainEvent
 {
     /**
@@ -18,7 +25,7 @@ class CalendarioItemCreado extends BaseDomainEvent
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $calendarioItemId
      * @param string|int $calendarioId
      * @param string|int $itemDespachoId

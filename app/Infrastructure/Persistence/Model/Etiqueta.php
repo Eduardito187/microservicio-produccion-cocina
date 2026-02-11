@@ -11,9 +11,20 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * @package App\Infrastructure\Persistence\Model
  */
+
+/**
+ * @class Etiqueta
+ * @package App\Infrastructure\Persistence\Model
+ */
 class Etiqueta extends BaseModel
 {
+    /**
+     * @var mixed
+     */
     protected $table = 'etiqueta';
+    /**
+     * @var mixed
+     */
     protected $guarded = [];
 
     protected $casts = [

@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class CrearPaciente
+ * @package App\Application\Produccion\Command
+ */
 class CrearPaciente
 {
     /**
@@ -36,6 +43,3 @@ class CrearPaciente
         $this->suscripcionId = $suscripcionId;
     }
 }
-
-
-

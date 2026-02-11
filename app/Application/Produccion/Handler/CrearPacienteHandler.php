@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -9,22 +12,26 @@ use App\Domain\Produccion\Entity\Paciente;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Domain\Produccion\Events\PacienteCreado;
 
+/**
+ * @class CrearPacienteHandler
+ * @package App\Application\Produccion\Handler
+ */
 class CrearPacienteHandler
 {
     /**
      * @var PacienteRepositoryInterface
      */
-    public readonly PacienteRepositoryInterface $pacienteRepository;
+    private PacienteRepositoryInterface $pacienteRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private readonly DomainEventPublisherInterface $eventPublisher;
+    private DomainEventPublisherInterface $eventPublisher;
 
     /**
      * Constructor
@@ -65,11 +72,3 @@ class CrearPacienteHandler
         });
     }
 }
-
-
-
-
-
-
-
-

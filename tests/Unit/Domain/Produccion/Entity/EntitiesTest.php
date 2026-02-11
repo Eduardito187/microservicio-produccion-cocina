@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Unit\Domain\Produccion\Entity;
 
@@ -6,6 +9,10 @@ use App\Domain\Produccion\Entity\ItemDespacho;
 use App\Domain\Produccion\Entity\Products;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @class EntitiesTest
+ * @package Tests\Unit\Domain\Produccion\Entity
+ */
 class EntitiesTest extends TestCase
 {
     /**

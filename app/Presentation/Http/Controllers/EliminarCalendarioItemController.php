@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\EliminarCalendarioItem;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @class EliminarCalendarioItemController
+ * @package App\Presentation\Http\Controllers
+ */
 class EliminarCalendarioItemController
 {
     /**
@@ -37,6 +44,3 @@ class EliminarCalendarioItemController
         }
     }
 }
-
-
-

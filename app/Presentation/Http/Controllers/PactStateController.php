@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -9,6 +12,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+/**
+ * @class PactStateController
+ * @package App\Presentation\Http\Controllers
+ */
 class PactStateController
 {
     /**
@@ -179,6 +186,3 @@ class PactStateController
         DB::table($orderItemTable)->updateOrInsert(['id' => $orderItemId], $row);
     }
 }
-
-
-

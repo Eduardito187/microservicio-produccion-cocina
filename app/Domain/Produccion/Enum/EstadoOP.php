@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Enum;
 
+/**
+ * @class EstadoOP
+ * @package App\Domain\Produccion\Enum
+ */
 enum EstadoOP: string
 {
     case CREADA = 'CREADA'; //CREA LA ORDE

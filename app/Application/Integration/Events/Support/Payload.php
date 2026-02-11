@@ -1,17 +1,26 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration\Events\Support;
 
 use InvalidArgumentException;
 
+/**
+ * @class Payload
+ * @package App\Application\Integration\Events\Support
+ */
 class Payload
 {
     /**
      * @var array
      */
-    private array $payload;
+    private $payload;
 
     /**
+     * Constructor
+     *
      * @param array $payload
      */
     public function __construct(array $payload)

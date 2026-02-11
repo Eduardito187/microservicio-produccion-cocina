@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\Maestros;
 
@@ -6,6 +9,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
+/**
+ * @class PaqueteUuidValidationTest
+ * @package Tests\Feature\Maestros
+ */
 class PaqueteUuidValidationTest extends TestCase
 {
     use RefreshDatabase;

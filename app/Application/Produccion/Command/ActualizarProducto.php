@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class ActualizarProducto
+ * @package App\Application\Produccion\Command
+ */
 class ActualizarProducto
 {
     /**
@@ -40,6 +47,3 @@ class ActualizarProducto
         $this->specialPrice = $specialPrice;
     }
 }
-
-
-

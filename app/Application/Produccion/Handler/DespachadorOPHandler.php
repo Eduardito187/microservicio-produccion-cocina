@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -6,21 +9,25 @@ use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\DespachadorOP;
 
+/**
+ * @class DespachadorOPHandler
+ * @package App\Application\Produccion\Handler
+ */
 class DespachadorOPHandler
 {
     /**
      * @var OrdenProduccionRepositoryInterface
      */
-    public readonly OrdenProduccionRepositoryInterface $ordenProduccionRepositoryInterface;
+    private OrdenProduccionRepositoryInterface $ordenProduccionRepositoryInterface;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
-     * 
+     *
      * @param OrdenProduccionRepositoryInterface $ordenProduccionRepositoryInterface
      * @param TransactionAggregate $transactionAggregate
      */
@@ -53,11 +60,3 @@ class DespachadorOPHandler
         });
     }
 }
-
-
-
-
-
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\CrearPaciente;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @class CrearPacienteController
+ * @package App\Presentation\Http\Controllers
+ */
 class CrearPacienteController
 {
     /**
@@ -44,6 +51,3 @@ class CrearPacienteController
         return response()->json(['pacienteId' => $pacienteId], 201);
     }
 }
-
-
-

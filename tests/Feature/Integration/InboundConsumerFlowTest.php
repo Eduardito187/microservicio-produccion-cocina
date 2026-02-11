@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace Tests\Feature\Integration;
 
@@ -10,10 +13,19 @@ use PhpAmqpLib\Message\AMQPMessage;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 
+/**
+ * @class InboundConsumerFlowTest
+ * @package Tests\Feature\Integration
+ */
 class InboundConsumerFlowTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * @param array $decoded
+     * @param MockObject $channel
+     * @return AMQPMessage
+     */
     private function makeMessage(array $decoded, MockObject $channel): AMQPMessage
     {
         $msg = new AMQPMessage(json_encode($decoded));
@@ -25,6 +37,9 @@ class InboundConsumerFlowTest extends TestCase
         return $msg;
     }
 
+    /**
+     * @return void
+     */
     public function test_consumer_flow_happy_path(): void
     {
         $handler = $this->createMock(RegistrarInboundEventHandler::class);
@@ -55,6 +70,9 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
+    /**
+     * @return void
+     */
     public function test_consumer_flow_payload_invalido_envia_nack(): void
     {
         config(['rabbitmq.inbound.max_retries' => 0]);

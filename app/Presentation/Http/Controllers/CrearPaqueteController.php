@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\CrearPaquete;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @class CrearPaqueteController
+ * @package App\Presentation\Http\Controllers
+ */
 class CrearPaqueteController
 {
     /**
@@ -44,6 +51,3 @@ class CrearPaqueteController
         return response()->json(['paqueteId' => $paqueteId], 201);
     }
 }
-
-
-

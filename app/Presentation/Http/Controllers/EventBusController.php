@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -9,6 +12,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 
+/**
+ * @class EventBusController
+ * @package App\Presentation\Http\Controllers
+ */
 class EventBusController
 {
     /**
@@ -113,6 +120,3 @@ class EventBusController
         );
     }
 }
-
-
-

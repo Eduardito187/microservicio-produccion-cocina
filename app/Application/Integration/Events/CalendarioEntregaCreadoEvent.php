@@ -1,16 +1,48 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration\Events;
 
 use App\Application\Integration\Events\Support\Payload;
 
+/**
+ * @class CalendarioEntregaCreadoEvent
+ * @package App\Application\Integration\Events
+ */
 class CalendarioEntregaCreadoEvent
 {
+        /**
+     * @var string
+     */
+    public $id;
+
+    /**
+     * @var string
+     */
+    public $fecha;
+
+    /**
+     * @var string
+     */
+    public $sucursalId;
+
+    /**
+     * Constructor
+     *
+     * @param string $id
+     * @param string $fecha
+     * @param string $sucursalId
+     */
     public function __construct(
-        public readonly string $id,
-        public readonly string $fecha,
-        public readonly string $sucursalId
+        string $id,
+        string $fecha,
+        string $sucursalId
     ) {
+        $this->id = $id;
+        $this->fecha = $fecha;
+        $this->sucursalId = $sucursalId;
     }
 
     /**

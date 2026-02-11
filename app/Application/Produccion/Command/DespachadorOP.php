@@ -1,37 +1,44 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class DespachadorOP
+ * @package App\Application\Produccion\Command
+ */
 class DespachadorOP
 {
     /**
      * @var string|int
      */
-    public readonly string $ordenProduccionId;
+    public string $ordenProduccionId;
 
     /**
      * @var array
      */
-    public readonly array $itemsDespacho;
+    public array $itemsDespacho;
 
     /**
      * @var string|int|null
      */
-    public readonly string|int|null $pacienteId;
+    public string|int|null $pacienteId;
 
     /**
      * @var string|int|null
      */
-    public readonly string|int|null $direccionId;
+    public string|int|null $direccionId;
 
     /**
      * @var string|int|null
      */
-    public readonly string|int|null $ventanaEntrega;
+    public string|int|null $ventanaEntrega;
 
     /**
      * Constructor
-     * 
+     *
      * @param array $dataApi
      */
     public function __construct(
@@ -44,6 +51,3 @@ class DespachadorOP
         $this->ventanaEntrega = $dataApi["ventanaEntrega"];
     }
 }
-
-
-

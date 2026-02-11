@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Handler;
 
@@ -6,17 +9,21 @@ use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\EliminarProducto;
 
+/**
+ * @class EliminarProductoHandler
+ * @package App\Application\Produccion\Handler
+ */
 class EliminarProductoHandler
 {
     /**
      * @var ProductRepositoryInterface
      */
-    public readonly ProductRepositoryInterface $productRepository;
+    private ProductRepositoryInterface $productRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private readonly TransactionAggregate $transactionAggregate;
+    private TransactionAggregate $transactionAggregate;
 
     /**
      * Constructor
@@ -44,11 +51,3 @@ class EliminarProductoHandler
         });
     }
 }
-
-
-
-
-
-
-
-

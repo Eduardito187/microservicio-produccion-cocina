@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Produccion\Command;
 
+/**
+ * @class ActualizarEstacion
+ * @package App\Application\Produccion\Command
+ */
 class ActualizarEstacion
 {
     /**
@@ -33,6 +40,3 @@ class ActualizarEstacion
         $this->capacidad = $capacidad;
     }
 }
-
-
-

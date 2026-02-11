@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -7,6 +10,10 @@ use App\Application\Produccion\Command\CrearDireccion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @class CrearDireccionController
+ * @package App\Presentation\Http\Controllers
+ */
 class CrearDireccionController
 {
     /**
@@ -52,6 +59,3 @@ class CrearDireccionController
         return response()->json(['direccionId' => $direccionId], 201);
     }
 }
-
-
-

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Presentation\Http\Controllers;
 
@@ -6,6 +9,10 @@ use App\Application\Produccion\Handler\ListarPacientesHandler;
 use App\Application\Produccion\Command\ListarPacientes;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @class ListarPacientesController
+ * @package App\Presentation\Http\Controllers
+ */
 class ListarPacientesController
 {
     /**
@@ -32,6 +39,3 @@ class ListarPacientesController
         return response()->json($rows);
     }
 }
-
-
-

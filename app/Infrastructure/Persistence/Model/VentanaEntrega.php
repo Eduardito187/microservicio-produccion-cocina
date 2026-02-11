@@ -10,9 +10,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @package App\Infrastructure\Persistence\Model
  */
+
+/**
+ * @class VentanaEntrega
+ * @package App\Infrastructure\Persistence\Model
+ */
 class VentanaEntrega extends BaseModel
 {
+    /**
+     * @var mixed
+     */
     protected $table = 'ventana_entrega';
+    /**
+     * @var mixed
+     */
     protected $guarded = [];
     protected $casts = [
         'desde' => 'datetime',

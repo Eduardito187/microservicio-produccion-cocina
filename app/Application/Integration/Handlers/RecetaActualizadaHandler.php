@@ -1,22 +1,52 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Application\Integration\Handlers;
 
+use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Integration\Events\RecetaActualizadaEvent;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\RecetaVersion;
-use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Produccion\Entity\RecetaVersion;
 
+/**
+ * @class RecetaActualizadaHandler
+ * @package App\Application\Integration\Handlers
+ */
 class RecetaActualizadaHandler implements IntegrationEventHandlerInterface
 {
+    /**
+     * @var RecetaVersionRepositoryInterface
+     */
+    private $recetaVersionRepository;
+
+    /**
+     * @var TransactionAggregate
+     */
+    private $transactionAggregate;
+
+    /**
+     * Constructor
+     *
+     * @param RecetaVersionRepositoryInterface $recetaVersionRepository
+     * @param TransactionAggregate $transactionAggregate
+     */
     public function __construct(
-        private readonly RecetaVersionRepositoryInterface $recetaVersionRepository,
-        private readonly TransactionAggregate $transactionAggregate
+        RecetaVersionRepositoryInterface $recetaVersionRepository,
+        TransactionAggregate $transactionAggregate
     ) {
+        $this->recetaVersionRepository = $recetaVersionRepository;
+        $this->transactionAggregate = $transactionAggregate;
     }
 
+    /**
+     * @param array $payload
+     * @param array $meta
+     * @return void
+     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = RecetaActualizadaEvent::fromPayload($payload);

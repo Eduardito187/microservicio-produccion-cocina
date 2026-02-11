@@ -1,7 +1,14 @@
 <?php
+/**
+ * Microservicio "Produccion y Cocina"
+ */
 
 namespace App\Domain\Produccion\Entity;
 
+/**
+ * @class ItemDespacho
+ * @package App\Domain\Produccion\Entity
+ */
 class ItemDespacho
 {
     /**
@@ -12,41 +19,41 @@ class ItemDespacho
     /**
      * @var int
      */
-    public readonly string|int $ordenProduccionId;
+    public string|int $ordenProduccionId;
 
     /**
      * @var int
      */
-    public readonly string|int $productId;
+    public string|int $productId;
 
     /**
      * @var string|int|null
      */
-    public readonly string|int|null $paqueteId;
+    public string|int|null $paqueteId;
 
     /**
      * @var string|int|null
      */
-    public readonly string|int|null $recetaVersionId;
+    public string|int|null $recetaVersionId;
 
     /**
      * @var string|int|null
      */
-    public readonly string|int|null $pacienteId;
+    public string|int|null $pacienteId;
 
     /**
      * @var string|int|null
      */
-    public readonly string|int|null $direccionId;
+    public string|int|null $direccionId;
 
     /**
      * @var string|int|null
      */
-    public readonly string|int|null $ventanaEntregaId;
+    public string|int|null $ventanaEntregaId;
 
     /**
      * Constructor
-     * 
+     *
      * @param string|int|null $id
      * @param string|int $ordenProduccionId
      * @param string|int $productId

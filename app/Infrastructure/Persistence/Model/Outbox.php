@@ -8,9 +8,20 @@ namespace App\Infrastructure\Persistence\Model;
 /**
  * @package App\Infrastructure\Persistence\Model
  */
+
+/**
+ * @class Outbox
+ * @package App\Infrastructure\Persistence\Model
+ */
 class Outbox extends BaseModel
 {
+    /**
+     * @var mixed
+     */
     protected $table = 'outbox';
+    /**
+     * @var mixed
+     */
     protected $guarded = [];
     protected $casts = [
         'payload' => 'array',
