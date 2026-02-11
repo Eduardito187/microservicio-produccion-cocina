@@ -5,11 +5,11 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\VerProducto;
 use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\Products;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerProducto;
+use App\Domain\Produccion\Entity\Products;
 
 /**
  * @class VerProductoHandler
@@ -20,12 +20,12 @@ class VerProductoHandler
     /**
      * @var ProductRepositoryInterface
      */
-    private ProductRepositoryInterface $productRepository;
+    private $productRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

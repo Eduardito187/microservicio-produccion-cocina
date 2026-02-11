@@ -8,25 +8,25 @@ namespace App\Infrastructure\Persistence\Repository;
 use App\Infrastructure\Persistence\Model\OrdenProduccion as OrdenProduccionModel;
 use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
 use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
+use App\Infrastructure\Persistence\Model\VentanaEntrega as VentanaEntregaModel;
 use App\Infrastructure\Persistence\Repository\ProduccionBatchRepository;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Infrastructure\Persistence\Repository\ItemDespachoRepository;
-use App\Infrastructure\Persistence\Repository\OrdenItemRepository;
-use App\Infrastructure\Persistence\Model\Etiqueta as EtiquetaModel;
-use App\Infrastructure\Persistence\Model\Paquete as PaqueteModel;
-use App\Infrastructure\Persistence\Model\Paciente as PacienteModel;
 use App\Infrastructure\Persistence\Model\Direccion as DireccionModel;
-use App\Infrastructure\Persistence\Model\VentanaEntrega as VentanaEntregaModel;
+use App\Infrastructure\Persistence\Model\Paciente as PacienteModel;
+use App\Infrastructure\Persistence\Model\Etiqueta as EtiquetaModel;
+use App\Infrastructure\Persistence\Repository\OrdenItemRepository;
+use App\Infrastructure\Persistence\Model\Paquete as PaqueteModel;
+use App\Domain\Produccion\Events\PaqueteParaDespachoCreado;
+use App\Application\Shared\DomainEventPublisherInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Produccion\Events\ProduccionBatchCreado;
 use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Produccion\Entity\ItemDespacho;
-use App\Domain\Produccion\Events\PaqueteParaDespachoCreado;
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
 use App\Domain\Produccion\Entity\OrdenItem;
 use App\Domain\Produccion\Enum\EstadoOP;
-use App\Application\Shared\DomainEventPublisherInterface;
-use App\Domain\Produccion\Events\ProduccionBatchCreado;
 use DateTimeImmutable;
 use DateTimeInterface;
 
@@ -39,22 +39,22 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     /**
      * @var OrdenItemRepository
      */
-    private OrdenItemRepository $ordenItemRepository;
+    private $ordenItemRepository;
 
     /**
      * @var ItemDespachoRepository
      */
-    private ItemDespachoRepository $itemDespachoRepository;
+    private $itemDespachoRepository;
 
     /**
      * @var ProduccionBatchRepository
      */
-    private ProduccionBatchRepository $produccionBatchRepository;
+    private $produccionBatchRepository;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

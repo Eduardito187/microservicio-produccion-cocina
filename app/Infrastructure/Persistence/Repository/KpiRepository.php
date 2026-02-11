@@ -5,8 +5,8 @@
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Application\Analytics\KpiRepositoryInterface;
 use App\Infrastructure\Persistence\Model\KpiOperativo;
+use App\Application\Analytics\KpiRepositoryInterface;
 
 /**
  * @class KpiRepository

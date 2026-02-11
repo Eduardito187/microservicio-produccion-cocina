@@ -16,17 +16,17 @@ class Calendario
     /**
      * @var string|int|null
      */
-    public string|int|null $id;
+    public $id;
 
     /**
      * @var DateTimeImmutable
      */
-    public DateTimeImmutable $fecha;
+    public $fecha;
 
     /**
      * @var string
      */
-    public string $sucursalId;
+    public $sucursalId;
 
     /**
      * Constructor

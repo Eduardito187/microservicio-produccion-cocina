@@ -14,7 +14,7 @@ class EliminarCalendario
     /**
      * @var int
      */
-    public string $id;
+    public $id;
 
     /**
      * Constructor

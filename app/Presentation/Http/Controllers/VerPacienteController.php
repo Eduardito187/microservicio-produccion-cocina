@@ -6,8 +6,8 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\VerPacienteHandler;
-use App\Application\Produccion\Command\VerPaciente;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerPaciente;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -19,7 +19,7 @@ class VerPacienteController
     /**
      * @var VerPacienteHandler
      */
-    private VerPacienteHandler $handler;
+    private $handler;
 
     /**
      * Constructor

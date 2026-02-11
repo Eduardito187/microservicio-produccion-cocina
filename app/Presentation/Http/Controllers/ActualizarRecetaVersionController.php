@@ -20,7 +20,7 @@ class ActualizarRecetaVersionController
     /**
      * @var ActualizarRecetaVersionHandler
      */
-    private ActualizarRecetaVersionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

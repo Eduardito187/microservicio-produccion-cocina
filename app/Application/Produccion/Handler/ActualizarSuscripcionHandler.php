@@ -20,17 +20,17 @@ class ActualizarSuscripcionHandler
     /**
      * @var SuscripcionRepositoryInterface
      */
-    private SuscripcionRepositoryInterface $suscripcionRepository;
+    private $suscripcionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

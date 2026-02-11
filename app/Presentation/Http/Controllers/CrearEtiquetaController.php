@@ -19,7 +19,7 @@ class CrearEtiquetaController
     /**
      * @var CrearEtiquetaHandler
      */
-    private CrearEtiquetaHandler $handler;
+    private $handler;
 
     /**
      * Constructor

@@ -9,10 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @package App\Infrastructure\Persistence\Model
- */
-
-/**
  * @class Paciente
  * @package App\Infrastructure\Persistence\Model
  */

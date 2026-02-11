@@ -14,17 +14,17 @@ class CalendarioItem
     /**
      * @var string|int|null
      */
-    public string|int|null $id;
+    public $id;
 
     /**
-     * @var int
+     * @var string|int
      */
-    public string|int $calendarioId;
+    public $calendarioId;
 
     /**
-     * @var int
+     * @var string|int
      */
-    public string|int $itemDespachoId;
+    public $itemDespachoId;
 
     /**
      * Constructor

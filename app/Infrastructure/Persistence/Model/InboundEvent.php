@@ -6,10 +6,6 @@
 namespace App\Infrastructure\Persistence\Model;
 
 /**
- * @package App\Infrastructure\Persistence\Model
- */
-
-/**
  * @class InboundEvent
  * @package App\Infrastructure\Persistence\Model
  */

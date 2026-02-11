@@ -18,7 +18,7 @@ class ListarRecetasVersionController
     /**
      * @var ListarRecetasVersionHandler
      */
-    private ListarRecetasVersionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

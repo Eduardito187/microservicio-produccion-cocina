@@ -18,12 +18,12 @@ class EliminarEstacionHandler
     /**
      * @var EstacionRepositoryInterface
      */
-    private EstacionRepositoryInterface $estacionRepository;
+    private $estacionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

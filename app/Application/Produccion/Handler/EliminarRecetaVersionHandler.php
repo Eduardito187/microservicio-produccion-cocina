@@ -18,12 +18,12 @@ class EliminarRecetaVersionHandler
     /**
      * @var RecetaVersionRepositoryInterface
      */
-    private RecetaVersionRepositoryInterface $recetaVersionRepository;
+    private $recetaVersionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

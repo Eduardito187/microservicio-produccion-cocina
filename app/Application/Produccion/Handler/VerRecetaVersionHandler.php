@@ -5,11 +5,11 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\VerRecetaVersion;
 use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\RecetaVersion;
+use App\Application\Produccion\Command\VerRecetaVersion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Produccion\Entity\RecetaVersion;
 
 /**
  * @class VerRecetaVersionHandler
@@ -20,12 +20,12 @@ class VerRecetaVersionHandler
     /**
      * @var RecetaVersionRepositoryInterface
      */
-    private RecetaVersionRepositoryInterface $recetaVersionRepository;
+    private $recetaVersionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

@@ -19,7 +19,7 @@ class CrearPorcionController
     /**
      * @var CrearPorcionHandler
      */
-    private CrearPorcionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

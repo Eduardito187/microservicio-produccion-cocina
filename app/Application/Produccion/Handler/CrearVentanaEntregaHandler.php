@@ -19,12 +19,12 @@ class CrearVentanaEntregaHandler
     /**
      * @var VentanaEntregaRepositoryInterface
      */
-    private VentanaEntregaRepositoryInterface $ventanaEntregaRepository;
+    private $ventanaEntregaRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

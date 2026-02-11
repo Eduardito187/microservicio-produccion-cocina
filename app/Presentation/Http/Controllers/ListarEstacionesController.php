@@ -18,7 +18,7 @@ class ListarEstacionesController
     /**
      * @var ListarEstacionesHandler
      */
-    private ListarEstacionesHandler $handler;
+    private $handler;
 
     /**
      * Constructor

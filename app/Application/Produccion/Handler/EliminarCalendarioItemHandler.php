@@ -6,8 +6,8 @@
 namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\EliminarCalendarioItem;
+use App\Application\Support\Transaction\TransactionAggregate;
 
 /**
  * @class EliminarCalendarioItemHandler
@@ -18,12 +18,12 @@ class EliminarCalendarioItemHandler
     /**
      * @var CalendarioItemRepositoryInterface
      */
-    private CalendarioItemRepositoryInterface $calendarioItemRepository;
+    private $calendarioItemRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

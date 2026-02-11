@@ -6,8 +6,8 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\VerSuscripcionHandler;
-use App\Application\Produccion\Command\VerSuscripcion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerSuscripcion;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -19,7 +19,7 @@ class VerSuscripcionController
     /**
      * @var VerSuscripcionHandler
      */
-    private VerSuscripcionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

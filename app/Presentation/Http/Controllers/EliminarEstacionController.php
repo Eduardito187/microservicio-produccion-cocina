@@ -19,7 +19,7 @@ class EliminarEstacionController
     /**
      * @var EliminarEstacionHandler
      */
-    private EliminarEstacionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

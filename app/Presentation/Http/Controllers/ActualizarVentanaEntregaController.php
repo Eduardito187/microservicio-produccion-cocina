@@ -21,7 +21,7 @@ class ActualizarVentanaEntregaController
     /**
      * @var ActualizarVentanaEntregaHandler
      */
-    private ActualizarVentanaEntregaHandler $handler;
+    private $handler;
 
     /**
      * Constructor

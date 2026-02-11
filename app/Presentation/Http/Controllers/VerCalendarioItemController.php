@@ -19,7 +19,7 @@ class VerCalendarioItemController
     /**
      * @var VerCalendarioItemHandler
      */
-    private VerCalendarioItemHandler $handler;
+    private $handler;
 
     /**
      * Constructor

@@ -19,7 +19,7 @@ class EliminarVentanaEntregaController
     /**
      * @var EliminarVentanaEntregaHandler
      */
-    private EliminarVentanaEntregaHandler $handler;
+    private $handler;
 
     /**
      * Constructor

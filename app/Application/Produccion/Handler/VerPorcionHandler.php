@@ -5,11 +5,11 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\VerPorcion;
 use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\Porcion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerPorcion;
+use App\Domain\Produccion\Entity\Porcion;
 
 /**
  * @class VerPorcionHandler
@@ -20,12 +20,12 @@ class VerPorcionHandler
     /**
      * @var PorcionRepositoryInterface
      */
-    private PorcionRepositoryInterface $porcionRepository;
+    private $porcionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

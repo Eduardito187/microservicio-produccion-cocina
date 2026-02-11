@@ -18,7 +18,7 @@ class ListarDireccionesController
     /**
      * @var ListarDireccionesHandler
      */
-    private ListarDireccionesHandler $handler;
+    private $handler;
 
     /**
      * Constructor

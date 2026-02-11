@@ -18,7 +18,7 @@ class ListarProductosController
     /**
      * @var ListarProductosHandler
      */
-    private ListarProductosHandler $handler;
+    private $handler;
 
     /**
      * Constructor

@@ -7,10 +7,10 @@ namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Application\Produccion\Command\CrearSuscripcion;
-use App\Domain\Produccion\Entity\Suscripcion;
 use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Produccion\Command\CrearSuscripcion;
 use App\Domain\Produccion\Events\SuscripcionCreada;
+use App\Domain\Produccion\Entity\Suscripcion;
 
 /**
  * @class CrearSuscripcionHandler
@@ -21,17 +21,17 @@ class CrearSuscripcionHandler
     /**
      * @var SuscripcionRepositoryInterface
      */
-    private SuscripcionRepositoryInterface $suscripcionRepository;
+    private $suscripcionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

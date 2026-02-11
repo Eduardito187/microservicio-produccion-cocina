@@ -21,7 +21,7 @@ class ActualizarCalendarioController
     /**
      * @var ActualizarCalendarioHandler
      */
-    private ActualizarCalendarioHandler $handler;
+    private $handler;
 
     /**
      * Constructor

@@ -18,12 +18,12 @@ class EliminarEtiquetaHandler
     /**
      * @var EtiquetaRepositoryInterface
      */
-    private EtiquetaRepositoryInterface $etiquetaRepository;
+    private $etiquetaRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

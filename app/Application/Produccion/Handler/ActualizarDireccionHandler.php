@@ -20,17 +20,17 @@ class ActualizarDireccionHandler
     /**
      * @var DireccionRepositoryInterface
      */
-    private DireccionRepositoryInterface $direccionRepository;
+    private $direccionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

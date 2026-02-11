@@ -12,14 +12,14 @@ namespace App\Application\Produccion\Command;
 class ActualizarSuscripcion
 {
     /**
-     * @var int
+     * @var string
      */
-    public string $id;
+    public $id;
 
     /**
      * @var string
      */
-    public string $nombre;
+    public $nombre;
 
     /**
      * Constructor

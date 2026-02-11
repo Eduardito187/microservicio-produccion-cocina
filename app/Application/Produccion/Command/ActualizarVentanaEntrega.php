@@ -14,19 +14,19 @@ use DateTimeImmutable;
 class ActualizarVentanaEntrega
 {
     /**
-     * @var int
+     * @var string
      */
-    public string $id;
+    public $id;
 
     /**
      * @var DateTimeImmutable
      */
-    public DateTimeImmutable $desde;
+    public $desde;
 
     /**
      * @var DateTimeImmutable
      */
-    public DateTimeImmutable $hasta;
+    public $hasta;
 
     /**
      * Constructor

@@ -18,7 +18,7 @@ class ListarCalendarioItemsController
     /**
      * @var ListarCalendarioItemsHandler
      */
-    private ListarCalendarioItemsHandler $handler;
+    private $handler;
 
     /**
      * Constructor

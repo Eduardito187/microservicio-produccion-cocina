@@ -19,7 +19,7 @@ class CrearPacienteController
     /**
      * @var CrearPacienteHandler
      */
-    private CrearPacienteHandler $handler;
+    private $handler;
 
     /**
      * Constructor

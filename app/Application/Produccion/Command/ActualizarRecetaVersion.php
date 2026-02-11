@@ -12,29 +12,29 @@ namespace App\Application\Produccion\Command;
 class ActualizarRecetaVersion
 {
     /**
-     * @var int
+     * @var string
      */
-    public string $id;
+    public $id;
 
     /**
      * @var string
      */
-    public string $nombre;
+    public $nombre;
 
     /**
      * @var array|null
      */
-    public array|null $nutrientes;
+    public $nutrientes;
 
     /**
      * @var array|null
      */
-    public array|null $ingredientes;
+    public $ingredientes;
 
     /**
      * @var int
      */
-    public int $version;
+    public $version;
 
     /**
      * Constructor

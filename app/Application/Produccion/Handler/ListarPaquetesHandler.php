@@ -5,9 +5,9 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\ListarPaquetes;
 use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Application\Produccion\Command\ListarPaquetes;
 use App\Domain\Produccion\Entity\Paquete;
 
 /**
@@ -19,12 +19,12 @@ class ListarPaquetesHandler
     /**
      * @var PaqueteRepositoryInterface
      */
-    private PaqueteRepositoryInterface $paqueteRepository;
+    private $paqueteRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

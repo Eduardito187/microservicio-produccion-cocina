@@ -7,10 +7,10 @@ namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Application\Produccion\Command\CrearDireccion;
-use App\Domain\Produccion\Entity\Direccion;
 use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Produccion\Command\CrearDireccion;
 use App\Domain\Produccion\Events\DireccionCreada;
+use App\Domain\Produccion\Entity\Direccion;
 
 /**
  * @class CrearDireccionHandler
@@ -21,17 +21,17 @@ class CrearDireccionHandler
     /**
      * @var DireccionRepositoryInterface
      */
-    private DireccionRepositoryInterface $direccionRepository;
+    private $direccionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

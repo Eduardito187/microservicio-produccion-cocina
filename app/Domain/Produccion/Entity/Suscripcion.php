@@ -14,12 +14,12 @@ class Suscripcion
     /**
      * @var string|int|null
      */
-    public string|int|null $id;
+    public $id;
 
     /**
      * @var string
      */
-    public string $nombre;
+    public $nombre;
 
     /**
      * Constructor

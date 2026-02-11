@@ -7,10 +7,10 @@ namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Application\Produccion\Command\CrearPaquete;
-use App\Domain\Produccion\Entity\Paquete;
 use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Produccion\Command\CrearPaquete;
 use App\Domain\Produccion\Events\PaqueteCreado;
+use App\Domain\Produccion\Entity\Paquete;
 
 /**
  * @class CrearPaqueteHandler
@@ -21,17 +21,17 @@ class CrearPaqueteHandler
     /**
      * @var PaqueteRepositoryInterface
      */
-    private PaqueteRepositoryInterface $paqueteRepository;
+    private $paqueteRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

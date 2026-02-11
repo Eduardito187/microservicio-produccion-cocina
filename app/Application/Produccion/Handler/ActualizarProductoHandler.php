@@ -8,9 +8,9 @@ namespace App\Application\Produccion\Handler;
 use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ActualizarProducto;
-use App\Domain\Produccion\Entity\Products;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Domain\Produccion\Events\ProductoActualizado;
+use App\Domain\Produccion\Entity\Products;
 
 /**
  * @class ActualizarProductoHandler
@@ -21,17 +21,17 @@ class ActualizarProductoHandler
     /**
      * @var ProductRepositoryInterface
      */
-    private ProductRepositoryInterface $productRepository;
+    private $productRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

@@ -18,12 +18,12 @@ class EliminarPaqueteHandler
     /**
      * @var PaqueteRepositoryInterface
      */
-    private PaqueteRepositoryInterface $paqueteRepository;
+    private $paqueteRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

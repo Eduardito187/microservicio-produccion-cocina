@@ -6,8 +6,8 @@
 namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ActualizarRecetaVersion;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Domain\Produccion\Events\RecetaVersionActualizada;
 
@@ -20,17 +20,17 @@ class ActualizarRecetaVersionHandler
     /**
      * @var RecetaVersionRepositoryInterface
      */
-    private RecetaVersionRepositoryInterface $recetaVersionRepository;
+    private $recetaVersionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

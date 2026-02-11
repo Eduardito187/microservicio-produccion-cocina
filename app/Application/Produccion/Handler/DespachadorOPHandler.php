@@ -18,12 +18,12 @@ class DespachadorOPHandler
     /**
      * @var OrdenProduccionRepositoryInterface
      */
-    private OrdenProduccionRepositoryInterface $ordenProduccionRepositoryInterface;
+    private $ordenProduccionRepositoryInterface;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

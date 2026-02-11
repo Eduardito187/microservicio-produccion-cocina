@@ -5,9 +5,9 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\ListarProductos;
 use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Application\Produccion\Command\ListarProductos;
 use App\Domain\Produccion\Entity\Products;
 
 /**
@@ -19,12 +19,12 @@ class ListarProductosHandler
     /**
      * @var ProductRepositoryInterface
      */
-    private ProductRepositoryInterface $productRepository;
+    private $productRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

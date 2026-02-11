@@ -14,37 +14,37 @@ class InboundEvent
     /**
      * @var string|int|null
      */
-    public string|int|null $id;
+    public $id;
 
     /**
      * @var string
      */
-    public string $eventId;
+    public $eventId;
 
     /**
      * @var string
      */
-    public string $eventName;
+    public $eventName;
 
     /**
      * @var string|null
      */
-    public string|null $occurredOn;
+    public $occurredOn;
 
     /**
      * @var string
      */
-    public string $payload;
+    public $payload;
 
     /**
      * @var int|null
      */
-    public int|null $schemaVersion;
+    public $schemaVersion;
 
     /**
      * @var string|null
      */
-    public string|null $correlationId;
+    public $correlationId;
 
     /**
      * Constructor

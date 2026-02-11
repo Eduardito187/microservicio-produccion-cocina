@@ -22,7 +22,7 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
     /**
      * @var ProductRepository
      */
-    private ProductRepository $productRepository;
+    private $productRepository;
 
     /**
      * Constructor

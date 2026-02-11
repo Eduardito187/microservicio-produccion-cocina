@@ -18,37 +18,37 @@ class OrdenItem
     /**
      * @var string|int|null
      */
-    public string|int|null $id;
+    public $id;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $ordenProduccionId;
+    public $ordenProduccionId;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $productId;
+    public $productId;
 
     /**
      * @var Qty
      */
-    public Qty $qty;
+    public $qty;
 
     /**
      * @var Sku
      */
-    public Sku $sku;
+    public $sku;
 
     /**
      * @var float
      */
-    public float $price;
+    public $price;
 
     /**
      * @var float
      */
-    public float $finalPrice;
+    public $finalPrice;
 
     /**
      * Constructor

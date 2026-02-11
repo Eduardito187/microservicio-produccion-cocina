@@ -14,17 +14,17 @@ class CrearProducto
     /**
      * @var string
      */
-    public string $sku;
+    public $sku;
 
     /**
      * @var float
      */
-    public float $price;
+    public $price;
 
     /**
      * @var float
      */
-    public float $specialPrice;
+    public $specialPrice;
 
     /**
      * Constructor

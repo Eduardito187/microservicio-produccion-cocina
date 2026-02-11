@@ -5,15 +5,15 @@
 
 namespace App\Application\Produccion\Handler;
 
+use App\Domain\Produccion\Repository\InboundEventRepositoryInterface;
 use App\Application\Produccion\Command\RegistrarInboundEvent;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\InboundEvent;
-use App\Domain\Produccion\Repository\InboundEventRepositoryInterface;
 use Illuminate\Database\QueryException;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
+use Illuminate\Support\Str;
+use Psr\Log\NullLogger;
 
 /**
  * @class RegistrarInboundEventHandler
@@ -24,17 +24,17 @@ class RegistrarInboundEventHandler
     /**
      * @var InboundEventRepositoryInterface
      */
-    private InboundEventRepositoryInterface $inboundEventRepository;
+    private $inboundEventRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var LoggerInterface
      */
-    private LoggerInterface $logger;
+    private $logger;
 
     /**
      * Constructor

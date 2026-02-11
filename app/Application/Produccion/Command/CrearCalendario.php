@@ -16,12 +16,12 @@ class CrearCalendario
     /**
      * @var DateTimeImmutable
      */
-    public DateTimeImmutable $fecha;
+    public $fecha;
 
     /**
      * @var string
      */
-    public string $sucursalId;
+    public $sucursalId;
 
     /**
      * Constructor

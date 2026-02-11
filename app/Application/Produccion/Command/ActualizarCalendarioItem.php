@@ -12,19 +12,19 @@ namespace App\Application\Produccion\Command;
 class ActualizarCalendarioItem
 {
     /**
-     * @var int
+     * @var string
      */
-    public string $id;
+    public $id;
 
     /**
-     * @var int
+     * @var string
      */
-    public string $calendarioId;
+    public $calendarioId;
 
     /**
-     * @var int
+     * @var string
      */
-    public string $itemDespachoId;
+    public $itemDespachoId;
 
     /**
      * Constructor

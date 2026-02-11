@@ -14,17 +14,17 @@ class CrearPaciente
     /**
      * @var string
      */
-    public string $nombre;
+    public $nombre;
 
     /**
      * @var string|null
      */
-    public string|null $documento;
+    public $documento;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $suscripcionId;
+    public $suscripcionId;
 
     /**
      * Constructor

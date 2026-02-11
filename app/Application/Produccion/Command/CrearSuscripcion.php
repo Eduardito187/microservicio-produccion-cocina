@@ -14,7 +14,7 @@ class CrearSuscripcion
     /**
      * @var string
      */
-    public string $nombre;
+    public $nombre;
 
     /**
      * Constructor

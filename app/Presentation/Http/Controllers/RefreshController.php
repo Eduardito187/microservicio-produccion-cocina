@@ -5,12 +5,12 @@
 
 namespace App\Presentation\Http\Controllers;
 
-use Firebase\JWT\JWT;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Firebase\JWT\JWT;
 
 /**
  * @class RefreshController

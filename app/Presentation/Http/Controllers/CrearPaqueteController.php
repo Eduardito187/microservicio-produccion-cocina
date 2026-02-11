@@ -19,7 +19,7 @@ class CrearPaqueteController
     /**
      * @var CrearPaqueteHandler
      */
-    private CrearPaqueteHandler $handler;
+    private $handler;
 
     /**
      * Constructor

@@ -18,12 +18,12 @@ class EliminarPacienteHandler
     /**
      * @var PacienteRepositoryInterface
      */
-    private PacienteRepositoryInterface $pacienteRepository;
+    private $pacienteRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

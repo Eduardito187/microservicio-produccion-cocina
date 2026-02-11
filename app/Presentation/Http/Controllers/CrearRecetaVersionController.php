@@ -19,7 +19,7 @@ class CrearRecetaVersionController
     /**
      * @var CrearRecetaVersionHandler
      */
-    private CrearRecetaVersionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

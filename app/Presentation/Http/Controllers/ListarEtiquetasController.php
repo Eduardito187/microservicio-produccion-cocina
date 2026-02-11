@@ -18,7 +18,7 @@ class ListarEtiquetasController
     /**
      * @var ListarEtiquetasHandler
      */
-    private ListarEtiquetasHandler $handler;
+    private $handler;
 
     /**
      * Constructor

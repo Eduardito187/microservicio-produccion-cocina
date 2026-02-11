@@ -19,7 +19,7 @@ class CrearProductoController
     /**
      * @var CrearProductoHandler
      */
-    private CrearProductoHandler $handler;
+    private $handler;
 
     /**
      * Constructor

@@ -14,17 +14,17 @@ class Porcion
     /**
      * @var string|int|null
      */
-    public string|int|null $id;
+    public $id;
 
     /**
      * @var string
      */
-    public string $nombre;
+    public $nombre;
 
     /**
      * @var int
      */
-    public int $pesoGr;
+    public $pesoGr;
 
     /**
      * Constructor

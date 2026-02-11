@@ -5,9 +5,9 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\ListarEtiquetas;
 use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Application\Produccion\Command\ListarEtiquetas;
 use App\Domain\Produccion\Entity\Etiqueta;
 
 /**
@@ -19,12 +19,12 @@ class ListarEtiquetasHandler
     /**
      * @var EtiquetaRepositoryInterface
      */
-    private EtiquetaRepositoryInterface $etiquetaRepository;
+    private $etiquetaRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

@@ -5,8 +5,8 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\ListarCalendarioItems;
 use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
+use App\Application\Produccion\Command\ListarCalendarioItems;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\CalendarioItem;
 
@@ -19,12 +19,12 @@ class ListarCalendarioItemsHandler
     /**
      * @var CalendarioItemRepositoryInterface
      */
-    private CalendarioItemRepositoryInterface $calendarioItemRepository;
+    private $calendarioItemRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

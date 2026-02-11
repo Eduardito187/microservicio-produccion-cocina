@@ -18,12 +18,12 @@ class EliminarSuscripcionHandler
     /**
      * @var SuscripcionRepositoryInterface
      */
-    private SuscripcionRepositoryInterface $suscripcionRepository;
+    private $suscripcionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

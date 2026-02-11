@@ -18,12 +18,12 @@ class EliminarCalendarioHandler
     /**
      * @var CalendarioRepositoryInterface
      */
-    private CalendarioRepositoryInterface $calendarioRepository;
+    private $calendarioRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

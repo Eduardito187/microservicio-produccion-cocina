@@ -6,8 +6,8 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\VerCalendarioHandler;
-use App\Application\Produccion\Command\VerCalendario;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerCalendario;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -19,7 +19,7 @@ class VerCalendarioController
     /**
      * @var VerCalendarioHandler
      */
-    private VerCalendarioHandler $handler;
+    private $handler;
 
     /**
      * Constructor

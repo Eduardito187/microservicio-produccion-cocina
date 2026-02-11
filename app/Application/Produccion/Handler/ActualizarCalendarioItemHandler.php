@@ -20,17 +20,17 @@ class ActualizarCalendarioItemHandler
     /**
      * @var CalendarioItemRepositoryInterface
      */
-    private CalendarioItemRepositoryInterface $calendarioItemRepository;
+    private $calendarioItemRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

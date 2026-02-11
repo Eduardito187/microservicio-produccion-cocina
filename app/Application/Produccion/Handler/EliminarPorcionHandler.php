@@ -18,12 +18,12 @@ class EliminarPorcionHandler
     /**
      * @var PorcionRepositoryInterface
      */
-    private PorcionRepositoryInterface $porcionRepository;
+    private $porcionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

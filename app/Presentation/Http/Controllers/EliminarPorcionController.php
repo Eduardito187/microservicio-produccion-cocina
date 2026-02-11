@@ -6,8 +6,8 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\EliminarPorcionHandler;
-use App\Application\Produccion\Command\EliminarPorcion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\EliminarPorcion;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -19,7 +19,7 @@ class EliminarPorcionController
     /**
      * @var EliminarPorcionHandler
      */
-    private EliminarPorcionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

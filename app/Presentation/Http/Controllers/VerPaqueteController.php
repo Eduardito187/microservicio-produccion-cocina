@@ -6,8 +6,8 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\VerPaqueteHandler;
-use App\Application\Produccion\Command\VerPaquete;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerPaquete;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -19,7 +19,7 @@ class VerPaqueteController
     /**
      * @var VerPaqueteHandler
      */
-    private VerPaqueteHandler $handler;
+    private $handler;
 
     /**
      * Constructor

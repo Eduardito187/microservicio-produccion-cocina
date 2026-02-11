@@ -14,22 +14,22 @@ class Products
     /**
      * @var string|int|null
      */
-    public string|int|null $id;
+    public $id;
 
     /**
      * @var string
      */
-    public string $sku;
+    public $sku;
 
     /**
      * @var string
      */
-    public float $price;
+    public $price;
 
     /**
      * @var string
      */
-    public float $special_price;
+    public $special_price;
 
     /**
      * Constructor

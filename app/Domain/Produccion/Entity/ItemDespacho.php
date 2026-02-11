@@ -14,42 +14,42 @@ class ItemDespacho
     /**
      * @var string|int|null
      */
-    public string|int|null $id;
+    public $id;
 
     /**
-     * @var int
+     * @var string|int
      */
-    public string|int $ordenProduccionId;
+    public $ordenProduccionId;
 
     /**
-     * @var int
+     * @var string|int
      */
-    public string|int $productId;
-
-    /**
-     * @var string|int|null
-     */
-    public string|int|null $paqueteId;
+    public $productId;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $recetaVersionId;
+    public $paqueteId;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $pacienteId;
+    public $recetaVersionId;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $direccionId;
+    public $pacienteId;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $ventanaEntregaId;
+    public $direccionId;
+
+    /**
+     * @var string|int|null
+     */
+    public $ventanaEntregaId;
 
     /**
      * Constructor

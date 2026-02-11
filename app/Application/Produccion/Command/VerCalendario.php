@@ -12,9 +12,9 @@ namespace App\Application\Produccion\Command;
 class VerCalendario
 {
     /**
-     * @var int
+     * @var string
      */
-    public string $id;
+    public $id;
 
     /**
      * Constructor

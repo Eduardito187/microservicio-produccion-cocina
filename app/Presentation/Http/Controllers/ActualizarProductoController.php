@@ -20,7 +20,7 @@ class ActualizarProductoController
     /**
      * @var ActualizarProductoHandler
      */
-    private ActualizarProductoHandler $handler;
+    private $handler;
 
     /**
      * Constructor

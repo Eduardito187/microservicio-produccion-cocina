@@ -5,11 +5,11 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\VerVentanaEntrega;
 use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\VentanaEntrega;
+use App\Application\Produccion\Command\VerVentanaEntrega;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Produccion\Entity\VentanaEntrega;
 
 /**
  * @class VerVentanaEntregaHandler
@@ -20,12 +20,12 @@ class VerVentanaEntregaHandler
     /**
      * @var VentanaEntregaRepositoryInterface
      */
-    private VentanaEntregaRepositoryInterface $ventanaEntregaRepository;
+    private $ventanaEntregaRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

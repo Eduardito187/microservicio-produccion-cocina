@@ -20,7 +20,7 @@ class ActualizarPorcionController
     /**
      * @var ActualizarPorcionHandler
      */
-    private ActualizarPorcionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

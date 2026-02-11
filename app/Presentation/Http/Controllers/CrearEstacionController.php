@@ -19,7 +19,7 @@ class CrearEstacionController
     /**
      * @var CrearEstacionHandler
      */
-    private CrearEstacionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

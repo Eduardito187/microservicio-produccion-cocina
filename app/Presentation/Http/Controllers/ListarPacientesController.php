@@ -18,7 +18,7 @@ class ListarPacientesController
     /**
      * @var ListarPacientesHandler
      */
-    private ListarPacientesHandler $handler;
+    private $handler;
 
     /**
      * Constructor

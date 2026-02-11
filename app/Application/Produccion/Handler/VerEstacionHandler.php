@@ -5,11 +5,11 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\VerEstacion;
 use App\Domain\Produccion\Repository\EstacionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\Estacion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerEstacion;
+use App\Domain\Produccion\Entity\Estacion;
 
 /**
  * @class VerEstacionHandler
@@ -20,12 +20,12 @@ class VerEstacionHandler
     /**
      * @var EstacionRepositoryInterface
      */
-    private EstacionRepositoryInterface $estacionRepository;
+    private $estacionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

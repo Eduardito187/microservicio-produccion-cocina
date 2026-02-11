@@ -19,7 +19,7 @@ class EliminarDireccionController
     /**
      * @var EliminarDireccionHandler
      */
-    private EliminarDireccionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

@@ -16,17 +16,17 @@ class VentanaEntrega
     /**
      * @var string|int|null
      */
-    public string|int|null $id;
+    public $id;
 
     /**
      * @var DateTimeImmutable
      */
-    public DateTimeImmutable $desde;
+    public $desde;
 
     /**
      * @var DateTimeImmutable
      */
-    public DateTimeImmutable $hasta;
+    public $hasta;
 
     /**
      * Constructor

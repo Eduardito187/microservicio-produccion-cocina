@@ -16,22 +16,22 @@ class GenerarOP
     /**
      * @var int|null
      */
-    public ?string $id;
+    public $id;
 
     /**
      * @var DateTimeImmutable
      */
-    public DateTimeImmutable $fecha;
+    public $fecha;
 
     /**
      * @var int|string
      */
-    public int|string $sucursalId;
+    public $sucursalId;
 
     /**
      * @var array
      */
-    public array $items;
+    public $items;
 
     /**
      * Constructor

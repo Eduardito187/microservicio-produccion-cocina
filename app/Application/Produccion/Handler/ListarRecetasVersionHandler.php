@@ -5,9 +5,9 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\ListarRecetasVersion;
 use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Application\Produccion\Command\ListarRecetasVersion;
 use App\Domain\Produccion\Entity\RecetaVersion;
 
 /**
@@ -19,12 +19,12 @@ class ListarRecetasVersionHandler
     /**
      * @var RecetaVersionRepositoryInterface
      */
-    private RecetaVersionRepositoryInterface $recetaVersionRepository;
+    private $recetaVersionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

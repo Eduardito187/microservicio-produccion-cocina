@@ -12,19 +12,19 @@ namespace App\Application\Produccion\Command;
 class ActualizarPorcion
 {
     /**
-     * @var int
+     * @var string
      */
-    public string $id;
+    public $id;
 
     /**
      * @var string
      */
-    public string $nombre;
+    public $nombre;
 
     /**
      * @var int
      */
-    public int $pesoGr;
+    public $pesoGr;
 
     /**
      * Constructor

@@ -12,9 +12,9 @@ namespace App\Application\Produccion\Command;
 class ProcesadorOP
 {
     /**
-     * @var int
+     * @var string
      */
-    public string $opId;
+    public $opId;
 
     /**
      * Constructor

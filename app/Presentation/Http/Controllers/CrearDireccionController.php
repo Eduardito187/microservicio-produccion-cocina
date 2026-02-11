@@ -19,7 +19,7 @@ class CrearDireccionController
     /**
      * @var CrearDireccionHandler
      */
-    private CrearDireccionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

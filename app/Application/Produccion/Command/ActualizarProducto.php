@@ -12,24 +12,24 @@ namespace App\Application\Produccion\Command;
 class ActualizarProducto
 {
     /**
-     * @var int
+     * @var string
      */
-    public string $id;
+    public $id;
 
     /**
      * @var string
      */
-    public string $sku;
+    public $sku;
 
     /**
      * @var float
      */
-    public float $price;
+    public $price;
 
     /**
      * @var float
      */
-    public float $specialPrice;
+    public $specialPrice;
 
     /**
      * Constructor

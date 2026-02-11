@@ -18,12 +18,12 @@ class EliminarDireccionHandler
     /**
      * @var DireccionRepositoryInterface
      */
-    private DireccionRepositoryInterface $direccionRepository;
+    private $direccionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

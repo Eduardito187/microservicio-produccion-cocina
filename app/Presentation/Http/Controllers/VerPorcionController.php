@@ -6,8 +6,8 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\VerPorcionHandler;
-use App\Application\Produccion\Command\VerPorcion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerPorcion;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -19,7 +19,7 @@ class VerPorcionController
     /**
      * @var VerPorcionHandler
      */
-    private VerPorcionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

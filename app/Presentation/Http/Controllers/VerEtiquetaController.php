@@ -6,8 +6,8 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\VerEtiquetaHandler;
-use App\Application\Produccion\Command\VerEtiqueta;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerEtiqueta;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -19,7 +19,7 @@ class VerEtiquetaController
     /**
      * @var VerEtiquetaHandler
      */
-    private VerEtiquetaHandler $handler;
+    private $handler;
 
     /**
      * Constructor

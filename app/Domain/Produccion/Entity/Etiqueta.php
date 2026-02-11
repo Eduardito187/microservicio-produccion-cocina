@@ -14,27 +14,27 @@ class Etiqueta
     /**
      * @var string|int|null
      */
-    public string|int|null $id;
+    public $id;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $recetaVersionId;
+    public $recetaVersionId;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $suscripcionId;
+    public $suscripcionId;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $pacienteId;
+    public $pacienteId;
 
     /**
      * @var array|null
      */
-    public array|null $qrPayload;
+    public $qrPayload;
 
     /**
      * Constructor

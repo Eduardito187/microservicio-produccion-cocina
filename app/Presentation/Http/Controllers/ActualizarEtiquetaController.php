@@ -20,7 +20,7 @@ class ActualizarEtiquetaController
     /**
      * @var ActualizarEtiquetaHandler
      */
-    private ActualizarEtiquetaHandler $handler;
+    private $handler;
 
     /**
      * Constructor

@@ -5,9 +5,9 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\ListarEstaciones;
 use App\Domain\Produccion\Repository\EstacionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Application\Produccion\Command\ListarEstaciones;
 use App\Domain\Produccion\Entity\Estacion;
 
 /**
@@ -19,12 +19,12 @@ class ListarEstacionesHandler
     /**
      * @var EstacionRepositoryInterface
      */
-    private EstacionRepositoryInterface $estacionRepository;
+    private $estacionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

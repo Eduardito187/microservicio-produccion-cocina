@@ -5,11 +5,11 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\VerPaciente;
 use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\Paciente;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerPaciente;
+use App\Domain\Produccion\Entity\Paciente;
 
 /**
  * @class VerPacienteHandler
@@ -20,12 +20,12 @@ class VerPacienteHandler
     /**
      * @var PacienteRepositoryInterface
      */
-    private PacienteRepositoryInterface $pacienteRepository;
+    private $pacienteRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

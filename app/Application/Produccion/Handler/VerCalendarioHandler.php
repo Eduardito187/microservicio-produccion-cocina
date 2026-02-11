@@ -5,11 +5,11 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\VerCalendario;
 use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\Calendario;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerCalendario;
+use App\Domain\Produccion\Entity\Calendario;
 
 /**
  * @class VerCalendarioHandler
@@ -20,12 +20,12 @@ class VerCalendarioHandler
     /**
      * @var CalendarioRepositoryInterface
      */
-    private CalendarioRepositoryInterface $calendarioRepository;
+    private $calendarioRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

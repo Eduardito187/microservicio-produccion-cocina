@@ -14,12 +14,12 @@ class CrearPorcion
     /**
      * @var string
      */
-    public string $nombre;
+    public $nombre;
 
     /**
      * @var int
      */
-    public int $pesoGr;
+    public $pesoGr;
 
     /**
      * Constructor

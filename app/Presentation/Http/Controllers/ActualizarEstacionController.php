@@ -20,7 +20,7 @@ class ActualizarEstacionController
     /**
      * @var ActualizarEstacionHandler
      */
-    private ActualizarEstacionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

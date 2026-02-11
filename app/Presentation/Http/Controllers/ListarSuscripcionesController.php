@@ -18,7 +18,7 @@ class ListarSuscripcionesController
     /**
      * @var ListarSuscripcionesHandler
      */
-    private ListarSuscripcionesHandler $handler;
+    private $handler;
 
     /**
      * Constructor

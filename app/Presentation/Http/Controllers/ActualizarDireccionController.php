@@ -20,7 +20,7 @@ class ActualizarDireccionController
     /**
      * @var ActualizarDireccionHandler
      */
-    private ActualizarDireccionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

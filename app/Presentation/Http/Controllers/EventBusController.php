@@ -5,12 +5,12 @@
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Command\RegistrarInboundEvent;
 use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
+use App\Application\Produccion\Command\RegistrarInboundEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use InvalidArgumentException;
+use Illuminate\Http\Request;
 
 /**
  * @class EventBusController
@@ -21,7 +21,7 @@ class EventBusController
     /**
      * @var RegistrarInboundEventHandler
      */
-    private RegistrarInboundEventHandler $handler;
+    private $handler;
 
     /**
      * Constructor

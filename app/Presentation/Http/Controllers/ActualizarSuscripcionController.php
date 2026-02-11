@@ -20,7 +20,7 @@ class ActualizarSuscripcionController
     /**
      * @var ActualizarSuscripcionHandler
      */
-    private ActualizarSuscripcionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

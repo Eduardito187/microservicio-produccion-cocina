@@ -19,7 +19,7 @@ class CrearSuscripcionController
     /**
      * @var CrearSuscripcionHandler
      */
-    private CrearSuscripcionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

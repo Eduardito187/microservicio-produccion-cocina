@@ -6,8 +6,8 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\VerEstacionHandler;
-use App\Application\Produccion\Command\VerEstacion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerEstacion;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -19,7 +19,7 @@ class VerEstacionController
     /**
      * @var VerEstacionHandler
      */
-    private VerEstacionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

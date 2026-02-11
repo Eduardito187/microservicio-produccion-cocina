@@ -19,7 +19,7 @@ class EliminarCalendarioController
     /**
      * @var EliminarCalendarioHandler
      */
-    private EliminarCalendarioHandler $handler;
+    private $handler;
 
     /**
      * Constructor

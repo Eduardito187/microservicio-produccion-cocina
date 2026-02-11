@@ -5,12 +5,12 @@
 
 namespace App\Presentation\Http\Controllers;
 
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Firebase\JWT\JWT;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
+use Firebase\JWT\JWT;
 
 /**
  * @class LoginController

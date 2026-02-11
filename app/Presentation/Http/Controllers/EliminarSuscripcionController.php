@@ -19,7 +19,7 @@ class EliminarSuscripcionController
     /**
      * @var EliminarSuscripcionHandler
      */
-    private EliminarSuscripcionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

@@ -20,7 +20,7 @@ class ActualizarPaqueteController
     /**
      * @var ActualizarPaqueteHandler
      */
-    private ActualizarPaqueteHandler $handler;
+    private $handler;
 
     /**
      * Constructor

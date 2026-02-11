@@ -12,14 +12,14 @@ namespace App\Application\Produccion\Command;
 class CrearCalendarioItem
 {
     /**
-     * @var int
+     * @var string
      */
-    public string $calendarioId;
+    public $calendarioId;
 
     /**
-     * @var int
+     * @var string
      */
-    public string $itemDespachoId;
+    public $itemDespachoId;
 
     /**
      * Constructor

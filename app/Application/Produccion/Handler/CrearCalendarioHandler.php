@@ -7,10 +7,10 @@ namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Application\Produccion\Command\CrearCalendario;
-use App\Domain\Produccion\Entity\Calendario;
 use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Produccion\Command\CrearCalendario;
 use App\Domain\Produccion\Events\CalendarioCreado;
+use App\Domain\Produccion\Entity\Calendario;
 
 /**
  * @class CrearCalendarioHandler
@@ -21,17 +21,17 @@ class CrearCalendarioHandler
     /**
      * @var CalendarioRepositoryInterface
      */
-    private CalendarioRepositoryInterface $calendarioRepository;
+    private $calendarioRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

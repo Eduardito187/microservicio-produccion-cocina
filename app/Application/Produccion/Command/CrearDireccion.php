@@ -14,37 +14,37 @@ class CrearDireccion
     /**
      * @var string|null
      */
-    public string|null $nombre;
+    public $nombre;
 
     /**
      * @var string
      */
-    public string $linea1;
+    public $linea1;
 
     /**
      * @var string|null
      */
-    public string|null $linea2;
+    public $linea2;
 
     /**
      * @var string|null
      */
-    public string|null $ciudad;
+    public $ciudad;
 
     /**
      * @var string|null
      */
-    public string|null $provincia;
+    public $provincia;
 
     /**
      * @var string|null
      */
-    public string|null $pais;
+    public $pais;
 
     /**
      * @var array|null
      */
-    public array|null $geo;
+    public $geo;
 
     /**
      * Constructor

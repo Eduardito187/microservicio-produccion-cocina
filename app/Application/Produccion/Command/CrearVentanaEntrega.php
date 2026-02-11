@@ -16,12 +16,12 @@ class CrearVentanaEntrega
     /**
      * @var DateTimeImmutable
      */
-    public DateTimeImmutable $desde;
+    public $desde;
 
     /**
      * @var DateTimeImmutable
      */
-    public DateTimeImmutable $hasta;
+    public $hasta;
 
     /**
      * Constructor

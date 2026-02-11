@@ -7,8 +7,8 @@ namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\GenerarOPHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Application\Produccion\Command\GenerarOP;
 use App\Presentation\Http\Requests\GenerarOPRequest;
+use App\Application\Produccion\Command\GenerarOP;
 use Illuminate\Http\JsonResponse;
 use DateTimeImmutable;
 use DomainException;

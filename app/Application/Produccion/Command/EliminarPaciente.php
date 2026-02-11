@@ -12,9 +12,9 @@ namespace App\Application\Produccion\Command;
 class EliminarPaciente
 {
     /**
-     * @var int
+     * @var istringnt
      */
-    public string $id;
+    public $id;
 
     /**
      * Constructor

@@ -14,22 +14,22 @@ class PlanificarOP
     /**
      * @var int
      */
-    public string $ordenProduccionId;
+    public $ordenProduccionId;
 
     /**
      * @var int
      */
-    public string $estacionId;
+    public $estacionId;
 
     /**
      * @var int
      */
-    public string $recetaVersionId;
+    public $recetaVersionId;
 
     /**
      * @var int
      */
-    public string $porcionId;
+    public $porcionId;
 
     /**
      * Constructor

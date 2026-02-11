@@ -7,10 +7,10 @@ namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Application\Produccion\Command\CrearPaciente;
-use App\Domain\Produccion\Entity\Paciente;
 use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Produccion\Command\CrearPaciente;
 use App\Domain\Produccion\Events\PacienteCreado;
+use App\Domain\Produccion\Entity\Paciente;
 
 /**
  * @class CrearPacienteHandler
@@ -21,17 +21,17 @@ class CrearPacienteHandler
     /**
      * @var PacienteRepositoryInterface
      */
-    private PacienteRepositoryInterface $pacienteRepository;
+    private $pacienteRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

@@ -19,7 +19,7 @@ class CrearCalendarioItemController
     /**
      * @var CrearCalendarioItemHandler
      */
-    private CrearCalendarioItemHandler $handler;
+    private $handler;
 
     /**
      * Constructor

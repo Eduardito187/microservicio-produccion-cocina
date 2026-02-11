@@ -5,11 +5,11 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\VerEtiqueta;
 use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\Etiqueta;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerEtiqueta;
+use App\Domain\Produccion\Entity\Etiqueta;
 
 /**
  * @class VerEtiquetaHandler
@@ -20,12 +20,12 @@ class VerEtiquetaHandler
     /**
      * @var EtiquetaRepositoryInterface
      */
-    private EtiquetaRepositoryInterface $etiquetaRepository;
+    private $etiquetaRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

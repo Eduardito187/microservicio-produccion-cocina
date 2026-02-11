@@ -19,7 +19,7 @@ class VerRecetaVersionController
     /**
      * @var VerRecetaVersionHandler
      */
-    private VerRecetaVersionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

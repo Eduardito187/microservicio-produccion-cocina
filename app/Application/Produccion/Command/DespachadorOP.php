@@ -14,27 +14,27 @@ class DespachadorOP
     /**
      * @var string|int
      */
-    public string $ordenProduccionId;
+    public $ordenProduccionId;
 
     /**
      * @var array
      */
-    public array $itemsDespacho;
+    public $itemsDespacho;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $pacienteId;
+    public $pacienteId;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $direccionId;
+    public $direccionId;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $ventanaEntrega;
+    public $ventanaEntrega;
 
     /**
      * Constructor

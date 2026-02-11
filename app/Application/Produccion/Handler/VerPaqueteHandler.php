@@ -5,11 +5,11 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\VerPaquete;
 use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\Paquete;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerPaquete;
+use App\Domain\Produccion\Entity\Paquete;
 
 /**
  * @class VerPaqueteHandler
@@ -20,12 +20,12 @@ class VerPaqueteHandler
     /**
      * @var PaqueteRepositoryInterface
      */
-    private PaqueteRepositoryInterface $paqueteRepository;
+    private $paqueteRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

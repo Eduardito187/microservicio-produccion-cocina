@@ -20,7 +20,7 @@ class ActualizarPacienteController
     /**
      * @var ActualizarPacienteHandler
      */
-    private ActualizarPacienteHandler $handler;
+    private $handler;
 
     /**
      * Constructor

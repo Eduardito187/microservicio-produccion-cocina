@@ -8,10 +8,6 @@ namespace App\Infrastructure\Persistence\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @package App\Infrastructure\Persistence\Model
- */
-
-/**
  * @class OrdenProduccion
  * @package App\Infrastructure\Persistence\Model
  */

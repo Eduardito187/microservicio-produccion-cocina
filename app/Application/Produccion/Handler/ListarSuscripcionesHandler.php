@@ -5,9 +5,9 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\ListarSuscripciones;
 use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Application\Produccion\Command\ListarSuscripciones;
 use App\Domain\Produccion\Entity\Suscripcion;
 
 /**
@@ -19,12 +19,12 @@ class ListarSuscripcionesHandler
     /**
      * @var SuscripcionRepositoryInterface
      */
-    private SuscripcionRepositoryInterface $suscripcionRepository;
+    private $suscripcionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

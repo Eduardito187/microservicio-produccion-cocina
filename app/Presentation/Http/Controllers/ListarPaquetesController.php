@@ -18,7 +18,7 @@ class ListarPaquetesController
     /**
      * @var ListarPaquetesHandler
      */
-    private ListarPaquetesHandler $handler;
+    private $handler;
 
     /**
      * Constructor

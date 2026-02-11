@@ -18,7 +18,7 @@ class ListarVentanasEntregaController
     /**
      * @var ListarVentanasEntregaHandler
      */
-    private ListarVentanasEntregaHandler $handler;
+    private $handler;
 
     /**
      * Constructor

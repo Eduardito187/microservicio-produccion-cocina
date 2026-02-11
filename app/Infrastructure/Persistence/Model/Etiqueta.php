@@ -9,10 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * @package App\Infrastructure\Persistence\Model
- */
-
-/**
  * @class Etiqueta
  * @package App\Infrastructure\Persistence\Model
  */

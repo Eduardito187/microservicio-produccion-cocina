@@ -8,10 +8,6 @@ namespace App\Infrastructure\Persistence\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @package App\Infrastructure\Persistence\Model
- */
-
-/**
  * @class OrderItem
  * @package App\Infrastructure\Persistence\Model
  */

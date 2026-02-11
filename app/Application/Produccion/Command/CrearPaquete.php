@@ -14,17 +14,17 @@ class CrearPaquete
     /**
      * @var string|int|null
      */
-    public string|int|null $etiquetaId;
+    public $etiquetaId;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $ventanaId;
+    public $ventanaId;
 
     /**
      * @var string|int|null
      */
-    public string|int|null $direccionId;
+    public $direccionId;
 
     /**
      * Constructor

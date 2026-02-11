@@ -14,12 +14,12 @@ class CrearEstacion
     /**
      * @var string
      */
-    public string $nombre;
+    public $nombre;
 
     /**
      * @var int|null
      */
-    public int|null $capacidad;
+    public $capacidad;
 
     /**
      * Constructor

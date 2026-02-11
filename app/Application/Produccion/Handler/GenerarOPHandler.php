@@ -19,12 +19,12 @@ class GenerarOPHandler
     /**
      * @var OrdenProduccionRepositoryInterface
      */
-    private OrdenProduccionRepositoryInterface $ordenProduccionRepository;
+    private $ordenProduccionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

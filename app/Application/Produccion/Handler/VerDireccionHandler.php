@@ -5,11 +5,11 @@
 
 namespace App\Application\Produccion\Handler;
 
-use App\Application\Produccion\Command\VerDireccion;
 use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\Direccion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerDireccion;
+use App\Domain\Produccion\Entity\Direccion;
 
 /**
  * @class VerDireccionHandler
@@ -20,12 +20,12 @@ class VerDireccionHandler
     /**
      * @var DireccionRepositoryInterface
      */
-    private DireccionRepositoryInterface $direccionRepository;
+    private $direccionRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

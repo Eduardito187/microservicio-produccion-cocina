@@ -6,8 +6,8 @@
 namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\EliminarVentanaEntrega;
+use App\Application\Support\Transaction\TransactionAggregate;
 
 /**
  * @class EliminarVentanaEntregaHandler
@@ -18,12 +18,12 @@ class EliminarVentanaEntregaHandler
     /**
      * @var VentanaEntregaRepositoryInterface
      */
-    private VentanaEntregaRepositoryInterface $ventanaEntregaRepository;
+    private $ventanaEntregaRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * Constructor

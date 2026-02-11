@@ -8,9 +8,9 @@ namespace App\Application\Produccion\Handler;
 use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\CrearCalendarioItem;
-use App\Domain\Produccion\Entity\CalendarioItem;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Domain\Produccion\Events\CalendarioItemCreado;
+use App\Domain\Produccion\Entity\CalendarioItem;
 
 /**
  * @class CrearCalendarioItemHandler
@@ -21,17 +21,17 @@ class CrearCalendarioItemHandler
     /**
      * @var CalendarioItemRepositoryInterface
      */
-    private CalendarioItemRepositoryInterface $calendarioItemRepository;
+    private $calendarioItemRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

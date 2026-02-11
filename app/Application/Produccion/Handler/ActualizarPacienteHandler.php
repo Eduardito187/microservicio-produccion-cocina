@@ -20,17 +20,17 @@ class ActualizarPacienteHandler
     /**
      * @var PacienteRepositoryInterface
      */
-    private PacienteRepositoryInterface $pacienteRepository;
+    private $pacienteRepository;
 
     /**
      * @var TransactionAggregate
      */
-    private TransactionAggregate $transactionAggregate;
+    private $transactionAggregate;
 
     /**
      * @var DomainEventPublisherInterface
      */
-    private DomainEventPublisherInterface $eventPublisher;
+    private $eventPublisher;
 
     /**
      * Constructor

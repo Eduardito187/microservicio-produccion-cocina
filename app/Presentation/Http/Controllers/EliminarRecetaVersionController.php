@@ -19,7 +19,7 @@ class EliminarRecetaVersionController
     /**
      * @var EliminarRecetaVersionHandler
      */
-    private EliminarRecetaVersionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

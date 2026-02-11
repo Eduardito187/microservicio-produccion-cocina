@@ -6,8 +6,8 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\VerDireccionHandler;
-use App\Application\Produccion\Command\VerDireccion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\VerDireccion;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -19,7 +19,7 @@ class VerDireccionController
     /**
      * @var VerDireccionHandler
      */
-    private VerDireccionHandler $handler;
+    private $handler;
 
     /**
      * Constructor

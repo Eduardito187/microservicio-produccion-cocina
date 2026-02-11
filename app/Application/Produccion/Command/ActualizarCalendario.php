@@ -14,19 +14,19 @@ use DateTimeImmutable;
 class ActualizarCalendario
 {
     /**
-     * @var int
+     * @var string
      */
-    public string $id;
+    public $id;
 
     /**
      * @var DateTimeImmutable
      */
-    public DateTimeImmutable $fecha;
+    public $fecha;
 
     /**
      * @var string
      */
-    public string $sucursalId;
+    public $sucursalId;
 
     /**
      * Constructor

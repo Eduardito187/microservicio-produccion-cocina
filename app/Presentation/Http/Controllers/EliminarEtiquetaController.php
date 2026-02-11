@@ -19,7 +19,7 @@ class EliminarEtiquetaController
     /**
      * @var EliminarEtiquetaHandler
      */
-    private EliminarEtiquetaHandler $handler;
+    private $handler;
 
     /**
      * Constructor

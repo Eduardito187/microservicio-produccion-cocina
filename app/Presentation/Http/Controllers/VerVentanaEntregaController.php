@@ -19,7 +19,7 @@ class VerVentanaEntregaController
     /**
      * @var VerVentanaEntregaHandler
      */
-    private VerVentanaEntregaHandler $handler;
+    private $handler;
 
     /**
      * Constructor

@@ -6,8 +6,8 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\EliminarPaqueteHandler;
-use App\Application\Produccion\Command\EliminarPaquete;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Application\Produccion\Command\EliminarPaquete;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -19,7 +19,7 @@ class EliminarPaqueteController
     /**
      * @var EliminarPaqueteHandler
      */
-    private EliminarPaqueteHandler $handler;
+    private $handler;
 
     /**
      * Constructor
