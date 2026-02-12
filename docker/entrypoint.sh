@@ -51,10 +51,12 @@ run_artisan cache:clear
 
 # DB tasks (safe, may fail if DB not ready yet)
 run_artisan migrate --force --no-interaction
-run_artisan db:seed --no-interaction
+if [ "${RUN_PACT_ON_START:-0}" = "1" ]; then
+  run_artisan db:seed --no-interaction
+fi
 
-# Unit tests (NO coverage here to avoid false failures if no driver)
-if [ "${RUN_UNIT_TESTS_ON_START:-1}" = "1" ]; then
+# Unit tests
+if [ "${RUN_UNIT_TESTS_ON_START:-0}" = "1" ]; then
   echo "[entrypoint] php artisan test --testsuite=Unit ..."
   php artisan test --testsuite=Unit || echo "[entrypoint] WARN: unit tests failed (continuing)"
 fi

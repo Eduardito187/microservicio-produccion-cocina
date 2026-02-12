@@ -73,7 +73,7 @@ use App\Presentation\Http\Controllers\LoginController;
 use App\Presentation\Http\Controllers\ProxyController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['keycloak.jwt', 'role:cocinero,planificador,produccion,despachador'])->group(function () {
+Route::middleware(['keycloak.jwt', 'role:cocinero,planificador,despachador,produccion'])->group(function () {
     Route::post('/produccion/ordenes/generar', GenerarOPController::class)
         ->middleware('role:planificador')
         ->name('produccion.ordenes.generar');
@@ -81,7 +81,7 @@ Route::middleware(['keycloak.jwt', 'role:cocinero,planificador,produccion,despac
         ->middleware('role:planificador')
         ->name('produccion.ordenes.planificar');
     Route::post('/produccion/ordenes/procesar', ProcesarOPController::class)
-        ->middleware('role:produccion,cocinero')
+        ->middleware('role:cocinero,produccion')
         ->name('produccion.ordenes.procesar');
     Route::post('/produccion/ordenes/despachar', DespacharOPController::class)
         ->middleware('role:despachador')
@@ -160,16 +160,15 @@ Route::middleware(['keycloak.jwt', 'role:cocinero,planificador,produccion,despac
 
     // api eventos
     Route::post('/event-bus', EventBusController::class)->middleware('role:produccion');
+
+    //API Gateway
+    Route::get('/users', [ProxyController::class, 'users']);
+    Route::get('/posts', [ProxyController::class, 'posts']);
 });
 
 // test
 Route::post('/_pact/setup', PactStateController::class);
 
-//API Gateway
+//KeyCloak
 Route::post('/login', LoginController::class);
 Route::post('/refresh', RefreshController::class);
-
-Route::middleware(['keycloak.jwt', 'role:cocinero,planificador,produccion,despachador'])->group(function () {
-    Route::get('/users', [ProxyController::class, 'users']);
-    Route::get('/posts', [ProxyController::class, 'posts']);
-});

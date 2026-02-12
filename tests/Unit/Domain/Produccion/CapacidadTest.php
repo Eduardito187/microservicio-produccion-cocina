@@ -21,7 +21,7 @@ class CapacidadTest extends TestCase
     public function test_it_creates_a_valid_capacidad(): void
     {
         $c = new Capacidad(5);
-        $this->assertSame('5', $c->value());
+        $this->assertSame(5, $c->value());
     }
 
     /**

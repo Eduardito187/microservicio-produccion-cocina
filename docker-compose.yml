@@ -15,6 +15,7 @@ services:
       DB_HOST: mysql_server
       DB_PORT: 3306
       RUN_PACT_ON_START: "0"
+      RUN_UNIT_TESTS_ON_START: "0"
     depends_on:
       mysql_server:
         condition: service_healthy

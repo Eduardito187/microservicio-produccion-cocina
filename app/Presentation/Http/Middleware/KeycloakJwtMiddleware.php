@@ -5,14 +5,14 @@
 
 namespace App\Presentation\Http\Middleware;
 
-use Closure;
-use Firebase\JWT\JWK;
-use Firebase\JWT\JWT;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
+use Firebase\JWT\JWK;
+use Firebase\JWT\JWT;
+use Throwable;
+use Closure;
 
 /**
  * @class KeycloakJwtMiddleware
@@ -32,16 +32,14 @@ class KeycloakJwtMiddleware
         }
 
         $auth = $request->header('Authorization', '');
+
         if (!is_string($auth) || $auth === '') {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $scheme = null;
         if (str_starts_with($auth, 'Bearer ')) {
-            $scheme = 'Bearer';
             $token = trim(substr($auth, 7));
         } elseif (str_starts_with($auth, 'DPoP ')) {
-            $scheme = 'DPoP';
             $token = trim(substr($auth, 5));
         } else {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -52,6 +50,7 @@ class KeycloakJwtMiddleware
         }
 
         $jwks = $this->getJwks();
+
         if ($jwks === null) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
@@ -59,38 +58,22 @@ class KeycloakJwtMiddleware
         try {
             $keys = JWK::parseKeySet($jwks);
             $decoded = JWT::decode($token, $keys);
-        } catch (\Throwable $e) {
-            Log::warning('Keycloak JWT decode failed', ['error' => $e->getMessage()]);
+            $claims = json_decode(
+                json_encode($decoded, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR
+            );
+        } catch (Throwable $e) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $claims = (array) $decoded;
         if (!$this->isValidIssuer($claims) || !$this->isValidAudience($claims)) {
-            Log::warning('Keycloak JWT claim validation failed', [
-                'iss' => $claims['iss'] ?? null,
-                'aud' => $claims['aud'] ?? null,
-                'azp' => $claims['azp'] ?? null,
-            ]);
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
         if ($this->shouldRequireDpop($claims)) {
             if (!$this->isValidDpop($request, $claims)) {
-                Log::warning('DPoP validation failed', ['sub' => $claims['sub'] ?? null]);
                 return response()->json(['message' => 'Unauthorized'], 401);
             }
-        } elseif (($claims['typ'] ?? null) === 'DPoP' && $request->header('DPoP') === null) {
-            Log::info('DPoP header missing; accepted because require_dpop is false', [
-                'sub' => $claims['sub'] ?? null,
-            ]);
         }
-
-        Log::info('Keycloak JWT validated', [
-            'sub' => $claims['sub'] ?? null,
-            'azp' => $claims['azp'] ?? null,
-            'typ' => $claims['typ'] ?? null,
-            'scheme' => $scheme,
-        ]);
 
         $request->attributes->set('token', $claims);
 
@@ -104,7 +87,7 @@ class KeycloakJwtMiddleware
     private function shouldBypassAuthForPact(Request $request): bool
     {
         if (app()->environment(['local', 'testing']) && (bool) env('PACT_BYPASS_AUTH', false)) {
-            return $request->is('api/_pact/*') || $request->is('api/produccion/ordenes/*');
+            return $request->is('api/_pact/*');
         }
 
         $pactHeader = $request->header('X-Pact-Request');
@@ -133,9 +116,7 @@ class KeycloakJwtMiddleware
 
         return Cache::remember($cacheKey, $ttl, function () {
             $url = rtrim(config('keycloak.base_url'), '/')
-                .'/realms/'.config('keycloak.realm')
-                .'/protocol/openid-connect/certs';
-
+                .'/realms/'.config('keycloak.realm').'/protocol/openid-connect/certs';
             $response = Http::get($url);
 
             if (!$response->ok()) {
@@ -143,6 +124,7 @@ class KeycloakJwtMiddleware
             }
 
             $data = $response->json();
+
             if (!is_array($data) || !isset($data['keys'])) {
                 return null;
             }
@@ -175,6 +157,7 @@ class KeycloakJwtMiddleware
             if ($aud === $expected) {
                 return true;
             }
+
             return $aud === 'account' && $azp === $expected;
         }
 
@@ -182,6 +165,7 @@ class KeycloakJwtMiddleware
             if (in_array($expected, $aud, true)) {
                 return true;
             }
+
             return in_array('account', $aud, true) && $azp === $expected;
         }
 
@@ -205,22 +189,26 @@ class KeycloakJwtMiddleware
     private function isValidDpop(Request $request, array $claims): bool
     {
         $dpop = $request->header('DPoP');
+
         if (!is_string($dpop) || $dpop === '') {
             return false;
         }
 
         try {
             $parts = explode('.', $dpop);
+
             if (count($parts) !== 3) {
                 return false;
             }
+
             $header = json_decode($this->base64UrlDecode($parts[0]), true, 512, JSON_THROW_ON_ERROR);
             $payload = json_decode($this->base64UrlDecode($parts[1]), true, 512, JSON_THROW_ON_ERROR);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return false;
         }
 
         $jwk = $header['jwk'] ?? null;
+
         if (!is_array($jwk)) {
             return false;
         }
@@ -234,11 +222,13 @@ class KeycloakJwtMiddleware
 
         $cnf = $claims['cnf'] ?? [];
         $expectedJkt = is_array($cnf) ? ($cnf['jkt'] ?? null) : null;
+
         if (!is_string($expectedJkt)) {
             return false;
         }
 
         $actualJkt = $this->jwkThumbprint($jwk);
+
         if ($actualJkt === null || $actualJkt !== $expectedJkt) {
             return false;
         }
@@ -259,12 +249,9 @@ class KeycloakJwtMiddleware
             return null;
         }
 
-        $data = json_encode([
-            'crv' => $jwk['crv'],
-            'kty' => $jwk['kty'],
-            'x' => $jwk['x'],
-            'y' => $jwk['y'],
-        ], JSON_UNESCAPED_SLASHES);
+        $data = json_encode(
+            ['crv' => $jwk['crv'], 'kty' => $jwk['kty'], 'x' => $jwk['x'], 'y' => $jwk['y']], JSON_UNESCAPED_SLASHES
+            );
 
         if (!is_string($data)) {
             return null;

@@ -19,10 +19,10 @@ class RequireRoleMiddleware
     /**
      * @param Request $request
      * @param Closure $next
-     * @param string $roles
+     * @param string ...$roles
      * @return Response
      */
-    public function handle(Request $request, Closure $next, string $roles): Response
+    public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         if ($this->shouldBypassForPact($request) || $this->shouldBypassForTests()) {
             return $next($request);
@@ -61,7 +61,7 @@ class RequireRoleMiddleware
     private function shouldBypassForPact(Request $request): bool
     {
         if (app()->environment(['local', 'testing']) && (bool) env('PACT_BYPASS_AUTH', false)) {
-            return $request->is('api/_pact/*') || $request->is('api/produccion/ordenes/*');
+            return $request->is('api/_pact/*');
         }
 
         $pactHeader = $request->header('X-Pact-Request');
@@ -81,14 +81,23 @@ class RequireRoleMiddleware
     }
 
     /**
-     * @param string $roles
+     * @param array $roles
      * @return array
      */
-    private function parseRoles(string $roles): array
+    private function parseRoles(array $roles): array
     {
-        $roles = str_replace('|', ',', $roles);
-        $items = array_map('trim', explode(',', $roles));
-        return array_values(array_filter($items, fn ($r) => $r !== ''));
+        $items = [];
+        foreach ($roles as $chunk) {
+            $chunk = str_replace('|', ',', $chunk);
+            $parts = array_map('trim', explode(',', $chunk));
+            foreach ($parts as $part) {
+                if ($part !== '') {
+                    $items[] = $part;
+                }
+            }
+        }
+
+        return array_values(array_unique($items));
     }
 
     /**
@@ -99,17 +108,39 @@ class RequireRoleMiddleware
     {
         $roles = [];
 
-        $realmRoles = $claims['realm_access']['roles'] ?? [];
+        $realmAccess = $this->toArray($claims['realm_access'] ?? []);
+        $realmRoles = $realmAccess['roles'] ?? [];
         if (is_array($realmRoles)) {
             $roles = array_merge($roles, $realmRoles);
         }
 
         $clientId = config('keycloak.client_id');
-        $clientRoles = $claims['resource_access'][$clientId]['roles'] ?? [];
+        $resourceAccess = $this->toArray($claims['resource_access'] ?? []);
+        $clientAccess = $this->toArray($resourceAccess[$clientId] ?? []);
+        $clientRoles = $clientAccess['roles'] ?? [];
         if (is_array($clientRoles)) {
             $roles = array_merge($roles, $clientRoles);
         }
 
         return array_values(array_unique($roles));
+    }
+
+    /**
+     * @param mixed $value
+     * @return array
+     */
+    private function toArray(mixed $value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if (is_object($value)) {
+            /** @var array $arrayValue */
+            $arrayValue = (array) $value;
+            return $arrayValue;
+        }
+
+        return [];
     }
 }
