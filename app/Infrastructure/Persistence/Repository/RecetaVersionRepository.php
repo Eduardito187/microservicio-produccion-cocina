@@ -34,7 +34,10 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
             $row->nombre,
             $row->nutrientes,
             $row->ingredientes,
-            $row->version
+            $row->version,
+            $row->description,
+            $row->instructions,
+            $row->total_calories
         );
     }
 
@@ -51,6 +54,9 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
                 'nutrientes' => $recetaVersion->nutrientes,
                 'ingredientes' => $recetaVersion->ingredientes,
                 'version' => $recetaVersion->version,
+                'description' => $recetaVersion->description,
+                'instructions' => $recetaVersion->instructions,
+                'total_calories' => $recetaVersion->totalCalories,
             ]
         );
         return $model->id;
@@ -69,7 +75,10 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
                 $row->nombre,
                 $row->nutrientes,
                 $row->ingredientes,
-                $row->version
+                $row->version,
+                $row->description,
+                $row->instructions,
+                $row->total_calories
             );
         }
 

@@ -60,6 +60,9 @@ class ActualizarRecetaVersionHandler
             $recetaVersion->nombre = $command->nombre;
             $recetaVersion->nutrientes = $command->nutrientes;
             $recetaVersion->ingredientes = $command->ingredientes;
+            $recetaVersion->description = $command->description;
+            $recetaVersion->instructions = $command->instructions;
+            $recetaVersion->totalCalories = $command->totalCalories;
             $recetaVersion->version = $command->version;
 
             $id = $this->recetaVersionRepository->save($recetaVersion);
@@ -68,7 +71,10 @@ class ActualizarRecetaVersionHandler
                 $recetaVersion->nombre,
                 $recetaVersion->version,
                 $recetaVersion->nutrientes,
-                $recetaVersion->ingredientes
+                $recetaVersion->ingredientes,
+                $recetaVersion->description,
+                $recetaVersion->instructions,
+                $recetaVersion->totalCalories
             );
             $this->eventPublisher->publish([$event], $id);
 

@@ -24,6 +24,7 @@ use App\Presentation\Http\Controllers\ActualizarEstacionController;
 use App\Presentation\Http\Controllers\CrearRecetaVersionController;
 use App\Presentation\Http\Controllers\EliminarCalendarioController;
 use App\Presentation\Http\Controllers\ActualizarProductoController;
+use App\Presentation\Http\Controllers\EliminarProductoController;
 use App\Presentation\Http\Controllers\ActualizarEtiquetaController;
 use App\Presentation\Http\Controllers\ListarDireccionesController;
 use App\Presentation\Http\Controllers\VerVentanaEntregaController;
@@ -133,6 +134,7 @@ Route::middleware(['keycloak.jwt', 'role:cocinero,planificador,despachador,produ
     Route::get('/productos', ListarProductosController::class)->name('productos.listar');
     Route::get('/productos/{id}', VerProductoController::class)->name('productos.ver');
     Route::put('/productos/{id}', ActualizarProductoController::class)->middleware('role:planificador,produccion')->name('productos.actualizar');
+    Route::delete('/productos/{id}', EliminarProductoController::class)->middleware('role:planificador,produccion')->name('productos.eliminar');
 
     Route::post('/calendarios', CrearCalendarioController::class)->middleware('role:planificador,produccion')->name('calendarios.crear');
     Route::get('/calendarios', ListarCalendariosController::class)->name('calendarios.listar');

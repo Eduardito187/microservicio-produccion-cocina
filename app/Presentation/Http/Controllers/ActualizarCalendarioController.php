@@ -41,14 +41,12 @@ class ActualizarCalendarioController
     {
         $data = $request->validate([
             'fecha' => ['required', 'date'],
-            'sucursalId' => ['required', 'string', 'max:100'],
         ]);
 
         try {
             $calendarioId = $this->handler->__invoke(new ActualizarCalendario(
                 $id,
-                new DateTimeImmutable($data['fecha']),
-                $data['sucursalId']
+                new DateTimeImmutable($data['fecha'])
             ));
 
             return response()->json(['calendarioId' => $calendarioId], 200);

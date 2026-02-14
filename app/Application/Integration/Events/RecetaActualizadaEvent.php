@@ -34,6 +34,21 @@ class RecetaActualizadaEvent
     public $ingredientes;
 
     /**
+     * @var ?string
+     */
+    public $description;
+
+    /**
+     * @var ?string
+     */
+    public $instructions;
+
+    /**
+     * @var ?int
+     */
+    public $totalCalories;
+
+    /**
      * @var ?int
      */
     public $version;
@@ -45,6 +60,9 @@ class RecetaActualizadaEvent
      * @param ?string $nombre
      * @param ?array $nutrientes
      * @param ?array $ingredientes
+     * @param ?string $description
+     * @param ?string $instructions
+     * @param ?int $totalCalories
      * @param ?int $version
      */
     public function __construct(
@@ -52,12 +70,18 @@ class RecetaActualizadaEvent
         ?string $nombre,
         ?array $nutrientes,
         ?array $ingredientes,
+        ?string $description,
+        ?string $instructions,
+        ?int $totalCalories,
         ?int $version
     ) {
         $this->id = $id;
         $this->nombre = $nombre;
         $this->nutrientes = $nutrientes;
         $this->ingredientes = $ingredientes;
+        $this->description = $description;
+        $this->instructions = $instructions;
+        $this->totalCalories = $totalCalories;
         $this->version = $version;
     }
 
@@ -69,11 +93,20 @@ class RecetaActualizadaEvent
     {
         $p = new Payload($payload);
 
+        $nutrientes = $p->getArray(['nutrientes', 'nutrients']);
+        $totalCalories = $p->getInt(['totalCalories', 'total_calories']);
+        if ($nutrientes === null && $totalCalories !== null) {
+            $nutrientes = ['kcal' => $totalCalories];
+        }
+
         return new self(
             $p->getString(['id', 'recetaVersionId', 'receta_version_id', 'recetaId', 'receta_id'], null, true),
             $p->getString(['nombre', 'name']),
-            $p->getArray(['nutrientes', 'nutrients']),
+            $nutrientes,
             $p->getArray(['ingredientes', 'ingredients']),
+            $p->getString(['description', 'descripcion']),
+            $p->getString(['instructions', 'instrucciones']),
+            $totalCalories,
             $p->getInt(['version', 'versionNumber'])
         );
     }

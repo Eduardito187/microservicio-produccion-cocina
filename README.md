@@ -123,7 +123,10 @@ RABBITMQ_PUBLISH_BACKOFF_MS=250
 
 - El consumer usa configuración **INBOUND_RABBITMQ_*** (sin fallback a outbox).
 - `schema_version` es obligatorio para inbound.
-- Schemas de eventos: `docs/schemas/envelope.json`, `docs/schemas/inbound-calendar.json`, `docs/schemas/inbound-logistica.json`.
+- Para consumir eventos externos de recetas debes incluir `planes.*` en `INBOUND_RABBITMQ_ROUTING_KEYS`.
+- Para eventos de calendario externos usa también `calendarios.*` en `INBOUND_RABBITMQ_ROUTING_KEYS`.
+- Para eventos de contratos externos usa también `contrato.*` en `INBOUND_RABBITMQ_ROUTING_KEYS`.
+- Schemas de eventos: `docs/schemas/envelope.json`, `docs/schemas/inbound-calendar.json`, `docs/schemas/inbound-logistica.json`, `docs/schemas/inbound-recetas.json`, `docs/schemas/inbound-contratos.json`.
  - Schemas outbound mínimos: `docs/schemas/outbound-produccion.json`.
  - Política de versionado: `docs/VERSIONING.md`.
 
@@ -149,7 +152,7 @@ RABBITMQ_PUBLISH_BACKOFF_MS=250
 - `aggregate_id` (uuid)
 - `payload` (camelCase)
 
-Nota: el identificador principal del recurso es `aggregate_id`. El payload no repite ese valor para evitar duplicidad.
+Nota: el identificador principal del recurso es `aggregate_id`. En el evento `PaqueteParaDespachoCreado` también se incluye `payload.id` por requerimiento de contrato externo.
 
 ### Routing key y binding
 - Si `RABBITMQ_ROUTING_KEY` está vacío, se usa el nombre del evento normalizado como routing key.
@@ -387,3 +390,7 @@ Necesitas:
 - Replay de eventos
 - Tests de drift de modelos
 - Simulación de escenarios históricos
+
+
+
+#39

@@ -39,12 +39,10 @@ class CrearCalendarioController
     {
         $data = $request->validate([
             'fecha' => ['required', 'date'],
-            'sucursalId' => ['required', 'string', 'max:100'],
         ]);
 
         $calendarioId = $this->handler->__invoke(new CrearCalendario(
-            new DateTimeImmutable($data['fecha']),
-            $data['sucursalId']
+            new DateTimeImmutable($data['fecha'])
         ));
 
         return response()->json(['calendarioId' => $calendarioId], 201);

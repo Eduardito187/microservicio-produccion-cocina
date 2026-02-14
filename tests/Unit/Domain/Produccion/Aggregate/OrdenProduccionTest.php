@@ -24,9 +24,8 @@ class OrdenProduccionTest extends TestCase
     public function test_crear_inicializa_la_op_en_estado_creada_y_registra_evento(): void
     {
         $fecha = new DateTimeImmutable('2025-01-01');
-        $ordenProduccion = OrdenProduccion::crear($fecha, 'SUC1');
+        $ordenProduccion = OrdenProduccion::crear($fecha);
         $this->assertSame(EstadoOP::CREADA, $ordenProduccion->estado());
-        $this->assertSame('SUC1', $ordenProduccion->sucursalId());
 
         $events = $ordenProduccion->pullEvents();
         $this->assertCount(1, $events);
@@ -39,7 +38,7 @@ class OrdenProduccionTest extends TestCase
     public function test_agregar_items_construye_orden_items_desde_array(): void
     {
         $fecha = new DateTimeImmutable('2025-01-01');
-        $ordenProduccion = OrdenProduccion::crear($fecha, 'SUC1');
+        $ordenProduccion = OrdenProduccion::crear($fecha);
         $items = [['sku' => 'ABC', 'qty' => 3], ['sku' => 'XYZ', 'qty' => 5]];
 
         $ordenProduccion->agregarItems($items);
@@ -54,7 +53,7 @@ class OrdenProduccionTest extends TestCase
     public function test_agregar_items_falla_si_estado_no_es_creada(): void
     {
         $fecha = new DateTimeImmutable('2025-01-01');
-        $ordenProduccion = OrdenProduccion::crear($fecha, 'SUC1');
+        $ordenProduccion = OrdenProduccion::crear($fecha);
 
         $ordenProduccion->planificar();
         $this->expectException(DomainException::class);
@@ -67,7 +66,7 @@ class OrdenProduccionTest extends TestCase
     public function test_flujo_de_estados_planificar_procesar_cerrar(): void
     {
         $fecha = new DateTimeImmutable('2025-01-01');
-        $ordenProduccion = OrdenProduccion::crear($fecha, 'SUC1');
+        $ordenProduccion = OrdenProduccion::crear($fecha);
         $this->assertNull($ordenProduccion->id());
 
         $ordenProduccion->planificar();

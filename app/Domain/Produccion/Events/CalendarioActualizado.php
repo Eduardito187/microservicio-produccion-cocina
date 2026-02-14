@@ -20,25 +20,17 @@ class CalendarioActualizado extends BaseDomainEvent
     private $fecha;
 
     /**
-     * @var string
-     */
-    private $sucursalId;
-
-    /**
      * Constructor
      *
      * @param string|int|null $calendarioId
      * @param DateTimeImmutable $fecha
-     * @param string $sucursalId
      */
     public function __construct(
         string|int|null $calendarioId,
-        DateTimeImmutable $fecha,
-        string $sucursalId
+        DateTimeImmutable $fecha
     ) {
         parent::__construct($calendarioId);
         $this->fecha = $fecha;
-        $this->sucursalId = $sucursalId;
     }
 
     /**
@@ -48,7 +40,6 @@ class CalendarioActualizado extends BaseDomainEvent
     {
         return [
             'fecha' => $this->fecha->format(DATE_ATOM),
-            'sucursalId' => $this->sucursalId,
         ];
     }
 }

@@ -14,62 +14,70 @@ use App\Domain\Shared\Events\BaseDomainEvent;
 class PaqueteParaDespachoCreado extends BaseDomainEvent
 {
     /**
-     * @var string|int|null
+     * @var string
      */
-    private $etiquetaId;
+    private $number;
 
     /**
-     * @var string|int|null
+     * @var string|int
      */
-    private $ventanaId;
+    private $patientId;
 
     /**
-     * @var string|int|null
+     * @var string
      */
-    private $direccionId;
+    private $patientName;
 
     /**
-     * @var string|int|null
+     * @var string
      */
-    private $pacienteId;
+    private $deliveryAddress;
 
     /**
-     * @var string|int|null
+     * @var float
      */
-    private $recetaVersionId;
+    private $deliveryLatitude;
 
     /**
-     * @var string|int|null
+     * @var float
      */
-    private $suscripcionId;
+    private $deliveryLongitude;
+
+    /**
+     * @var string
+     */
+    private $deliveryDate;
 
     /**
      * Constructor
      *
-     * @param string|int|null $paqueteId
-     * @param string|int|null $etiquetaId
-     * @param string|int|null $ventanaId
-     * @param string|int|null $direccionId
-     * @param string|int|null $pacienteId
-     * @param string|int|null $recetaVersionId
-     * @param string|int|null $suscripcionId
+     * @param string|int $paqueteId
+     * @param string $number
+     * @param string|int $patientId
+     * @param string $patientName
+     * @param string $deliveryAddress
+     * @param float $deliveryLatitude
+     * @param float $deliveryLongitude
+     * @param string $deliveryDate
      */
     public function __construct(
-        string|int|null $paqueteId,
-        string|int|null $etiquetaId,
-        string|int|null $ventanaId,
-        string|int|null $direccionId,
-        string|int|null $pacienteId,
-        string|int|null $recetaVersionId,
-        string|int|null $suscripcionId
+        string|int $paqueteId,
+        string $number,
+        string|int $patientId,
+        string $patientName,
+        string $deliveryAddress,
+        float $deliveryLatitude,
+        float $deliveryLongitude,
+        string $deliveryDate
     ) {
         parent::__construct($paqueteId);
-        $this->etiquetaId = $etiquetaId;
-        $this->ventanaId = $ventanaId;
-        $this->direccionId = $direccionId;
-        $this->pacienteId = $pacienteId;
-        $this->recetaVersionId = $recetaVersionId;
-        $this->suscripcionId = $suscripcionId;
+        $this->number = $number;
+        $this->patientId = $patientId;
+        $this->patientName = $patientName;
+        $this->deliveryAddress = $deliveryAddress;
+        $this->deliveryLatitude = $deliveryLatitude;
+        $this->deliveryLongitude = $deliveryLongitude;
+        $this->deliveryDate = $deliveryDate;
     }
 
     /**
@@ -78,12 +86,14 @@ class PaqueteParaDespachoCreado extends BaseDomainEvent
     public function toArray(): array
     {
         return [
-            'etiquetaId' => $this->etiquetaId,
-            'ventanaId' => $this->ventanaId,
-            'direccionId' => $this->direccionId,
-            'pacienteId' => $this->pacienteId,
-            'recetaVersionId' => $this->recetaVersionId,
-            'suscripcionId' => $this->suscripcionId,
+            'id' => (string) $this->aggregateId(),
+            'number' => $this->number,
+            'patientId' => (string) $this->patientId,
+            'patientName' => $this->patientName,
+            'deliveryAddress' => $this->deliveryAddress,
+            'deliveryLatitude' => $this->deliveryLatitude,
+            'deliveryLongitude' => $this->deliveryLongitude,
+            'deliveryDate' => $this->deliveryDate,
         ];
     }
 }

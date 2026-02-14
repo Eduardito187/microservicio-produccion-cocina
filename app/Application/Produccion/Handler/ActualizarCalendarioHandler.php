@@ -58,10 +58,9 @@ class ActualizarCalendarioHandler
         return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $calendario = $this->calendarioRepository->byId($command->id);
             $calendario->fecha = $command->fecha;
-            $calendario->sucursalId = $command->sucursalId;
 
             $id = $this->calendarioRepository->save($calendario);
-            $event = new CalendarioActualizado($id, $calendario->fecha, $calendario->sucursalId);
+            $event = new CalendarioActualizado($id, $calendario->fecha);
             $this->eventPublisher->publish([$event], $id);
 
             return $id;

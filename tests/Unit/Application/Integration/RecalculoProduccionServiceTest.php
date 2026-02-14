@@ -43,7 +43,6 @@ class RecalculoProduccionServiceTest extends TestCase
 
         $payload = [
             'fecha' => '2025-10-10',
-            'sucursalId' => 'SCZ-001',
             'items' => [
                 ['sku' => 'P1', 'qty' => 1],
             ],

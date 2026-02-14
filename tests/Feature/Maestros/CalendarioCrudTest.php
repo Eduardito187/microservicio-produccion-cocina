@@ -22,19 +22,19 @@ class CalendarioCrudTest extends TestCase
     public function test_crear_actualizar_y_eliminar_calendario(): void
     {
         $create = $this->postJson(route('calendarios.crear'), [
-            'fecha' => '2026-01-10', 'sucursalId' => 'SCZ-001'
+            'fecha' => '2026-01-10'
         ]);
 
         $create->assertCreated()->assertJsonStructure(['calendarioId']);
         $calendarioId = $create->json('calendarioId');
 
         $this->getJson(route('calendarios.listar'))
-            ->assertOk()->assertJsonFragment(['id' => $calendarioId, 'sucursal_id' => 'SCZ-001']);
+            ->assertOk()->assertJsonFragment(['id' => $calendarioId, 'fecha' => '2026-01-10']);
         $this->getJson(route('calendarios.ver', ['id' => $calendarioId]))
-            ->assertOk()->assertJsonFragment(['id' => $calendarioId, 'sucursal_id' => 'SCZ-001']);
+            ->assertOk()->assertJsonFragment(['id' => $calendarioId, 'fecha' => '2026-01-10']);
 
         $update = $this->putJson(route('calendarios.actualizar', ['id' => $calendarioId]), [
-            'fecha' => '2026-01-11', 'sucursalId' => 'SCZ-002'
+            'fecha' => '2026-01-11'
         ]);
 
         $update->assertOk()->assertJsonPath('calendarioId', $calendarioId);

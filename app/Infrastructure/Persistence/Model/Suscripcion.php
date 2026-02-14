@@ -21,6 +21,11 @@ class Suscripcion extends BaseModel
      * @var mixed
      */
     protected $guarded = [];
+    protected $casts = [
+        'fecha_inicio' => 'date',
+        'fecha_fin' => 'date',
+        'cancelado_at' => 'datetime',
+    ];
 
     /**
      * @return HasMany

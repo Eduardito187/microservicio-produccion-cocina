@@ -62,9 +62,14 @@ class VerRecetaVersionHandler
         return [
             'id' => $recetaVersion->id,
             'nombre' => $recetaVersion->nombre,
+            'name' => $recetaVersion->nombre,
             'nutrientes' => $recetaVersion->nutrientes,
             'ingredientes' => $recetaVersion->ingredientes,
+            'ingredients' => $recetaVersion->ingredientes,
             'version' => $recetaVersion->version,
+            'description' => $recetaVersion->description,
+            'instructions' => $recetaVersion->instructions,
+            'totalCalories' => $recetaVersion->totalCalories,
         ];
     }
 }

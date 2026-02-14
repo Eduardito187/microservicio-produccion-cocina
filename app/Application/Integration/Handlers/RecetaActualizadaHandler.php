@@ -71,7 +71,10 @@ class RecetaActualizadaHandler implements IntegrationEventHandlerInterface
                 $event->nombre ?? '',
                 $event->nutrientes,
                 $event->ingredientes,
-                $event->version ?? 1
+                $event->version ?? 1,
+                $event->description,
+                $event->instructions,
+                $event->totalCalories
             );
 
             if ($event->nombre !== null) {
@@ -85,6 +88,15 @@ class RecetaActualizadaHandler implements IntegrationEventHandlerInterface
             }
             if ($event->version !== null) {
                 $receta->version = $event->version;
+            }
+            if ($event->description !== null) {
+                $receta->description = $event->description;
+            }
+            if ($event->instructions !== null) {
+                $receta->instructions = $event->instructions;
+            }
+            if ($event->totalCalories !== null) {
+                $receta->totalCalories = $event->totalCalories;
             }
 
             $this->recetaVersionRepository->save($receta);

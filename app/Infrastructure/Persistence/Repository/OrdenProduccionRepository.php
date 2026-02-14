@@ -100,7 +100,6 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         return AggregateOrdenProduccion::reconstitute(
             $row->id,
             $fecha,
-            $row->sucursal_id,
             $estado,
             $items,
             $batches,
@@ -118,7 +117,6 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
             ['id' => $aggregateOrdenProduccion->id()],
             [
                 'fecha' => $aggregateOrdenProduccion->fecha()->format('Y-m-d'),
-                'sucursal_id' => $aggregateOrdenProduccion->sucursalId(),
                 'estado' => $aggregateOrdenProduccion->estado()->value
             ]
         );
@@ -351,14 +349,16 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         );
 
         if ($paquete->wasRecentlyCreated) {
+            $geo = is_array($direccion->geo) ? $direccion->geo : [];
             $event = new PaqueteParaDespachoCreado(
                 $paquete->id,
-                $etiqueta->id,
-                $ventana->id,
-                $direccion->id,
+                $this->buildPackageNumber($paquete->id),
                 $paciente->id,
-                $etiqueta->receta_version_id,
-                $etiqueta->suscripcion_id
+                (string) $paciente->nombre,
+                $this->buildDeliveryAddress($direccion),
+                $this->extractLatitude($geo),
+                $this->extractLongitude($geo),
+                $ventana->desde->format('Y-m-d')
             );
             $this->eventPublisher->publish([$event], $paquete->id);
         }
@@ -377,5 +377,52 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         }
 
         return new DateTimeImmutable($value . ' 00:00:00');
+    }
+
+    /**
+     * @param string $packageId
+     * @return string
+     */
+    private function buildPackageNumber(string $packageId): string
+    {
+        $normalized = strtoupper(str_replace('-', '', $packageId));
+        return 'PKG-' . substr($normalized, 0, 12);
+    }
+
+    /**
+     * @param DireccionModel $direccion
+     * @return string
+     */
+    private function buildDeliveryAddress(DireccionModel $direccion): string
+    {
+        $parts = array_filter([
+            $direccion->linea1,
+            $direccion->linea2,
+            $direccion->ciudad,
+            $direccion->provincia,
+            $direccion->pais,
+        ], static fn ($value) => is_string($value) && trim($value) !== '');
+
+        return implode(', ', $parts);
+    }
+
+    /**
+     * @param array $geo
+     * @return float
+     */
+    private function extractLatitude(array $geo): float
+    {
+        $value = $geo['lat'] ?? $geo['latitude'] ?? 0;
+        return is_numeric($value) ? (float) $value : 0.0;
+    }
+
+    /**
+     * @param array $geo
+     * @return float
+     */
+    private function extractLongitude(array $geo): float
+    {
+        $value = $geo['lng'] ?? $geo['lon'] ?? $geo['longitude'] ?? 0;
+        return is_numeric($value) ? (float) $value : 0.0;
     }
 }

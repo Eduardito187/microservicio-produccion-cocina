@@ -24,7 +24,7 @@ class OrdenProduccionBatchWorkflowTest extends TestCase
     public function test_generar_batches_creates_one_batch_per_item_and_uses_item_product_id(): void
     {
         $ordenProduccion = OrdenProduccion::reconstitute(
-            123, new DateTimeImmutable('2025-11-04'), 'SCZ-001', EstadoOP::CREADA, [], [], []
+            123, new DateTimeImmutable('2025-11-04'), EstadoOP::CREADA, [], [], []
         );
 
         $ordenProduccion->agregarItems([['sku' => 'PIZZA-PEP', 'qty' => 2], ['sku' => 'PIZZA-MARG', 'qty' => 1]]);
@@ -53,7 +53,7 @@ class OrdenProduccionBatchWorkflowTest extends TestCase
     public function test_procesar_and_despachar_batches_transitions_all_batches(): void
     {
         $ordenProduccion = OrdenProduccion::reconstitute(
-            123, new DateTimeImmutable('2025-11-04'), 'SCZ-001', EstadoOP::CREADA, [], [], []
+            123, new DateTimeImmutable('2025-11-04'), EstadoOP::CREADA, [], [], []
         );
         $ordenProduccion->agregarItems([['sku' => 'PIZZA-PEP', 'qty' => 1]]);
         $ordenProduccion->items()[0]->loadProduct(new Products(10, 'PIZZA-PEP', 10.0, 0.0));
@@ -73,7 +73,7 @@ class OrdenProduccionBatchWorkflowTest extends TestCase
     public function test_generar_items_despacho_creates_one_item_per_order_item(): void
     {
         $ordenProduccion = OrdenProduccion::reconstitute(
-            123, new DateTimeImmutable('2025-11-04'), 'SCZ-001', EstadoOP::CREADA, [], [], []
+            123, new DateTimeImmutable('2025-11-04'), EstadoOP::CREADA, [], [], []
         );
         $ordenProduccion->agregarItems([
             ['sku' => 'PIZZA-PEP', 'qty' => 1], ['sku' => 'PIZZA-MARG', 'qty' => 1]

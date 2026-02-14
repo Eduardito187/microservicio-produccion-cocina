@@ -74,6 +74,21 @@ class SuscripcionActualizadaHandler implements IntegrationEventHandlerInterface
             if ($event->nombre !== null) {
                 $suscripcion->nombre = $event->nombre;
             }
+            if ($event->pacienteId !== null) {
+                $suscripcion->pacienteId = $event->pacienteId;
+            }
+            if ($event->tipoServicio !== null) {
+                $suscripcion->tipoServicio = $event->tipoServicio;
+            }
+            if ($event->fechaInicio !== null) {
+                $suscripcion->fechaInicio = $event->fechaInicio;
+            }
+            if ($event->fechaFin !== null) {
+                $suscripcion->fechaFin = $event->fechaFin;
+            }
+            if ($suscripcion->estado === null || $suscripcion->estado === '') {
+                $suscripcion->estado = 'ACTIVA';
+            }
 
             $this->suscripcionRepository->save($suscripcion);
         });

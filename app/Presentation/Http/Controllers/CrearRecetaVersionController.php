@@ -37,17 +37,30 @@ class CrearRecetaVersionController
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'nombre' => ['required', 'string', 'max:150'],
+            'nombre' => ['nullable', 'string', 'max:150'],
+            'name' => ['nullable', 'string', 'max:150'],
             'nutrientes' => ['nullable', 'array'],
             'ingredientes' => ['nullable', 'array'],
+            'ingredients' => ['nullable', 'array'],
+            'description' => ['nullable', 'string'],
+            'instructions' => ['nullable', 'string'],
+            'totalCalories' => ['nullable', 'integer', 'min:0'],
             'version' => ['nullable', 'int', 'min:1'],
         ]);
 
+        $nombre = $data['nombre'] ?? ($data['name'] ?? null);
+        if (!is_string($nombre) || trim($nombre) === '') {
+            return response()->json(['message' => 'El campo nombre o name es requerido.'], 422);
+        }
+
         $recetaVersionId = $this->handler->__invoke(new CrearRecetaVersion(
-            $data['nombre'],
+            $nombre,
             $data['nutrientes'] ?? null,
-            $data['ingredientes'] ?? null,
-            $data['version'] ?? 1
+            $data['ingredientes'] ?? ($data['ingredients'] ?? null),
+            $data['version'] ?? 1,
+            $data['description'] ?? null,
+            $data['instructions'] ?? null,
+            $data['totalCalories'] ?? null
         ));
 
         return response()->json(['recetaVersionId' => $recetaVersionId], 201);

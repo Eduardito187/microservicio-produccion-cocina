@@ -6,10 +6,9 @@
     {
       "title": "OrdenProduccionCreada",
       "type": "object",
-      "required": ["fecha", "sucursalId"],
+      "required": ["fecha"],
       "properties": {
-        "fecha": { "type": "string" },
-        "sucursalId": { "type": "string" }
+        "fecha": { "type": "string" }
       }
     },
     {
@@ -53,13 +52,16 @@
     {
       "title": "PaqueteParaDespachoCreado",
       "type": "object",
+      "required": ["id", "number", "patientId", "patientName", "deliveryAddress", "deliveryLatitude", "deliveryLongitude", "deliveryDate"],
       "properties": {
-        "etiquetaId": { "type": "string" },
-        "ventanaId": { "type": "string" },
-        "direccionId": { "type": "string" },
-        "pacienteId": { "type": "string" },
-        "recetaVersionId": { "type": "string" },
-        "suscripcionId": { "type": "string" }
+        "id": { "type": "string", "format": "uuid" },
+        "number": { "type": "string" },
+        "patientId": { "type": "string", "format": "uuid" },
+        "patientName": { "type": "string" },
+        "deliveryAddress": { "type": "string" },
+        "deliveryLatitude": { "type": "number" },
+        "deliveryLongitude": { "type": "number" },
+        "deliveryDate": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
       }
     },
     {
@@ -78,6 +80,34 @@
         "sku": { "type": "string" },
         "price": { "type": "number" },
         "special_price": { "type": "number" }
+      }
+    },
+    {
+      "title": "RecetaVersionCreada",
+      "type": "object",
+      "required": ["nombre", "ingredientes"],
+      "properties": {
+        "nombre": { "type": "string" },
+        "version": { "type": "integer", "minimum": 1 },
+        "nutrientes": { "type": "object" },
+        "ingredientes": { "type": "array" },
+        "description": { "type": "string" },
+        "instructions": { "type": "string" },
+        "totalCalories": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "title": "RecetaVersionActualizada",
+      "type": "object",
+      "required": ["nombre", "ingredientes"],
+      "properties": {
+        "nombre": { "type": "string" },
+        "version": { "type": "integer", "minimum": 1 },
+        "nutrientes": { "type": "object" },
+        "ingredientes": { "type": "array" },
+        "description": { "type": "string" },
+        "instructions": { "type": "string" },
+        "totalCalories": { "type": "integer", "minimum": 0 }
       }
     }
   ]

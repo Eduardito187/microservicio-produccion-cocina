@@ -24,6 +24,7 @@ class RecetaVersion extends BaseModel
     protected $casts = [
         'nutrientes' => 'array',
         'ingredientes' => 'array',
+        'total_calories' => 'integer',
     ];
 
     /**

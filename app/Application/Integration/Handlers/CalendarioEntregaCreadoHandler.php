@@ -55,8 +55,7 @@ class CalendarioEntregaCreadoHandler implements IntegrationEventHandlerInterface
         $this->transactionAggregate->runTransaction(function () use ($event): void {
             $calendario = new Calendario(
                 $event->id,
-                new DateTimeImmutable($event->fecha),
-                $event->sucursalId
+                new DateTimeImmutable($event->fecha)
             );
 
             $this->calendarioRepository->save($calendario);

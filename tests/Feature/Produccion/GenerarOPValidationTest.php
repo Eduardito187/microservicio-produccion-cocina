@@ -23,7 +23,6 @@ class GenerarOPValidationTest extends TestCase
     {
         $response = $this->postJson(route('produccion.ordenes.generar'), [
             'fecha' => '2025-11-04',
-            'sucursalId' => 'SCZ-001',
             'items' => [
                 ['sku' => '', 'qty' => 0],
                 ['sku' => '   ', 'qty' => 1],

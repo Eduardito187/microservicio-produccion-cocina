@@ -44,6 +44,8 @@ class DefaultSeeder extends Seeder
                     [
                         'id' => (string) Str::uuid(),
                         'nombre'       => 'Pizza Margarita v1',
+                        'description'  => 'Pizza clasica con tomate, mozzarella y albahaca.',
+                        'instructions' => 'Preparar masa, agregar salsa e ingredientes y hornear.',
                         'nutrientes'   => json_encode([
                             'calorias'      => 800,
                             'proteinas'     => 30,
@@ -57,12 +59,15 @@ class DefaultSeeder extends Seeder
                             ['nombre' => 'Albahaca',  'cantidad' => '5g'],
                         ]),
                         'version'     => 1,
+                        'total_calories' => 800,
                         'created_at'  => $now,
                         'updated_at'  => $now,
                     ],
                     [
                         'id' => (string) Str::uuid(),
                         'nombre'       => 'Pizza Pepperoni v1',
+                        'description'  => 'Pizza con pepperoni y queso mozzarella.',
+                        'instructions' => 'Preparar base, agregar salsa, queso y pepperoni, luego hornear.',
                         'nutrientes'   => json_encode([
                             'calorias'      => 950,
                             'proteinas'     => 40,
@@ -76,12 +81,13 @@ class DefaultSeeder extends Seeder
                             ['nombre' => 'Pepperoni', 'cantidad' => '50g'],
                         ]),
                         'version'     => 1,
+                        'total_calories' => 950,
                         'created_at'  => $now,
                         'updated_at'  => $now,
                     ],
                 ],
                 ['nombre'], // conflict key
-                ['nutrientes', 'ingredientes', 'version', 'updated_at']
+                ['description', 'instructions', 'nutrientes', 'ingredientes', 'version', 'total_calories', 'updated_at']
             );
         }
 

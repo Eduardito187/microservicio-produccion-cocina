@@ -34,6 +34,21 @@ class RecetaVersionActualizada extends BaseDomainEvent
     private $ingredientes;
 
     /**
+     * @var string|null
+     */
+    private $description;
+
+    /**
+     * @var string|null
+     */
+    private $instructions;
+
+    /**
+     * @var int|null
+     */
+    private $totalCalories;
+
+    /**
      * Constructor
      *
      * @param string|int|null $recetaVersionId
@@ -41,19 +56,28 @@ class RecetaVersionActualizada extends BaseDomainEvent
      * @param int $version
      * @param array|null $nutrientes
      * @param array|null $ingredientes
+     * @param string|null $description
+     * @param string|null $instructions
+     * @param int|null $totalCalories
      */
     public function __construct(
         string|int|null $recetaVersionId,
         string $nombre,
         int $version,
         array|null $nutrientes,
-        array|null $ingredientes
+        array|null $ingredientes,
+        string|null $description = null,
+        string|null $instructions = null,
+        int|null $totalCalories = null
     ) {
         parent::__construct($recetaVersionId);
         $this->nombre = $nombre;
         $this->version = $version;
         $this->nutrientes = $nutrientes;
         $this->ingredientes = $ingredientes;
+        $this->description = $description;
+        $this->instructions = $instructions;
+        $this->totalCalories = $totalCalories;
     }
 
     /**
@@ -66,6 +90,9 @@ class RecetaVersionActualizada extends BaseDomainEvent
             'version' => $this->version,
             'nutrientes' => $this->nutrientes,
             'ingredientes' => $this->ingredientes,
+            'description' => $this->description,
+            'instructions' => $this->instructions,
+            'totalCalories' => $this->totalCalories,
         ];
     }
 }

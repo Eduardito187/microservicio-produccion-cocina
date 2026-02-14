@@ -60,7 +60,6 @@ class ListarCalendariosHandler
         return [
             'id' => $calendario->id,
             'fecha' => $calendario->fecha->format('Y-m-d'),
-            'sucursal_id' => $calendario->sucursalId,
         ];
     }
 }

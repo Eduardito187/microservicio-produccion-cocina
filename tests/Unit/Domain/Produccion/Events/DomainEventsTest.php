@@ -9,6 +9,7 @@ use App\Domain\Produccion\Events\OrdenProduccionPlanificada;
 use App\Domain\Produccion\Events\OrdenProduccionProcesada;
 use App\Domain\Produccion\Events\OrdenProduccionCerrada;
 use App\Domain\Produccion\Events\OrdenProduccionCreada;
+use App\Domain\Produccion\Events\PaqueteParaDespachoCreado;
 use App\Domain\Produccion\Events\ProduccionBatchCreado;
 use App\Domain\Produccion\ValueObjects\Qty;
 use PHPUnit\Framework\TestCase;
@@ -26,14 +27,13 @@ class DomainEventsTest extends TestCase
     public function test_orden_produccion_creada_to_array_contains_expected_fields(): void
     {
         $fecha = new DateTimeImmutable('2025-11-04');
-        $ordenProduccionCreada = new OrdenProduccionCreada(123, $fecha, 'SCZ-001');
+        $ordenProduccionCreada = new OrdenProduccionCreada(123, $fecha);
 
         $this->assertSame(OrdenProduccionCreada::class, $ordenProduccionCreada->name());
         $this->assertSame(123, $ordenProduccionCreada->aggregateId());
 
         $payload = $ordenProduccionCreada->toArray();
         $this->assertSame($fecha->format(DATE_ATOM), $payload['fecha']);
-        $this->assertSame('SCZ-001', $payload['sucursalId']);
     }
 
     /**
@@ -68,5 +68,32 @@ class DomainEventsTest extends TestCase
         $this->assertSame('11', $payload['porcionId']);
         $this->assertSame(2, $payload['qty']);
         $this->assertSame(1, $payload['posicion']);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_paquete_para_despacho_creado_to_array_contains_new_contract_fields(): void
+    {
+        $event = new PaqueteParaDespachoCreado(
+            '69be1d37-c26d-4a0e-be0e-f0b3e532d6ff',
+            'PKG-69BE1D37C26D',
+            '6f86f687-b30d-4292-a566-7dc31ef2677a',
+            'Juan Perez',
+            'Av. Banzer 123, SCZ',
+            -17.7833,
+            -63.1821,
+            '2026-02-14'
+        );
+
+        $payload = $event->toArray();
+        $this->assertSame('69be1d37-c26d-4a0e-be0e-f0b3e532d6ff', $payload['id']);
+        $this->assertSame('PKG-69BE1D37C26D', $payload['number']);
+        $this->assertSame('6f86f687-b30d-4292-a566-7dc31ef2677a', $payload['patientId']);
+        $this->assertSame('Juan Perez', $payload['patientName']);
+        $this->assertSame('Av. Banzer 123, SCZ', $payload['deliveryAddress']);
+        $this->assertSame(-17.7833, $payload['deliveryLatitude']);
+        $this->assertSame(-63.1821, $payload['deliveryLongitude']);
+        $this->assertSame('2026-02-14', $payload['deliveryDate']);
     }
 }

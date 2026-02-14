@@ -49,9 +49,16 @@ class PublishOutboxClaimTest extends TestCase
              * @param string $name
              * @param array $payload
              * @param DateTimeImmutable $occurredOn
+             * @param array $meta
              * @return void
              */
-            public function publish(string $eventId, string $name, array $payload, DateTimeImmutable $occurredOn): void
+            public function publish(
+                string $eventId,
+                string $name,
+                array $payload,
+                DateTimeImmutable $occurredOn,
+                array $meta = []
+            ): void
             {
                 $this->published[] = $eventId;
             }

@@ -38,18 +38,18 @@ class HandlersTest extends TestCase
              * @param callable $callback
              * @return mixed
              */
-            public function run(callable $callback): mixed {
+            public function run(callable $callback): mixed
+            {
                 return $callback();
             }
 
             /**
-             * @param callable $callback): void {}
-        };
-
-        return new TransactionAggregate( $transactionManager
-             * @return mixed
+             * @param callable $callback
+             * @return void
              */
-            public function afterCommit(callable $callback): void {}
+            public function afterCommit(callable $callback): void
+            {
+            }
         };
 
         return new TransactionAggregate($transactionManager);
@@ -64,13 +64,12 @@ class HandlersTest extends TestCase
         $repository = $this->createMock(OrdenProduccionRepositoryInterface::class);
         $repository->expects($this->once())->method('save')
             ->with($this->callback(function (OrdenProduccion $ordenProduccion): bool {
-                return $ordenProduccion->estado() === EstadoOP::CREADA && $ordenProduccion->sucursalId() === 'SCZ-001' && count($ordenProduccion->items()) === 2;
+                return $ordenProduccion->estado() === EstadoOP::CREADA && count($ordenProduccion->items()) === 2;
             }))->willReturn($orderId);
         $handler = new GenerarOPHandler($repository, $this->transactionAggregate());
         $command = new GenerarOP(
             $orderId,
             new DateTimeImmutable('2025-11-04'),
-            'SCZ-001',
             [['sku' => 'PIZZA-PEP', 'qty' => 1], ['sku' => 'PIZZA-MARG', 'qty' => 2]]
         );
         $result = $handler($command);
@@ -91,7 +90,7 @@ class HandlersTest extends TestCase
         $pacienteId = '6c3c2b12-8e50-4d3e-9f5e-96b58c7b9c17';
         $direccionId = 'a19f3b2a-86b5-4a3d-9fb1-7b332f232a3b';
         $ventanaEntregaId = 'bb2b9b6c-1c0f-4f37-9f10-0d8d6d4e1454';
-        $ordenProduccion = OrdenProduccion::reconstitute($orderId, new DateTimeImmutable('2025-11-04'), 'SCZ-001', EstadoOP::CREADA, [], [], []);
+        $ordenProduccion = OrdenProduccion::reconstitute($orderId, new DateTimeImmutable('2025-11-04'), EstadoOP::CREADA, [], [], []);
         $ordenProduccion->agregarItems([['sku' => 'PIZZA-PEP', 'qty' => 1]]);
 
         foreach ($ordenProduccion->items() as $item) {
@@ -105,10 +104,10 @@ class HandlersTest extends TestCase
         $tx = $this->transactionAggregate();
         $planificar = new PlanificadorOPHandler($repository, $tx);
         $planificar(new PlanificarOP([
-            "ordenProduccionId" => $orderId,
-            "estacionId" => $estacionId,
-            "recetaVersionId" => $recetaVersionId,
-            "porcionId" => $porcionId
+            'ordenProduccionId' => $orderId,
+            'estacionId' => $estacionId,
+            'recetaVersionId' => $recetaVersionId,
+            'porcionId' => $porcionId,
         ]));
 
         $this->assertSame(EstadoOP::PLANIFICADA, $ordenProduccion->estado());
@@ -117,17 +116,15 @@ class HandlersTest extends TestCase
 
         $this->assertSame(EstadoOP::EN_PROCESO, $ordenProduccion->estado());
         $despachar = new DespachadorOPHandler($repository, $tx);
-        $despachar(new DespachadorOP(
-            [
-                "ordenProduccionId" => $orderId,
-                "itemsDespacho" => [
-                    ['sku' => 'PIZZA-PEP', 'recetaVersionId' => $recetaVersionId]
-                ],
-                "pacienteId" => $pacienteId,
-                "direccionId" => $direccionId,
-                "ventanaEntrega" => $ventanaEntregaId
-            ]
-        ));
+        $despachar(new DespachadorOP([
+            'ordenProduccionId' => $orderId,
+            'itemsDespacho' => [
+                ['sku' => 'PIZZA-PEP', 'recetaVersionId' => $recetaVersionId],
+            ],
+            'pacienteId' => $pacienteId,
+            'direccionId' => $direccionId,
+            'ventanaEntrega' => $ventanaEntregaId,
+        ]));
 
         $this->assertSame(EstadoOP::CERRADA, $ordenProduccion->estado());
     }

@@ -31,7 +31,14 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
 
         return new Suscripcion(
             $row->id,
-            $row->nombre
+            $row->nombre,
+            $row->paciente_id,
+            $row->tipo_servicio,
+            $row->fecha_inicio?->format('Y-m-d'),
+            $row->fecha_fin?->format('Y-m-d'),
+            $row->estado,
+            $row->motivo_cancelacion,
+            $row->cancelado_at?->format(DATE_ATOM)
         );
     }
 
@@ -45,6 +52,13 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
             ['id' => $suscripcion->id],
             [
                 'nombre' => $suscripcion->nombre,
+                'paciente_id' => $suscripcion->pacienteId,
+                'tipo_servicio' => $suscripcion->tipoServicio,
+                'fecha_inicio' => $suscripcion->fechaInicio,
+                'fecha_fin' => $suscripcion->fechaFin,
+                'estado' => $suscripcion->estado,
+                'motivo_cancelacion' => $suscripcion->motivoCancelacion,
+                'cancelado_at' => $suscripcion->canceladoAt,
             ]
         );
         return $model->id;
@@ -60,7 +74,14 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
         foreach (SuscripcionModel::query()->orderBy('id')->get() as $row) {
             $items[] = new Suscripcion(
                 $row->id,
-                $row->nombre
+                $row->nombre,
+                $row->paciente_id,
+                $row->tipo_servicio,
+                $row->fecha_inicio?->format('Y-m-d'),
+                $row->fecha_fin?->format('Y-m-d'),
+                $row->estado,
+                $row->motivo_cancelacion,
+                $row->cancelado_at?->format(DATE_ATOM)
             );
         }
 

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://produccion-cocina.local/schemas/inbound-contratos.json",
+  "title": "InboundContratosEvents",
+  "oneOf": [
+    {
+      "title": "contrato.creado",
+      "type": "object",
+      "required": ["contratoId", "tipoServicio"],
+      "properties": {
+        "contratoId": { "type": "string", "format": "uuid" },
+        "pacienteId": { "type": "string", "format": "uuid" },
+        "tipoServicio": { "type": "string" },
+        "fechaInicio": { "type": "string" },
+        "fechaFin": { "type": "string" }
+      }
+    },
+    {
+      "title": "contrato.cancelado",
+      "type": "object",
+      "required": ["contratoId"],
+      "properties": {
+        "contratoId": { "type": "string", "format": "uuid" },
+        "motivoCancelacion": { "type": "string" }
+      }
+    }
+  ]
+}

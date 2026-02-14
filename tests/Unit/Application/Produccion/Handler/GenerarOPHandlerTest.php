@@ -28,10 +28,9 @@ class GenerarOPHandlerTest extends TestCase
         $repository = $this->createMock(OrdenProduccionRepositoryInterface::class);
         $transactionAggregate = $this->createMock(TransactionAggregate::class);
         $fecha = new DateTimeImmutable('2025-01-01');
-        $command = new GenerarOP(null, $fecha, 1, [['sku' => 'ABC', 'qty' => 3]]);
+        $command = new GenerarOP(null, $fecha, [['sku' => 'ABC', 'qty' => 3]]);
         $repository->expects($this->once())->method('save')
             ->with($this->callback(function (OrdenProduccion $op) use ($fecha) {
-                $this->assertEquals(1, $op->sucursalId());
                 $this->assertEquals($fecha, $op->fecha());
                 $this->assertCount(1, $op->items());
                 return true;

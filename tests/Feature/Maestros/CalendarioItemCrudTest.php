@@ -27,7 +27,6 @@ class CalendarioItemCrudTest extends TestCase
         DB::table('calendario')->insert([
             'id' => $calendarioId,
             'fecha' => '2026-01-10',
-            'sucursal_id' => 'SCZ-001',
             'created_at' => now(),
             'updated_at' => now()
         ]);
@@ -46,7 +45,6 @@ class CalendarioItemCrudTest extends TestCase
         DB::table('orden_produccion')->insert([
             'id' => $opId,
             'fecha' => '2026-01-10',
-            'sucursal_id' => 'SCZ-001',
             'estado' => 'CREADA',
             'created_at' => now(),
             'updated_at' => now()

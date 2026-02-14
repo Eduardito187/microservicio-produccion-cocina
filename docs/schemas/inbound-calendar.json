@@ -6,11 +6,10 @@
     {
       "title": "CalendarioEntregaCreado",
       "type": "object",
-      "required": ["calendarioId", "fecha", "sucursalId"],
+      "required": ["calendarioId", "fecha"],
       "properties": {
         "calendarioId": { "type": "string", "format": "uuid" },
-        "fecha": { "type": "string" },
-        "sucursalId": { "type": "string" }
+        "fecha": { "type": "string" }
       }
     },
     {
@@ -31,8 +30,7 @@
       "required": ["calendarioId"],
       "properties": {
         "calendarioId": { "type": "string", "format": "uuid" },
-        "fecha": { "type": "string" },
-        "sucursalId": { "type": "string" }
+        "fecha": { "type": "string" }
       }
     },
     {

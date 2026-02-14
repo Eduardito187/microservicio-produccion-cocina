@@ -58,18 +58,16 @@ class RecalculoProduccionService
     public function tryGenerarOP(array $payload): bool
     {
         $fecha = $payload['fecha'] ?? null;
-        $sucursalId = $payload['sucursalId'] ?? ($payload['sucursal_id'] ?? null);
         $items = $payload['items'] ?? null;
 
-        if (!is_string($fecha) || $fecha === '' || $sucursalId === null || !is_array($items)) {
-            $this->logger->info('Recalculo OP skipped (missing fecha/sucursalId/items)');
+        if (!is_string($fecha) || $fecha === '' || !is_array($items)) {
+            $this->logger->info('Recalculo OP skipped (missing fecha/items)');
             return false;
         }
 
         $command = new GenerarOP(
             $payload['ordenProduccionId'] ?? null,
             new DateTimeImmutable($fecha),
-            $sucursalId,
             $items
         );
 

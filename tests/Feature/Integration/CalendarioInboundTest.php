@@ -16,6 +16,8 @@ use App\Infrastructure\Persistence\Model\Paquete;
 use App\Infrastructure\Persistence\Model\Direccion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @class CalendarioInboundTest
@@ -35,14 +37,13 @@ class CalendarioInboundTest extends TestCase
         $payload = [
             'id' => 'cal-1',
             'fecha' => '2025-10-10',
-            'sucursalId' => 'SCZ-001',
         ];
 
         $handler->handle($payload);
 
         $this->assertDatabaseHas('calendario', [
             'id' => 'cal-1',
-            'sucursal_id' => 'SCZ-001',
+            'fecha' => '2025-10-10',
         ]);
     }
 
@@ -51,13 +52,31 @@ class CalendarioInboundTest extends TestCase
      */
     public function test_entrega_programada_crea_calendario_item(): void
     {
+        $opId = (string) Str::uuid();
+        $productId = (string) Str::uuid();
+        DB::table('orden_produccion')->insert([
+            'id' => $opId,
+            'fecha' => '2025-10-11',
+            'estado' => 'CREADA',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('products')->insert([
+            'id' => $productId,
+            'sku' => 'SKU-TEST-1',
+            'price' => 1,
+            'special_price' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
         Calendario::query()->create([
             'id' => 'cal-2',
             'fecha' => '2025-10-11',
-            'sucursal_id' => 'SCZ-002',
         ]);
         ItemDespacho::query()->create([
             'id' => 'item-1',
+            'op_id' => $opId,
+            'product_id' => $productId,
         ]);
 
         $handler = $this->app->make(EntregaProgramadaHandler::class);
@@ -80,13 +99,31 @@ class CalendarioInboundTest extends TestCase
      */
     public function test_dia_sin_entrega_borra_calendario_y_items(): void
     {
+        $opId = (string) Str::uuid();
+        $productId = (string) Str::uuid();
+        DB::table('orden_produccion')->insert([
+            'id' => $opId,
+            'fecha' => '2025-10-12',
+            'estado' => 'CREADA',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('products')->insert([
+            'id' => $productId,
+            'sku' => 'SKU-TEST-2',
+            'price' => 1,
+            'special_price' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
         Calendario::query()->create([
             'id' => 'cal-3',
             'fecha' => '2025-10-12',
-            'sucursal_id' => 'SCZ-003',
         ]);
         ItemDespacho::query()->create([
             'id' => 'item-2',
+            'op_id' => $opId,
+            'product_id' => $productId,
         ]);
         CalendarioItem::query()->create([
             'id' => 'ci-1',
@@ -99,7 +136,6 @@ class CalendarioInboundTest extends TestCase
         $payload = [
             'calendarioId' => 'cal-3',
             'fecha' => '2025-10-12',
-            'sucursalId' => 'SCZ-003',
         ];
 
         $handler->handle($payload);

@@ -24,25 +24,17 @@ class CalendarioEntregaCreadoEvent
     public $fecha;
 
     /**
-     * @var string
-     */
-    public $sucursalId;
-
-    /**
      * Constructor
      *
      * @param string $id
      * @param string $fecha
-     * @param string $sucursalId
      */
     public function __construct(
         string $id,
-        string $fecha,
-        string $sucursalId
+        string $fecha
     ) {
         $this->id = $id;
         $this->fecha = $fecha;
-        $this->sucursalId = $sucursalId;
     }
 
     /**
@@ -55,8 +47,7 @@ class CalendarioEntregaCreadoEvent
 
         return new self(
             $p->getString(['id', 'calendarioId', 'calendario_id'], null, true),
-            $p->getString(['fecha', 'date'], null, true),
-            $p->getString(['sucursalId', 'sucursal_id'], null, true)
+            $p->getString(['fecha', 'date'], null, true)
         );
     }
 }

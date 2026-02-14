@@ -52,7 +52,6 @@ class GenerarOPController
                 new GenerarOP(
                     $data['id'] ?? null,
                     new DateTimeImmutable($data['fecha']),
-                    $data['sucursalId'],
                     $items
                 )
             );

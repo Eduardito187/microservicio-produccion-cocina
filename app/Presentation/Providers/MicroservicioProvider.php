@@ -54,6 +54,7 @@ use App\Application\Integration\Handlers\PacienteCreadoHandler;
 use App\Application\Integration\Handlers\PacienteActualizadoHandler;
 use App\Application\Integration\Handlers\SuscripcionCreadaHandler;
 use App\Application\Integration\Handlers\SuscripcionActualizadaHandler;
+use App\Application\Integration\Handlers\ContratoCanceladoHandler;
 use App\Application\Integration\Handlers\RecetaActualizadaHandler;
 use App\Application\Integration\Handlers\CalendarioEntregaCreadoHandler;
 use App\Application\Integration\Handlers\EntregaProgramadaHandler;
@@ -194,16 +195,27 @@ class MicroservicioProvider extends ServiceProvider
 
             $router->register('PacienteCreado', $app->make(PacienteCreadoHandler::class));
             $router->register('PacienteActualizado', $app->make(PacienteActualizadoHandler::class));
+            $router->register('paciente.paciente-creado', $app->make(PacienteCreadoHandler::class));
+            $router->register('paciente.paciente-actualizado', $app->make(PacienteActualizadoHandler::class));
 
             $router->register('SuscripcionCreada', $app->make(SuscripcionCreadaHandler::class));
             $router->register('SuscripcionActualizada', $app->make(SuscripcionActualizadaHandler::class));
+            $router->register('suscripciones.suscripcion-creada', $app->make(SuscripcionCreadaHandler::class));
+            $router->register('suscripciones.suscripcion-actualizada', $app->make(SuscripcionActualizadaHandler::class));
+            $router->register('contrato.creado', $app->make(SuscripcionCreadaHandler::class));
+            $router->register('contrato.cancelado', $app->make(ContratoCanceladoHandler::class));
 
             $router->register('RecetaActualizada', $app->make(RecetaActualizadaHandler::class));
+            $router->register('planes.receta-creada', $app->make(RecetaActualizadaHandler::class));
+            $router->register('planes.receta-actualizada', $app->make(RecetaActualizadaHandler::class));
 
             $router->register('CalendarioEntregaCreado', $app->make(CalendarioEntregaCreadoHandler::class));
+            $router->register('calendarios.crear-dia', $app->make(CalendarioEntregaCreadoHandler::class));
             $router->register('EntregaProgramada', $app->make(EntregaProgramadaHandler::class));
             $router->register('DiaSinEntregaMarcado', $app->make(DiaSinEntregaMarcadoHandler::class));
+            $router->register('calendarios.sin-entrega', $app->make(DiaSinEntregaMarcadoHandler::class));
             $router->register('DireccionEntregaCambiada', $app->make(DireccionEntregaCambiadaHandler::class));
+            $router->register('calendarios.direccion-entrega-cambiada', $app->make(DireccionEntregaCambiadaHandler::class));
 
             $router->register('EntregaConfirmada', $app->make(EntregaConfirmadaHandler::class));
             $router->register('EntregaFallida', $app->make(EntregaFallidaHandler::class));

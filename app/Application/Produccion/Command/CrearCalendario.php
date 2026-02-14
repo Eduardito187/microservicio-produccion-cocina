@@ -19,19 +19,12 @@ class CrearCalendario
     public $fecha;
 
     /**
-     * @var string
-     */
-    public $sucursalId;
-
-    /**
      * Constructor
      *
      * @param DateTimeImmutable $fecha
-     * @param string $sucursalId
      */
-    public function __construct(DateTimeImmutable $fecha, string $sucursalId)
+    public function __construct(DateTimeImmutable $fecha)
     {
         $this->fecha = $fecha;
-        $this->sucursalId = $sucursalId;
     }
 }

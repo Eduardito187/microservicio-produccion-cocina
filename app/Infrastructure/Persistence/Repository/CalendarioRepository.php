@@ -33,8 +33,7 @@ class CalendarioRepository implements CalendarioRepositoryInterface
 
         return new Calendario(
             $row->id,
-            $this->convertDate($row->fecha),
-            $row->sucursal_id
+            $this->convertDate($row->fecha)
         );
     }
 
@@ -48,7 +47,6 @@ class CalendarioRepository implements CalendarioRepositoryInterface
             ['id' => $calendario->id],
             [
                 'fecha' => $calendario->fecha->format('Y-m-d'),
-                'sucursal_id' => $calendario->sucursalId,
             ]
         );
         return $model->id;
@@ -64,8 +62,7 @@ class CalendarioRepository implements CalendarioRepositoryInterface
         foreach (CalendarioModel::query()->orderBy('id')->get() as $row) {
             $items[] = new Calendario(
                 $row->id,
-                $this->convertDate($row->fecha),
-                $row->sucursal_id
+                $this->convertDate($row->fecha)
             );
         }
 

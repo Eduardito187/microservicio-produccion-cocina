@@ -85,13 +85,14 @@ class FlujoOrdenProduccionIntegrationTest extends TestCase
             'updated_at' => now(),
         ]);
 
+        $paqueteId = (string) Str::uuid();
         DB::table('paquete')->insert([
+            'id' => $paqueteId,
             'etiqueta_id' => $etiquetaId, 'ventana_id' => $ventanaEntregaId, 'direccion_id' => $direccionId, 'created_at' => now(), 'updated_at' => now()
         ]);
 
         $responseGenerar = $this->postJson(route("produccion.ordenes.generar"), [
             'fecha' => '2025-11-04',
-            'sucursalId' => 'SCZ-001',
             'items' => [['sku' => 'PIZZA-PEP', 'qty' => 1], ['sku' => 'PIZZA-MARG', 'qty' => 1]]
         ]);
 

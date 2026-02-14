@@ -6,16 +6,16 @@
 namespace App\Application\Integration\Handlers;
 
 use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
+use App\Application\Integration\Events\ContratoCanceladoEvent;
 use App\Application\Integration\IntegrationEventHandlerInterface;
-use App\Application\Integration\Events\SuscripcionCreadaEvent;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\Suscripcion;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * @class SuscripcionCreadaHandler
+ * @class ContratoCanceladoHandler
  * @package App\Application\Integration\Handlers
  */
-class SuscripcionCreadaHandler implements IntegrationEventHandlerInterface
+class ContratoCanceladoHandler implements IntegrationEventHandlerInterface
 {
     /**
      * @var SuscripcionRepositoryInterface
@@ -48,18 +48,22 @@ class SuscripcionCreadaHandler implements IntegrationEventHandlerInterface
      */
     public function handle(array $payload, array $meta = []): void
     {
-        $event = SuscripcionCreadaEvent::fromPayload($payload);
+        $event = ContratoCanceladoEvent::fromPayload($payload);
 
         $this->transactionAggregate->runTransaction(function () use ($event): void {
-            $suscripcion = new Suscripcion(
-                $event->id,
-                $event->nombre,
-                $event->pacienteId,
-                $event->tipoServicio,
-                $event->fechaInicio,
-                $event->fechaFin,
-                'ACTIVA'
-            );
+            try {
+                $suscripcion = $this->suscripcionRepository->byId($event->contratoId);
+            } catch (ModelNotFoundException $e) {
+                logger()->warning('Contrato cancelado ignored (contrato not found)', [
+                    'contrato_id' => $event->contratoId,
+                ]);
+                return;
+            }
+
+            $suscripcion->estado = 'CANCELADA';
+            $suscripcion->motivoCancelacion = $event->motivoCancelacion;
+            $suscripcion->canceladoAt = now()->toAtomString();
+
             $this->suscripcionRepository->save($suscripcion);
         });
     }

@@ -18,11 +18,10 @@ return new class extends Migration
             Schema::create('calendario', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->date('fecha');
-                $table->string('sucursal_id');
                 $table->timestamp('created_at')->nullable();
                 $table->timestamp('updated_at')->nullable();
 
-                $table->unique(['fecha', 'sucursal_id'], 'calendario_fecha_sucursal_id_unique');
+                $table->unique(['fecha'], 'calendario_fecha_unique');
             });
         }
 
@@ -81,7 +80,6 @@ return new class extends Migration
             Schema::create('orden_produccion', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->date('fecha');
-                $table->string('sucursal_id');
                 $table->string('estado');
                 $table->timestamp('created_at')->nullable();
                 $table->timestamp('updated_at')->nullable();

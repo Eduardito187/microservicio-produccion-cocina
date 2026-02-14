@@ -28,7 +28,6 @@ class GenerarOPRequest extends FormRequest
     {
         return [
             'fecha' => ['required', 'date'],
-            'sucursalId' => ['required', 'string'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.sku' => ['bail', 'required', 'string', 'regex:/\\S/'],
             'items.*.qty' => ['required', 'integer', 'min:1'],

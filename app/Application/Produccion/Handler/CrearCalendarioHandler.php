@@ -57,10 +57,10 @@ class CrearCalendarioHandler
     public function __invoke(CrearCalendario $command): string
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): string {
-            $calendario = new Calendario(null, $command->fecha, $command->sucursalId);
+            $calendario = new Calendario(null, $command->fecha);
 
             $id = $this->calendarioRepository->save($calendario);
-            $event = new CalendarioCreado($id, $command->fecha, $command->sucursalId);
+            $event = new CalendarioCreado($id, $command->fecha);
             $this->eventPublisher->publish([$event], $id);
 
             return $id;

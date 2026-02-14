@@ -26,7 +26,7 @@ class OrdenProduccionTest extends TestCase
      */
     public function test_crear_inicia_en_estado_creada_y_registra_evento(): void
     {
-        $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'), 'SCZ-001');
+        $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'));
         $this->assertSame(EstadoOP::CREADA, $ordenProduccion->estado());
         $events = $ordenProduccion->pullEvents();
 
@@ -39,7 +39,7 @@ class OrdenProduccionTest extends TestCase
      */
     public function test_agregar_items_solo_permitido_en_creada(): void
     {
-        $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'), 'SCZ-001');
+        $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'));
         $ordenProduccion->agregarItems([['sku' => 'PIZZA-PEP', 'qty' => 2], ['sku' => 'PIZZA-MARG', 'qty' => 1]]);
 
         $this->assertCount(2, $ordenProduccion->items());
@@ -55,7 +55,7 @@ class OrdenProduccionTest extends TestCase
      */
     public function test_transiciones_planificar_procesar_cerrar_registran_eventos(): void
     {
-        $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'), 'SCZ-001');
+        $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'));
         $ordenProduccion->agregarItems([['sku' => 'PIZZA-PEP', 'qty' => 1]]);
 
         // limpiamos el evento de creación para enfocarnos en transiciones
@@ -82,7 +82,7 @@ class OrdenProduccionTest extends TestCase
      */
     public function test_no_permite_transiciones_invalidas(): void
     {
-        $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'), 'SCZ-001');
+        $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'));
         $this->expectException(DomainException::class);
         $ordenProduccion->procesar();
     }

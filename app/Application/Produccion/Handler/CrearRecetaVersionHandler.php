@@ -62,7 +62,10 @@ class CrearRecetaVersionHandler
                 $command->nombre,
                 $command->nutrientes,
                 $command->ingredientes,
-                $command->version
+                $command->version,
+                $command->description,
+                $command->instructions,
+                $command->totalCalories
             );
 
             $id = $this->recetaVersionRepository->save($recetaVersion);
@@ -71,7 +74,10 @@ class CrearRecetaVersionHandler
                 $command->nombre,
                 $command->version,
                 $command->nutrientes,
-                $command->ingredientes
+                $command->ingredientes,
+                $command->description,
+                $command->instructions,
+                $command->totalCalories
             );
             $this->eventPublisher->publish([$event], $id);
 

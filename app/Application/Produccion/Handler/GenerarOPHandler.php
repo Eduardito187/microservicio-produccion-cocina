@@ -48,8 +48,7 @@ class GenerarOPHandler
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $ordenProduccion = AggregateOrdenProduccion::crear(
-                $command->fecha,
-                $command->sucursalId
+                $command->fecha
             );
             $ordenProduccion->agregarItems($command->items);
             return $this->ordenProduccionRepository->save($ordenProduccion);

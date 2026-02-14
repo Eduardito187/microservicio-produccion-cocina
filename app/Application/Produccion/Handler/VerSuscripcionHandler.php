@@ -62,6 +62,13 @@ class VerSuscripcionHandler
         return [
             'id' => $suscripcion->id,
             'nombre' => $suscripcion->nombre,
+            'paciente_id' => $suscripcion->pacienteId,
+            'tipo_servicio' => $suscripcion->tipoServicio,
+            'fecha_inicio' => $suscripcion->fechaInicio,
+            'fecha_fin' => $suscripcion->fechaFin,
+            'estado' => $suscripcion->estado,
+            'motivo_cancelacion' => $suscripcion->motivoCancelacion,
+            'cancelado_at' => $suscripcion->canceladoAt,
         ];
     }
 }

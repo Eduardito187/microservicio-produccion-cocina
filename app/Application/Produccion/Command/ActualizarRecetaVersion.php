@@ -32,6 +32,21 @@ class ActualizarRecetaVersion
     public $ingredientes;
 
     /**
+     * @var string|null
+     */
+    public $description;
+
+    /**
+     * @var string|null
+     */
+    public $instructions;
+
+    /**
+     * @var int|null
+     */
+    public $totalCalories;
+
+    /**
      * @var int
      */
     public $version;
@@ -44,18 +59,27 @@ class ActualizarRecetaVersion
      * @param array|null $nutrientes
      * @param array|null $ingredientes
      * @param int $version
+     * @param string|null $description
+     * @param string|null $instructions
+     * @param int|null $totalCalories
      */
     public function __construct(
         string $id,
         string $nombre,
         array|null $nutrientes = null,
         array|null $ingredientes = null,
-        int $version = 1
+        int $version = 1,
+        string|null $description = null,
+        string|null $instructions = null,
+        int|null $totalCalories = null
     ) {
         $this->id = $id;
         $this->nombre = $nombre;
         $this->nutrientes = $nutrientes;
         $this->ingredientes = $ingredientes;
         $this->version = $version;
+        $this->description = $description;
+        $this->instructions = $instructions;
+        $this->totalCalories = $totalCalories;
     }
 }

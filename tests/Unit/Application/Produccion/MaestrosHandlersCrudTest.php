@@ -98,27 +98,26 @@ class MaestrosHandlersCrudTest extends TestCase
         // Crear
         $repository->expects($this->once())->method('save')
             ->with($this->callback(function (Calendario $calendario): bool {
-                return $calendario->id === null && $calendario->fecha->format('Y-m-d') === '2026-01-10' && $calendario->sucursalId === 'SCZ-001';
+                return $calendario->id === null && $calendario->fecha->format('Y-m-d') === '2026-01-10';
             }))->willReturn($id10);
         $crear = new CrearCalendarioHandler($repository, $this->tx(), $this->eventPublisher());
-        $id = $crear(new CrearCalendario(new DateTimeImmutable('2026-01-10'), 'SCZ-001'));
+        $id = $crear(new CrearCalendario(new DateTimeImmutable('2026-01-10')));
         $this->assertSame($id10, $id);
         // Actualizar
-        $existing = new Calendario($id10, new DateTimeImmutable('2026-01-10'), 'SCZ-001');
+        $existing = new Calendario($id10, new DateTimeImmutable('2026-01-10'));
         $repository2 = $this->createMock(CalendarioRepositoryInterface::class);
         $repository2->method('byId')->with($id10)->willReturn($existing);
         $repository2->expects($this->once())->method('save')->willReturn($id10);
         $actualizar = new ActualizarCalendarioHandler($repository2, $this->tx(), $this->eventPublisher());
-        $actualizadoId = $actualizar(new ActualizarCalendario($id10, new DateTimeImmutable('2026-01-11'), 'SCZ-002'));
+        $actualizadoId = $actualizar(new ActualizarCalendario($id10, new DateTimeImmutable('2026-01-11')));
         $this->assertSame($id10, $actualizadoId);
         $this->assertSame('2026-01-11', $existing->fecha->format('Y-m-d'));
-        $this->assertSame('SCZ-002', $existing->sucursalId);
         // Ver
         $repository3 = $this->createMock(CalendarioRepositoryInterface::class);
         $repository3->method('byId')->with($id10)->willReturn($existing);
         $ver = new VerCalendarioHandler($repository3, $this->tx());
         $data = $ver(new VerCalendario($id10));
-        $this->assertSame(['id' => $id10, 'fecha' => '2026-01-11', 'sucursal_id' => 'SCZ-002'], $data);
+        $this->assertSame(['id' => $id10, 'fecha' => '2026-01-11'], $data);
         // Listar
         $repository4 = $this->createMock(CalendarioRepositoryInterface::class);
         $repository4->method('list')->willReturn([$existing]);
@@ -460,9 +459,14 @@ class MaestrosHandlersCrudTest extends TestCase
                     'expectedView' => fn() => [
                         'id' => $id10,
                         'nombre' => 'R1',
+                        'name' => 'R1',
                         'nutrientes' => ['n' => 1],
                         'ingredientes' => ['i' => 1],
-                        'version' => 1
+                        'ingredients' => ['i' => 1],
+                        'version' => 1,
+                        'description' => null,
+                        'instructions' => null,
+                        'totalCalories' => null
                     ],
                 ]
             ],
@@ -486,7 +490,17 @@ class MaestrosHandlersCrudTest extends TestCase
                 ],
                 'makeEntity' => fn() => new \App\Domain\Produccion\Entity\Suscripcion($id10, 'S1'),
                 'expectedAfterUpdate' => fn() => ['nombre' => 'S1'],
-                'expectedView' => fn() => ['id' => $id10, 'nombre' => 'S1']
+                'expectedView' => fn() => [
+                    'id' => $id10,
+                    'nombre' => 'S1',
+                    'paciente_id' => null,
+                    'tipo_servicio' => null,
+                    'fecha_inicio' => null,
+                    'fecha_fin' => null,
+                    'estado' => 'ACTIVA',
+                    'motivo_cancelacion' => null,
+                    'cancelado_at' => null,
+                ]
             ]],
             'VentanaEntrega' => [
                 [

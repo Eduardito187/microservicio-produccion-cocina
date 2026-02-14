@@ -166,7 +166,6 @@ class PactStateController
         DB::table('order_item')->where('op_id', $ordenId)->delete();
         $row['id'] = $ordenId;
         $row['estado'] = 'CREADA';
-        $row['sucursal_id'] = 'SCZ';
         $row['fecha'] = now()->toDateString();
         $row['created_at'] = now();
         $row['updated_at'] = now();

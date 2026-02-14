@@ -23,7 +23,7 @@ class OrdenProduccionInvalidTransitionsExtraTest extends TestCase
     public function test_no_permite_planificar_si_no_esta_creada(): void
     {
         $ordenProduccion = OrdenProduccion::reconstitute(
-            1, new DateTimeImmutable('2025-11-04'), 'SCZ-001', EstadoOP::PLANIFICADA, [], [], []
+            1, new DateTimeImmutable('2025-11-04'), EstadoOP::PLANIFICADA, [], [], []
         );
         $this->expectException(DomainException::class);
         $ordenProduccion->planificar();
@@ -35,7 +35,7 @@ class OrdenProduccionInvalidTransitionsExtraTest extends TestCase
     public function test_no_permite_procesar_si_no_esta_planificada(): void
     {
         $ordenProduccion = OrdenProduccion::reconstitute(
-            1, new DateTimeImmutable('2025-11-04'), 'SCZ-001', EstadoOP::CREADA, [], [], []
+            1, new DateTimeImmutable('2025-11-04'), EstadoOP::CREADA, [], [], []
         );
         $this->expectException(DomainException::class);
         $ordenProduccion->procesar();
@@ -47,7 +47,7 @@ class OrdenProduccionInvalidTransitionsExtraTest extends TestCase
     public function test_no_permite_cerrar_si_no_esta_en_proceso(): void
     {
         $ordenProduccion = OrdenProduccion::reconstitute(
-            1, new DateTimeImmutable('2025-11-04'), 'SCZ-001', EstadoOP::PLANIFICADA, [], [], []
+            1, new DateTimeImmutable('2025-11-04'), EstadoOP::PLANIFICADA, [], [], []
         );
         $this->expectException(DomainException::class);
         $ordenProduccion->cerrar();

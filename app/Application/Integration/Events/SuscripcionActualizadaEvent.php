@@ -24,17 +24,49 @@ class SuscripcionActualizadaEvent
     public $nombre;
 
     /**
+     * @var string|null
+     */
+    public $pacienteId;
+
+    /**
+     * @var string|null
+     */
+    public $tipoServicio;
+
+    /**
+     * @var string|null
+     */
+    public $fechaInicio;
+
+    /**
+     * @var string|null
+     */
+    public $fechaFin;
+
+    /**
      * Constructor
      *
      * @param string $id
      * @param ?string $nombre
+     * @param string|null $pacienteId
+     * @param string|null $tipoServicio
+     * @param string|null $fechaInicio
+     * @param string|null $fechaFin
      */
     public function __construct(
         string $id,
-        ?string $nombre
+        ?string $nombre,
+        string|null $pacienteId = null,
+        string|null $tipoServicio = null,
+        string|null $fechaInicio = null,
+        string|null $fechaFin = null
     ) {
         $this->id = $id;
         $this->nombre = $nombre;
+        $this->pacienteId = $pacienteId;
+        $this->tipoServicio = $tipoServicio;
+        $this->fechaInicio = $fechaInicio;
+        $this->fechaFin = $fechaFin;
     }
 
     /**
@@ -46,8 +78,12 @@ class SuscripcionActualizadaEvent
         $p = new Payload($payload);
 
         return new self(
-            $p->getString(['id', 'suscripcionId', 'suscripcion_id'], null, true),
-            $p->getString(['nombre', 'name'])
+            $p->getString(['id', 'suscripcionId', 'suscripcion_id', 'contratoId', 'contrato_id'], null, true),
+            $p->getString(['nombre', 'name', 'tipoServicio', 'tipo_servicio']),
+            $p->getString(['pacienteId', 'paciente_id']),
+            $p->getString(['tipoServicio', 'tipo_servicio']),
+            $p->getString(['fechaInicio', 'fecha_inicio']),
+            $p->getString(['fechaFin', 'fecha_fin'])
         );
     }
 }

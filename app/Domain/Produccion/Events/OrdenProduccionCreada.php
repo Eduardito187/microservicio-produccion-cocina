@@ -20,25 +20,17 @@ class OrdenProduccionCreada extends BaseDomainEvent
     private $fecha;
 
     /**
-     * @var int|string
-     */
-    private $sucursalId;
-
-    /**
      * Constructor
      *
      * @param string|int|null $opId
      * @param DateTimeImmutable $fecha
-     * @param int|string $sucursalId
      */
     public function __construct(
         string|int|null $opId,
-        DateTimeImmutable $fecha,
-        int|string $sucursalId
+        DateTimeImmutable $fecha
     ) {
         parent::__construct($opId);
         $this->fecha = $fecha;
-        $this->sucursalId = $sucursalId;
     }
 
     /**
@@ -48,7 +40,6 @@ class OrdenProduccionCreada extends BaseDomainEvent
     {
         return [
             'fecha' => $this->fecha->format(DATE_ATOM),
-            'sucursalId' => $this->sucursalId
         ];
     }
 }

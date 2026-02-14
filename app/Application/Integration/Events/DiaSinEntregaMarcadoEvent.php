@@ -24,25 +24,17 @@ class DiaSinEntregaMarcadoEvent
     public $fecha;
 
     /**
-     * @var ?string
-     */
-    public $sucursalId;
-
-    /**
      * Constructor
      *
      * @param string $calendarioId
      * @param ?string $fecha
-     * @param ?string $sucursalId
      */
     public function __construct(
         string $calendarioId,
-        ?string $fecha,
-        ?string $sucursalId
+        ?string $fecha
     ) {
         $this->calendarioId = $calendarioId;
         $this->fecha = $fecha;
-        $this->sucursalId = $sucursalId;
     }
 
     /**
@@ -55,8 +47,7 @@ class DiaSinEntregaMarcadoEvent
 
         return new self(
             $p->getString(['calendarioId', 'calendario_id'], null, true),
-            $p->getString(['fecha', 'date']),
-            $p->getString(['sucursalId', 'sucursal_id'])
+            $p->getString(['fecha', 'date'])
         );
     }
 }

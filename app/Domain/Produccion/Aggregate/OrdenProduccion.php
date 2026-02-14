@@ -40,11 +40,6 @@ class OrdenProduccion
     private $fecha;
 
     /**
-     * @var int|string
-     */
-    private $sucursalId;
-
-    /**
      * @var EstadoOP
      */
     private $estado;
@@ -69,7 +64,6 @@ class OrdenProduccion
      *
      * @param string|int|null $id
      * @param DateTimeImmutable $fecha
-     * @param int|string $sucursalId
      * @param EstadoOP $estado
      * @param array $items
      * @param array $batches
@@ -78,7 +72,6 @@ class OrdenProduccion
     private function __construct(
         string|int|null $id,
         DateTimeImmutable $fecha,
-        int|string $sucursalId,
         EstadoOP $estado,
         array $items,
         array $batches,
@@ -86,7 +79,6 @@ class OrdenProduccion
     ) {
         $this->id = $id;
         $this->fecha = $fecha;
-        $this->sucursalId = $sucursalId;
         $this->estado = $estado;
         $this->items = $items;
         $this->batches = $batches;
@@ -95,7 +87,6 @@ class OrdenProduccion
 
     /**
      * @param DateTimeImmutable $fecha
-     * @param int|string $sucursalId
      * @param array $items
      * @param array $batches
      * @param array $itemsDespacho
@@ -104,18 +95,16 @@ class OrdenProduccion
      */
     public static function crear(
         DateTimeImmutable $fecha,
-        string $sucursalId,
         array $items =  [],
         array $batches = [],
         array $itemsDespacho = [],
         string|int|null $id = null
     ): self {
-        $self = new self($id, $fecha, $sucursalId, EstadoOP::CREADA, $items, $batches, $itemsDespacho);
+        $self = new self($id, $fecha, EstadoOP::CREADA, $items, $batches, $itemsDespacho);
 
         $self->record(new OrdenProduccionCreada(
             $id,
-            $fecha,
-            $sucursalId
+            $fecha
         ));
 
         return $self;
@@ -124,7 +113,6 @@ class OrdenProduccion
     /**
      * @param int $id
      * @param DateTimeImmutable $fecha
-     * @param int|string $sucursalId
      * @param EstadoOP $estado
      * @param array $items
      * @param array $batches
@@ -134,13 +122,12 @@ class OrdenProduccion
     public static function reconstitute(
         string|int|null $id,
         DateTimeImmutable $fecha,
-        string $sucursalId,
         EstadoOP $estado,
         array $items,
         array $batches,
         array $itemsDespacho
     ): self {
-        $self = new self($id, $fecha, $sucursalId, $estado, $items, $batches, $itemsDespacho);
+        $self = new self($id, $fecha, $estado, $items, $batches, $itemsDespacho);
 
         return $self;
     }
@@ -329,14 +316,6 @@ class OrdenProduccion
     public function fecha(): string|DateTimeImmutable
     {
         return $this->fecha;
-    }
-
-    /**
-     * @return int|string
-     */
-    public function sucursalId(): int|string
-    {
-        return $this->sucursalId;
     }
 
     /**

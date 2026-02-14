@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://produccion-cocina.local/schemas/inbound-recetas.json",
+  "title": "InboundRecetasEvents",
+  "oneOf": [
+    {
+      "title": "planes.receta-creada",
+      "type": "object",
+      "required": ["id", "name", "ingredients"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "instructions": { "type": "string" },
+        "totalCalories": { "type": "integer", "minimum": 0 },
+        "ingredients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["idIngredient", "quantity"],
+            "properties": {
+              "idIngredient": { "type": "string", "format": "uuid" },
+              "quantity": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "planes.receta-actualizada",
+      "type": "object",
+      "required": ["id", "name", "ingredients"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "instructions": { "type": "string" },
+        "totalCalories": { "type": "integer", "minimum": 0 },
+        "ingredients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["idIngredient", "quantity"],
+            "properties": {
+              "idIngredient": { "type": "string", "format": "uuid" },
+              "quantity": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
