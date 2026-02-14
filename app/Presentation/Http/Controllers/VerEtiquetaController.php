@@ -6,7 +6,7 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\VerEtiquetaHandler;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\VerEtiqueta;
 use Illuminate\Http\JsonResponse;
 
@@ -39,7 +39,7 @@ class VerEtiquetaController
         try {
             $row = $this->handler->__invoke(new VerEtiqueta($id));
             return response()->json($row);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }

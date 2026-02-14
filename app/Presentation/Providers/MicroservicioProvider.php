@@ -44,6 +44,7 @@ use App\Infrastructure\Persistence\Transaction\TransactionManager;
 use App\Infrastructure\Persistence\Outbox\OutboxEventPublisher;
 use App\Infrastructure\Persistence\Outbox\OutboxStoreAdapter;
 use App\Application\Shared\BusInterface;
+use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
 use App\Infrastructure\Bus\HttpEventBus;
 use App\Infrastructure\Bus\RabbitMqEventBus;
 use App\Application\Integration\IntegrationEventRouter;
@@ -160,6 +161,15 @@ class MicroservicioProvider extends ServiceProvider
             InboundEventRepositoryInterface::class,
             InboundEventRepository::class
         );
+
+        $this->app->bind(RegistrarInboundEventHandler::class, function ($app) {
+            return new RegistrarInboundEventHandler(
+                $app->make(InboundEventRepositoryInterface::class),
+                $app->make(\App\Application\Support\Transaction\TransactionAggregate::class),
+                $app->make(\Psr\Log\LoggerInterface::class),
+                (string) config('rabbitmq.inbound.schema_versions', '1')
+            );
+        });
 
         $this->app->bind(
             KpiRepositoryInterface::class,

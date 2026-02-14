@@ -10,9 +10,11 @@ use App\Domain\Produccion\Repository\ItemDespachoRepositoryInterface;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Integration\Events\EntregaProgramadaEvent;
 use App\Application\Support\Transaction\TransactionAggregate;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Integration\CalendarProcessManager;
 use App\Domain\Produccion\Entity\CalendarioItem;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * @class EntregaProgramadaHandler
@@ -41,23 +43,31 @@ class EntregaProgramadaHandler implements IntegrationEventHandlerInterface
     private $itemDespachoRepository;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param CalendarioItemRepositoryInterface $calendarioItemRepository
      * @param TransactionAggregate $transactionAggregate
      * @param CalendarProcessManager $calendarProcessManager
      * @param ItemDespachoRepositoryInterface $itemDespachoRepository
+     * @param ?LoggerInterface $logger
      */
     public function __construct(
         CalendarioItemRepositoryInterface $calendarioItemRepository,
         TransactionAggregate $transactionAggregate,
         CalendarProcessManager $calendarProcessManager,
-        ItemDespachoRepositoryInterface $itemDespachoRepository
+        ItemDespachoRepositoryInterface $itemDespachoRepository,
+        ?LoggerInterface $logger = null
     ) {
         $this->calendarioItemRepository = $calendarioItemRepository;
         $this->transactionAggregate = $transactionAggregate;
         $this->calendarProcessManager = $calendarProcessManager;
         $this->itemDespachoRepository = $itemDespachoRepository;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -72,8 +82,8 @@ class EntregaProgramadaHandler implements IntegrationEventHandlerInterface
         $this->transactionAggregate->runTransaction(function () use ($event): void {
             try {
                 $this->itemDespachoRepository->byId($event->itemDespachoId);
-            } catch (ModelNotFoundException $e) {
-                logger()->warning('EntregaProgramada ignored (item_despacho not found)', [
+            } catch (EntityNotFoundException $e) {
+                $this->logger->warning('EntregaProgramada ignored (item_despacho not found)', [
                     'item_despacho_id' => $event->itemDespachoId,
                 ]);
                 return;

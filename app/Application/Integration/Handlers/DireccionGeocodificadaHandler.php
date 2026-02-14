@@ -9,7 +9,9 @@ use App\Application\Integration\Events\DireccionGeocodificadaEvent;
 use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * @class DireccionGeocodificadaHandler
@@ -28,17 +30,25 @@ class DireccionGeocodificadaHandler implements IntegrationEventHandlerInterface
     private $transactionAggregate;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param DireccionRepositoryInterface $direccionRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param ?LoggerInterface $logger
      */
     public function __construct(
         DireccionRepositoryInterface $direccionRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        ?LoggerInterface $logger = null
     ) {
         $this->direccionRepository = $direccionRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -52,7 +62,7 @@ class DireccionGeocodificadaHandler implements IntegrationEventHandlerInterface
 
         $this->transactionAggregate->runTransaction(function () use ($event): void {
             if ($event->geo === null) {
-                logger()->warning('Direccion geocodificada ignored (missing geo)', [
+                $this->logger->warning('Direccion geocodificada ignored (missing geo)', [
                     'direccion_id' => $event->id,
                 ]);
                 return;
@@ -60,8 +70,8 @@ class DireccionGeocodificadaHandler implements IntegrationEventHandlerInterface
 
             try {
                 $direccion = $this->direccionRepository->byId($event->id);
-            } catch (ModelNotFoundException $e) {
-                logger()->warning('Direccion geocodificada ignored (direccion not found)', [
+            } catch (EntityNotFoundException $e) {
+                $this->logger->warning('Direccion geocodificada ignored (direccion not found)', [
                     'direccion_id' => $event->id,
                 ]);
                 return;

@@ -9,8 +9,10 @@ use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Integration\Events\RecetaActualizadaEvent;
 use App\Application\Support\Transaction\TransactionAggregate;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\RecetaVersion;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * @class RecetaActualizadaHandler
@@ -29,17 +31,25 @@ class RecetaActualizadaHandler implements IntegrationEventHandlerInterface
     private $transactionAggregate;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param RecetaVersionRepositoryInterface $recetaVersionRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param ?LoggerInterface $logger
      */
     public function __construct(
         RecetaVersionRepositoryInterface $recetaVersionRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        ?LoggerInterface $logger = null
     ) {
         $this->recetaVersionRepository = $recetaVersionRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -55,12 +65,12 @@ class RecetaActualizadaHandler implements IntegrationEventHandlerInterface
             $existing = null;
             try {
                 $existing = $this->recetaVersionRepository->byId($event->id);
-            } catch (ModelNotFoundException $e) {
+            } catch (EntityNotFoundException $e) {
                 $existing = null;
             }
 
             if ($existing === null && $event->nombre === null) {
-                logger()->warning('Receta update ignored (missing nombre for create)', [
+                $this->logger->warning('Receta update ignored (missing nombre for create)', [
                     'receta_id' => $event->id,
                 ]);
                 return;

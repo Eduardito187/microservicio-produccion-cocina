@@ -7,7 +7,7 @@ namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\ActualizarCalendarioItemHandler;
 use App\Application\Produccion\Command\ActualizarCalendarioItem;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -51,7 +51,7 @@ class ActualizarCalendarioItemController
             ));
 
             return response()->json(['calendarioItemId' => $calendarioItemId], 200);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }

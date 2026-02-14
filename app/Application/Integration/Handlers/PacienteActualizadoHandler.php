@@ -9,8 +9,10 @@ use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 use App\Application\Integration\Events\PacienteActualizadoEvent;
 use App\Application\Support\Transaction\TransactionAggregate;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Paciente;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * @class PacienteActualizadoHandler
@@ -29,17 +31,25 @@ class PacienteActualizadoHandler implements IntegrationEventHandlerInterface
     private $transactionAggregate;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param PacienteRepositoryInterface $pacienteRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param ?LoggerInterface $logger
      */
     public function __construct(
         PacienteRepositoryInterface $pacienteRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        ?LoggerInterface $logger = null
     ) {
         $this->pacienteRepository = $pacienteRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -55,12 +65,12 @@ class PacienteActualizadoHandler implements IntegrationEventHandlerInterface
             $existing = null;
             try {
                 $existing = $this->pacienteRepository->byId($event->id);
-            } catch (ModelNotFoundException $e) {
+            } catch (EntityNotFoundException $e) {
                 $existing = null;
             }
 
             if ($existing === null && $event->nombre === null) {
-                logger()->warning('Paciente update ignored (missing nombre for create)', [
+                $this->logger->warning('Paciente update ignored (missing nombre for create)', [
                     'paciente_id' => $event->id,
                 ]);
                 return;

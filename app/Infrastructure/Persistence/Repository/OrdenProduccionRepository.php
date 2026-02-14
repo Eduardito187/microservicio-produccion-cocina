@@ -19,7 +19,7 @@ use App\Infrastructure\Persistence\Repository\OrdenItemRepository;
 use App\Infrastructure\Persistence\Model\Paquete as PaqueteModel;
 use App\Domain\Produccion\Events\PaqueteParaDespachoCreado;
 use App\Application\Shared\DomainEventPublisherInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Events\ProduccionBatchCreado;
 use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Produccion\Entity\ItemDespacho;
@@ -78,7 +78,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
 
     /**
      * @param string|null $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return AggregateOrdenProduccion|null
      */
     public function byId(string|null $id): ?AggregateOrdenProduccion
@@ -88,7 +88,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
             ->find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("La orden de produccion id: {$id} no existe.");
+            throw new EntityNotFoundException("La orden de produccion id: {$id} no existe.");
         }
 
         $fecha = $this->convertDate($row->fecha);

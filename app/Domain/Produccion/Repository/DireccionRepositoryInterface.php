@@ -6,7 +6,7 @@
 namespace App\Domain\Produccion\Repository;
 
 use App\Domain\Produccion\Entity\Direccion;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 
 /**
  * @class DireccionRepositoryInterface
@@ -16,7 +16,7 @@ interface DireccionRepositoryInterface
 {
     /**
      * @param string|int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return Direccion|null
      */
     public function byId(string|int $id): ?Direccion;

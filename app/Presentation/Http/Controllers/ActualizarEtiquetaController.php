@@ -7,7 +7,7 @@ namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\ActualizarEtiquetaHandler;
 use App\Application\Produccion\Command\ActualizarEtiqueta;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -55,7 +55,7 @@ class ActualizarEtiquetaController
             ));
 
             return response()->json(['etiquetaId' => $etiquetaId], 200);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }

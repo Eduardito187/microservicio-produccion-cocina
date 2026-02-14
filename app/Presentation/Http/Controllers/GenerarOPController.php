@@ -6,7 +6,7 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\GenerarOPHandler;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Presentation\Http\Requests\GenerarOPRequest;
 use App\Application\Produccion\Command\GenerarOP;
 use Illuminate\Http\JsonResponse;
@@ -59,7 +59,7 @@ class GenerarOPController
             return response()->json(['ordenProduccionId' => $ordenProduccionId], 201);
         } catch (DomainException $e) {
             return response()->json(['message' => $e->getMessage()], 409);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }

@@ -8,7 +8,7 @@ namespace App\Application\Produccion\Handler;
 use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\VerRecetaVersion;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\RecetaVersion;
 
 /**

@@ -7,7 +7,7 @@ namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\ActualizarRecetaVersionHandler;
 use App\Application\Produccion\Command\ActualizarRecetaVersion;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -67,7 +67,7 @@ class ActualizarRecetaVersionController
             ));
 
             return response()->json(['recetaVersionId' => $recetaVersionId], 200);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }

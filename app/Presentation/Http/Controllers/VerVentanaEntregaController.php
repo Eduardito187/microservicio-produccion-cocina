@@ -7,7 +7,7 @@ namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\VerVentanaEntregaHandler;
 use App\Application\Produccion\Command\VerVentanaEntrega;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -39,7 +39,7 @@ class VerVentanaEntregaController
         try {
             $row = $this->handler->__invoke(new VerVentanaEntrega($id));
             return response()->json($row);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }

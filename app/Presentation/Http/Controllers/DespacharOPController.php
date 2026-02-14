@@ -6,7 +6,7 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\DespachadorOPHandler;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\DespachadorOP;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -56,7 +56,7 @@ class DespacharOPController
             return response()->json(['ordenProduccionId' => $ordenProduccionId], 201);
         } catch (DomainException $e) {
             return response()->json(['message' => $e->getMessage()], 409);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
 

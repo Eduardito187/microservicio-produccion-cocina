@@ -9,10 +9,9 @@ use App\Domain\Produccion\Repository\InboundEventRepositoryInterface;
 use App\Application\Produccion\Command\RegistrarInboundEvent;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\InboundEvent;
-use Illuminate\Database\QueryException;
+use App\Domain\Shared\Exception\DuplicateRecordException;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
-use Illuminate\Support\Str;
 use Psr\Log\NullLogger;
 
 /**
@@ -37,20 +36,28 @@ class RegistrarInboundEventHandler
     private $logger;
 
     /**
+     * @var string
+     */
+    private $supportedSchemaVersions;
+
+    /**
      * Constructor
      *
      * @param InboundEventRepositoryInterface $inboundEventRepository
      * @param TransactionAggregate $transactionAggregate
      * @param ?LoggerInterface $logger
+     * @param string $supportedSchemaVersions
      */
     public function __construct(
         InboundEventRepositoryInterface $inboundEventRepository,
         TransactionAggregate $transactionAggregate,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        string $supportedSchemaVersions = '1'
     ) {
         $this->inboundEventRepository = $inboundEventRepository;
         $this->transactionAggregate = $transactionAggregate;
         $this->logger = $logger ?? new NullLogger();
+        $this->supportedSchemaVersions = $supportedSchemaVersions;
     }
 
     /**
@@ -61,7 +68,7 @@ class RegistrarInboundEventHandler
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): bool {
             $schemaVersion = $this->resolveSchemaVersion($command->schemaVersion);
-            $correlationId = $command->correlationId ?: (string) Str::uuid();
+            $correlationId = $command->correlationId ?: $this->generateUuidV4();
 
             $event = new InboundEvent(
                 null,
@@ -75,23 +82,22 @@ class RegistrarInboundEventHandler
 
             try {
                 $this->inboundEventRepository->save($event);
-            } catch (QueryException $e) {
-                if ($this->isDuplicateKey($e)) {
-                    $this->logger->info('Inbound event duplicate', [
-                        'event_id' => $command->eventId,
-                        'event_name' => $command->eventName,
-                        'correlation_id' => $correlationId,
-                    ]);
-                    return true;
-                }
+            } catch (DuplicateRecordException $exception) {
+                $this->logger->info('Inbound event duplicate', [
+                    'event_id' => $command->eventId,
+                    'event_name' => $command->eventName,
+                    'correlation_id' => $correlationId,
+                ]);
+                return true;
+            } catch (\Throwable $exception) {
                 $this->logger->error('Inbound event insert failed', [
                     'event_id' => $command->eventId,
                     'event_name' => $command->eventName,
                     'correlation_id' => $correlationId,
-                    'error' => $e->getMessage(),
-                    'exception' => $e,
+                    'error' => $exception->getMessage(),
+                    'exception' => $exception,
                 ]);
-                throw $e;
+                throw $exception;
             }
 
             return false;
@@ -99,23 +105,22 @@ class RegistrarInboundEventHandler
     }
 
     /**
-     * @param QueryException $e
-     * @return bool
+     * @return string
      */
-    private function isDuplicateKey(QueryException $e): bool
+    private function generateUuidV4(): string
     {
-        $errorInfo = $e->errorInfo ?? null;
-        if (!is_array($errorInfo) || !isset($errorInfo[1]) || (int) $errorInfo[1] !== 1062) {
-            return false;
-        }
-
-        $message = $e->getMessage();
-        if (!is_string($message)) {
-            return false;
-        }
-
-        return str_contains($message, 'inbound_events_event_id_unique')
-            || str_contains($message, 'event_id');
+        $bytes = random_bytes(16);
+        $bytes[6] = chr((ord($bytes[6]) & 0x0f) | 0x40);
+        $bytes[8] = chr((ord($bytes[8]) & 0x3f) | 0x80);
+        $hex = bin2hex($bytes);
+        return sprintf(
+            '%s-%s-%s-%s-%s',
+            substr($hex, 0, 8),
+            substr($hex, 8, 4),
+            substr($hex, 12, 4),
+            substr($hex, 16, 4),
+            substr($hex, 20, 12)
+        );
     }
 
     /**
@@ -127,15 +132,7 @@ class RegistrarInboundEventHandler
         if ($schemaVersion === null) {
             throw new InvalidArgumentException('schema_version is required');
         }
-        $supported = '1';
-        if (function_exists('config')) {
-            try {
-                $supported = config('rabbitmq.inbound.schema_versions', '1');
-            } catch (\Throwable $e) {
-                $supported = '1';
-            }
-        }
-        $supportedList = array_filter(array_map('trim', explode(',', (string) $supported)));
+        $supportedList = array_filter(array_map('trim', explode(',', $this->supportedSchemaVersions)));
         $supportedInts = array_map('intval', $supportedList);
         if ($supportedInts === []) {
             $supportedInts = [1];

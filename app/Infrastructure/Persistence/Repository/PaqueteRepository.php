@@ -7,7 +7,7 @@ namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\Paquete as PaqueteModel;
 use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Paquete;
 
 /**
@@ -18,7 +18,7 @@ class PaqueteRepository implements PaqueteRepositoryInterface
 {
     /**
      * @param int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return Paquete|null
      */
     public function byId(string|int $id): ?Paquete
@@ -26,7 +26,7 @@ class PaqueteRepository implements PaqueteRepositoryInterface
         $row = PaqueteModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("El paquete id: {$id} no existe.");
+            throw new EntityNotFoundException("El paquete id: {$id} no existe.");
         }
 
         return new Paquete(

@@ -6,7 +6,7 @@
 namespace App\Domain\Produccion\Repository;
 
 use App\Domain\Produccion\Entity\Paciente;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 
 /**
  * @class PacienteRepositoryInterface
@@ -16,7 +16,7 @@ interface PacienteRepositoryInterface
 {
     /**
      * @param string|int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return Paciente|null
      */
     public function byId(string|int $id): ?Paciente;

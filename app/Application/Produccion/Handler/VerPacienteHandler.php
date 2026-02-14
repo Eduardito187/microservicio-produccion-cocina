@@ -7,7 +7,7 @@ namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\VerPaciente;
 use App\Domain\Produccion\Entity\Paciente;
 

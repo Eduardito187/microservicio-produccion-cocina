@@ -6,7 +6,7 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\EliminarPaqueteHandler;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\EliminarPaquete;
 use Illuminate\Http\JsonResponse;
 
@@ -39,7 +39,7 @@ class EliminarPaqueteController
         try {
             $this->handler->__invoke(new EliminarPaquete($id));
             return response()->json(null, 204);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }

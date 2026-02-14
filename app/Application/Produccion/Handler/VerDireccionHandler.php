@@ -7,7 +7,7 @@ namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\VerDireccion;
 use App\Domain\Produccion\Entity\Direccion;
 

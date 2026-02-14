@@ -7,7 +7,7 @@ namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\VerCalendarioItemHandler;
 use App\Application\Produccion\Command\VerCalendarioItem;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -39,7 +39,7 @@ class VerCalendarioItemController
         try {
             $row = $this->handler->__invoke(new VerCalendarioItem($id));
             return response()->json($row);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }

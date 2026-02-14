@@ -7,7 +7,7 @@ namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\Direccion as DireccionModel;
 use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Direccion;
 
 /**
@@ -18,7 +18,7 @@ class DireccionRepository implements DireccionRepositoryInterface
 {
     /**
      * @param int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return Direccion|null
      */
     public function byId(string|int $id): ?Direccion
@@ -26,7 +26,7 @@ class DireccionRepository implements DireccionRepositoryInterface
         $row = DireccionModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("La direccion id: {$id} no existe.");
+            throw new EntityNotFoundException("La direccion id: {$id} no existe.");
         }
 
         return new Direccion(

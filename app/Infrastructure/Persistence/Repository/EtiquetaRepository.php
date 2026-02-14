@@ -7,7 +7,7 @@ namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\Etiqueta as EtiquetaModel;
 use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Etiqueta;
 
 /**
@@ -18,7 +18,7 @@ class EtiquetaRepository implements EtiquetaRepositoryInterface
 {
     /**
      * @param int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return Etiqueta|null
      */
     public function byId(string|int $id): ?Etiqueta
@@ -26,7 +26,7 @@ class EtiquetaRepository implements EtiquetaRepositoryInterface
         $row = EtiquetaModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("La etiqueta id: {$id} no existe.");
+            throw new EntityNotFoundException("La etiqueta id: {$id} no existe.");
         }
 
         return new Etiqueta(

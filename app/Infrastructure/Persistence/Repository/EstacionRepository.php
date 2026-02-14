@@ -7,7 +7,7 @@ namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\Estacion as EstacionModel;
 use App\Domain\Produccion\Repository\EstacionRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Estacion;
 
 /**
@@ -18,7 +18,7 @@ class EstacionRepository implements EstacionRepositoryInterface
 {
     /**
      * @param int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return Estacion|null
      */
     public function byId(string|int $id): ?Estacion
@@ -26,7 +26,7 @@ class EstacionRepository implements EstacionRepositoryInterface
         $row = EstacionModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("La estacion id: {$id} no existe.");
+            throw new EntityNotFoundException("La estacion id: {$id} no existe.");
         }
 
         return new Estacion(

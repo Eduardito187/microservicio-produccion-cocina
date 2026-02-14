@@ -8,7 +8,7 @@ namespace App\Infrastructure\Persistence\Repository;
 use App\Infrastructure\Persistence\Model\ProduccionBatch as ProduccionBatchModel;
 use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
 use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Produccion\ValueObjects\Qty;
 
@@ -20,7 +20,7 @@ class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
 {
     /**
      * @param string|null $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return AggregateProduccionBatch|null
      */
     public function byId(string|null $id): ?AggregateProduccionBatch
@@ -28,7 +28,7 @@ class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
         $row = ProduccionBatchModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("El batch de produccion id: {$id} no existe.");
+            throw new EntityNotFoundException("El batch de produccion id: {$id} no existe.");
         }
 
         return new AggregateProduccionBatch(

@@ -7,7 +7,7 @@ namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\RecetaVersion as RecetaVersionModel;
 use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\RecetaVersion;
 
 /**
@@ -18,7 +18,7 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
 {
     /**
      * @param int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return RecetaVersion|null
      */
     public function byId(string|int $id): ?RecetaVersion
@@ -26,7 +26,7 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
         $row = RecetaVersionModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("La receta version id: {$id} no existe.");
+            throw new EntityNotFoundException("La receta version id: {$id} no existe.");
         }
 
         return new RecetaVersion(

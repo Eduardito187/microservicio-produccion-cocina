@@ -10,6 +10,8 @@ use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Integration\Events\EntregaConfirmadaEvent;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Analytics\KpiRepositoryInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use DateTimeImmutable;
 
 /**
@@ -34,20 +36,28 @@ class EntregaConfirmadaHandler implements IntegrationEventHandlerInterface
     private $transactionAggregate;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param EntregaEvidenciaRepositoryInterface $evidenciaRepository
      * @param KpiRepositoryInterface $kpiRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param ?LoggerInterface $logger
      */
     public function __construct(
         EntregaEvidenciaRepositoryInterface $evidenciaRepository,
         KpiRepositoryInterface $kpiRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        ?LoggerInterface $logger = null
     ) {
         $this->evidenciaRepository = $evidenciaRepository;
         $this->kpiRepository = $kpiRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -59,7 +69,7 @@ class EntregaConfirmadaHandler implements IntegrationEventHandlerInterface
     {
         $eventId = $meta['event_id'] ?? null;
         if (!is_string($eventId) || $eventId === '') {
-            logger()->warning('EntregaConfirmada ignored (missing event_id)');
+            $this->logger->warning('EntregaConfirmada ignored (missing event_id)');
             return;
         }
 

@@ -6,7 +6,7 @@
 namespace App\Domain\Produccion\Repository;
 
 use App\Domain\Produccion\Entity\RecetaVersion;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 
 /**
  * @class RecetaVersionRepositoryInterface
@@ -16,7 +16,7 @@ interface RecetaVersionRepositoryInterface
 {
     /**
      * @param string|int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return RecetaVersion|null
      */
     public function byId(string|int $id): ?RecetaVersion;

@@ -7,7 +7,7 @@ namespace App\Application\Produccion\Handler;
 
 use App\Domain\Produccion\Repository\EstacionRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\VerEstacion;
 use App\Domain\Produccion\Entity\Estacion;
 

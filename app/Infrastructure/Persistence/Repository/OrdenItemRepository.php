@@ -8,7 +8,7 @@ namespace App\Infrastructure\Persistence\Repository;
 use App\Infrastructure\Persistence\Model\OrderItem as OrdenItemModel;
 use App\Domain\Produccion\Repository\OrdenItemRepositoryInterface;
 use App\Infrastructure\Persistence\Repository\ProductRepository;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\OrdenItem;
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
@@ -35,7 +35,7 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
 
     /**
      * @param string $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return OrdenItem|null
      */
     public function byId(string $id): ?OrdenItem
@@ -43,7 +43,7 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
         $row = OrdenItemModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("El orden item de produccion id: {$id} no existe.");
+            throw new EntityNotFoundException("El orden item de produccion id: {$id} no existe.");
         }
 
         return new OrdenItem(

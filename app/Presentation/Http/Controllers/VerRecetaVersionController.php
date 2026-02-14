@@ -7,7 +7,7 @@ namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\VerRecetaVersionHandler;
 use App\Application\Produccion\Command\VerRecetaVersion;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -39,7 +39,7 @@ class VerRecetaVersionController
         try {
             $row = $this->handler->__invoke(new VerRecetaVersion($id));
             return response()->json($row);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }

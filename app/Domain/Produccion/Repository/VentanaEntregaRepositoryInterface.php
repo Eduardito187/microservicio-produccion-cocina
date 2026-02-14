@@ -6,7 +6,7 @@
 namespace App\Domain\Produccion\Repository;
 
 use App\Domain\Produccion\Entity\VentanaEntrega;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 
 /**
  * @class VentanaEntregaRepositoryInterface
@@ -16,7 +16,7 @@ interface VentanaEntregaRepositoryInterface
 {
     /**
      * @param string|int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return VentanaEntrega|null
      */
     public function byId(string|int $id): ?VentanaEntrega;

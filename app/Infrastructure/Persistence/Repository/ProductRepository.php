@@ -7,7 +7,7 @@ namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\Product as ProductModel;
 use App\Domain\Produccion\Repository\ProductRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Products;
 
 /**
@@ -18,7 +18,7 @@ class ProductRepository implements ProductRepositoryInterface
 {
     /**
      * @param string $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return Products|null
      */
     public function byId(string $id): ?Products
@@ -26,7 +26,7 @@ class ProductRepository implements ProductRepositoryInterface
         $row = ProductModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("El producto id: {$id} no existe.");
+            throw new EntityNotFoundException("El producto id: {$id} no existe.");
         }
 
         return new Products(
@@ -46,7 +46,7 @@ class ProductRepository implements ProductRepositoryInterface
         $row = ProductModel::where('sku', $sku)->first();
 
         if (!$row) {
-            throw new ModelNotFoundException("El producto sku: {$sku} no existe.");
+            throw new EntityNotFoundException("El producto sku: {$sku} no existe.");
         }
 
         return new Products(

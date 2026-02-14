@@ -6,7 +6,7 @@
 namespace App\Domain\Produccion\Repository;
 
 use App\Domain\Produccion\Entity\CalendarioItem;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 
 /**
  * @class CalendarioItemRepositoryInterface
@@ -16,7 +16,7 @@ interface CalendarioItemRepositoryInterface
 {
     /**
      * @param string|int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return CalendarioItem|null
      */
     public function byId(string|int $id): ?CalendarioItem;

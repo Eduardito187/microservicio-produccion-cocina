@@ -9,8 +9,10 @@ use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Integration\Events\DireccionActualizadaEvent;
 use App\Application\Support\Transaction\TransactionAggregate;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Direccion;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * @class DireccionActualizadaHandler
@@ -29,17 +31,25 @@ class DireccionActualizadaHandler implements IntegrationEventHandlerInterface
     private $transactionAggregate;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param DireccionRepositoryInterface $direccionRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param ?LoggerInterface $logger
      */
     public function __construct(
         DireccionRepositoryInterface $direccionRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        ?LoggerInterface $logger = null
     ) {
         $this->direccionRepository = $direccionRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -55,12 +65,12 @@ class DireccionActualizadaHandler implements IntegrationEventHandlerInterface
             $existing = null;
             try {
                 $existing = $this->direccionRepository->byId($event->id);
-            } catch (ModelNotFoundException $e) {
+            } catch (EntityNotFoundException $e) {
                 $existing = null;
             }
 
             if ($existing === null && $event->linea1 === null) {
-                logger()->warning('Direccion update ignored (missing linea1 for create)', [
+                $this->logger->warning('Direccion update ignored (missing linea1 for create)', [
                     'direccion_id' => $event->id,
                 ]);
                 return;

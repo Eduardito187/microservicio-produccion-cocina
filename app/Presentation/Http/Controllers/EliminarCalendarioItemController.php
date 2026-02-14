@@ -7,7 +7,7 @@ namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\EliminarCalendarioItemHandler;
 use App\Application\Produccion\Command\EliminarCalendarioItem;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -39,7 +39,7 @@ class EliminarCalendarioItemController
         try {
             $this->handler->__invoke(new EliminarCalendarioItem($id));
             return response()->json(null, 204);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }

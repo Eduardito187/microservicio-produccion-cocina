@@ -7,7 +7,7 @@ namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\CalendarioItem as CalendarioItemModel;
 use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\CalendarioItem;
 
 /**
@@ -18,7 +18,7 @@ class CalendarioItemRepository implements CalendarioItemRepositoryInterface
 {
     /**
      * @param int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return CalendarioItem|null
      */
     public function byId(string|int $id): ?CalendarioItem
@@ -26,7 +26,7 @@ class CalendarioItemRepository implements CalendarioItemRepositoryInterface
         $row = CalendarioItemModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("El calendario item id: {$id} no existe.");
+            throw new EntityNotFoundException("El calendario item id: {$id} no existe.");
         }
 
         return new CalendarioItem(

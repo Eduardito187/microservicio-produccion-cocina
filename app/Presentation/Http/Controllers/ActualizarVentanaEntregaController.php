@@ -7,7 +7,7 @@ namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\ActualizarVentanaEntregaHandler;
 use App\Application\Produccion\Command\ActualizarVentanaEntrega;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use DateTimeImmutable;
@@ -52,7 +52,7 @@ class ActualizarVentanaEntregaController
             ));
 
             return response()->json(['ventanaEntregaId' => $ventanaId], 200);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }

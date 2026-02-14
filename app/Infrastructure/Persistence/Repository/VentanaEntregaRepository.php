@@ -7,7 +7,7 @@ namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\VentanaEntrega as VentanaEntregaModel;
 use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\VentanaEntrega;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -20,7 +20,7 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
 {
     /**
      * @param int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return VentanaEntrega|null
      */
     public function byId(string|int $id): ?VentanaEntrega
@@ -28,7 +28,7 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
         $row = VentanaEntregaModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("La ventana de entrega id: {$id} no existe.");
+            throw new EntityNotFoundException("La ventana de entrega id: {$id} no existe.");
         }
 
         return new VentanaEntrega(

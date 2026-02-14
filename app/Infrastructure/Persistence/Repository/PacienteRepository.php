@@ -7,7 +7,7 @@ namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\Paciente as PacienteModel;
 use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Paciente;
 
 /**
@@ -18,7 +18,7 @@ class PacienteRepository implements PacienteRepositoryInterface
 {
     /**
      * @param int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return Paciente|null
      */
     public function byId(string|int $id): ?Paciente
@@ -26,7 +26,7 @@ class PacienteRepository implements PacienteRepositoryInterface
         $row = PacienteModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("El paciente id: {$id} no existe.");
+            throw new EntityNotFoundException("El paciente id: {$id} no existe.");
         }
 
         return new Paciente(

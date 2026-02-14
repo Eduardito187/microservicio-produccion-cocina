@@ -7,7 +7,7 @@ namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\Suscripcion as SuscripcionModel;
 use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Suscripcion;
 
 /**
@@ -18,7 +18,7 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
 {
     /**
      * @param int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return Suscripcion|null
      */
     public function byId(string|int $id): ?Suscripcion
@@ -26,7 +26,7 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
         $row = SuscripcionModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("La suscripcion id: {$id} no existe.");
+            throw new EntityNotFoundException("La suscripcion id: {$id} no existe.");
         }
 
         return new Suscripcion(

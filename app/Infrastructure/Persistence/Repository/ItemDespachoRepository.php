@@ -7,7 +7,7 @@ namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\ItemDespacho as ItemDespachoModel;
 use App\Domain\Produccion\Repository\ItemDespachoRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\ItemDespacho;
 
 /**
@@ -18,7 +18,7 @@ class ItemDespachoRepository implements ItemDespachoRepositoryInterface
 {
     /**
      * @param string $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return ItemDespacho|null
      */
     public function byId(string $id): ?ItemDespacho
@@ -26,7 +26,7 @@ class ItemDespachoRepository implements ItemDespachoRepositoryInterface
         $row = ItemDespachoModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("El item despacho id: {$id} no existe.");
+            throw new EntityNotFoundException("El item despacho id: {$id} no existe.");
         }
 
         return new ItemDespacho(

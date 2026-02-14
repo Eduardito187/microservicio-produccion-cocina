@@ -9,8 +9,10 @@ use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 use App\Application\Integration\Events\SuscripcionActualizadaEvent;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Suscripcion;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * @class SuscripcionActualizadaHandler
@@ -29,17 +31,25 @@ class SuscripcionActualizadaHandler implements IntegrationEventHandlerInterface
     private $transactionAggregate;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param SuscripcionRepositoryInterface $suscripcionRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param ?LoggerInterface $logger
      */
     public function __construct(
         SuscripcionRepositoryInterface $suscripcionRepository,
-        TransactionAggregate $transactionAggregate
+        TransactionAggregate $transactionAggregate,
+        ?LoggerInterface $logger = null
     ) {
         $this->suscripcionRepository = $suscripcionRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -55,12 +65,12 @@ class SuscripcionActualizadaHandler implements IntegrationEventHandlerInterface
             $existing = null;
             try {
                 $existing = $this->suscripcionRepository->byId($event->id);
-            } catch (ModelNotFoundException $e) {
+            } catch (EntityNotFoundException $e) {
                 $existing = null;
             }
 
             if ($existing === null && $event->nombre === null) {
-                logger()->warning('Suscripcion update ignored (missing nombre for create)', [
+                $this->logger->warning('Suscripcion update ignored (missing nombre for create)', [
                     'suscripcion_id' => $event->id,
                 ]);
                 return;

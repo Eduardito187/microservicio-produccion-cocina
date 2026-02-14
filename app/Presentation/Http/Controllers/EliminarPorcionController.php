@@ -6,7 +6,7 @@
 namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\EliminarPorcionHandler;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\EliminarPorcion;
 use Illuminate\Http\JsonResponse;
 
@@ -39,7 +39,7 @@ class EliminarPorcionController
         try {
             $this->handler->__invoke(new EliminarPorcion($id));
             return response()->json(null, 204);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }

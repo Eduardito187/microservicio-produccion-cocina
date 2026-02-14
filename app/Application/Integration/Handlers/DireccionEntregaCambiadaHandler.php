@@ -9,8 +9,10 @@ use App\Application\Integration\Events\DireccionEntregaCambiadaEvent;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Integration\CalendarProcessManager;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * @class DireccionEntregaCambiadaHandler
@@ -34,20 +36,28 @@ class DireccionEntregaCambiadaHandler implements IntegrationEventHandlerInterfac
     private $calendarProcessManager;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param PaqueteRepositoryInterface $paqueteRepository
      * @param TransactionAggregate $transactionAggregate
      * @param CalendarProcessManager $calendarProcessManager
+     * @param ?LoggerInterface $logger
      */
     public function __construct(
         PaqueteRepositoryInterface $paqueteRepository,
         TransactionAggregate $transactionAggregate,
-        CalendarProcessManager $calendarProcessManager
+        CalendarProcessManager $calendarProcessManager,
+        ?LoggerInterface $logger = null
     ) {
         $this->paqueteRepository = $paqueteRepository;
         $this->transactionAggregate = $transactionAggregate;
         $this->calendarProcessManager = $calendarProcessManager;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -61,14 +71,14 @@ class DireccionEntregaCambiadaHandler implements IntegrationEventHandlerInterfac
 
         $this->transactionAggregate->runTransaction(function () use ($event): void {
             if ($event->paqueteId === null) {
-                logger()->warning('DireccionEntregaCambiada ignored (missing paqueteId)');
+                $this->logger->warning('DireccionEntregaCambiada ignored (missing paqueteId)');
                 return;
             }
 
             try {
                 $paquete = $this->paqueteRepository->byId($event->paqueteId);
-            } catch (ModelNotFoundException $e) {
-                logger()->warning('DireccionEntregaCambiada ignored (paquete not found)', [
+            } catch (EntityNotFoundException $e) {
+                $this->logger->warning('DireccionEntregaCambiada ignored (paquete not found)', [
                     'paquete_id' => $event->paqueteId,
                 ]);
                 return;

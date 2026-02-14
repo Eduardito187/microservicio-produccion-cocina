@@ -7,7 +7,7 @@ namespace App\Infrastructure\Persistence\Repository;
 
 use App\Infrastructure\Persistence\Model\Porcion as PorcionModel;
 use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Porcion;
 
 /**
@@ -18,7 +18,7 @@ class PorcionRepository implements PorcionRepositoryInterface
 {
     /**
      * @param int $id
-     * @throws ModelNotFoundException
+     * @throws EntityNotFoundException
      * @return Porcion|null
      */
     public function byId(string|int $id): ?Porcion
@@ -26,7 +26,7 @@ class PorcionRepository implements PorcionRepositoryInterface
         $row = PorcionModel::find($id);
 
         if (!$row) {
-            throw new ModelNotFoundException("La porcion id: {$id} no existe.");
+            throw new EntityNotFoundException("La porcion id: {$id} no existe.");
         }
 
         return new Porcion(

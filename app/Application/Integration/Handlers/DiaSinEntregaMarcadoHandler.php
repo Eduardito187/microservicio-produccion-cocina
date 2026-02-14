@@ -10,7 +10,7 @@ use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Integration\Events\DiaSinEntregaMarcadoEvent;
 use App\Application\Support\Transaction\TransactionAggregate;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Integration\CalendarProcessManager;
 
 /**
@@ -71,7 +71,7 @@ class DiaSinEntregaMarcadoHandler implements IntegrationEventHandlerInterface
         $this->transactionAggregate->runTransaction(function () use ($event): void {
             try {
                 $this->calendarioRepository->byId($event->calendarioId);
-            } catch (ModelNotFoundException $e) {
+            } catch (EntityNotFoundException $e) {
                 return;
             }
 

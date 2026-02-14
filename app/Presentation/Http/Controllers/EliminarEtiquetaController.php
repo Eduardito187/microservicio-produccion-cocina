@@ -7,7 +7,7 @@ namespace App\Presentation\Http\Controllers;
 
 use App\Application\Produccion\Handler\EliminarEtiquetaHandler;
 use App\Application\Produccion\Command\EliminarEtiqueta;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -39,7 +39,7 @@ class EliminarEtiquetaController
         try {
             $this->handler->__invoke(new EliminarEtiqueta($id));
             return response()->json(null, 204);
-        } catch (ModelNotFoundException $e) {
+        } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }
     }
