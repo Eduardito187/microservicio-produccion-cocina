@@ -46,14 +46,15 @@ class LoginController
         }
 
         $tokenUrl = $baseUrl.'/realms/'.$realm.'/protocol/openid-connect/token';
-        $dpop = $this->buildDpopProof($tokenUrl, 'POST');
+        $requireDpop = (bool) config('keycloak.require_dpop', false);
+        $request = Http::asForm();
 
-        $response = Http::asForm()->withHeaders([
-            'DPoP' => $dpop,
-        ])->post(
-            $tokenUrl,
-            $payload
-        );
+        if ($requireDpop) {
+            $dpop = $this->buildDpopProof($tokenUrl, 'POST');
+            $request = $request->withHeaders(['DPoP' => $dpop]);
+        }
+
+        $response = $request->post($tokenUrl, $payload);
 
         $body = $response->json();
 
