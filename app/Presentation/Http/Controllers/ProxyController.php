@@ -5,8 +5,7 @@
 
 namespace App\Presentation\Http\Controllers;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 /**
  * @class ProxyController
@@ -15,20 +14,18 @@ use Illuminate\Http\JsonResponse;
 class ProxyController
 {
     /**
-     * @return JsonResponse
+     * @return RedirectResponse
      */
-    public function users(): JsonResponse
+    public function users(): RedirectResponse
     {
-        $response = Http::get('https://jsonplaceholder.typicode.com/users');
-        return response()->json($response->json(), $response->status());
+        return redirect()->away('https://jsonplaceholder.typicode.com/users');
     }
 
     /**
-     * @return JsonResponse
+     * @return RedirectResponse
      */
-    public function posts(): JsonResponse
+    public function posts(): RedirectResponse
     {
-        $response = Http::get('https://jsonplaceholder.typicode.com/posts');
-        return response()->json($response->json(), $response->status());
+        return redirect()->away('https://jsonplaceholder.typicode.com/posts');
     }
 }

@@ -104,7 +104,11 @@ class OrdenProduccion
 
         $self->record(new OrdenProduccionCreada(
             $id,
-            $fecha
+            $fecha,
+            'CREADA',
+            count($self->items),
+            count($self->batches),
+            count($self->itemsDespacho)
         ));
 
         return $self;
@@ -143,7 +147,15 @@ class OrdenProduccion
         }
 
         $this->estado = EstadoOP::PLANIFICADA;
-        $this->record(new OrdenProduccionPlanificada($this->id, $this->fecha));
+        $this->record(new OrdenProduccionPlanificada(
+            $this->id,
+            $this->fecha,
+            'CREADA',
+            'PLANIFICADA',
+            count($this->items),
+            count($this->batches),
+            count($this->itemsDespacho)
+        ));
     }
 
     /**

@@ -27,13 +27,19 @@ class DomainEventsTest extends TestCase
     public function test_orden_produccion_creada_to_array_contains_expected_fields(): void
     {
         $fecha = new DateTimeImmutable('2025-11-04');
-        $ordenProduccionCreada = new OrdenProduccionCreada(123, $fecha);
+        $ordenProduccionCreada = new OrdenProduccionCreada(123, $fecha, 'CREADA', 3, 0, 0);
 
         $this->assertSame(OrdenProduccionCreada::class, $ordenProduccionCreada->name());
         $this->assertSame(123, $ordenProduccionCreada->aggregateId());
 
         $payload = $ordenProduccionCreada->toArray();
-        $this->assertSame($fecha->format(DATE_ATOM), $payload['fecha']);
+        $this->assertSame('123', $payload['id']);
+        $this->assertSame('123', $payload['ordenProduccionId']);
+        $this->assertSame('2025-11-04T00:00:00Z', $payload['fecha']);
+        $this->assertSame('CREADA', $payload['estado']);
+        $this->assertSame(3, $payload['itemsCount']);
+        $this->assertSame(0, $payload['batchesCount']);
+        $this->assertSame(0, $payload['itemsDespachoCount']);
     }
 
     /**
@@ -43,8 +49,16 @@ class DomainEventsTest extends TestCase
     {
         $fecha = new DateTimeImmutable('2025-11-04');
 
-        $ordenProduccionPlanificada = new OrdenProduccionPlanificada(1, $fecha);
-        $this->assertSame($fecha->format(DATE_ATOM), $ordenProduccionPlanificada->toArray()['fecha']);
+        $ordenProduccionPlanificada = new OrdenProduccionPlanificada(1, $fecha, 'CREADA', 'PLANIFICADA', 3, 3, 0);
+        $planificadaPayload = $ordenProduccionPlanificada->toArray();
+        $this->assertSame('1', $planificadaPayload['id']);
+        $this->assertSame('1', $planificadaPayload['ordenProduccionId']);
+        $this->assertSame('2025-11-04T00:00:00Z', $planificadaPayload['fecha']);
+        $this->assertSame('CREADA', $planificadaPayload['estadoAnterior']);
+        $this->assertSame('PLANIFICADA', $planificadaPayload['estadoActual']);
+        $this->assertSame(3, $planificadaPayload['itemsCount']);
+        $this->assertSame(3, $planificadaPayload['batchesCount']);
+        $this->assertSame(0, $planificadaPayload['itemsDespachoCount']);
 
         $ordenProduccionProcesada = new OrdenProduccionProcesada(1, $fecha);
         $this->assertSame($fecha->format(DATE_ATOM), $ordenProduccionProcesada->toArray()['fecha']);

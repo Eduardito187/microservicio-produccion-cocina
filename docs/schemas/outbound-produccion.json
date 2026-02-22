@@ -6,17 +6,30 @@
     {
       "title": "OrdenProduccionCreada",
       "type": "object",
-      "required": ["fecha"],
+      "required": ["id", "ordenProduccionId", "fecha", "estado", "itemsCount", "batchesCount", "itemsDespachoCount"],
       "properties": {
-        "fecha": { "type": "string" }
+        "id": { "type": "string", "format": "uuid" },
+        "ordenProduccionId": { "type": "string", "format": "uuid" },
+        "fecha": { "type": "string", "format": "date-time" },
+        "estado": { "type": "string", "enum": ["CREADA"] },
+        "itemsCount": { "type": "integer", "minimum": 0 },
+        "batchesCount": { "type": "integer", "minimum": 0 },
+        "itemsDespachoCount": { "type": "integer", "minimum": 0 }
       }
     },
     {
       "title": "OrdenProduccionPlanificada",
       "type": "object",
-      "required": ["fecha"],
+      "required": ["id", "ordenProduccionId", "fecha", "estadoAnterior", "estadoActual", "itemsCount", "batchesCount", "itemsDespachoCount"],
       "properties": {
-        "fecha": { "type": "string" }
+        "id": { "type": "string", "format": "uuid" },
+        "ordenProduccionId": { "type": "string", "format": "uuid" },
+        "fecha": { "type": "string", "format": "date-time" },
+        "estadoAnterior": { "type": "string", "enum": ["CREADA"] },
+        "estadoActual": { "type": "string", "enum": ["PLANIFICADA"] },
+        "itemsCount": { "type": "integer", "minimum": 0 },
+        "batchesCount": { "type": "integer", "minimum": 0 },
+        "itemsDespachoCount": { "type": "integer", "minimum": 0 }
       }
     },
     {
