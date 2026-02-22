@@ -30,6 +30,10 @@ return [
         'event_aliases' => [
             'paciente.paciente-creado' => 'PacienteCreado',
             'paciente.paciente-actualizado' => 'PacienteActualizado',
+            'paciente.paciente-eliminado' => 'PacienteEliminado',
+            'PatientCreatedEvent' => 'PacienteCreado',
+            'PatientUpdatedEvent' => 'PacienteActualizado',
+            'PatientDeletedEvent' => 'PacienteEliminado',
             'suscripciones.suscripcion-creada' => 'SuscripcionCreada',
             'suscripciones.suscripcion-actualizada' => 'SuscripcionActualizada',
             'contrato.creado' => 'contrato.creado',

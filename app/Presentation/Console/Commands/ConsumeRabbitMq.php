@@ -631,6 +631,7 @@ class ConsumeRabbitMq extends Command
             'DireccionGeocodificada' => ['direccionId'],
             'PacienteCreado' => ['pacienteId'],
             'PacienteActualizado' => ['pacienteId'],
+            'PacienteEliminado' => ['pacienteId'],
             'SuscripcionCreada' => ['suscripcionId'],
             'SuscripcionActualizada' => ['suscripcionId'],
             'contrato.creado' => ['contratoId', 'tipoServicio'],
@@ -647,6 +648,7 @@ class ConsumeRabbitMq extends Command
             'PaqueteEnRuta' => ['paqueteId'],
             'paciente.paciente-creado' => ['pacienteId'],
             'paciente.paciente-actualizado' => ['pacienteId'],
+            'paciente.paciente-eliminado' => ['pacienteId'],
         ];
 
         $required = $requirements[$eventName] ?? [];
@@ -684,7 +686,12 @@ class ConsumeRabbitMq extends Command
      */
     private function resolveEventName(?string $eventName, string $routingKey): ?string
     {
+        $aliases = config('rabbitmq.inbound.event_aliases', []);
+
         if (is_string($eventName) && $eventName !== '') {
+            if (is_array($aliases) && isset($aliases[$eventName]) && is_string($aliases[$eventName])) {
+                return $aliases[$eventName];
+            }
             return $eventName;
         }
 
@@ -692,7 +699,6 @@ class ConsumeRabbitMq extends Command
             return null;
         }
 
-        $aliases = config('rabbitmq.inbound.event_aliases', []);
         if (is_array($aliases) && isset($aliases[$routingKey]) && is_string($aliases[$routingKey])) {
             return $aliases[$routingKey];
         }

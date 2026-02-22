@@ -34,7 +34,9 @@ Comandos y handlers (p. ej., GenerarOPHandler, PlanificarOPHandler, IniciarOPHan
 Repositorio Eloquent para persistencia (IDs BIGINT AUTO_INCREMENT; FK order_item.op_id).
 
 Outbox pattern:
-Los eventos de dominio (p. ej., OrdenProduccionCreada, OrdenProduccionPlanificada, OrdenProduccionIniciada, OrdenProduccionCerrada) se registran en tabla outbox dentro de la misma transacción y se publican after-commit (Si los datos logran registrarse).
+Los eventos de dominio (p. ej., OrdenProduccionCreada, OrdenProduccionPlanificada, OrdenProduccionIniciada, OrdenProduccionCerrada) se registran mediante un Unit of Work de Outbox.
+El Unit of Work se flushea dentro de la transacción de aplicación (antes del commit), garantizando atomicidad entre cambios de estado y escritura en `outbox`.
+La publicación a broker se ejecuta `after-commit`.
 
 ---
 
@@ -126,6 +128,7 @@ RABBITMQ_PUBLISH_BACKOFF_MS=250
 - Para consumir eventos externos de recetas debes incluir `planes.*` en `INBOUND_RABBITMQ_ROUTING_KEYS`.
 - Para eventos de calendario externos usa también `calendarios.*` en `INBOUND_RABBITMQ_ROUTING_KEYS`.
 - Para eventos de contratos externos usa también `contrato.*` en `INBOUND_RABBITMQ_ROUTING_KEYS`.
+- Para eventos externos de pacientes incluye `paciente.paciente-creado,paciente.paciente-actualizado,paciente.paciente-eliminado` en `INBOUND_RABBITMQ_ROUTING_KEYS`.
 - Schemas de eventos: `docs/schemas/envelope.json`, `docs/schemas/inbound-calendar.json`, `docs/schemas/inbound-logistica.json`, `docs/schemas/inbound-recetas.json`, `docs/schemas/inbound-contratos.json`.
  - Schemas outbound mínimos: `docs/schemas/outbound-produccion.json`.
  - Política de versionado: `docs/VERSIONING.md`.

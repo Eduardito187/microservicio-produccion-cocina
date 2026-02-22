@@ -8,7 +8,7 @@ namespace App\Infrastructure\Persistence\Outbox;
 use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
 use App\Domain\Shared\Events\Interface\DomainEventInterface;
 use App\Application\Shared\DomainEventPublisherInterface;
-use App\Application\Shared\OutboxStoreInterface;
+use App\Application\Shared\OutboxUnitOfWorkInterface;
 use App\Infrastructure\Jobs\PublishOutbox;
 
 /**
@@ -18,9 +18,9 @@ use App\Infrastructure\Jobs\PublishOutbox;
 class OutboxEventPublisher implements DomainEventPublisherInterface
 {
     /**
-     * @var OutboxStoreInterface
+     * @var OutboxUnitOfWorkInterface
      */
-    private $outboxStore;
+    private $outboxUnitOfWork;
 
     /**
      * @var TransactionManagerInterface
@@ -30,12 +30,12 @@ class OutboxEventPublisher implements DomainEventPublisherInterface
     /**
      * Constructor
      *
-     * @param OutboxStoreInterface $outboxStore
+     * @param OutboxUnitOfWorkInterface $outboxUnitOfWork
      * @param TransactionManagerInterface $transactionManager
      */
-    public function __construct(OutboxStoreInterface $outboxStore, TransactionManagerInterface $transactionManager)
+    public function __construct(OutboxUnitOfWorkInterface $outboxUnitOfWork, TransactionManagerInterface $transactionManager)
     {
-        $this->outboxStore = $outboxStore;
+        $this->outboxUnitOfWork = $outboxUnitOfWork;
         $this->transactionManager = $transactionManager;
     }
 
@@ -50,16 +50,7 @@ class OutboxEventPublisher implements DomainEventPublisherInterface
             return;
         }
 
-        foreach ($events as $event) {
-            $payload = $event->toArray();
-
-            $this->outboxStore->append(
-                $event->name(),
-                $aggregateId ?? null,
-                $event->occurredOn(),
-                $payload
-            );
-        }
+        $this->outboxUnitOfWork->register($events, $aggregateId);
 
         if ((bool) env('OUTBOX_SKIP_DISPATCH', false) || app()->runningUnitTests()) {
             return;

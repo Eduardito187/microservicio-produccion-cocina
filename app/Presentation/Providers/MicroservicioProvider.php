@@ -24,6 +24,7 @@ use App\Infrastructure\Persistence\Repository\InboundEventRepository;
 use App\Infrastructure\Persistence\Repository\ItemDespachoRepository;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Shared\OutboxStoreInterface;
+use App\Application\Shared\OutboxUnitOfWorkInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
@@ -43,6 +44,7 @@ use App\Domain\Produccion\Repository\ItemDespachoRepositoryInterface;
 use App\Infrastructure\Persistence\Transaction\TransactionManager;
 use App\Infrastructure\Persistence\Outbox\OutboxEventPublisher;
 use App\Infrastructure\Persistence\Outbox\OutboxStoreAdapter;
+use App\Infrastructure\Persistence\Outbox\OutboxUnitOfWork;
 use App\Application\Shared\BusInterface;
 use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
 use App\Infrastructure\Bus\HttpEventBus;
@@ -53,6 +55,7 @@ use App\Application\Integration\Handlers\DireccionActualizadaHandler;
 use App\Application\Integration\Handlers\DireccionGeocodificadaHandler;
 use App\Application\Integration\Handlers\PacienteCreadoHandler;
 use App\Application\Integration\Handlers\PacienteActualizadoHandler;
+use App\Application\Integration\Handlers\PacienteEliminadoHandler;
 use App\Application\Integration\Handlers\SuscripcionCreadaHandler;
 use App\Application\Integration\Handlers\SuscripcionActualizadaHandler;
 use App\Application\Integration\Handlers\ContratoCanceladoHandler;
@@ -186,6 +189,11 @@ class MicroservicioProvider extends ServiceProvider
             OutboxStoreAdapter::class
         );
 
+        $this->app->singleton(
+            OutboxUnitOfWorkInterface::class,
+            OutboxUnitOfWork::class
+        );
+
         $this->app->bind(
             DomainEventPublisherInterface::class,
             OutboxEventPublisher::class
@@ -205,8 +213,10 @@ class MicroservicioProvider extends ServiceProvider
 
             $router->register('PacienteCreado', $app->make(PacienteCreadoHandler::class));
             $router->register('PacienteActualizado', $app->make(PacienteActualizadoHandler::class));
+            $router->register('PacienteEliminado', $app->make(PacienteEliminadoHandler::class));
             $router->register('paciente.paciente-creado', $app->make(PacienteCreadoHandler::class));
             $router->register('paciente.paciente-actualizado', $app->make(PacienteActualizadoHandler::class));
+            $router->register('paciente.paciente-eliminado', $app->make(PacienteEliminadoHandler::class));
 
             $router->register('SuscripcionCreada', $app->make(SuscripcionCreadaHandler::class));
             $router->register('SuscripcionActualizada', $app->make(SuscripcionActualizadaHandler::class));

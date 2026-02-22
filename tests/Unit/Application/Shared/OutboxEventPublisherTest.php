@@ -5,7 +5,7 @@
 
 namespace Tests\Unit\Application\Shared;
 
-use App\Application\Shared\OutboxStoreInterface;
+use App\Application\Shared\OutboxUnitOfWorkInterface;
 use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
 use App\Domain\Shared\Events\Interface\DomainEventInterface;
 use App\Infrastructure\Jobs\PublishOutbox;
@@ -25,7 +25,7 @@ class OutboxEventPublisherTest extends TestCase
      */
     public function test_publishes_events_and_registers_after_commit(): void
     {
-        $outbox = $this->createMock(OutboxStoreInterface::class);
+        $outboxUnitOfWork = $this->createMock(OutboxUnitOfWorkInterface::class);
         $transactionManager = new class implements TransactionManagerInterface {
             /**
              * @var ?\Closure
@@ -78,29 +78,16 @@ class OutboxEventPublisherTest extends TestCase
             public function toArray(): array { return ['k' => 'v2']; }
         };
 
-        $call = 0;
-        $self = $this;
-        $outbox->expects($this->exactly(2))->method('append')
-            ->willReturnCallback(function ($name, $aggregateId, $occurredOn, $payload) use (&$call, $self, $t1, $t2): void {
-                if ($call === 0) {
-                    $self->assertSame('E1', $name);
-                    $self->assertSame(123, $aggregateId);
-                    $self->assertSame($t1, $occurredOn);
-                    $self->assertSame(['k' => 'v1'], $payload);
-                } elseif ($call === 1) {
-                    $self->assertSame('E2', $name);
-                    $self->assertSame(123, $aggregateId);
-                    $self->assertSame($t2, $occurredOn);
-                    $self->assertSame(['k' => 'v2'], $payload);
-                } else {
-                    $self->fail('append called more than twice');
-                }
-                $call++;
-            });
+        $outboxUnitOfWork->expects($this->once())->method('register')
+            ->with($this->callback(function (array $events) use ($event1, $event2): bool {
+                return count($events) === 2
+                    && $events[0] === $event1
+                    && $events[1] === $event2;
+            }), $this->equalTo(123));
 
         Bus::fake();
 
-        $publisher = new OutboxEventPublisher($outbox, $transactionManager);
+        $publisher = new OutboxEventPublisher($outboxUnitOfWork, $transactionManager);
         $publisher->publish([$event1, $event2], 123);
 
         if (app()->runningUnitTests()) {

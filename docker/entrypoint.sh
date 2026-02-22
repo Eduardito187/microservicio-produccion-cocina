@@ -72,6 +72,14 @@ until curl -fsS http://127.0.0.1/ >/dev/null; do
 done
 echo "[entrypoint] app is ready."
 
+# Run inbound RabbitMQ consumer in background (optional)
+if [ "${RUN_RABBITMQ_CONSUMER:-0}" = "1" ]; then
+  echo "[entrypoint] starting RabbitMQ inbound consumer..."
+  php artisan rabbitmq:consume >/proc/1/fd/1 2>/proc/1/fd/2 &
+  CONSUMER_PID=$!
+  echo "[entrypoint] rabbitmq:consume pid=${CONSUMER_PID}"
+fi
+
 # Run Pact after app is up (optional)
 if [ "${RUN_PACT_ON_START:-0}" = "1" ]; then
   export PROVIDER_VERSION="${PROVIDER_VERSION:-dev-local}"
