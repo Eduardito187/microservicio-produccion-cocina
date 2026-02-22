@@ -645,6 +645,16 @@ class ConsumeRabbitMq extends Command
             return;
         }
 
+        if ($eventName === 'suscripcion.crear') {
+            $required = ['pacienteId', 'tipoServicio', 'planId', 'duracionDias', 'modalidadRevision', 'fechaInicio'];
+            foreach ($required as $key) {
+                if (!array_key_exists($key, $payload) || $payload[$key] === null || $payload[$key] === '') {
+                    throw new \RuntimeException("payload missing required field: {$key}");
+                }
+            }
+            return;
+        }
+
         $requirements = [
             'DireccionCreada' => ['direccionId'],
             'DireccionActualizada' => ['direccionId'],
@@ -655,7 +665,12 @@ class ConsumeRabbitMq extends Command
             'SuscripcionCreada' => ['suscripcionId'],
             'SuscripcionActualizada' => ['suscripcionId'],
             'contrato.creado' => ['contratoId', 'tipoServicio'],
+            'contrato.generar' => ['suscripcionId'],
+            'contrato.consultar' => ['contratoId'],
+            'contrato.cancelar' => ['contratoId'],
             'contrato.cancelado' => ['contratoId'],
+            'calendario.servicio.generar' => ['contratoId', 'diasPermitidos', 'horarioPreferido'],
+            'calendario.generado' => ['contratoId', 'listaFechasEntrega'],
             'CalendarioEntregaCreado' => ['calendarioId', 'fecha'],
             'EntregaProgramada' => ['calendarioId', 'itemDespachoId'],
             'DiaSinEntregaMarcado' => ['calendarioId'],
@@ -666,6 +681,7 @@ class ConsumeRabbitMq extends Command
             'EntregaConfirmada' => ['paqueteId'],
             'EntregaFallida' => ['paqueteId'],
             'PaqueteEnRuta' => ['paqueteId'],
+            'logistica.paquete.estado-actualizado' => ['packageId', 'deliveryStatus'],
             'paciente.paciente-creado' => ['pacienteId'],
             'paciente.paciente-actualizado' => ['pacienteId'],
             'paciente.paciente-eliminado' => ['pacienteId'],

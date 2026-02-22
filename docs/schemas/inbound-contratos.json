@@ -4,6 +4,37 @@
   "title": "InboundContratosEvents",
   "oneOf": [
     {
+      "title": "suscripcion.crear",
+      "type": "object",
+      "required": ["pacienteId", "tipoServicio", "planId", "duracionDias", "modalidadRevision", "fechaInicio"],
+      "properties": {
+        "contratoId": { "type": "string", "format": "uuid" },
+        "suscripcionId": { "type": "string", "format": "uuid" },
+        "id": { "type": "string", "format": "uuid" },
+        "pacienteId": { "type": "string", "format": "uuid" },
+        "tipoServicio": { "type": "string" },
+        "planId": { "type": "string", "format": "uuid" },
+        "duracionDias": { "type": "integer", "minimum": 1 },
+        "modalidadRevision": { "type": "string" },
+        "fechaInicio": { "type": "string" },
+        "fechaFin": { "type": "string" }
+      }
+    },
+    {
+      "title": "contrato.generar",
+      "type": "object",
+      "required": ["suscripcionId"],
+      "properties": {
+        "contratoId": { "type": "string", "format": "uuid" },
+        "suscripcionId": { "type": "string", "format": "uuid" },
+        "id": { "type": "string", "format": "uuid" },
+        "pacienteId": { "type": "string", "format": "uuid" },
+        "tipoServicio": { "type": "string" },
+        "fechaInicio": { "type": "string" },
+        "fechaFin": { "type": "string" }
+      }
+    },
+    {
       "title": "contrato.creado",
       "type": "object",
       "required": ["contratoId", "tipoServicio"],
@@ -13,6 +44,22 @@
         "tipoServicio": { "type": "string" },
         "fechaInicio": { "type": "string" },
         "fechaFin": { "type": "string" }
+      }
+    },
+    {
+      "title": "contrato.consultar",
+      "type": "object",
+      "properties": {
+        "contratoId": { "type": "string", "format": "uuid" }
+      }
+    },
+    {
+      "title": "contrato.cancelar",
+      "type": "object",
+      "required": ["contratoId"],
+      "properties": {
+        "contratoId": { "type": "string", "format": "uuid" },
+        "motivoCancelacion": { "type": "string" }
       }
     },
     {

@@ -57,16 +57,21 @@ use App\Application\Integration\Handlers\PacienteCreadoHandler;
 use App\Application\Integration\Handlers\PacienteActualizadoHandler;
 use App\Application\Integration\Handlers\PacienteEliminadoHandler;
 use App\Application\Integration\Handlers\SuscripcionCreadaHandler;
+use App\Application\Integration\Handlers\SuscripcionCrearHandler;
 use App\Application\Integration\Handlers\SuscripcionActualizadaHandler;
 use App\Application\Integration\Handlers\ContratoCanceladoHandler;
+use App\Application\Integration\Handlers\ContratoConsultarHandler;
 use App\Application\Integration\Handlers\RecetaActualizadaHandler;
 use App\Application\Integration\Handlers\CalendarioEntregaCreadoHandler;
+use App\Application\Integration\Handlers\CalendarioServicioGenerarHandler;
+use App\Application\Integration\Handlers\CalendarioGeneradoHandler;
 use App\Application\Integration\Handlers\EntregaProgramadaHandler;
 use App\Application\Integration\Handlers\DiaSinEntregaMarcadoHandler;
 use App\Application\Integration\Handlers\DireccionEntregaCambiadaHandler;
 use App\Application\Integration\Handlers\EntregaConfirmadaHandler;
 use App\Application\Integration\Handlers\EntregaFallidaHandler;
 use App\Application\Integration\Handlers\PaqueteEnRutaHandler;
+use App\Application\Integration\Handlers\LogisticaPaqueteEstadoActualizadoHandler;
 use App\Application\Analytics\KpiRepositoryInterface;
 use App\Infrastructure\Persistence\Repository\KpiRepository;
 use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
@@ -222,7 +227,11 @@ class MicroservicioProvider extends ServiceProvider
             $router->register('SuscripcionActualizada', $app->make(SuscripcionActualizadaHandler::class));
             $router->register('suscripciones.suscripcion-creada', $app->make(SuscripcionCreadaHandler::class));
             $router->register('suscripciones.suscripcion-actualizada', $app->make(SuscripcionActualizadaHandler::class));
+            $router->register('suscripcion.crear', $app->make(SuscripcionCrearHandler::class));
+            $router->register('contrato.generar', $app->make(SuscripcionCreadaHandler::class));
             $router->register('contrato.creado', $app->make(SuscripcionCreadaHandler::class));
+            $router->register('contrato.consultar', $app->make(ContratoConsultarHandler::class));
+            $router->register('contrato.cancelar', $app->make(ContratoCanceladoHandler::class));
             $router->register('contrato.cancelado', $app->make(ContratoCanceladoHandler::class));
 
             $router->register('RecetaActualizada', $app->make(RecetaActualizadaHandler::class));
@@ -230,6 +239,8 @@ class MicroservicioProvider extends ServiceProvider
             $router->register('planes.receta-actualizada', $app->make(RecetaActualizadaHandler::class));
 
             $router->register('CalendarioEntregaCreado', $app->make(CalendarioEntregaCreadoHandler::class));
+            $router->register('calendario.servicio.generar', $app->make(CalendarioServicioGenerarHandler::class));
+            $router->register('calendario.generado', $app->make(CalendarioGeneradoHandler::class));
             $router->register('calendarios.crear-dia', $app->make(CalendarioEntregaCreadoHandler::class));
             $router->register('EntregaProgramada', $app->make(EntregaProgramadaHandler::class));
             $router->register('DiaSinEntregaMarcado', $app->make(DiaSinEntregaMarcadoHandler::class));
@@ -240,6 +251,7 @@ class MicroservicioProvider extends ServiceProvider
             $router->register('EntregaConfirmada', $app->make(EntregaConfirmadaHandler::class));
             $router->register('EntregaFallida', $app->make(EntregaFallidaHandler::class));
             $router->register('PaqueteEnRuta', $app->make(PaqueteEnRutaHandler::class));
+            $router->register('logistica.paquete.estado-actualizado', $app->make(LogisticaPaqueteEstadoActualizadoHandler::class));
 
             return $router;
         });

@@ -4,6 +4,25 @@
   "title": "InboundCalendarEvents",
   "oneOf": [
     {
+      "title": "calendario.servicio.generar",
+      "type": "object",
+      "required": ["contratoId", "diasPermitidos", "horarioPreferido"],
+      "properties": {
+        "contratoId": { "type": "string", "format": "uuid" },
+        "diasPermitidos": { "type": "array", "items": { "type": "string" } },
+        "horarioPreferido": { "type": "string" }
+      }
+    },
+    {
+      "title": "calendario.generado",
+      "type": "object",
+      "required": ["contratoId", "listaFechasEntrega"],
+      "properties": {
+        "contratoId": { "type": "string", "format": "uuid" },
+        "listaFechasEntrega": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    {
       "title": "CalendarioEntregaCreado",
       "type": "object",
       "required": ["calendarioId", "fecha"],

@@ -33,6 +33,22 @@
         "rutaId": { "type": "string", "format": "uuid" },
         "occurredOn": { "type": "string" }
       }
+    },
+    {
+      "title": "logistica.paquete.estado-actualizado",
+      "type": "object",
+      "required": ["packageId", "deliveryStatus"],
+      "properties": {
+        "packageId": { "type": "string", "format": "uuid" },
+        "driverId": { "type": "string", "format": "uuid" },
+        "number": { "type": "string" },
+        "deliveryStatus": { "type": "string" },
+        "incidentType": { "type": "string" },
+        "incidentDescription": { "type": "string" },
+        "deliveryEvidence": { "type": ["object", "null"] },
+        "occurredOn": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      }
     }
   ]
 }
