@@ -245,6 +245,49 @@ class InboundConsumerFlowTest extends TestCase
     /**
      * @return void
      */
+    public function test_consumer_acepta_mensaje_sin_envelope_usando_routing_key(): void
+    {
+        config([
+            'rabbitmq.inbound.event_aliases' => [
+                'paciente.paciente-creado' => 'PacienteCreado',
+            ],
+        ]);
+
+        $handler = $this->createMock(RegistrarInboundEventHandler::class);
+        $router = $this->createMock(IntegrationEventRouter::class);
+        $channel = $this->getMockBuilder(\PhpAmqpLib\Channel\AMQPChannel::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['basic_ack', 'basic_nack'])
+            ->getMock();
+
+        $handler->expects($this->once())->method('__invoke')->willReturn(false);
+        $router->expects($this->once())->method('dispatch')
+            ->with(
+                'PacienteCreado',
+                $this->callback(function ($payload): bool {
+                    return is_array($payload)
+                        && ($payload['pacienteId'] ?? null) === 'd9cbb4a3-4c2b-4c6e-9d2f-5f9fd6ec1a2b';
+                }),
+                $this->arrayHasKey('routing_key')
+            );
+        $channel->expects($this->once())->method('basic_ack');
+        $channel->expects($this->never())->method('basic_nack');
+
+        $command = new ConsumeRabbitMq($handler, $router);
+
+        $msg = $this->makeMessage([
+            'pacienteId' => 'd9cbb4a3-4c2b-4c6e-9d2f-5f9fd6ec1a2b',
+            'nombre' => 'Juan Perez',
+            'documento' => '1234567',
+            'suscripcionId' => 'a9cbb4a3-4c2b-4c6e-9d2f-5f9fd6ec1b3c',
+        ], $channel, 'paciente.paciente-creado');
+
+        $command->testProcessMessage($msg);
+    }
+
+    /**
+     * @return void
+     */
     public function test_consumer_resuelve_evento_suscripcion_por_routing_key_alias(): void
     {
         config([

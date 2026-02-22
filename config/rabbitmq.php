@@ -24,6 +24,8 @@ return [
     'read_write_timeout' => (int) env('RABBITMQ_READ_WRITE_TIMEOUT', 3),
     'inbound' => [
         'exchange' => env('INBOUND_RABBITMQ_EXCHANGE', ''),
+        'exchange_type' => env('INBOUND_RABBITMQ_EXCHANGE_TYPE', 'topic'),
+        'exchange_durable' => (bool) env('INBOUND_RABBITMQ_EXCHANGE_DURABLE', true),
         'queue' => env('INBOUND_RABBITMQ_QUEUE', ''),
         'routing_keys' => env('INBOUND_RABBITMQ_ROUTING_KEYS', ''),
         'schema_versions' => env('INBOUND_SCHEMA_VERSIONS', '1'),

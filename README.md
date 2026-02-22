@@ -124,6 +124,7 @@ RABBITMQ_PUBLISH_BACKOFF_MS=250
 ## Inbound (Inbox + RabbitMQ Consumer)
 
 - El consumer usa configuración **INBOUND_RABBITMQ_*** (sin fallback a outbox).
+- Define `INBOUND_RABBITMQ_EXCHANGE_TYPE` según el exchange real (por ejemplo `topic` para `pacientes.events`).
 - `schema_version` es obligatorio para inbound.
 - Para consumir eventos externos de recetas debes incluir `planes.*` en `INBOUND_RABBITMQ_ROUTING_KEYS`.
 - Para eventos de calendario externos usa también `calendarios.*` en `INBOUND_RABBITMQ_ROUTING_KEYS`.

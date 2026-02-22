@@ -72,7 +72,8 @@ class ConsumeRabbitMq extends Command
         $inbound = config('rabbitmq.inbound', []);
         $queue = (string) ($this->argument('queue') ?: ($inbound['queue'] ?? ''));
         $exchange = (string) ($inbound['exchange'] ?? '');
-        $exchangeType = (string) config('rabbitmq.exchange_type', 'fanout');
+        $exchangeType = (string) ($inbound['exchange_type'] ?? config('rabbitmq.exchange_type', 'fanout'));
+        $exchangeDurable = (bool) ($inbound['exchange_durable'] ?? config('rabbitmq.exchange_durable', true));
         $bindingKey = (string) ($this->option('binding-key') ?: ($inbound['routing_keys'] ?? ''));
         $prefetch = (int) $this->option('prefetch');
         $once = (bool) $this->option('once');
@@ -126,7 +127,7 @@ class ConsumeRabbitMq extends Command
             $exchange,
             $exchangeType,
             false,
-            (bool) config('rabbitmq.exchange_durable', true),
+            $exchangeDurable,
             false
         );
 
@@ -257,17 +258,36 @@ class ConsumeRabbitMq extends Command
                 throw new \RuntimeException('Invalid JSON payload');
             }
 
+            $isEnvelope = array_key_exists('payload', $decoded)
+                || array_key_exists('event_id', $decoded)
+                || array_key_exists('event', $decoded)
+                || array_key_exists('event_name', $decoded)
+                || array_key_exists('schema_version', $decoded)
+                || array_key_exists('schemaVersion', $decoded);
+
             $eventId = $decoded['event_id'] ?? null;
             $eventNameRaw = $decoded['event'] ?? ($decoded['event_name'] ?? null);
-            $eventName = $this->resolveEventName(
-                is_string($eventNameRaw) ? $eventNameRaw : null,
-                $routingKey
-            );
             $occurredOn = $decoded['occurred_on'] ?? null;
             $eventPayload = $decoded['payload'] ?? null;
             $correlationId = $decoded['correlation_id'] ?? ($decoded['correlationId'] ?? null);
             $schemaVersion = $decoded['schema_version'] ?? ($decoded['schemaVersion'] ?? null);
             $aggregateId = $decoded['aggregate_id'] ?? ($decoded['aggregateId'] ?? null);
+
+            if (!$isEnvelope) {
+                $eventPayload = $decoded;
+                $eventId = $this->deterministicEventId($routingKey, $eventPayload);
+                $schemaVersion = 1;
+                $occurredOn = (new DateTimeImmutable('now'))->format(DATE_ATOM);
+                logger()->warning('Inbound message without envelope; normalized using routing key', [
+                    'routing_key' => $routingKey,
+                    'event_id' => $eventId,
+                ]);
+            }
+
+            $eventName = $this->resolveEventName(
+                is_string($eventNameRaw) ? $eventNameRaw : null,
+                $routingKey
+            );
 
             logger()->info('RabbitMQ message received', [
                 'routing_key' => $routingKey,
@@ -704,5 +724,19 @@ class ConsumeRabbitMq extends Command
         }
 
         return $routingKey;
+    }
+
+    /**
+     * @param string $routingKey
+     * @param array $payload
+     * @return string
+     */
+    private function deterministicEventId(string $routingKey, array $payload): string
+    {
+        $json = json_encode($payload);
+        if (!is_string($json)) {
+            return (string) Str::uuid();
+        }
+        return \Ramsey\Uuid\Uuid::uuid5(\Ramsey\Uuid\Uuid::NAMESPACE_URL, $routingKey . '|' . $json)->toString();
     }
 }
