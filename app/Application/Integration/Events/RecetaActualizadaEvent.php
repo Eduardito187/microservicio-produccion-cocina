@@ -49,11 +49,6 @@ class RecetaActualizadaEvent
     public $totalCalories;
 
     /**
-     * @var ?int
-     */
-    public $version;
-
-    /**
      * Constructor
      *
      * @param string $id
@@ -63,7 +58,6 @@ class RecetaActualizadaEvent
      * @param ?string $description
      * @param ?string $instructions
      * @param ?int $totalCalories
-     * @param ?int $version
      */
     public function __construct(
         string $id,
@@ -72,8 +66,7 @@ class RecetaActualizadaEvent
         ?array $ingredientes,
         ?string $description,
         ?string $instructions,
-        ?int $totalCalories,
-        ?int $version
+        ?int $totalCalories
     ) {
         $this->id = $id;
         $this->nombre = $nombre;
@@ -82,7 +75,6 @@ class RecetaActualizadaEvent
         $this->description = $description;
         $this->instructions = $instructions;
         $this->totalCalories = $totalCalories;
-        $this->version = $version;
     }
 
     /**
@@ -106,8 +98,7 @@ class RecetaActualizadaEvent
             $p->getArray(['ingredientes', 'ingredients']),
             $p->getString(['description', 'descripcion']),
             $p->getString(['instructions', 'instrucciones']),
-            $totalCalories,
-            $p->getInt(['version', 'versionNumber'])
+            $totalCalories
         );
     }
 }

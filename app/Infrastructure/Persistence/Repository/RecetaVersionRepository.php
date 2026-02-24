@@ -26,7 +26,7 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
         $row = RecetaVersionModel::find($id);
 
         if (!$row) {
-            throw new EntityNotFoundException("La receta version id: {$id} no existe.");
+            throw new EntityNotFoundException("La receta id: {$id} no existe.");
         }
 
         return new RecetaVersion(
@@ -34,7 +34,6 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
             $row->nombre,
             $row->nutrientes,
             $row->ingredientes,
-            $row->version,
             $row->description,
             $row->instructions,
             $row->total_calories
@@ -53,7 +52,6 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
                 'nombre' => $recetaVersion->nombre,
                 'nutrientes' => $recetaVersion->nutrientes,
                 'ingredientes' => $recetaVersion->ingredientes,
-                'version' => $recetaVersion->version,
                 'description' => $recetaVersion->description,
                 'instructions' => $recetaVersion->instructions,
                 'total_calories' => $recetaVersion->totalCalories,
@@ -75,7 +73,6 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
                 $row->nombre,
                 $row->nutrientes,
                 $row->ingredientes,
-                $row->version,
                 $row->description,
                 $row->instructions,
                 $row->total_calories

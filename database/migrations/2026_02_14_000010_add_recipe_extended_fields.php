@@ -27,7 +27,7 @@ return new class extends Migration
                 $table->text('instructions')->nullable()->after('description');
             }
             if (!Schema::hasColumn($tableName, 'total_calories')) {
-                $table->unsignedInteger('total_calories')->nullable()->after('version');
+                $table->unsignedInteger('total_calories')->nullable()->after('instructions');
             }
         });
     }

@@ -59,7 +59,6 @@ class DefaultSeeder extends Seeder
                             ['nombre' => 'Mozzarella','cantidad' => '100g'],
                             ['nombre' => 'Albahaca',  'cantidad' => '5g'],
                         ]),
-                        'version'     => 1,
                         'total_calories' => 800,
                         'created_at'  => $now,
                         'updated_at'  => $now,
@@ -81,14 +80,13 @@ class DefaultSeeder extends Seeder
                             ['nombre' => 'Mozzarella','cantidad' => '100g'],
                             ['nombre' => 'Pepperoni', 'cantidad' => '50g'],
                         ]),
-                        'version'     => 1,
                         'total_calories' => 950,
                         'created_at'  => $now,
                         'updated_at'  => $now,
                     ],
                 ],
                 ['nombre'], // conflict key
-                ['description', 'instructions', 'nutrientes', 'ingredientes', 'version', 'total_calories', 'updated_at']
+                ['description', 'instructions', 'nutrientes', 'ingredientes', 'total_calories', 'updated_at']
             );
         }
 

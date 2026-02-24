@@ -47,18 +47,12 @@ class RecetaVersion
     public $totalCalories;
 
     /**
-     * @var int
-     */
-    public $version;
-
-    /**
      * Constructor
      *
      * @param string|int|null $id
      * @param string $nombre
      * @param array|null $nutrientes
      * @param array|null $ingredientes
-     * @param int $version
      * @param string|null $description
      * @param string|null $instructions
      * @param int|null $totalCalories
@@ -68,7 +62,6 @@ class RecetaVersion
         string $nombre,
         array|null $nutrientes = null,
         array|null $ingredientes = null,
-        int $version = 1,
         string|null $description = null,
         string|null $instructions = null,
         int|null $totalCalories = null
@@ -77,7 +70,6 @@ class RecetaVersion
         $this->nombre = $nombre;
         $this->nutrientes = $nutrientes;
         $this->ingredientes = $ingredientes;
-        $this->version = $version;
         $this->description = $description;
         $this->instructions = $instructions;
         $this->totalCalories = $totalCalories;

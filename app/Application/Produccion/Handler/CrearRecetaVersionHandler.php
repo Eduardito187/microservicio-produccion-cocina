@@ -62,7 +62,6 @@ class CrearRecetaVersionHandler
                 $command->nombre,
                 $command->nutrientes,
                 $command->ingredientes,
-                $command->version,
                 $command->description,
                 $command->instructions,
                 $command->totalCalories
@@ -72,7 +71,6 @@ class CrearRecetaVersionHandler
             $event = new RecetaCreada(
                 $id,
                 $command->nombre,
-                $command->version,
                 $command->nutrientes,
                 $command->ingredientes,
                 $command->description,

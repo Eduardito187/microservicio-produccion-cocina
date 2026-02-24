@@ -31,7 +31,6 @@ class ActualizarRecetaController
             'description' => ['nullable', 'string'],
             'instructions' => ['nullable', 'string'],
             'totalCalories' => ['nullable', 'integer', 'min:0'],
-            'version' => ['nullable', 'int', 'min:1'],
         ]);
 
         $nombre = $data['nombre'] ?? ($data['name'] ?? null);
@@ -45,7 +44,6 @@ class ActualizarRecetaController
                 $nombre,
                 $data['nutrientes'] ?? null,
                 $data['ingredientes'] ?? ($data['ingredients'] ?? null),
-                $data['version'] ?? 1,
                 $data['description'] ?? null,
                 $data['instructions'] ?? null,
                 $data['totalCalories'] ?? null

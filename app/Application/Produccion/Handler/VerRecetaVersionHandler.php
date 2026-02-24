@@ -66,7 +66,6 @@ class VerRecetaVersionHandler
             'nutrientes' => $recetaVersion->nutrientes,
             'ingredientes' => $recetaVersion->ingredientes,
             'ingredients' => $recetaVersion->ingredientes,
-            'version' => $recetaVersion->version,
             'description' => $recetaVersion->description,
             'instructions' => $recetaVersion->instructions,
             'totalCalories' => $recetaVersion->totalCalories,

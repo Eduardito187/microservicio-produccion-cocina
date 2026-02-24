@@ -99,7 +99,6 @@
       "required": ["nombre", "ingredientes"],
       "properties": {
         "nombre": { "type": "string" },
-        "version": { "type": "integer", "minimum": 1 },
         "nutrientes": { "type": "object" },
         "ingredientes": { "type": "array" },
         "description": { "type": "string" },
@@ -113,7 +112,6 @@
       "required": ["nombre", "ingredientes"],
       "properties": {
         "nombre": { "type": "string" },
-        "version": { "type": "integer", "minimum": 1 },
         "nutrientes": { "type": "object" },
         "ingredientes": { "type": "array" },
         "description": { "type": "string" },

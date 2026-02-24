@@ -119,7 +119,6 @@ return new class extends Migration
                 $table->string('nombre')->unique();
                 $table->json('nutrientes')->nullable();
                 $table->json('ingredientes')->nullable();
-                $table->unsignedInteger('version')->default(1);
                 $table->timestamp('created_at')->nullable();
                 $table->timestamp('updated_at')->nullable();
             });
