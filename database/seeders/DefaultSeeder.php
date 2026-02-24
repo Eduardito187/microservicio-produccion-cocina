@@ -37,9 +37,10 @@ class DefaultSeeder extends Seeder
             );
         }
 
-        // === RECETA VERSION ===
-        if (Schema::hasTable('receta_version')) {
-            DB::table('receta_version')->upsert(
+        // === RECETA ===
+        $tablaReceta = Schema::hasTable('receta') ? 'receta' : (Schema::hasTable('receta_version') ? 'receta_version' : null);
+        if ($tablaReceta !== null) {
+            DB::table($tablaReceta)->upsert(
                 [
                     [
                         'id' => (string) Str::uuid(),
@@ -104,18 +105,5 @@ class DefaultSeeder extends Seeder
             );
         }
 
-        // === ESTACION ===
-        if (Schema::hasTable('estacion')) {
-            DB::table('estacion')->upsert(
-                [
-                    ['id' => (string) Str::uuid(), 'nombre' => 'Preparación de masa', 'capacidad' => 2, 'created_at' => $now, 'updated_at' => $now],
-                    ['id' => (string) Str::uuid(), 'nombre' => 'Salsa y toppings',    'capacidad' => 2, 'created_at' => $now, 'updated_at' => $now],
-                    ['id' => (string) Str::uuid(), 'nombre' => 'Horno',               'capacidad' => 1, 'created_at' => $now, 'updated_at' => $now],
-                    ['id' => (string) Str::uuid(), 'nombre' => 'Empaque',             'capacidad' => 2, 'created_at' => $now, 'updated_at' => $now],
-                ],
-                ['nombre'],
-                ['capacidad', 'updated_at']
-            );
-        }
     }
 }

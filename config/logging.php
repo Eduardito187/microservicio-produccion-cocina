@@ -76,6 +76,14 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'rabbit_audit_outbound' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/rabbit-outbound.log'),
+            'level' => env('LOG_RABBIT_OUTBOUND_LEVEL', 'info'),
+            'days' => 14,
+            'replace_placeholders' => true,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),

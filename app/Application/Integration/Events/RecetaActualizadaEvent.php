@@ -100,7 +100,7 @@ class RecetaActualizadaEvent
         }
 
         return new self(
-            $p->getString(['id', 'recetaVersionId', 'receta_version_id', 'recetaId', 'receta_id'], null, true),
+            $p->getString(['id', 'recetaId', 'receta_id'], null, true),
             $p->getString(['nombre', 'name']),
             $nutrientes,
             $p->getArray(['ingredientes', 'ingredients']),

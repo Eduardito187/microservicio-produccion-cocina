@@ -48,8 +48,6 @@ class PlanificadorOPHandler
         return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $ordenProduccion = $this->ordenProduccionRepository->byId($command->ordenProduccionId);
             $ordenProduccion->generarBatches(
-                $command->estacionId,
-                $command->recetaVersionId,
                 $command->porcionId
             );
             $ordenProduccion->planificar();

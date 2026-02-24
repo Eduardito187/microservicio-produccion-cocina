@@ -53,7 +53,7 @@ class CrearRecetaVersionController
             return response()->json(['message' => 'El campo nombre o name es requerido.'], 422);
         }
 
-        $recetaVersionId = $this->handler->__invoke(new CrearRecetaVersion(
+        $recetaId = $this->handler->__invoke(new CrearRecetaVersion(
             $nombre,
             $data['nutrientes'] ?? null,
             $data['ingredientes'] ?? ($data['ingredients'] ?? null),
@@ -63,6 +63,6 @@ class CrearRecetaVersionController
             $data['totalCalories'] ?? null
         ));
 
-        return response()->json(['recetaVersionId' => $recetaVersionId], 201);
+        return response()->json(['recetaId' => $recetaId], 201);
     }
 }

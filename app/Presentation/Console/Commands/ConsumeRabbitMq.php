@@ -116,8 +116,8 @@ class ConsumeRabbitMq extends Command
             'AMQPLAIN',
             null,
             'en_US',
-            (int) config('rabbitmq.connect_timeout', 3),
-            (int) config('rabbitmq.read_write_timeout', 3)
+            (int) config('rabbitmq.connect_timeout', 5),
+            (int) config('rabbitmq.read_write_timeout', 5)
         );
 
         $channel = $connection->channel();
@@ -157,7 +157,9 @@ class ConsumeRabbitMq extends Command
         }
 
         $retryExchange = $retryExchange !== '' ? $retryExchange : ($exchange !== '' ? $exchange . '.retry' : '');
-        $retryQueue = $retryQueue !== '' ? $retryQueue : ($queue !== '' ? $queue . '.retry' : '');
+        $retryQueue = $retryQueue !== ''
+            ? $retryQueue
+            : ($queue !== '' ? $queue . '.retry.' . $this->normalizeQueueToken($exchange) : '');
         $retryRoutingKey = $retryRoutingKey !== '' ? $retryRoutingKey : $queue;
 
         if ($retryExchange !== '' && $retryQueue !== '') {
@@ -222,6 +224,19 @@ class ConsumeRabbitMq extends Command
         $connection->close();
 
         return self::SUCCESS;
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    private function normalizeQueueToken(string $value): string
+    {
+        $normalized = preg_replace('/[^a-zA-Z0-9._-]/', '_', strtolower(trim($value)));
+        if (!is_string($normalized) || $normalized === '') {
+            return 'default';
+        }
+        return $normalized;
     }
 
     /**
@@ -585,14 +600,10 @@ class ConsumeRabbitMq extends Command
      */
     private function isSelfConsumeConfig(string $queue, string $exchange, string $bindingKeys): bool
     {
-        $outboxExchange = (string) config('rabbitmq.exchange', '');
         $outboxQueue = (string) config('rabbitmq.queue', '');
         $outboxRoutingKey = (string) config('rabbitmq.routing_key', '');
         $outboxBindingKey = (string) config('rabbitmq.binding_key', '');
 
-        if ($outboxExchange !== '' && $exchange === $outboxExchange) {
-            return true;
-        }
         if ($outboxQueue !== '' && $queue === $outboxQueue) {
             return true;
         }
@@ -622,9 +633,9 @@ class ConsumeRabbitMq extends Command
             || $eventName === 'planes.receta-actualizada'
         ) {
             $hasId = isset($payload['id']) && $payload['id'] !== ''
-                || isset($payload['recetaVersionId']) && $payload['recetaVersionId'] !== '';
+                || isset($payload['recetaId']) && $payload['recetaId'] !== '';
             if (!$hasId) {
-                throw new \RuntimeException('payload missing required field: id|recetaVersionId');
+                throw new \RuntimeException('payload missing required field: id|recetaId');
             }
             if (!array_key_exists('name', $payload) && !array_key_exists('nombre', $payload)) {
                 throw new \RuntimeException('payload missing required field: name|nombre');
@@ -682,14 +693,25 @@ class ConsumeRabbitMq extends Command
             'EntregaFallida' => ['paqueteId'],
             'PaqueteEnRuta' => ['paqueteId'],
             'logistica.paquete.estado-actualizado' => ['packageId', 'deliveryStatus'],
-            'paciente.paciente-creado' => ['pacienteId'],
-            'paciente.paciente-actualizado' => ['pacienteId'],
-            'paciente.paciente-eliminado' => ['pacienteId'],
+            'paciente.paciente-creado' => ['pacienteId|id|paciente_id'],
+            'paciente.paciente-actualizado' => ['pacienteId|id|paciente_id'],
+            'paciente.paciente-eliminado' => ['pacienteId|id|paciente_id'],
+            'paciente.direccion-creada' => ['direccionId|id|direccion_id'],
+            'paciente.direccion-actualizada' => ['direccionId|id|direccion_id'],
+            'paciente.direccion-geocodificada' => ['direccionId|id|direccion_id'],
         ];
 
         $required = $requirements[$eventName] ?? [];
         foreach ($required as $key) {
-            if (!array_key_exists($key, $payload) || $payload[$key] === null || $payload[$key] === '') {
+            $alternatives = array_map('trim', explode('|', $key));
+            $found = false;
+            foreach ($alternatives as $candidate) {
+                if (array_key_exists($candidate, $payload) && $payload[$candidate] !== null && $payload[$candidate] !== '') {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
                 throw new \RuntimeException("payload missing required field: {$key}");
             }
         }

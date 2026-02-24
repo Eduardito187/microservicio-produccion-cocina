@@ -57,6 +57,13 @@ class OutboxEventPublisher implements DomainEventPublisherInterface
         }
 
         $this->transactionManager->afterCommit(function (): void {
+            $dispatchSync = (bool) env('OUTBOX_DISPATCH_SYNC', true);
+
+            if ($dispatchSync) {
+                PublishOutbox::dispatchSync();
+                return;
+            }
+
             PublishOutbox::dispatch();
         });
     }

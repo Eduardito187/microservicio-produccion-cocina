@@ -14,14 +14,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('receta_version', function (Blueprint $table): void {
-            if (!Schema::hasColumn('receta_version', 'description')) {
+        $tableName = Schema::hasTable('receta') ? 'receta' : 'receta_version';
+        if (!Schema::hasTable($tableName)) {
+            return;
+        }
+
+        Schema::table($tableName, function (Blueprint $table) use ($tableName): void {
+            if (!Schema::hasColumn($tableName, 'description')) {
                 $table->text('description')->nullable()->after('nombre');
             }
-            if (!Schema::hasColumn('receta_version', 'instructions')) {
+            if (!Schema::hasColumn($tableName, 'instructions')) {
                 $table->text('instructions')->nullable()->after('description');
             }
-            if (!Schema::hasColumn('receta_version', 'total_calories')) {
+            if (!Schema::hasColumn($tableName, 'total_calories')) {
                 $table->unsignedInteger('total_calories')->nullable()->after('version');
             }
         });
@@ -32,15 +37,20 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('receta_version', function (Blueprint $table): void {
+        $tableName = Schema::hasTable('receta') ? 'receta' : 'receta_version';
+        if (!Schema::hasTable($tableName)) {
+            return;
+        }
+
+        Schema::table($tableName, function (Blueprint $table) use ($tableName): void {
             $columns = [];
-            if (Schema::hasColumn('receta_version', 'description')) {
+            if (Schema::hasColumn($tableName, 'description')) {
                 $columns[] = 'description';
             }
-            if (Schema::hasColumn('receta_version', 'instructions')) {
+            if (Schema::hasColumn($tableName, 'instructions')) {
                 $columns[] = 'instructions';
             }
-            if (Schema::hasColumn('receta_version', 'total_calories')) {
+            if (Schema::hasColumn($tableName, 'total_calories')) {
                 $columns[] = 'total_calories';
             }
             if ($columns !== []) {

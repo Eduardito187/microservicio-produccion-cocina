@@ -37,16 +37,6 @@ class ProduccionBatch
     /**
      * @var string|int
      */
-    public $estacionId;
-
-    /**
-     * @var string|int
-     */
-    public $recetaVersionId;
-
-    /**
-     * @var string|int
-     */
     public $porcionId;
 
     /**
@@ -95,8 +85,6 @@ class ProduccionBatch
      * @param string|int|null $id
      * @param string|int $ordenProduccionId
      * @param string|int $productoId
-     * @param string|int $estacionId
-     * @param string|int $recetaVersionId
      * @param string|int $porcionId
      * @param int $cantPlanificada
      * @param int $cantProducida
@@ -111,8 +99,6 @@ class ProduccionBatch
         string|int|null $id,
         string|int $ordenProduccionId,
         string|int $productoId,
-        string|int $estacionId,
-        string|int $recetaVersionId,
         string|int $porcionId,
         int $cantPlanificada,
         int $cantProducida,
@@ -126,8 +112,6 @@ class ProduccionBatch
         $this->id = $id;
         $this->ordenProduccionId = $ordenProduccionId;
         $this->productoId = $productoId;
-        $this->estacionId = $estacionId;
-        $this->recetaVersionId = $recetaVersionId;
         $this->porcionId = $porcionId;
         $this->cantPlanificada = $cantPlanificada;
         $this->cantProducida = $cantProducida;
@@ -143,8 +127,6 @@ class ProduccionBatch
      * @param string|int|null $id
      * @param string|int $ordenProduccionId
      * @param string|int $productoId
-     * @param string|int $estacionId
-     * @param string|int $recetaVersionId
      * @param string|int $porcionId
      * @param int $cantPlanificada
      * @param int $cantProducida
@@ -160,8 +142,6 @@ class ProduccionBatch
         string|int|null $id,
         string|int $ordenProduccionId,
         string|int $productoId,
-        string|int $estacionId,
-        string|int $recetaVersionId,
         string|int $porcionId,
         int $cantPlanificada,
         int $cantProducida,
@@ -177,8 +157,6 @@ class ProduccionBatch
             $id,
             $ordenProduccionId,
             $productoId,
-            $estacionId,
-            $recetaVersionId,
             $porcionId,
             $cantPlanificada,
             $cantProducida,
@@ -194,9 +172,7 @@ class ProduccionBatch
             new ProduccionBatchCreado(
                 $id,
                 $ordenProduccionId,
-                $estacionId,
                 $productoId,
-                $recetaVersionId,
                 $porcionId,
                 $qty,
                 $posicion

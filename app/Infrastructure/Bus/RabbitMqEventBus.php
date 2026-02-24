@@ -17,6 +17,8 @@ use DateTimeImmutable;
  */
 class RabbitMqEventBus implements BusInterface
 {
+    private const OUTBOUND_LOG_CHANNEL = 'rabbit_audit_outbound';
+
     /**
      * @param string $eventId
      * @param string $name
@@ -104,6 +106,18 @@ class RabbitMqEventBus implements BusInterface
                     $channel->queue_bind($queue, $exchange, $bindingKey);
                 }
 
+                Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Rabbit outbound sending', [
+                    'event' => $name,
+                    'event_id' => $eventId,
+                    'schema_version' => $meta['schema_version'] ?? null,
+                    'correlation_id' => $meta['correlation_id'] ?? null,
+                    'aggregate_id' => $meta['aggregate_id'] ?? null,
+                    'exchange' => $exchange,
+                    'routing_key' => $routingKey,
+                    'queue' => $queue ?? null,
+                    'attempt' => $attempt,
+                ]);
+
                 $message = new AMQPMessage($messageBody, [
                     'content_type' => 'application/json',
                     'delivery_mode' => 2,
@@ -121,6 +135,17 @@ class RabbitMqEventBus implements BusInterface
                     'aggregate_id' => $meta['aggregate_id'] ?? null,
                     'payload' => $payload,
                 ]);
+                Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Rabbit outbound sent', [
+                    'event' => $name,
+                    'event_id' => $eventId,
+                    'schema_version' => $meta['schema_version'] ?? null,
+                    'correlation_id' => $meta['correlation_id'] ?? null,
+                    'aggregate_id' => $meta['aggregate_id'] ?? null,
+                    'exchange' => $exchange,
+                    'routing_key' => $routingKey,
+                    'queue' => $queue ?? null,
+                    'attempt' => $attempt,
+                ]);
                 return;
             } catch (\Throwable $e) {
                 Log::error('RabbitMQ publish failed', [
@@ -129,6 +154,17 @@ class RabbitMqEventBus implements BusInterface
                     'attempt' => $attempt,
                     'error' => $e->getMessage(),
                     'payload' => $payload,
+                ]);
+                Log::channel(self::OUTBOUND_LOG_CHANNEL)->error('Rabbit outbound failed', [
+                    'event' => $name,
+                    'event_id' => $eventId,
+                    'schema_version' => $meta['schema_version'] ?? null,
+                    'correlation_id' => $meta['correlation_id'] ?? null,
+                    'aggregate_id' => $meta['aggregate_id'] ?? null,
+                    'exchange' => $exchange ?? null,
+                    'routing_key' => $routingKey,
+                    'attempt' => $attempt,
+                    'error' => $e->getMessage(),
                 ]);
 
                 if ($attempt > $retries) {

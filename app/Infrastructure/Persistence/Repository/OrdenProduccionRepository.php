@@ -166,8 +166,6 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                 $row->id,
                 $row->op_id,
                 $row->p_id,
-                $row->estacion_id,
-                $row->receta_version_id,
                 $row->porcion_id,
                 $row->cant_planificada,
                 $row->cant_producida,
@@ -197,7 +195,6 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                 $row->op_id,
                 $row->product_id,
                 $row->paquete_id,
-                null,
                 null,
                 null,
                 null
@@ -240,8 +237,6 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                     $item->id,
                     $item->ordenProduccionId,
                     $item->productoId,
-                    $item->estacionId,
-                    $item->recetaVersionId,
                     $item->porcionId,
                     $item->cantPlanificada,
                     $item->cantProducida,
@@ -259,9 +254,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                     $events[] = new ProduccionBatchCreado(
                         $batchId,
                         $item->ordenProduccionId,
-                        $item->estacionId,
                         $item->productoId,
-                        $item->recetaVersionId,
                         $item->porcionId,
                         $item->qty,
                         $item->posicion
@@ -290,7 +283,6 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                     $item->ordenProduccionId,
                     $item->productId,
                     $paqueteId,
-                    $item->recetaVersionId,
                     $item->pacienteId,
                     $item->direccionId,
                     $item->ventanaEntregaId
@@ -306,8 +298,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     private function resolvePaqueteId(ItemDespacho $item): string|null
     {
         if (
-            $item->recetaVersionId === null
-            || $item->pacienteId === null
+            $item->pacienteId === null
             || $item->direccionId === null
             || $item->ventanaEntregaId === null
         ) {
@@ -331,7 +322,6 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
 
         $etiqueta = EtiquetaModel::firstOrCreate(
             [
-                'receta_version_id' => $item->recetaVersionId,
                 'paciente_id' => $paciente->id,
             ],
             [

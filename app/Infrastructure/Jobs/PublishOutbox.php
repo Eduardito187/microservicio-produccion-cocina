@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Application\Shared\BusInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Str;
@@ -24,6 +25,7 @@ use DateTimeImmutable;
 class PublishOutbox implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
+    private const OUTBOUND_LOG_CHANNEL = 'rabbit_audit_outbound';
 
     /**
      * Constructor
@@ -72,6 +74,11 @@ class PublishOutbox implements ShouldQueue
                 'claim_id' => $claimId,
                 'count' => count($ids),
             ]);
+            Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Rabbit outbound batch', [
+                'claim_id' => $claimId,
+                'pending' => count($ids),
+                'exchange' => (string) config('rabbitmq.exchange', ''),
+            ]);
 
             return $ids;
         });
@@ -107,6 +114,13 @@ class PublishOutbox implements ShouldQueue
                         'schema_version' => $row->schema_version,
                         'correlation_id' => $row->correlation_id,
                         'payload' => $row->payload,
+                    ]);
+                    Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Rabbit outbound queued event', [
+                        'event' => $row->event_name,
+                        'event_id' => $row->event_id,
+                        'aggregate_id' => $row->aggregate_id,
+                        'correlation_id' => $row->correlation_id,
+                        'schema_version' => $row->schema_version,
                     ]);
 
                     $bus->publish(

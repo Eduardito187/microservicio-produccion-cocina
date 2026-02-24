@@ -16,7 +16,7 @@ class RecetaVersion extends BaseModel
     /**
      * @var mixed
      */
-    protected $table = 'receta_version';
+    protected $table = 'receta';
     /**
      * @var mixed
      */
@@ -32,7 +32,7 @@ class RecetaVersion extends BaseModel
      */
     public function batches(): HasMany
     {
-        return $this->hasMany(ProduccionBatch::class, 'receta_version_id');
+        return $this->hasMany(ProduccionBatch::class, 'receta_id');
     }
 
     /**
@@ -40,6 +40,6 @@ class RecetaVersion extends BaseModel
      */
     public function etiquetas(): HasMany
     {
-        return $this->hasMany(Etiqueta::class, 'receta_version_id');
+        return $this->hasMany(Etiqueta::class, 'receta_id');
     }
 }

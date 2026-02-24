@@ -213,12 +213,10 @@ class OrdenProduccion
     }
 
     /**
-     * @param string|int $estacionId
-     * @param string|int $recetaVersionId
      * @param string|int $porcionId
      * @return void
      */
-    public function generarBatches(string|int $estacionId, string|int $recetaVersionId, string|int $porcionId): void
+    public function generarBatches(string|int $porcionId): void
     {
         $items = [];
 
@@ -227,8 +225,6 @@ class OrdenProduccion
                 null,
                 $this->id,
                 $item->productId,
-                $estacionId,
-                $recetaVersionId,
                 $porcionId,
                 $item->qty()->value,
                 0,
@@ -258,32 +254,14 @@ class OrdenProduccion
         string|int|null $ventanaEntregaId
     ): void
     {
-        $itemsDespachoBySku = [];
-
-        foreach ($itemsDespacho as $item) {
-            if (!isset($item['sku'], $item['recetaVersionId'])) {
-                continue;
-            }
-
-            $recetaVersionId = $item['recetaVersionId'];
-            if (is_string($recetaVersionId)) {
-                $recetaVersionId = trim($recetaVersionId);
-            }
-            $itemsDespachoBySku[strtoupper(trim($item['sku']))] = $recetaVersionId;
-        }
-
         $items = [];
 
         foreach ($this->items() as $item) {
-            $sku = $item->sku()->value;
-            $recetaVersionId = $itemsDespachoBySku[$sku] ?? null;
-
             $items[] = new ItemDespacho(
                 null,
                 $this->id,
                 $item->productId,
                 null,
-                $recetaVersionId,
                 $pacienteId,
                 $direccionId,
                 $ventanaEntregaId

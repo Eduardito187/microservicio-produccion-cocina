@@ -23,7 +23,7 @@ class Etiqueta
     /**
      * @var string|int
      */
-    private $recetaVersionId;
+    private $recetaId;
 
     /**
      * @var string|int
@@ -44,20 +44,20 @@ class Etiqueta
      * Constructor
      *
      * @param string|int|null $id
-     * @param string|int $recetaVersionId
+     * @param string|int $recetaId
      * @param string|int $suscripcionId
      * @param string|int $pacienteId
      * @param array $qrPayload
      */
     public function __construct(
         string|int|null $id,
-        string|int $recetaVersionId,
+        string|int $recetaId,
         string|int $suscripcionId,
         string|int $pacienteId,
         array $qrPayload = []
     ) {
         $this->id = $id;
-        $this->recetaVersionId = $recetaVersionId;
+        $this->recetaId = $recetaId;
         $this->suscripcionId = $suscripcionId;
         $this->pacienteId = $pacienteId;
         $this->qrPayload = $qrPayload;
@@ -65,7 +65,7 @@ class Etiqueta
 
     /**
      * @param string|int|null $id
-     * @param string|int $recetaVersionId
+     * @param string|int $recetaId
      * @param string|int $suscripcionId
      * @param string|int $pacienteId
      * @param array $qrPayload
@@ -73,14 +73,14 @@ class Etiqueta
      */
     public static function crear(
         string|int|null $id,
-        string|int $recetaVersionId,
+        string|int $recetaId,
         string|int $suscripcionId,
         string|int $pacienteId,
         array $qrPayload = []
     ): self {
         $self = new self(
             $id,
-            $recetaVersionId,
+            $recetaId,
             $suscripcionId,
             $pacienteId,
             $qrPayload
@@ -93,7 +93,7 @@ class Etiqueta
 
     /**
      * @param int $id
-     * @param string|int $recetaVersionId
+     * @param string|int $recetaId
      * @param string|int $suscripcionId
      * @param string|int $pacienteId
      * @param array $qrPayload
@@ -101,14 +101,14 @@ class Etiqueta
      */
     public static function reconstitute(
         int $id,
-        string|int $recetaVersionId,
+        string|int $recetaId,
         string|int $suscripcionId,
         string|int $pacienteId,
         array $qrPayload
     ): self {
         $self = new self(
             $id,
-            $recetaVersionId,
+            $recetaId,
             $suscripcionId,
             $pacienteId,
             $qrPayload

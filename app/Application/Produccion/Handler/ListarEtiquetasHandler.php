@@ -59,7 +59,6 @@ class ListarEtiquetasHandler
     {
         return [
             'id' => $etiqueta->id,
-            'receta_version_id' => $etiqueta->recetaVersionId,
             'suscripcion_id' => $etiqueta->suscripcionId,
             'paciente_id' => $etiqueta->pacienteId,
             'qr_payload' => $etiqueta->qrPayload,

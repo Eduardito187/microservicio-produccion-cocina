@@ -49,7 +49,6 @@ class CrearEtiquetaHandler
         return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $etiqueta = new Etiqueta(
                 null,
-                $command->recetaVersionId,
                 $command->suscripcionId,
                 $command->pacienteId,
                 $command->qrPayload

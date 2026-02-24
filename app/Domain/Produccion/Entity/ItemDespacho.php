@@ -34,11 +34,6 @@ class ItemDespacho
     /**
      * @var string|int|null
      */
-    public $recetaVersionId;
-
-    /**
-     * @var string|int|null
-     */
     public $pacienteId;
 
     /**
@@ -58,7 +53,6 @@ class ItemDespacho
      * @param string|int $ordenProduccionId
      * @param string|int $productId
      * @param string|int|null $paqueteId
-     * @param string|int|null $recetaVersionId
      * @param string|int|null $pacienteId
      * @param string|int|null $direccionId
      * @param string|int|null $ventanaEntregaId
@@ -68,7 +62,6 @@ class ItemDespacho
         string|int $ordenProduccionId,
         string|int $productId,
         string|int|null $paqueteId,
-        string|int|null $recetaVersionId = null,
         string|int|null $pacienteId = null,
         string|int|null $direccionId = null,
         string|int|null $ventanaEntregaId = null
@@ -77,7 +70,6 @@ class ItemDespacho
         $this->ordenProduccionId = $ordenProduccionId;
         $this->productId = $productId;
         $this->paqueteId = $paqueteId;
-        $this->recetaVersionId = $recetaVersionId;
         $this->pacienteId = $pacienteId;
         $this->direccionId = $direccionId;
         $this->ventanaEntregaId = $ventanaEntregaId;

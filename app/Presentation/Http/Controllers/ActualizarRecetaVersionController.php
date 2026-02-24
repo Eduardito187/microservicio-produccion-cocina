@@ -55,7 +55,7 @@ class ActualizarRecetaVersionController
         }
 
         try {
-            $recetaVersionId = $this->handler->__invoke(new ActualizarRecetaVersion(
+            $recetaId = $this->handler->__invoke(new ActualizarRecetaVersion(
                 $id,
                 $nombre,
                 $data['nutrientes'] ?? null,
@@ -66,7 +66,7 @@ class ActualizarRecetaVersionController
                 $data['totalCalories'] ?? null
             ));
 
-            return response()->json(['recetaVersionId' => $recetaVersionId], 200);
+            return response()->json(['recetaId' => $recetaId], 200);
         } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);
         }

@@ -30,14 +30,6 @@ class Etiqueta extends BaseModel
     /**
      * @return BelongsTo
      */
-    public function recetaVersion(): BelongsTo
-    {
-        return $this->belongsTo(RecetaVersion::class, 'receta_version_id');
-    }
-
-    /**
-     * @return BelongsTo
-     */
     public function suscripcion(): BelongsTo
     {
         return $this->belongsTo(Suscripcion::class, 'suscripcion_id');

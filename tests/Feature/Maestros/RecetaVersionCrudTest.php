@@ -19,31 +19,31 @@ class RecetaVersionCrudTest extends TestCase
     /**
      * @return void
      */
-    public function test_crear_actualizar_y_eliminar_receta_version(): void
+    public function test_crear_actualizar_y_eliminar_receta(): void
     {
-        $create = $this->postJson(route('recetas-version.crear'), [
+        $create = $this->postJson(route('recetas.crear'), [
             'nombre' => 'Receta 1',
             'nutrientes' => ['calorias' => 100],
             'ingredientes' => ['harina' => 1],
             'version' => 1
         ]);
 
-        $create->assertCreated()->assertJsonStructure(['recetaVersionId']);
-        $recetaVersionId = $create->json('recetaVersionId');
-        $this->getJson(route('recetas-version.listar'))
-            ->assertOk()->assertJsonFragment(['id' => $recetaVersionId, 'nombre' => 'Receta 1']);
-        $this->getJson(route('recetas-version.ver', ['id' => $recetaVersionId]))
-            ->assertOk()->assertJsonFragment(['id' => $recetaVersionId, 'nombre' => 'Receta 1']);
+        $create->assertCreated()->assertJsonStructure(['recetaId']);
+        $recetaId = $create->json('recetaId');
+        $this->getJson(route('recetas.listar'))
+            ->assertOk()->assertJsonFragment(['id' => $recetaId, 'nombre' => 'Receta 1']);
+        $this->getJson(route('recetas.ver', ['id' => $recetaId]))
+            ->assertOk()->assertJsonFragment(['id' => $recetaId, 'nombre' => 'Receta 1']);
 
-        $update = $this->putJson(route('recetas-version.actualizar', ['id' => $recetaVersionId]), [
+        $update = $this->putJson(route('recetas.actualizar', ['id' => $recetaId]), [
             'nombre' => 'Receta 2',
             'nutrientes' => ['calorias' => 200],
             'ingredientes' => ['harina' => 2],
             'version' => 2
         ]);
 
-        $update->assertOk()->assertJsonPath('recetaVersionId', $recetaVersionId);
-        $delete = $this->deleteJson(route('recetas-version.eliminar', ['id' => $recetaVersionId]));
+        $update->assertOk()->assertJsonPath('recetaId', $recetaId);
+        $delete = $this->deleteJson(route('recetas.eliminar', ['id' => $recetaId]));
         $delete->assertNoContent();
     }
 }

@@ -19,16 +19,6 @@ class PlanificarOP
     /**
      * @var int
      */
-    public $estacionId;
-
-    /**
-     * @var int
-     */
-    public $recetaVersionId;
-
-    /**
-     * @var int
-     */
     public $porcionId;
 
     /**
@@ -40,8 +30,6 @@ class PlanificarOP
         array $dataApi
     ) {
         $this->ordenProduccionId = $dataApi["ordenProduccionId"];
-        $this->estacionId = $dataApi["estacionId"];
-        $this->recetaVersionId = $dataApi["recetaVersionId"];
         $this->porcionId = $dataApi["porcionId"];
     }
 }

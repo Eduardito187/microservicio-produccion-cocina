@@ -31,7 +31,6 @@ class EtiquetaRepository implements EtiquetaRepositoryInterface
 
         return new Etiqueta(
             $row->id,
-            $row->receta_version_id,
             $row->suscripcion_id,
             $row->paciente_id,
             $row->qr_payload
@@ -47,7 +46,6 @@ class EtiquetaRepository implements EtiquetaRepositoryInterface
         $model = EtiquetaModel::query()->updateOrCreate(
             ['id' => $etiqueta->id],
             [
-                'receta_version_id' => $etiqueta->recetaVersionId,
                 'suscripcion_id' => $etiqueta->suscripcionId,
                 'paciente_id' => $etiqueta->pacienteId,
                 'qr_payload' => $etiqueta->qrPayload,
@@ -67,7 +65,6 @@ class EtiquetaRepository implements EtiquetaRepositoryInterface
         foreach (EtiquetaModel::query()->orderBy('id')->get() as $row) {
             $items[] = new Etiqueta(
                 $row->id,
-                $row->receta_version_id,
                 $row->suscripcion_id,
                 $row->paciente_id,
                 $row->qr_payload

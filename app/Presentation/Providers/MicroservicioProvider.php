@@ -11,8 +11,8 @@ use App\Infrastructure\Persistence\Repository\ProduccionBatchRepository;
 use App\Infrastructure\Persistence\Repository\PacienteRepository;
 use App\Infrastructure\Persistence\Repository\DireccionRepository;
 use App\Infrastructure\Persistence\Repository\VentanaEntregaRepository;
-use App\Infrastructure\Persistence\Repository\EstacionRepository;
 use App\Infrastructure\Persistence\Repository\PorcionRepository;
+use App\Infrastructure\Persistence\Repository\RecetaRepository;
 use App\Infrastructure\Persistence\Repository\RecetaVersionRepository;
 use App\Infrastructure\Persistence\Repository\SuscripcionRepository;
 use App\Infrastructure\Persistence\Repository\CalendarioRepository;
@@ -30,8 +30,8 @@ use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
-use App\Domain\Produccion\Repository\EstacionRepositoryInterface;
 use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
+use App\Domain\Produccion\Repository\RecetaRepositoryInterface;
 use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
@@ -56,12 +56,12 @@ use App\Application\Integration\Handlers\DireccionGeocodificadaHandler;
 use App\Application\Integration\Handlers\PacienteCreadoHandler;
 use App\Application\Integration\Handlers\PacienteActualizadoHandler;
 use App\Application\Integration\Handlers\PacienteEliminadoHandler;
+use App\Application\Integration\Handlers\RecetaActualizadaHandler;
 use App\Application\Integration\Handlers\SuscripcionCreadaHandler;
 use App\Application\Integration\Handlers\SuscripcionCrearHandler;
 use App\Application\Integration\Handlers\SuscripcionActualizadaHandler;
 use App\Application\Integration\Handlers\ContratoCanceladoHandler;
 use App\Application\Integration\Handlers\ContratoConsultarHandler;
-use App\Application\Integration\Handlers\RecetaActualizadaHandler;
 use App\Application\Integration\Handlers\CalendarioEntregaCreadoHandler;
 use App\Application\Integration\Handlers\CalendarioServicioGenerarHandler;
 use App\Application\Integration\Handlers\CalendarioGeneradoHandler;
@@ -116,11 +116,6 @@ class MicroservicioProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            EstacionRepositoryInterface::class,
-            EstacionRepository::class
-        );
-
-        $this->app->bind(
             PorcionRepositoryInterface::class,
             PorcionRepository::class
         );
@@ -128,6 +123,11 @@ class MicroservicioProvider extends ServiceProvider
         $this->app->bind(
             RecetaVersionRepositoryInterface::class,
             RecetaVersionRepository::class
+        );
+
+        $this->app->bind(
+            RecetaRepositoryInterface::class,
+            RecetaRepository::class
         );
 
         $this->app->bind(
@@ -215,6 +215,9 @@ class MicroservicioProvider extends ServiceProvider
             $router->register('DireccionCreada', $app->make(DireccionCreadaHandler::class));
             $router->register('DireccionActualizada', $app->make(DireccionActualizadaHandler::class));
             $router->register('DireccionGeocodificada', $app->make(DireccionGeocodificadaHandler::class));
+            $router->register('paciente.direccion-creada', $app->make(DireccionCreadaHandler::class));
+            $router->register('paciente.direccion-actualizada', $app->make(DireccionActualizadaHandler::class));
+            $router->register('paciente.direccion-geocodificada', $app->make(DireccionGeocodificadaHandler::class));
 
             $router->register('PacienteCreado', $app->make(PacienteCreadoHandler::class));
             $router->register('PacienteActualizado', $app->make(PacienteActualizadoHandler::class));
@@ -222,6 +225,9 @@ class MicroservicioProvider extends ServiceProvider
             $router->register('paciente.paciente-creado', $app->make(PacienteCreadoHandler::class));
             $router->register('paciente.paciente-actualizado', $app->make(PacienteActualizadoHandler::class));
             $router->register('paciente.paciente-eliminado', $app->make(PacienteEliminadoHandler::class));
+            $router->register('RecetaActualizada', $app->make(RecetaActualizadaHandler::class));
+            $router->register('planes.receta-creada', $app->make(RecetaActualizadaHandler::class));
+            $router->register('planes.receta-actualizada', $app->make(RecetaActualizadaHandler::class));
 
             $router->register('SuscripcionCreada', $app->make(SuscripcionCreadaHandler::class));
             $router->register('SuscripcionActualizada', $app->make(SuscripcionActualizadaHandler::class));
@@ -233,10 +239,6 @@ class MicroservicioProvider extends ServiceProvider
             $router->register('contrato.consultar', $app->make(ContratoConsultarHandler::class));
             $router->register('contrato.cancelar', $app->make(ContratoCanceladoHandler::class));
             $router->register('contrato.cancelado', $app->make(ContratoCanceladoHandler::class));
-
-            $router->register('RecetaActualizada', $app->make(RecetaActualizadaHandler::class));
-            $router->register('planes.receta-creada', $app->make(RecetaActualizadaHandler::class));
-            $router->register('planes.receta-actualizada', $app->make(RecetaActualizadaHandler::class));
 
             $router->register('CalendarioEntregaCreado', $app->make(CalendarioEntregaCreadoHandler::class));
             $router->register('calendario.servicio.generar', $app->make(CalendarioServicioGenerarHandler::class));

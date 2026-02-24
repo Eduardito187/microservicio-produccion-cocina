@@ -33,8 +33,6 @@ class PactStateController
             $params = $request->only([
                 'ordenProduccionId',
                 'porcionId',
-                'estacionId',
-                'recetaVersionId',
                 'productId'
             ]);
         }
@@ -96,8 +94,6 @@ class PactStateController
         if ($params === []) {
             $params = [
                 'ordenProduccionId' => 'e28e9cc2-5225-40c0-b88b-2341f96d76a3',
-                'estacionId' => '9b7b5fbe-6b65-4d1d-8fdd-52f143b2552f',
-                'recetaVersionId' => 'a99e307d-3ca9-44a7-a475-42f0f86d7d04',
                 'porcionId' => 'f7a1e0b2-2c4d-4c0a-9b8e-0a4b2f9d8f7a',
             ];
         }
@@ -116,36 +112,6 @@ class PactStateController
         $row['created_at'] = now();
         $row['updated_at'] = now();
         DB::table($porcionTable)->updateOrInsert(['id' => $porcionId], $row);
-
-        $recetaTable = "receta_version";
-        $row = [];
-        $recetaVersionId = $params['recetaVersionId'] ?? $params['receta_version_id'] ?? (string) Str::uuid();
-        $existingRecetaId = DB::table($recetaTable)->where('nombre', 'receta_version_test')->value('id');
-        if ($existingRecetaId && $existingRecetaId !== $recetaVersionId) {
-            DB::table('produccion_batch')->where('receta_version_id', $existingRecetaId)->delete();
-            DB::table($recetaTable)->where('id', $existingRecetaId)->delete();
-        }
-        $row['id'] = $recetaVersionId;
-        $row['nombre'] = 'receta_version_test';
-        $row['version'] = 1;
-        $row['created_at'] = now();
-        $row['updated_at'] = now();
-        DB::table($recetaTable)->updateOrInsert(['id' => $recetaVersionId], $row);
-
-        $estacionTable = "estacion";
-        $row = [];
-        $estacionId = $params['estacionId'] ?? $params['estacion_id'] ?? (string) Str::uuid();
-        $existingEstacionId = DB::table($estacionTable)->where('nombre', 'estacion_test')->value('id');
-        if ($existingEstacionId && $existingEstacionId !== $estacionId) {
-            DB::table('produccion_batch')->where('estacion_id', $existingEstacionId)->delete();
-            DB::table($estacionTable)->where('id', $existingEstacionId)->delete();
-        }
-        $row['id'] = $estacionId;
-        $row['nombre'] = 'estacion_test';
-        $row['capacidad'] = 10;
-        $row['created_at'] = now();
-        $row['updated_at'] = now();
-        DB::table($estacionTable)->updateOrInsert(['id' => $estacionId], $row);
 
         $productTable = "products";
         $existingProductId = DB::table($productTable)->where('sku', 'PIZZA-PEP')->value('id');

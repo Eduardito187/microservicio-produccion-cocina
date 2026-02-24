@@ -47,7 +47,6 @@ class ActualizarEtiquetaHandler
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $etiqueta = $this->etiquetaRepository->byId($command->id);
-            $etiqueta->recetaVersionId = $command->recetaVersionId;
             $etiqueta->suscripcionId = $command->suscripcionId;
             $etiqueta->pacienteId = $command->pacienteId;
             $etiqueta->qrPayload = $command->qrPayload;

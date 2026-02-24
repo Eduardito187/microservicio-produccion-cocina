@@ -51,12 +51,10 @@
     {
       "title": "ProduccionBatchCreado",
       "type": "object",
-      "required": ["ordenProduccionId", "estacionId", "qty", "posicion"],
+      "required": ["ordenProduccionId", "qty", "posicion"],
       "properties": {
         "ordenProduccionId": { "type": "string" },
-        "estacionId": { "type": "string" },
         "productoId": { "type": "string" },
-        "recetaVersionId": { "type": "string" },
         "porcionId": { "type": "string" },
         "qty": { "type": "integer", "minimum": 1 },
         "posicion": { "type": "integer", "minimum": 1 }

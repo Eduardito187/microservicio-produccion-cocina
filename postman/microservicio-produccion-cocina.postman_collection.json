@@ -1,0 +1,263 @@
+{
+  "info": {
+    "name": "microservicio-produccion-cocina",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Coleccion API microservicio-produccion-cocina (DDD + CQRS). Endpoints con middleware keycloak.jwt usan Bearer token. Actualizada: 2026-02-24."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "access_token", "value": "" },
+    { "key": "refresh_token", "value": "" },
+    { "key": "eventbus_secret", "value": "" },
+    { "key": "id", "value": "00000000-0000-0000-0000-000000000001" },
+    { "key": "orden_produccion_id", "value": "00000000-0000-0000-0000-000000000011" },
+    { "key": "porcion_id", "value": "00000000-0000-0000-0000-000000000012" },
+    { "key": "suscripcion_id", "value": "00000000-0000-0000-0000-000000000013" },
+    { "key": "paciente_id", "value": "00000000-0000-0000-0000-000000000014" },
+    { "key": "direccion_id", "value": "00000000-0000-0000-0000-000000000015" },
+    { "key": "ventana_entrega_id", "value": "00000000-0000-0000-0000-000000000016" },
+    { "key": "calendario_id", "value": "00000000-0000-0000-0000-000000000017" },
+    { "key": "item_despacho_id", "value": "00000000-0000-0000-0000-000000000018" },
+    { "key": "etiqueta_id", "value": "00000000-0000-0000-0000-000000000019" },
+    { "key": "producto_id", "value": "00000000-0000-0000-0000-000000000020" },
+    { "key": "paquete_id", "value": "00000000-0000-0000-0000-000000000021" },
+    { "key": "receta_id", "value": "00000000-0000-0000-0000-000000000022" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\"\n}" },
+            "url": { "raw": "{{base_url}}/api/login", "host": ["{{base_url}}"], "path": ["api", "login"] }
+          }
+        },
+        {
+          "name": "refresh",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}" },
+            "url": { "raw": "{{base_url}}/api/refresh", "host": ["{{base_url}}"], "path": ["api", "refresh"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Produccion",
+      "item": [
+        {
+          "name": "produccion.ordenes.generar",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"fecha\": \"2026-02-24\",\n  \"items\": [\n    {\n      \"sku\": \"SKU-001\",\n      \"qty\": 2\n    }\n  ]\n}" },
+            "url": { "raw": "{{base_url}}/api/produccion/ordenes/generar", "host": ["{{base_url}}"], "path": ["api", "produccion", "ordenes", "generar"] }
+          }
+        },
+        {
+          "name": "produccion.ordenes.planificar",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"ordenProduccionId\": \"{{orden_produccion_id}}\",\n  \"porcionId\": \"{{porcion_id}}\"\n}" },
+            "url": { "raw": "{{base_url}}/api/produccion/ordenes/planificar", "host": ["{{base_url}}"], "path": ["api", "produccion", "ordenes", "planificar"] }
+          }
+        },
+        {
+          "name": "produccion.ordenes.procesar",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"ordenProduccionId\": \"{{orden_produccion_id}}\"\n}" },
+            "url": { "raw": "{{base_url}}/api/produccion/ordenes/procesar", "host": ["{{base_url}}"], "path": ["api", "produccion", "ordenes", "procesar"] }
+          }
+        },
+        {
+          "name": "produccion.ordenes.despachar",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"ordenProduccionId\": \"{{orden_produccion_id}}\",\n  \"itemsDespacho\": [\n    {\n      \"sku\": \"SKU-001\"\n    }\n  ],\n  \"pacienteId\": \"{{paciente_id}}\",\n  \"direccionId\": \"{{direccion_id}}\",\n  \"ventanaEntrega\": \"{{ventana_entrega_id}}\"\n}" },
+            "url": { "raw": "{{base_url}}/api/produccion/ordenes/despachar", "host": ["{{base_url}}"], "path": ["api", "produccion", "ordenes", "despachar"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pacientes",
+      "item": [
+        { "name": "pacientes.crear", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Paciente Demo\",\n  \"documento\": \"123456\",\n  \"suscripcionId\": \"{{suscripcion_id}}\"\n}" }, "url": { "raw": "{{base_url}}/api/pacientes", "host": ["{{base_url}}"], "path": ["api","pacientes"] } } },
+        { "name": "pacientes.listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/pacientes", "host": ["{{base_url}}"], "path": ["api","pacientes"] } } },
+        { "name": "pacientes.ver", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/pacientes/{{paciente_id}}", "host": ["{{base_url}}"], "path": ["api","pacientes","{{paciente_id}}"] } } },
+        { "name": "pacientes.actualizar", "request": { "method": "PUT", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Paciente Actualizado\",\n  \"documento\": \"987654\",\n  \"suscripcionId\": \"{{suscripcion_id}}\"\n}" }, "url": { "raw": "{{base_url}}/api/pacientes/{{paciente_id}}", "host": ["{{base_url}}"], "path": ["api","pacientes","{{paciente_id}}"] } } },
+        { "name": "pacientes.eliminar", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/pacientes/{{paciente_id}}", "host": ["{{base_url}}"], "path": ["api","pacientes","{{paciente_id}}"] } } }
+      ]
+    },
+    {
+      "name": "Direcciones",
+      "item": [
+        { "name": "direcciones.crear", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Casa\",\n  \"linea1\": \"Av. Siempre Viva 123\",\n  \"linea2\": \"Depto 1\",\n  \"ciudad\": \"Santa Cruz\",\n  \"provincia\": \"Andres Ibanez\",\n  \"pais\": \"BO\",\n  \"geo\": { \"lat\": -17.78, \"lng\": -63.18 }\n}" }, "url": { "raw": "{{base_url}}/api/direcciones", "host": ["{{base_url}}"], "path": ["api","direcciones"] } } },
+        { "name": "direcciones.listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/direcciones", "host": ["{{base_url}}"], "path": ["api","direcciones"] } } },
+        { "name": "direcciones.ver", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/direcciones/{{direccion_id}}", "host": ["{{base_url}}"], "path": ["api","direcciones","{{direccion_id}}"] } } },
+        { "name": "direcciones.actualizar", "request": { "method": "PUT", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Trabajo\",\n  \"linea1\": \"Calle 2 #45\",\n  \"linea2\": null,\n  \"ciudad\": \"La Paz\",\n  \"provincia\": \"Murillo\",\n  \"pais\": \"BO\",\n  \"geo\": { \"lat\": -16.49, \"lng\": -68.13 }\n}" }, "url": { "raw": "{{base_url}}/api/direcciones/{{direccion_id}}", "host": ["{{base_url}}"], "path": ["api","direcciones","{{direccion_id}}"] } } },
+        { "name": "direcciones.eliminar", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/direcciones/{{direccion_id}}", "host": ["{{base_url}}"], "path": ["api","direcciones","{{direccion_id}}"] } } }
+      ]
+    },
+    {
+      "name": "Ventanas Entrega",
+      "item": [
+        { "name": "ventanas-entrega.crear", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"desde\": \"2026-02-24 08:00:00\",\n  \"hasta\": \"2026-02-24 11:00:00\"\n}" }, "url": { "raw": "{{base_url}}/api/ventanas-entrega", "host": ["{{base_url}}"], "path": ["api","ventanas-entrega"] } } },
+        { "name": "ventanas-entrega.listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/ventanas-entrega", "host": ["{{base_url}}"], "path": ["api","ventanas-entrega"] } } },
+        { "name": "ventanas-entrega.ver", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/ventanas-entrega/{{ventana_entrega_id}}", "host": ["{{base_url}}"], "path": ["api","ventanas-entrega","{{ventana_entrega_id}}"] } } },
+        { "name": "ventanas-entrega.actualizar", "request": { "method": "PUT", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"desde\": \"2026-02-24 12:00:00\",\n  \"hasta\": \"2026-02-24 14:00:00\"\n}" }, "url": { "raw": "{{base_url}}/api/ventanas-entrega/{{ventana_entrega_id}}", "host": ["{{base_url}}"], "path": ["api","ventanas-entrega","{{ventana_entrega_id}}"] } } },
+        { "name": "ventanas-entrega.eliminar", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/ventanas-entrega/{{ventana_entrega_id}}", "host": ["{{base_url}}"], "path": ["api","ventanas-entrega","{{ventana_entrega_id}}"] } } }
+      ]
+    },
+    {
+      "name": "Porciones",
+      "item": [
+        { "name": "porciones.crear", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Plan 250g\",\n  \"pesoGr\": 250\n}" }, "url": { "raw": "{{base_url}}/api/porciones", "host": ["{{base_url}}"], "path": ["api","porciones"] } } },
+        { "name": "porciones.listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/porciones", "host": ["{{base_url}}"], "path": ["api","porciones"] } } },
+        { "name": "porciones.ver", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/porciones/{{porcion_id}}", "host": ["{{base_url}}"], "path": ["api","porciones","{{porcion_id}}"] } } },
+        { "name": "porciones.actualizar", "request": { "method": "PUT", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Plan 300g\",\n  \"pesoGr\": 300\n}" }, "url": { "raw": "{{base_url}}/api/porciones/{{porcion_id}}", "host": ["{{base_url}}"], "path": ["api","porciones","{{porcion_id}}"] } } },
+        { "name": "porciones.eliminar", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/porciones/{{porcion_id}}", "host": ["{{base_url}}"], "path": ["api","porciones","{{porcion_id}}"] } } }
+      ]
+    },
+    {
+      "name": "Suscripciones",
+      "item": [
+        { "name": "suscripciones.crear", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Plan 30 dias\"\n}" }, "url": { "raw": "{{base_url}}/api/suscripciones", "host": ["{{base_url}}"], "path": ["api","suscripciones"] } } },
+        { "name": "suscripciones.listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/suscripciones", "host": ["{{base_url}}"], "path": ["api","suscripciones"] } } },
+        { "name": "suscripciones.ver", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/suscripciones/{{suscripcion_id}}", "host": ["{{base_url}}"], "path": ["api","suscripciones","{{suscripcion_id}}"] } } },
+        { "name": "suscripciones.actualizar", "request": { "method": "PUT", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Plan 15 dias\"\n}" }, "url": { "raw": "{{base_url}}/api/suscripciones/{{suscripcion_id}}", "host": ["{{base_url}}"], "path": ["api","suscripciones","{{suscripcion_id}}"] } } },
+        { "name": "suscripciones.eliminar", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/suscripciones/{{suscripcion_id}}", "host": ["{{base_url}}"], "path": ["api","suscripciones","{{suscripcion_id}}"] } } }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        { "name": "productos.crear", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"sku\": \"SKU-001\",\n  \"price\": 25.50,\n  \"specialPrice\": 20.00\n}" }, "url": { "raw": "{{base_url}}/api/productos", "host": ["{{base_url}}"], "path": ["api","productos"] } } },
+        { "name": "productos.listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/productos", "host": ["{{base_url}}"], "path": ["api","productos"] } } },
+        { "name": "productos.ver", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/productos/{{producto_id}}", "host": ["{{base_url}}"], "path": ["api","productos","{{producto_id}}"] } } },
+        { "name": "productos.actualizar", "request": { "method": "PUT", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"sku\": \"SKU-001\",\n  \"price\": 30.00,\n  \"specialPrice\": 28.00\n}" }, "url": { "raw": "{{base_url}}/api/productos/{{producto_id}}", "host": ["{{base_url}}"], "path": ["api","productos","{{producto_id}}"] } } },
+        { "name": "productos.eliminar", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/productos/{{producto_id}}", "host": ["{{base_url}}"], "path": ["api","productos","{{producto_id}}"] } } }
+      ]
+    },
+    {
+      "name": "Calendarios",
+      "item": [
+        { "name": "calendarios.crear", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"fecha\": \"2026-02-24\"\n}" }, "url": { "raw": "{{base_url}}/api/calendarios", "host": ["{{base_url}}"], "path": ["api","calendarios"] } } },
+        { "name": "calendarios.listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/calendarios", "host": ["{{base_url}}"], "path": ["api","calendarios"] } } },
+        { "name": "calendarios.ver", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/calendarios/{{calendario_id}}", "host": ["{{base_url}}"], "path": ["api","calendarios","{{calendario_id}}"] } } },
+        { "name": "calendarios.actualizar", "request": { "method": "PUT", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"fecha\": \"2026-03-01\"\n}" }, "url": { "raw": "{{base_url}}/api/calendarios/{{calendario_id}}", "host": ["{{base_url}}"], "path": ["api","calendarios","{{calendario_id}}"] } } },
+        { "name": "calendarios.eliminar", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/calendarios/{{calendario_id}}", "host": ["{{base_url}}"], "path": ["api","calendarios","{{calendario_id}}"] } } }
+      ]
+    },
+    {
+      "name": "Calendario Items",
+      "item": [
+        { "name": "calendario-items.crear", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"calendarioId\": \"{{calendario_id}}\",\n  \"itemDespachoId\": \"{{item_despacho_id}}\"\n}" }, "url": { "raw": "{{base_url}}/api/calendario-items", "host": ["{{base_url}}"], "path": ["api","calendario-items"] } } },
+        { "name": "calendario-items.listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/calendario-items", "host": ["{{base_url}}"], "path": ["api","calendario-items"] } } },
+        { "name": "calendario-items.ver", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/calendario-items/{{id}}", "host": ["{{base_url}}"], "path": ["api","calendario-items","{{id}}"] } } },
+        { "name": "calendario-items.actualizar", "request": { "method": "PUT", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"calendarioId\": \"{{calendario_id}}\",\n  \"itemDespachoId\": \"{{item_despacho_id}}\"\n}" }, "url": { "raw": "{{base_url}}/api/calendario-items/{{id}}", "host": ["{{base_url}}"], "path": ["api","calendario-items","{{id}}"] } } },
+        { "name": "calendario-items.eliminar", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/calendario-items/{{id}}", "host": ["{{base_url}}"], "path": ["api","calendario-items","{{id}}"] } } }
+      ]
+    },
+    {
+      "name": "Etiquetas",
+      "item": [
+        { "name": "etiquetas.crear", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"suscripcionId\": \"{{suscripcion_id}}\",\n  \"pacienteId\": \"{{paciente_id}}\",\n  \"qrPayload\": {\n    \"code\": \"ABC123\"\n  }\n}" }, "url": { "raw": "{{base_url}}/api/etiquetas", "host": ["{{base_url}}"], "path": ["api","etiquetas"] } } },
+        { "name": "etiquetas.listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/etiquetas", "host": ["{{base_url}}"], "path": ["api","etiquetas"] } } },
+        { "name": "etiquetas.ver", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/etiquetas/{{etiqueta_id}}", "host": ["{{base_url}}"], "path": ["api","etiquetas","{{etiqueta_id}}"] } } },
+        { "name": "etiquetas.actualizar", "request": { "method": "PUT", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"suscripcionId\": \"{{suscripcion_id}}\",\n  \"pacienteId\": \"{{paciente_id}}\",\n  \"qrPayload\": {\n    \"code\": \"XYZ999\"\n  }\n}" }, "url": { "raw": "{{base_url}}/api/etiquetas/{{etiqueta_id}}", "host": ["{{base_url}}"], "path": ["api","etiquetas","{{etiqueta_id}}"] } } },
+        { "name": "etiquetas.eliminar", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/etiquetas/{{etiqueta_id}}", "host": ["{{base_url}}"], "path": ["api","etiquetas","{{etiqueta_id}}"] } } }
+      ]
+    },
+    {
+      "name": "Recetas",
+      "item": [
+        { "name": "recetas.crear", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Receta Base\",\n  \"nutrientes\": {\"calorias\": 100},\n  \"ingredientes\": [\"agua\", \"harina\"],\n  \"description\": \"Descripcion\",\n  \"instructions\": \"Instrucciones\",\n  \"totalCalories\": 100,\n  \"version\": 1\n}" }, "url": { "raw": "{{base_url}}/api/recetas", "host": ["{{base_url}}"], "path": ["api","recetas"] } } },
+        { "name": "recetas.listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/recetas", "host": ["{{base_url}}"], "path": ["api","recetas"] } } },
+        { "name": "recetas.ver", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/recetas/{{receta_id}}", "host": ["{{base_url}}"], "path": ["api","recetas","{{receta_id}}"] } } },
+        { "name": "recetas.actualizar", "request": { "method": "PUT", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Receta Actualizada\",\n  \"nutrientes\": {\"calorias\": 120},\n  \"ingredientes\": [\"agua\", \"harina\", \"sal\"],\n  \"description\": \"Descripcion 2\",\n  \"instructions\": \"Instrucciones 2\",\n  \"totalCalories\": 120,\n  \"version\": 2\n}" }, "url": { "raw": "{{base_url}}/api/recetas/{{receta_id}}", "host": ["{{base_url}}"], "path": ["api","recetas","{{receta_id}}"] } } },
+        { "name": "recetas.eliminar", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/recetas/{{receta_id}}", "host": ["{{base_url}}"], "path": ["api","recetas","{{receta_id}}"] } } }
+      ]
+    },
+    {
+      "name": "Paquetes",
+      "item": [
+        { "name": "paquetes.crear", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"etiquetaId\": \"{{etiqueta_id}}\",\n  \"ventanaId\": \"{{ventana_entrega_id}}\",\n  \"direccionId\": \"{{direccion_id}}\"\n}" }, "url": { "raw": "{{base_url}}/api/paquetes", "host": ["{{base_url}}"], "path": ["api","paquetes"] } } },
+        { "name": "paquetes.listar", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/paquetes", "host": ["{{base_url}}"], "path": ["api","paquetes"] } } },
+        { "name": "paquetes.ver", "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/paquetes/{{paquete_id}}", "host": ["{{base_url}}"], "path": ["api","paquetes","{{paquete_id}}"] } } },
+        { "name": "paquetes.actualizar", "request": { "method": "PUT", "header": [{"key":"Content-Type","value":"application/json"}], "body": { "mode": "raw", "raw": "{\n  \"etiquetaId\": \"{{etiqueta_id}}\",\n  \"ventanaId\": \"{{ventana_entrega_id}}\",\n  \"direccionId\": \"{{direccion_id}}\"\n}" }, "url": { "raw": "{{base_url}}/api/paquetes/{{paquete_id}}", "host": ["{{base_url}}"], "path": ["api","paquetes","{{paquete_id}}"] } } },
+        { "name": "paquetes.eliminar", "request": { "method": "DELETE", "url": { "raw": "{{base_url}}/api/paquetes/{{paquete_id}}", "host": ["{{base_url}}"], "path": ["api","paquetes","{{paquete_id}}"] } } }
+      ]
+    },
+    {
+      "name": "Integracion y Proxy",
+      "item": [
+        {
+          "name": "event-bus",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-EventBus-Token", "value": "{{eventbus_secret}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"suscripciones.suscripcion-actualizada\",\n  \"occurred_on\": \"2026-02-24T00:00:00Z\",\n  \"schema_version\": 1,\n  \"event_id\": \"11111111-1111-1111-1111-111111111111\",\n  \"correlation_id\": \"22222222-2222-2222-2222-222222222222\",\n  \"aggregate_id\": \"33333333-3333-3333-3333-333333333333\",\n  \"payload\": {\n    \"suscripcionId\": \"{{suscripcion_id}}\",\n    \"nombre\": \"Plan 15 dias\"\n  }\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/event-bus", "host": ["{{base_url}}"], "path": ["api","event-bus"] }
+          }
+        },
+        {
+          "name": "proxy.users",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/users", "host": ["{{base_url}}"], "path": ["api","users"] }
+          }
+        },
+        {
+          "name": "proxy.posts",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/posts", "host": ["{{base_url}}"], "path": ["api","posts"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pact Setup",
+      "item": [
+        {
+          "name": "_pact.setup",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"state\": \"orden produccion 1 exists and porcion 1 exists\",\n  \"params\": {}\n}" },
+            "url": { "raw": "{{base_url}}/api/_pact/setup", "host": ["{{base_url}}"], "path": ["api","_pact","setup"] }
+          }
+        }
+      ]
+    }
+  ]
+}

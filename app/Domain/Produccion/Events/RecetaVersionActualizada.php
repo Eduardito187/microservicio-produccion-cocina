@@ -51,7 +51,7 @@ class RecetaVersionActualizada extends BaseDomainEvent
     /**
      * Constructor
      *
-     * @param string|int|null $recetaVersionId
+     * @param string|int|null $recetaId
      * @param string $nombre
      * @param int $version
      * @param array|null $nutrientes
@@ -61,7 +61,7 @@ class RecetaVersionActualizada extends BaseDomainEvent
      * @param int|null $totalCalories
      */
     public function __construct(
-        string|int|null $recetaVersionId,
+        string|int|null $recetaId,
         string $nombre,
         int $version,
         array|null $nutrientes,
@@ -70,7 +70,7 @@ class RecetaVersionActualizada extends BaseDomainEvent
         string|null $instructions = null,
         int|null $totalCalories = null
     ) {
-        parent::__construct($recetaVersionId);
+        parent::__construct($recetaId);
         $this->nombre = $nombre;
         $this->version = $version;
         $this->nutrientes = $nutrientes;

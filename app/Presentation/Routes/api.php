@@ -5,26 +5,24 @@
 
 use App\Presentation\Http\Controllers\ActualizarCalendarioItemController;
 use App\Presentation\Http\Controllers\ActualizarVentanaEntregaController;
-use App\Presentation\Http\Controllers\ActualizarRecetaVersionController;
+use App\Presentation\Http\Controllers\ActualizarRecetaController;
 use App\Presentation\Http\Controllers\EliminarVentanaEntregaController;
 use App\Presentation\Http\Controllers\EliminarCalendarioItemController;
 use App\Presentation\Http\Controllers\ListarVentanasEntregaController;
 use App\Presentation\Http\Controllers\ActualizarSuscripcionController;
-use App\Presentation\Http\Controllers\EliminarRecetaVersionController;
 use App\Presentation\Http\Controllers\ListarCalendarioItemsController;
-use App\Presentation\Http\Controllers\ListarRecetasVersionController;
+use App\Presentation\Http\Controllers\EliminarRecetaController;
 use App\Presentation\Http\Controllers\ActualizarCalendarioController;
+use App\Presentation\Http\Controllers\ListarRecetasController;
 use App\Presentation\Http\Controllers\CrearVentanaEntregaController;
 use App\Presentation\Http\Controllers\ActualizarDireccionController;
 use App\Presentation\Http\Controllers\CrearCalendarioItemController;
 use App\Presentation\Http\Controllers\EliminarSuscripcionController;
 use App\Presentation\Http\Controllers\ListarSuscripcionesController;
 use App\Presentation\Http\Controllers\ActualizarPacienteController;
-use App\Presentation\Http\Controllers\ActualizarEstacionController;
-use App\Presentation\Http\Controllers\CrearRecetaVersionController;
 use App\Presentation\Http\Controllers\EliminarCalendarioController;
 use App\Presentation\Http\Controllers\ActualizarProductoController;
-use App\Presentation\Http\Controllers\EliminarProductoController;
+use App\Presentation\Http\Controllers\CrearRecetaController;
 use App\Presentation\Http\Controllers\ActualizarEtiquetaController;
 use App\Presentation\Http\Controllers\ListarDireccionesController;
 use App\Presentation\Http\Controllers\VerVentanaEntregaController;
@@ -33,12 +31,11 @@ use App\Presentation\Http\Controllers\EliminarDireccionController;
 use App\Presentation\Http\Controllers\ListarCalendariosController;
 use App\Presentation\Http\Controllers\VerCalendarioItemController;
 use App\Presentation\Http\Controllers\ActualizarPaqueteController;
+use App\Presentation\Http\Controllers\EliminarProductoController;
 use App\Presentation\Http\Controllers\EliminarPacienteController;
-use App\Presentation\Http\Controllers\EliminarEstacionController;
-use App\Presentation\Http\Controllers\ListarEstacionesController;
-use App\Presentation\Http\Controllers\VerRecetaVersionController;
 use App\Presentation\Http\Controllers\CrearSuscripcionController;
 use App\Presentation\Http\Controllers\EliminarEtiquetaController;
+use App\Presentation\Http\Controllers\VerRecetaController;
 use App\Presentation\Http\Controllers\CrearCalendarioController;
 use App\Presentation\Http\Controllers\EliminarPorcionController;
 use App\Presentation\Http\Controllers\ListarPorcionesController;
@@ -51,7 +48,6 @@ use App\Presentation\Http\Controllers\VerSuscripcionController;
 use App\Presentation\Http\Controllers\ListarPaquetesController;
 use App\Presentation\Http\Controllers\VerCalendarioController;
 use App\Presentation\Http\Controllers\CrearPacienteController;
-use App\Presentation\Http\Controllers\CrearEstacionController;
 use App\Presentation\Http\Controllers\CrearEtiquetaController;
 use App\Presentation\Http\Controllers\CrearProductoController;
 use App\Presentation\Http\Controllers\CrearPaqueteController;
@@ -60,7 +56,6 @@ use App\Presentation\Http\Controllers\CrearPorcionController;
 use App\Presentation\Http\Controllers\VerDireccionController;
 use App\Presentation\Http\Controllers\DespacharOPController;
 use App\Presentation\Http\Controllers\VerPacienteController;
-use App\Presentation\Http\Controllers\VerEstacionController;
 use App\Presentation\Http\Controllers\VerEtiquetaController;
 use App\Presentation\Http\Controllers\VerProductoController;
 use App\Presentation\Http\Controllers\VerPaqueteController;
@@ -106,23 +101,11 @@ Route::middleware(['keycloak.jwt', 'role:cocinero,planificador,despachador,produ
     Route::put('/ventanas-entrega/{id}', ActualizarVentanaEntregaController::class)->middleware('role:planificador,produccion')->name('ventanas-entrega.actualizar');
     Route::delete('/ventanas-entrega/{id}', EliminarVentanaEntregaController::class)->middleware('role:planificador,produccion')->name('ventanas-entrega.eliminar');
 
-    Route::post('/estaciones', CrearEstacionController::class)->middleware('role:planificador,produccion')->name('estaciones.crear');
-    Route::get('/estaciones', ListarEstacionesController::class)->name('estaciones.listar');
-    Route::get('/estaciones/{id}', VerEstacionController::class)->name('estaciones.ver');
-    Route::put('/estaciones/{id}', ActualizarEstacionController::class)->middleware('role:planificador,produccion')->name('estaciones.actualizar');
-    Route::delete('/estaciones/{id}', EliminarEstacionController::class)->middleware('role:planificador,produccion')->name('estaciones.eliminar');
-
     Route::post('/porciones', CrearPorcionController::class)->middleware('role:planificador,produccion')->name('porciones.crear');
     Route::get('/porciones', ListarPorcionesController::class)->name('porciones.listar');
     Route::get('/porciones/{id}', VerPorcionController::class)->name('porciones.ver');
     Route::put('/porciones/{id}', ActualizarPorcionController::class)->middleware('role:planificador,produccion')->name('porciones.actualizar');
     Route::delete('/porciones/{id}', EliminarPorcionController::class)->middleware('role:planificador,produccion')->name('porciones.eliminar');
-
-    Route::post('/recetas-version', CrearRecetaVersionController::class)->middleware('role:planificador,produccion')->name('recetas-version.crear');
-    Route::get('/recetas-version', ListarRecetasVersionController::class)->name('recetas-version.listar');
-    Route::get('/recetas-version/{id}', VerRecetaVersionController::class)->name('recetas-version.ver');
-    Route::put('/recetas-version/{id}', ActualizarRecetaVersionController::class)->middleware('role:planificador,produccion')->name('recetas-version.actualizar');
-    Route::delete('/recetas-version/{id}', EliminarRecetaVersionController::class)->middleware('role:planificador,produccion')->name('recetas-version.eliminar');
 
     Route::post('/suscripciones', CrearSuscripcionController::class)->middleware('role:planificador,produccion')->name('suscripciones.crear');
     Route::get('/suscripciones', ListarSuscripcionesController::class)->name('suscripciones.listar');
@@ -153,6 +136,12 @@ Route::middleware(['keycloak.jwt', 'role:cocinero,planificador,despachador,produ
     Route::get('/etiquetas/{id}', VerEtiquetaController::class)->name('etiquetas.ver');
     Route::put('/etiquetas/{id}', ActualizarEtiquetaController::class)->middleware('role:planificador,produccion')->name('etiquetas.actualizar');
     Route::delete('/etiquetas/{id}', EliminarEtiquetaController::class)->middleware('role:planificador,produccion')->name('etiquetas.eliminar');
+
+    Route::post('/recetas', CrearRecetaController::class)->middleware('role:planificador,produccion')->name('recetas.crear');
+    Route::get('/recetas', ListarRecetasController::class)->name('recetas.listar');
+    Route::get('/recetas/{id}', VerRecetaController::class)->name('recetas.ver');
+    Route::put('/recetas/{id}', ActualizarRecetaController::class)->middleware('role:planificador,produccion')->name('recetas.actualizar');
+    Route::delete('/recetas/{id}', EliminarRecetaController::class)->middleware('role:planificador,produccion')->name('recetas.eliminar');
 
     Route::post('/paquetes', CrearPaqueteController::class)->middleware('role:planificador,produccion')->name('paquetes.crear');
     Route::get('/paquetes', ListarPaquetesController::class)->name('paquetes.listar');

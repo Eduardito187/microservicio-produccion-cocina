@@ -9,7 +9,7 @@ use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 use App\Application\Produccion\Command\ActualizarRecetaVersion;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Shared\DomainEventPublisherInterface;
-use App\Domain\Produccion\Events\RecetaVersionActualizada;
+use App\Domain\Produccion\Events\RecetaActualizada;
 
 /**
  * @class ActualizarRecetaVersionHandler
@@ -66,7 +66,7 @@ class ActualizarRecetaVersionHandler
             $recetaVersion->version = $command->version;
 
             $id = $this->recetaVersionRepository->save($recetaVersion);
-            $event = new RecetaVersionActualizada(
+            $event = new RecetaActualizada(
                 $id,
                 $recetaVersion->nombre,
                 $recetaVersion->version,

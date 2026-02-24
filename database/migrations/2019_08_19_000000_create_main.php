@@ -40,16 +40,6 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('estacion')) {
-            Schema::create('estacion', function (Blueprint $table) {
-                $table->uuid('id')->primary();
-                $table->string('nombre')->unique();
-                $table->unsignedInteger('capacidad')->nullable();
-                $table->timestamp('created_at')->nullable();
-                $table->timestamp('updated_at')->nullable();
-            });
-        }
-
         if (!Schema::hasTable('failed_jobs')) {
             Schema::create('failed_jobs', function (Blueprint $table) {
                 $table->uuid('id')->primary();
@@ -193,29 +183,23 @@ return new class extends Migration
                 $table->json('ruta')->nullable();
                 $table->timestamp('created_at')->nullable();
                 $table->timestamp('updated_at')->nullable();
-                $table->foreignUuid('estacion_id')->nullable()->constrained('estacion');
-                $table->foreignUuid('receta_version_id')->nullable()->constrained('receta_version');
                 $table->foreignUuid('porcion_id')->nullable()->constrained('porcion');
 
                 $table->index('op_id', 'idx_pb_op');
                 $table->index(['op_id', 'p_id'], 'idx_pb_op_p');
                 $table->index(['op_id', 'posicion'], 'idx_pb_op_pos');
-                $table->index(['receta_version_id', 'porcion_id'], 'idx_pb_rec_por');
-                $table->index('estacion_id', 'idx_pb_est');
+                $table->index('porcion_id', 'idx_pb_por');
             });
         }
 
         if (!Schema::hasTable('etiqueta')) {
             Schema::create('etiqueta', function (Blueprint $table) {
                 $table->uuid('id')->primary();
-                $table->foreignUuid('receta_version_id')->nullable()->constrained('receta_version')->nullOnDelete();
                 $table->foreignUuid('suscripcion_id')->nullable()->constrained('suscripcion')->nullOnDelete();
                 $table->foreignUuid('paciente_id')->nullable()->constrained('paciente')->nullOnDelete();
                 $table->json('qr_payload')->nullable();
                 $table->timestamp('created_at')->nullable();
                 $table->timestamp('updated_at')->nullable();
-
-                $table->unique(['receta_version_id', 'paciente_id'], 'uk_etq_compuesta');
             });
         }
 
@@ -277,7 +261,6 @@ return new class extends Migration
         Schema::dropIfExists('orden_produccion');
         Schema::dropIfExists('inbound_events');
         Schema::dropIfExists('failed_jobs');
-        Schema::dropIfExists('estacion');
         Schema::dropIfExists('direccion');
         Schema::dropIfExists('calendario');
     }
