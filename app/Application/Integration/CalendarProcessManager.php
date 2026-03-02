@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,8 +10,7 @@ namespace App\Application\Integration;
  * @class CalendarProcessManager
  * @package App\Application\Integration
  */
-class CalendarProcessManager
-{
+class CalendarProcessManager {
     /**
      * @var RecalculoProduccionService
      */
@@ -31,8 +31,7 @@ class CalendarProcessManager
      * @param array $payload
      * @return void
      */
-    public function onEntregaProgramada(array $payload): void
-    {
+    public function onEntregaProgramada(array $payload): void {
         $this->recalculoProduccionService->tryGenerarOP($payload);
         $this->recalculoProduccionService->tryDespacharOP($payload);
     }
@@ -41,8 +40,7 @@ class CalendarProcessManager
      * @param array $payload
      * @return void
      */
-    public function onDiaSinEntregaMarcado(array $payload): void
-    {
+    public function onDiaSinEntregaMarcado(array $payload): void {
         $this->recalculoProduccionService->tryGenerarOP($payload);
     }
 
@@ -50,8 +48,7 @@ class CalendarProcessManager
      * @param array $payload
      * @return void
      */
-    public function onDireccionEntregaCambiada(array $payload): void
-    {
+    public function onDireccionEntregaCambiada(array $payload): void {
         $this->recalculoProduccionService->tryDespacharOP($payload);
     }
 }

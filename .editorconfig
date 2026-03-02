@@ -7,6 +7,26 @@ indent_size = 4
 indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
+curly_bracket_next_line = false
+
+[*.php]
+php_brace_style = k&r
+cpp_brace_style = k&r
+space_before_curly_brace = true
+
+[*.cs]
+csharp_new_line_before_open_brace = none
+csharp_new_line_before_else = false
+csharp_new_line_before_catch = false
+csharp_new_line_before_finally = false
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_members_in_anonymous_types = false
+
+[*.java]
+ij_java_brace_style = end_of_line
+ij_java_method_brace_style = end_of_line
+ij_java_class_brace_style = end_of_line
+ij_java_block_brace_style = end_of_line
 
 [*.md]
 trim_trailing_whitespace = false

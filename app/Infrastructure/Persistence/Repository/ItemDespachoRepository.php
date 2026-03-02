@@ -33,7 +33,11 @@ class ItemDespachoRepository implements ItemDespachoRepositoryInterface
             $row->id,
             $row->op_id,
             $row->product_id,
-            $row->paquete_id
+            $row->paquete_id,
+            $row->paciente_id,
+            $row->direccion_id,
+            $row->ventana_entrega_id,
+            $row->entrega_id
         );
     }
 
@@ -48,7 +52,11 @@ class ItemDespachoRepository implements ItemDespachoRepositoryInterface
             [
                 'op_id' => $item->ordenProduccionId,
                 'product_id' => $item->productId,
-                'paquete_id' => $item->paqueteId
+                'paquete_id' => $item->paqueteId,
+                'paciente_id' => $item->pacienteId,
+                'direccion_id' => $item->direccionId,
+                'ventana_entrega_id' => $item->ventanaEntregaId,
+                'entrega_id' => is_string($item->entregaId) ? $item->entregaId : null,
             ]
         );
     }

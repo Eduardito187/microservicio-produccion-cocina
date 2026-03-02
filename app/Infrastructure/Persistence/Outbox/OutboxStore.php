@@ -34,14 +34,35 @@ class OutboxStore
       $correlationId = null;
     }
 
+    $resolvedAggregateId = is_string($aggregateId) && Str::isUuid($aggregateId)
+      ? $aggregateId
+      : (string) Str::uuid();
+    $normalizedPayload = self::normalizePayload($payload, $resolvedAggregateId);
+
     Outbox::create([
       'event_id' => (string) Str::uuid(),
       'event_name' => $name,
-      'aggregate_id' => $aggregateId ?? (string) Str::uuid(),
+      'aggregate_id' => $resolvedAggregateId,
       'schema_version' => (int) env('EVENT_SCHEMA_VERSION', 1),
       'correlation_id' => $correlationId ?? (string) Str::uuid(),
-      'payload' => $payload,
+      'payload' => $normalizedPayload,
       'occurred_on' => $occurredOn->format('Y-m-d H:i:s'),
     ]);
+  }
+
+  /**
+   * Ensures outbound payload carries a UUID in id for downstream consumers.
+   *
+   * @param array $payload
+   * @param string $aggregateId
+   * @return array
+   */
+  private static function normalizePayload(array $payload, string $aggregateId): array
+  {
+    $id = $payload['id'] ?? null;
+    if (!is_string($id) || !Str::isUuid($id)) {
+      $payload['id'] = $aggregateId;
+    }
+    return $payload;
   }
 }

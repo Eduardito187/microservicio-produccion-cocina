@@ -47,6 +47,11 @@ class ItemDespacho
     public $ventanaEntregaId;
 
     /**
+     * @var string|int|null
+     */
+    public $entregaId;
+
+    /**
      * Constructor
      *
      * @param string|int|null $id
@@ -56,6 +61,7 @@ class ItemDespacho
      * @param string|int|null $pacienteId
      * @param string|int|null $direccionId
      * @param string|int|null $ventanaEntregaId
+     * @param string|int|null $entregaId
      */
     public function __construct(
         string|int|null $id,
@@ -64,7 +70,8 @@ class ItemDespacho
         string|int|null $paqueteId,
         string|int|null $pacienteId = null,
         string|int|null $direccionId = null,
-        string|int|null $ventanaEntregaId = null
+        string|int|null $ventanaEntregaId = null,
+        string|int|null $entregaId = null
     ) {
         $this->id = $id;
         $this->ordenProduccionId = $ordenProduccionId;
@@ -73,5 +80,6 @@ class ItemDespacho
         $this->pacienteId = $pacienteId;
         $this->direccionId = $direccionId;
         $this->ventanaEntregaId = $ventanaEntregaId;
+        $this->entregaId = $entregaId;
     }
 }

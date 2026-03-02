@@ -480,6 +480,64 @@ class InboundConsumerFlowTest extends TestCase
     /**
      * @return void
      */
+    public function test_consumer_resuelve_evento_receta_por_event_name_con_puntos(): void
+    {
+        config([
+            'rabbitmq.inbound.event_aliases' => [
+                'planes.receta.creado' => 'RecetaActualizada',
+            ],
+        ]);
+
+        $handler = $this->createMock(RegistrarInboundEventHandler::class);
+        $router = $this->createMock(IntegrationEventRouter::class);
+        $channel = $this->getMockBuilder(\PhpAmqpLib\Channel\AMQPChannel::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['basic_ack', 'basic_nack'])
+            ->getMock();
+
+        $handler->expects($this->once())->method('__invoke')->willReturn(false);
+        $router->expects($this->once())->method('dispatch')
+            ->with(
+                'RecetaActualizada',
+                $this->callback(function ($payload): bool {
+                    return is_array($payload)
+                        && ($payload['id'] ?? null) === 'd9cbb4a3-4c2b-4c6e-9d2f-5f9fd6ec1a2b'
+                        && ($payload['name'] ?? null) === 'Ensalada Proteica';
+                }),
+                $this->arrayHasKey('routing_key')
+            );
+        $channel->expects($this->once())->method('basic_ack');
+        $channel->expects($this->never())->method('basic_nack');
+
+        $command = new ConsumeRabbitMq($handler, $router);
+
+        $msg = $this->makeMessage([
+            'event_id' => 'e28e9cc2-5225-40c0-b88b-2341f96d76a3',
+            'event_name' => 'planes.receta.creado',
+            'occurred_on' => '2026-01-10T10:00:00Z',
+            'schema_version' => 1,
+            'correlation_id' => '0fec65f5-9b0c-49c4-bfb3-9b8f29c3f1d4',
+            'payload' => [
+                'id' => 'd9cbb4a3-4c2b-4c6e-9d2f-5f9fd6ec1a2b',
+                'name' => 'Ensalada Proteica',
+                'description' => 'Receta rica en proteina',
+                'instructions' => 'Mezclar ingredientes',
+                'totalCalories' => 420,
+                'ingredients' => [
+                    [
+                        'idIngredient' => 'f9cbb4a3-4c2b-4c6e-9d2f-5f9fd6ec1a2c',
+                        'quantity' => 150,
+                    ],
+                ],
+            ],
+        ], $channel, 'planes.receta.creado');
+
+        $command->testProcessMessage($msg);
+    }
+
+    /**
+     * @return void
+     */
     public function test_consumer_resuelve_evento_calendario_crear_dia_por_alias(): void
     {
         config([
@@ -520,6 +578,57 @@ class InboundConsumerFlowTest extends TestCase
                 'fecha' => '2026-02-12T00:00:00Z',
             ],
         ], $channel, 'calendarios.crear-dia');
+
+        $command->testProcessMessage($msg);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_consumer_resuelve_evento_calendarioentrega_creada_legado(): void
+    {
+        config([
+            'rabbitmq.inbound.event_aliases' => [
+                'calendarioentrega.creada' => 'calendarios.crear-dia',
+            ],
+        ]);
+
+        $handler = $this->createMock(RegistrarInboundEventHandler::class);
+        $router = $this->createMock(IntegrationEventRouter::class);
+        $channel = $this->getMockBuilder(\PhpAmqpLib\Channel\AMQPChannel::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['basic_ack', 'basic_nack'])
+            ->getMock();
+
+        $handler->expects($this->once())->method('__invoke')->willReturn(false);
+        $router->expects($this->once())->method('dispatch')
+            ->with(
+                'calendarios.crear-dia',
+                $this->callback(function ($payload): bool {
+                    return is_array($payload)
+                        && ($payload['entregaId'] ?? null) === 'c230fa17-bb2c-4fa0-8e0e-980a7284cd37'
+                        && ($payload['fecha'] ?? null) === '2026-04-06';
+                }),
+                $this->arrayHasKey('routing_key')
+            );
+        $channel->expects($this->once())->method('basic_ack');
+        $channel->expects($this->never())->method('basic_nack');
+
+        $command = new ConsumeRabbitMq($handler, $router);
+        $msg = $this->makeMessage([
+            'event_id' => 'e28e9cc2-5225-40c0-b88b-2341f96d76a3',
+            'occurred_on' => '2026-03-02T01:58:42.737722Z',
+            'schema_version' => 1,
+            'correlation_id' => '0fec65f5-9b0c-49c4-bfb3-9b8f29c3f1d4',
+            'payload' => [
+                'entregaId' => 'c230fa17-bb2c-4fa0-8e0e-980a7284cd37',
+                'contratoId' => 'c230fa17-bb2c-4fa0-8e0e-980a7284cd37',
+                'fecha' => '2026-04-06',
+                'hora' => '06:30:00',
+                'estado' => 0,
+                'occurredOn' => '2026-03-02T01:58:42.737722Z',
+            ],
+        ], $channel, 'calendarioentrega.creada');
 
         $command->testProcessMessage($msg);
     }

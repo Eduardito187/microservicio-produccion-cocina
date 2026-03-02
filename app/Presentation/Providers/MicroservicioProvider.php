@@ -228,6 +228,8 @@ class MicroservicioProvider extends ServiceProvider
             $router->register('RecetaActualizada', $app->make(RecetaActualizadaHandler::class));
             $router->register('planes.receta-creada', $app->make(RecetaActualizadaHandler::class));
             $router->register('planes.receta-actualizada', $app->make(RecetaActualizadaHandler::class));
+            $router->register('planes.receta.creado', $app->make(RecetaActualizadaHandler::class));
+            $router->register('planes.receta.actualizada', $app->make(RecetaActualizadaHandler::class));
 
             $router->register('SuscripcionCreada', $app->make(SuscripcionCreadaHandler::class));
             $router->register('SuscripcionActualizada', $app->make(SuscripcionActualizadaHandler::class));

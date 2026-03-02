@@ -8,6 +8,7 @@ namespace Tests\Unit\Domain\Produccion\Aggregate;
 use App\Domain\Produccion\Events\OrdenProduccionCreada;
 use App\Domain\Produccion\Aggregate\OrdenProduccion;
 use App\Domain\Produccion\Enum\EstadoOP;
+use Ramsey\Uuid\Uuid;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 use DomainException;
@@ -67,7 +68,8 @@ class OrdenProduccionTest extends TestCase
     {
         $fecha = new DateTimeImmutable('2025-01-01');
         $ordenProduccion = OrdenProduccion::crear($fecha);
-        $this->assertNull($ordenProduccion->id());
+        $this->assertIsString($ordenProduccion->id());
+        $this->assertTrue(Uuid::isValid((string) $ordenProduccion->id()));
 
         $ordenProduccion->planificar();
         $this->assertSame(EstadoOP::PLANIFICADA, $ordenProduccion->estado());

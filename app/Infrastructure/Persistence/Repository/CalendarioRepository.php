@@ -33,7 +33,10 @@ class CalendarioRepository implements CalendarioRepositoryInterface
 
         return new Calendario(
             $row->id,
-            $this->convertDate($row->fecha)
+            $this->convertDate($row->fecha),
+            $row->entrega_id,
+            $row->contrato_id,
+            $row->estado
         );
     }
 
@@ -47,6 +50,9 @@ class CalendarioRepository implements CalendarioRepositoryInterface
             ['id' => $calendario->id],
             [
                 'fecha' => $calendario->fecha->format('Y-m-d'),
+                'entrega_id' => $calendario->entregaId,
+                'contrato_id' => $calendario->contratoId,
+                'estado' => is_int($calendario->estado) || is_string($calendario->estado) ? (int) $calendario->estado : null,
             ]
         );
         return $model->id;
@@ -62,7 +68,10 @@ class CalendarioRepository implements CalendarioRepositoryInterface
         foreach (CalendarioModel::query()->orderBy('id')->get() as $row) {
             $items[] = new Calendario(
                 $row->id,
-                $this->convertDate($row->fecha)
+                $this->convertDate($row->fecha),
+                $row->entrega_id,
+                $row->contrato_id,
+                $row->estado
             );
         }
 

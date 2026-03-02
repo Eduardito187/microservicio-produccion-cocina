@@ -34,7 +34,10 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
         return new VentanaEntrega(
             $row->id,
             $this->convertDateTime($row->desde),
-            $this->convertDateTime($row->hasta)
+            $this->convertDateTime($row->hasta),
+            $row->entrega_id,
+            $row->contrato_id,
+            $row->estado
         );
     }
 
@@ -49,6 +52,9 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
             [
                 'desde' => $ventanaEntrega->desde->format('Y-m-d H:i:s'),
                 'hasta' => $ventanaEntrega->hasta->format('Y-m-d H:i:s'),
+                'entrega_id' => $ventanaEntrega->entregaId,
+                'contrato_id' => $ventanaEntrega->contratoId,
+                'estado' => is_int($ventanaEntrega->estado) || is_string($ventanaEntrega->estado) ? (int) $ventanaEntrega->estado : null,
             ]
         );
 
@@ -66,7 +72,10 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
             $items[] = new VentanaEntrega(
                 $row->id,
                 $this->convertDateTime($row->desde),
-                $this->convertDateTime($row->hasta)
+                $this->convertDateTime($row->hasta),
+                $row->entrega_id,
+                $row->contrato_id,
+                $row->estado
             );
         }
 

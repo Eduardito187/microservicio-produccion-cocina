@@ -20,6 +20,7 @@ use App\Domain\Produccion\Entity\OrdenItem;
 use App\Domain\Produccion\Enum\EstadoOP;
 use DateTimeImmutable;
 use DomainException;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @class OrdenProduccion
@@ -100,10 +101,11 @@ class OrdenProduccion
         array $itemsDespacho = [],
         string|int|null $id = null
     ): self {
-        $self = new self($id, $fecha, EstadoOP::CREADA, $items, $batches, $itemsDespacho);
+        $resolvedId = $id ?? Uuid::uuid4()->toString();
+        $self = new self($resolvedId, $fecha, EstadoOP::CREADA, $items, $batches, $itemsDespacho);
 
         $self->record(new OrdenProduccionCreada(
-            $id,
+            $resolvedId,
             $fecha,
             'CREADA',
             count($self->items),

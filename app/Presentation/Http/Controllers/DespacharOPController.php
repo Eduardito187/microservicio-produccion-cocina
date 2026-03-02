@@ -41,7 +41,7 @@ class DespacharOPController
         $data = $request->validate(
             [
                 'ordenProduccionId' => ['required', 'uuid'],
-                'itemsDespacho' => ['required', 'array'],
+                'itemsDespacho' => ['required', 'array', 'min:1'],
                 'itemsDespacho.*.sku' => ['required', 'string'],
                 'pacienteId' => ['required', 'uuid'],
                 'direccionId' => ['required', 'uuid'],

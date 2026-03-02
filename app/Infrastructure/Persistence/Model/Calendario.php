@@ -24,6 +24,7 @@ class Calendario extends BaseModel
 
     protected $casts = [
         'fecha' => 'date',
+        'estado' => 'integer',
     ];
 
     /**

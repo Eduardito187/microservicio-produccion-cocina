@@ -8,8 +8,11 @@ namespace App\Application\Integration\Handlers;
 use App\Application\Analytics\KpiRepositoryInterface;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
+use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Events\OrdenEntregaCompletada;
 use DateTimeImmutable;
+use Illuminate\Support\Facades\DB;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -40,20 +43,28 @@ class LogisticaPaqueteEstadoActualizadoHandler implements IntegrationEventHandle
     private $logger;
 
     /**
+     * @var DomainEventPublisherInterface
+     */
+    private $eventPublisher;
+
+    /**
      * @param EntregaEvidenciaRepositoryInterface $evidenciaRepository
      * @param KpiRepositoryInterface $kpiRepository
      * @param TransactionAggregate $transactionAggregate
+     * @param DomainEventPublisherInterface $eventPublisher
      * @param ?LoggerInterface $logger
      */
     public function __construct(
         EntregaEvidenciaRepositoryInterface $evidenciaRepository,
         KpiRepositoryInterface $kpiRepository,
         TransactionAggregate $transactionAggregate,
+        DomainEventPublisherInterface $eventPublisher,
         ?LoggerInterface $logger = null
     ) {
         $this->evidenciaRepository = $evidenciaRepository;
         $this->kpiRepository = $kpiRepository;
         $this->transactionAggregate = $transactionAggregate;
+        $this->eventPublisher = $eventPublisher;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -127,7 +138,102 @@ class LogisticaPaqueteEstadoActualizadoHandler implements IntegrationEventHandle
             if ($kpiName !== null) {
                 $this->kpiRepository->increment($kpiName, 1);
             }
+
+            $this->syncDispatchStatusAndEmitCompletionIfReady(
+                $packageId,
+                $internalStatus,
+                $occurredAt
+            );
         });
+    }
+
+    /**
+     * Updates item_despacho status and emits order completion event when all packages are terminal.
+     *
+     * @param string $packageId
+     * @param string $status
+     * @param ?string $occurredAt
+     * @return void
+     */
+    private function syncDispatchStatusAndEmitCompletionIfReady(string $packageId, string $status, ?string $occurredAt): void
+    {
+        DB::table('item_despacho')
+            ->where('paquete_id', $packageId)
+            ->update([
+                'delivery_status' => $status,
+                'delivery_occurred_on' => $occurredAt,
+                'updated_at' => now(),
+            ]);
+
+        $opIds = DB::table('item_despacho')
+            ->where('paquete_id', $packageId)
+            ->whereNotNull('op_id')
+            ->pluck('op_id')
+            ->unique()
+            ->values()
+            ->all();
+
+        foreach ($opIds as $opId) {
+            if (!is_string($opId) || $opId === '') {
+                continue;
+            }
+
+            $totalPackages = (int) DB::table('item_despacho')
+                ->where('op_id', $opId)
+                ->whereNotNull('paquete_id')
+                ->distinct()
+                ->count('paquete_id');
+
+            if ($totalPackages === 0) {
+                continue;
+            }
+
+            $confirmedPackages = (int) DB::table('item_despacho')
+                ->where('op_id', $opId)
+                ->whereNotNull('paquete_id')
+                ->where('delivery_status', 'confirmada')
+                ->distinct()
+                ->count('paquete_id');
+
+            if ($confirmedPackages < $totalPackages) {
+                continue;
+            }
+
+            $failedPackages = (int) DB::table('item_despacho')
+                ->where('op_id', $opId)
+                ->whereNotNull('paquete_id')
+                ->where('delivery_status', 'fallida')
+                ->distinct()
+                ->count('paquete_id');
+
+            $entregaId = DB::table('item_despacho')
+                ->where('op_id', $opId)
+                ->whereNotNull('entrega_id')
+                ->orderBy('id')
+                ->value('entrega_id');
+            $entregaId = is_string($entregaId) && $entregaId !== '' ? $entregaId : null;
+
+            $completedAt = new DateTimeImmutable($occurredAt ?? 'now');
+            $marked = DB::table('orden_produccion')
+                ->where('id', $opId)
+                ->whereNull('entrega_completada_at')
+                ->update([
+                    'entrega_completada_at' => $completedAt->format('Y-m-d H:i:s'),
+                    'updated_at' => now(),
+                ]);
+
+            if ($marked > 0) {
+                $event = new OrdenEntregaCompletada(
+                    $opId,
+                    $entregaId,
+                    $totalPackages,
+                    $confirmedPackages,
+                    $failedPackages,
+                    $completedAt
+                );
+                $this->eventPublisher->publish([$event], $opId);
+            }
+        }
     }
 
     /**
@@ -173,4 +279,3 @@ class LogisticaPaqueteEstadoActualizadoHandler implements IntegrationEventHandle
         return null;
     }
 }
-

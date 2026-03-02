@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -13,7 +14,7 @@ use App\Application\Integration\Events\Support\Payload;
  */
 class DireccionEntregaCambiadaEvent
 {
-        /**
+    /**
      * @var ?string
      */
     public $paqueteId;

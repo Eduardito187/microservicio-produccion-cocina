@@ -195,9 +195,10 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                 $row->op_id,
                 $row->product_id,
                 $row->paquete_id,
-                null,
-                null,
-                null
+                $row->paciente_id ?? null,
+                $row->direccion_id ?? null,
+                $row->ventana_entrega_id ?? null,
+                $row->entrega_id ?? null
             );
         }
 
@@ -276,6 +277,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     {
         foreach ($items as $item) {
             $paqueteId = $item->paqueteId ?? $this->resolvePaqueteId($item);
+            $entregaId = $item->entregaId ?? $this->resolveEntregaIdFromVentana($item->ventanaEntregaId);
 
             $this->itemDespachoRepository->save(
                 new ItemDespacho(
@@ -285,10 +287,30 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                     $paqueteId,
                     $item->pacienteId,
                     $item->direccionId,
-                    $item->ventanaEntregaId
+                    $item->ventanaEntregaId,
+                    $entregaId
                 )
             );
         }
+    }
+
+    /**
+     * @param string|int|null $ventanaEntregaId
+     * @return string|null
+     */
+    private function resolveEntregaIdFromVentana(string|int|null $ventanaEntregaId): ?string
+    {
+        if (!is_string($ventanaEntregaId) || $ventanaEntregaId === '') {
+            return null;
+        }
+
+        $ventana = VentanaEntregaModel::find($ventanaEntregaId);
+        if ($ventana === null) {
+            return null;
+        }
+
+        $entregaId = $ventana->entrega_id ?? null;
+        return is_string($entregaId) && $entregaId !== '' ? $entregaId : null;
     }
 
     /**
@@ -338,20 +360,18 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
             ]
         );
 
-        if ($paquete->wasRecentlyCreated) {
-            $geo = is_array($direccion->geo) ? $direccion->geo : [];
-            $event = new PaqueteParaDespachoCreado(
-                $paquete->id,
-                $this->buildPackageNumber($paquete->id),
-                $paciente->id,
-                (string) $paciente->nombre,
-                $this->buildDeliveryAddress($direccion),
-                $this->extractLatitude($geo),
-                $this->extractLongitude($geo),
-                $ventana->desde->format('Y-m-d')
-            );
-            $this->eventPublisher->publish([$event], $paquete->id);
-        }
+        $geo = is_array($direccion->geo) ? $direccion->geo : [];
+        $event = new PaqueteParaDespachoCreado(
+            $paquete->id,
+            $this->buildPackageNumber($paquete->id),
+            $paciente->id,
+            (string) $paciente->nombre,
+            $this->buildDeliveryAddress($direccion),
+            $this->extractLatitude($geo),
+            $this->extractLongitude($geo),
+            $ventana->desde->format('Y-m-d')
+        );
+        $this->eventPublisher->publish([$event], $paquete->id);
 
         return $paquete->id;
     }

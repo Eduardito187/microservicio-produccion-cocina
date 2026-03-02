@@ -24,6 +24,7 @@ class VentanaEntrega extends BaseModel
     protected $casts = [
         'desde' => 'datetime',
         'hasta' => 'datetime',
+        'estado' => 'integer',
     ];
 
     /**

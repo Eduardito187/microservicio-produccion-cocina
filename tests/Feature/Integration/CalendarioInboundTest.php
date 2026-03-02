@@ -44,6 +44,39 @@ class CalendarioInboundTest extends TestCase
         $this->assertDatabaseHas('calendario', [
             'id' => 'cal-1',
             'fecha' => '2025-10-10',
+            'entrega_id' => null,
+            'contrato_id' => null,
+            'estado' => null,
+        ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_calendario_entrega_creado_legado_guarda_campos_y_crea_ventana(): void
+    {
+        $handler = $this->app->make(CalendarioEntregaCreadoHandler::class);
+
+        $payload = [
+            'entregaId' => '22e42cd3-104b-4f56-b60b-c822bcc14ddc',
+            'contratoId' => '22e42cd3-104b-4f56-b60b-c822bcc14ddc',
+            'fecha' => '2026-04-03',
+            'hora' => '06:30:00',
+            'estado' => 0,
+        ];
+
+        $handler->handle($payload);
+
+        $this->assertDatabaseHas('calendario', [
+            'fecha' => '2026-04-03',
+            'entrega_id' => '22e42cd3-104b-4f56-b60b-c822bcc14ddc',
+            'contrato_id' => '22e42cd3-104b-4f56-b60b-c822bcc14ddc',
+            'estado' => 0,
+        ]);
+
+        $this->assertDatabaseHas('ventana_entrega', [
+            'desde' => '2026-04-03 06:30:00',
+            'hasta' => '2026-04-03 07:00:00',
         ]);
     }
 
