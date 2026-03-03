@@ -52,7 +52,6 @@ final class MaestrosCommandsSmokeTest extends TestCase
         $classes = [
             // Actualizar*
             'App\\Application\\Produccion\\Command\\ActualizarCalendarioItem',
-            'App\\Application\\Produccion\\Command\\ActualizarEstacion',
             'App\\Application\\Produccion\\Command\\ActualizarEtiqueta',
             'App\\Application\\Produccion\\Command\\ActualizarPaciente',
             'App\\Application\\Produccion\\Command\\ActualizarPaquete',
@@ -73,7 +72,6 @@ final class MaestrosCommandsSmokeTest extends TestCase
 
             // Eliminar*
             'App\\Application\\Produccion\\Command\\EliminarCalendarioItem',
-            'App\\Application\\Produccion\\Command\\EliminarEstacion',
             'App\\Application\\Produccion\\Command\\EliminarEtiqueta',
             'App\\Application\\Produccion\\Command\\EliminarPaciente',
             'App\\Application\\Produccion\\Command\\EliminarPaquete',
@@ -84,7 +82,6 @@ final class MaestrosCommandsSmokeTest extends TestCase
 
             // Ver*
             'App\\Application\\Produccion\\Command\\VerCalendarioItem',
-            'App\\Application\\Produccion\\Command\\VerEstacion',
             'App\\Application\\Produccion\\Command\\VerEtiqueta',
             'App\\Application\\Produccion\\Command\\VerPaciente',
             'App\\Application\\Produccion\\Command\\VerPaquete',

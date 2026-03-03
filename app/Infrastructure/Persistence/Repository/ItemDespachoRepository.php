@@ -37,7 +37,9 @@ class ItemDespachoRepository implements ItemDespachoRepositoryInterface
             $row->paciente_id,
             $row->direccion_id,
             $row->ventana_entrega_id,
-            $row->entrega_id
+            $row->entrega_id,
+            $row->contrato_id,
+            $row->driver_id
         );
     }
 
@@ -57,6 +59,8 @@ class ItemDespachoRepository implements ItemDespachoRepositoryInterface
                 'direccion_id' => $item->direccionId,
                 'ventana_entrega_id' => $item->ventanaEntregaId,
                 'entrega_id' => is_string($item->entregaId) ? $item->entregaId : null,
+                'contrato_id' => is_string($item->contratoId) ? $item->contratoId : null,
+                'driver_id' => is_string($item->driverId) ? $item->driverId : null,
             ]
         );
     }

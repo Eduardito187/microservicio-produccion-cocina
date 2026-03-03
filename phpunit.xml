@@ -12,6 +12,8 @@
         <include>
             <directory>app/Domain</directory>
             <directory>app/Application</directory>
+            <directory>app/Infrastructure</directory>
+            <directory>app/Presentation</directory>
         </include>
     </source>
     <php>

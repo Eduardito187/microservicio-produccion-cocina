@@ -198,7 +198,9 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                 $row->paciente_id ?? null,
                 $row->direccion_id ?? null,
                 $row->ventana_entrega_id ?? null,
-                $row->entrega_id ?? null
+                $row->entrega_id ?? null,
+                $row->contrato_id ?? null,
+                $row->driver_id ?? null
             );
         }
 
@@ -278,6 +280,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         foreach ($items as $item) {
             $paqueteId = $item->paqueteId ?? $this->resolvePaqueteId($item);
             $entregaId = $item->entregaId ?? $this->resolveEntregaIdFromVentana($item->ventanaEntregaId);
+            $contratoId = $item->contratoId ?? $this->resolveContratoIdFromVentana($item->ventanaEntregaId);
 
             $this->itemDespachoRepository->save(
                 new ItemDespacho(
@@ -288,7 +291,9 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
                     $item->pacienteId,
                     $item->direccionId,
                     $item->ventanaEntregaId,
-                    $entregaId
+                    $entregaId,
+                    $contratoId,
+                    $item->driverId
                 )
             );
         }
@@ -313,6 +318,24 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         return is_string($entregaId) && $entregaId !== '' ? $entregaId : null;
     }
 
+    /**
+     * @param string|int|null $ventanaEntregaId
+     * @return string|null
+     */
+    private function resolveContratoIdFromVentana(string|int|null $ventanaEntregaId): ?string
+    {
+        if (!is_string($ventanaEntregaId) || $ventanaEntregaId === '') {
+            return null;
+        }
+
+        $ventana = VentanaEntregaModel::find($ventanaEntregaId);
+        if ($ventana === null) {
+            return null;
+        }
+
+        $contratoId = $ventana->contrato_id ?? null;
+        return is_string($contratoId) && $contratoId !== '' ? $contratoId : null;
+    }
     /**
      * @param ItemDespacho $item
      * @return string|null

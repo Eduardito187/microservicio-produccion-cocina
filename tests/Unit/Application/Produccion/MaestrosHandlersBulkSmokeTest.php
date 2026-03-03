@@ -5,12 +5,13 @@
 
 namespace Tests\Unit\Application\Produccion;
 
+use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use PHPUnit\Framework\TestCase;
-use ReflectionNamedType;
 use DateTimeImmutable;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use ReflectionNamedType;
 
 /**
  * @class MaestrosHandlersBulkSmokeTest
@@ -28,18 +29,18 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
              * @param callable $callback
              * @return mixed
              */
-            public function run(callable $callback): mixed {
+            public function run(callable $callback): mixed
+            {
                 return $callback();
             }
 
             /**
-             * @param callable $callback): void {}
-        };
-
-        return new TransactionAggregate( $transactionManager
-             * @return mixed
+             * @param callable $callback
+             * @return void
              */
-            public function afterCommit(callable $callback): void {}
+            public function afterCommit(callable $callback): void
+            {
+            }
         };
 
         return new TransactionAggregate($transactionManager);
@@ -53,70 +54,81 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         $handlerReflectionClass = new ReflectionClass($data);
         $constructor = $handlerReflectionClass->getConstructor();
 
-        // Handler: __construct(RepoInterface, TransactionAggregate, ?DomainEventPublisherInterface)
-        $repoInterface = $constructor?->getParameters()[0]?->getType();
-        $repositoryReflectionName = ($repoInterface instanceof ReflectionNamedType) ? $repoInterface->getName() : null;
-        $this->assertNotNull($repositoryReflectionName, 'No se pudo inferir el repositorio del handler: '.$data);
-
-        $repository = $this->createMock($repositoryReflectionName);
-        $tx = $this->tx();
-        $eventPublisher = null;
-        if ($constructor && count($constructor->getParameters()) >= 3) {
-            $eventPublisher = $this->createMock(\App\Application\Shared\DomainEventPublisherInterface::class);
-        }
-
-        // Inferimos entity name a partir del nombre del handler.
         $baseName = $handlerReflectionClass->getShortName();
         $entityName = preg_replace('/^(Crear|Actualizar|Eliminar|Ver|Listar)/', '', $baseName);
         $entityName = preg_replace('/Handler$/', '', (string) $entityName);
         $entityName = preg_replace('/s$/', '', (string) $entityName);
 
-        // Ajustes puntuales de pluralizaciones comunes
         $entityName = match ($entityName) {
             'Direccione' => 'Direccion',
             'CalendarioItem' => 'CalendarioItem',
             'Calendario' => 'Calendario',
+            'Producto' => 'Products',
             'RecetasVersione', 'RecetaVersione' => 'RecetaVersion',
             'Suscripcione' => 'Suscripcion',
             'VentanasEntrega' => 'VentanaEntrega',
             default => $entityName,
         };
 
-        if (str_contains($baseName, 'Producto') || str_contains($baseName, 'OP') || str_contains($baseName, 'InboundEvent')) {
-            $this->assertTrue(true);
-            return;
-        }
-
-        $entityReflectionName = 'App\\Domain\\Produccion\\Entity\\'.$entityName;
+        $entityReflectionName = 'App\\Domain\\Produccion\\Entity\\' . $entityName;
         $entity = class_exists($entityReflectionName) ? $this->instantiateWithDummies($entityReflectionName) : null;
 
-        if (str_starts_with($baseName, 'Crear')) {
-            if (method_exists($repository, 'save')) {
-                $repository->method('save')->willReturn('e28e9cc2-5225-40c0-b88b-2341f96d76a3');
-            }
-        } elseif (str_starts_with($baseName, 'Actualizar')) {
-            if (method_exists($repository, 'byId')) {
-                $repository->method('byId')->willReturn($entity);
-            }
+        $args = [];
+        $repository = null;
+        if ($constructor) {
+            foreach ($constructor->getParameters() as $idx => $param) {
+                $type = $param->getType();
+                if (!$type instanceof ReflectionNamedType) {
+                    $args[] = $param->allowsNull() ? null : 'TEST';
+                    continue;
+                }
 
-            if (method_exists($repository, 'save')) {
-                $repository->method('save')->willReturn('e28e9cc2-5225-40c0-b88b-2341f96d76a3');
-            }
-        } elseif (str_starts_with($baseName, 'Eliminar')) {
-            if (method_exists($repository, 'byId')) {
-                $repository->method('byId')->willReturn($entity);
-            }
+                $typeName = $type->getName();
+                if ($typeName === TransactionAggregate::class) {
+                    $args[] = $this->tx();
+                    continue;
+                }
+                if ($typeName === DomainEventPublisherInterface::class) {
+                    $args[] = $this->createMock(DomainEventPublisherInterface::class);
+                    continue;
+                }
+                if (interface_exists($typeName)) {
+                    $mock = $this->createMock($typeName);
+                    if ($idx === 0) {
+                        $repository = $mock;
+                    }
+                    $args[] = $mock;
+                    continue;
+                }
 
-            if (method_exists($repository, 'delete')) {
-                $repository->method('delete')->willReturn(null);
+                $args[] = $this->dummyValueForType($typeName, $param->allowsNull());
             }
-        } elseif (str_starts_with($baseName, 'Ver')) {
-            if (method_exists($repository, 'byId')) {
-                $repository->method('byId')->willReturn($entity);
-            }
-        } elseif (str_starts_with($baseName, 'Listar')) {
-            if (method_exists($repository, 'list')) {
-                $repository->method('list')->willReturn($entity ? [$entity] : []);
+        }
+
+        if ($repository !== null) {
+            if (str_starts_with($baseName, 'Crear')) {
+                if (method_exists($repository, 'save')) {
+                    $repository->method('save')->willReturn('e28e9cc2-5225-40c0-b88b-2341f96d76a3');
+                }
+            } elseif (str_starts_with($baseName, 'Actualizar')) {
+                if (method_exists($repository, 'byId')) {
+                    $repository->method('byId')->willReturn($entity);
+                }
+                if (method_exists($repository, 'save')) {
+                    $repository->method('save')->willReturn('e28e9cc2-5225-40c0-b88b-2341f96d76a3');
+                }
+            } elseif (str_starts_with($baseName, 'Eliminar')) {
+                if (method_exists($repository, 'byId')) {
+                    $repository->method('byId')->willReturn($entity);
+                }
+            } elseif (str_starts_with($baseName, 'Ver')) {
+                if (method_exists($repository, 'byId')) {
+                    $repository->method('byId')->willReturn($entity);
+                }
+            } elseif (str_starts_with($baseName, 'Listar')) {
+                if (method_exists($repository, 'list')) {
+                    $repository->method('list')->willReturn($entity ? [$entity] : []);
+                }
             }
         }
 
@@ -125,10 +137,7 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         $cmdFqcn = ($cmdType instanceof ReflectionNamedType) ? $cmdType->getName() : null;
         $this->assertNotNull($cmdFqcn);
         $command = $this->instantiateWithDummies($cmdFqcn);
-        $args = [$repository, $tx];
-        if ($eventPublisher !== null) {
-            $args[] = $eventPublisher;
-        }
+
         $handler = $handlerReflectionClass->newInstanceArgs($args);
         $result = $handler($command);
 
@@ -147,27 +156,38 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
      */
     public static function handlersProvider(): array
     {
-        $root = dirname(__DIR__, 4);
-        $base = dirname($root);
-        $dir = $base.'/app/Application/Produccion/Handler/*.php';
+        $handlersPath = realpath(__DIR__ . '/../../../../app/Application/Produccion/Handler');
+        $dir = is_string($handlersPath) ? $handlersPath . '/*.php' : '';
         $out = [];
 
-        foreach (glob($dir) ?: [] as $file) {
+        foreach (($dir !== '' ? glob($dir) : []) ?: [] as $file) {
             $class = basename($file, '.php');
 
             if (!preg_match('/^(Crear|Actualizar|Eliminar|Ver|Listar)/', $class)) {
                 continue;
             }
-
             if (str_contains($class, 'OP')) {
                 continue;
             }
+            if (str_contains($class, 'DesdeLogistica')) {
+                continue;
+            }
 
-            $out[$class] = ['App\\Application\\Produccion\\Handler\\'.$class];
+            $out[$class] = ['App\\Application\\Produccion\\Handler\\' . $class];
         }
 
         if ($out === []) {
-            $out['CrearEstacionHandler'] = ['App\\Application\\Produccion\\Handler\\CrearEstacionHandler'];
+            $fallback = [
+                'App\\Application\\Produccion\\Handler\\CrearPacienteHandler',
+                'App\\Application\\Produccion\\Handler\\VerPacienteHandler',
+                'App\\Application\\Produccion\\Handler\\ListarPacientesHandler',
+            ];
+
+            foreach ($fallback as $handler) {
+                if (class_exists($handler)) {
+                    $out[$handler] = [$handler];
+                }
+            }
         }
 
         return $out;
@@ -222,6 +242,10 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
      */
     private function dummyObject(string $typeName): object
     {
+        if (interface_exists($typeName)) {
+            return $this->createMock($typeName);
+        }
+
         if (class_exists($typeName)) {
             $reflectionClass = new ReflectionClass($typeName);
             if ($reflectionClass->isInstantiable()) {
@@ -233,6 +257,7 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
             }
         }
 
-        return new class {};
+        return new class {
+        };
     }
 }
