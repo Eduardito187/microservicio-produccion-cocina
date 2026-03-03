@@ -15,7 +15,7 @@ use ReflectionUnionType;
  * @class MaestrosCommandsSmokeTest
  * @package Tests\Unit\Application\Produccion
  */
-final class MaestrosCommandsSmokeTest extends TestCase
+class MaestrosCommandsSmokeTest extends TestCase
 {
     /**
      * @dataProvider commandsProvider

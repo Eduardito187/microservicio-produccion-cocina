@@ -9,7 +9,7 @@ namespace App\Domain\Produccion\Policy;
  * @class PackageDeliveryTransitionPolicy
  * @package App\Domain\Produccion\Policy
  */
-final class PackageDeliveryTransitionPolicy
+class PackageDeliveryTransitionPolicy
 {
     /**
      * @param ?string $currentStatus
