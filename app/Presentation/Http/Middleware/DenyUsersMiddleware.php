@@ -22,7 +22,7 @@ class DenyUsersMiddleware
      * @param string $users
      * @return Response
      */
-    public function handle(Request $request, Closure $next, string $users): Response
+    public function handle(Request $request, Closure $next, string $users = ''): Response
     {
         if ($this->shouldBypassForPact($request) || $this->shouldBypassForTests()) {
             return $next($request);
@@ -33,7 +33,7 @@ class DenyUsersMiddleware
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $blocked = $this->parseUsers($users);
+        $blocked = $this->resolveBlockedUsers($users);
         if ($blocked === []) {
             return $next($request);
         }
@@ -59,12 +59,16 @@ class DenyUsersMiddleware
      */
     private function shouldBypassForPact(Request $request): bool
     {
+        if (!$this->isPactBypassEnvironment()) {
+            return false;
+        }
+
         if ((bool) env('PACT_BYPASS_AUTH', false)) {
-            return $request->is('api/_pact/*') || $request->is('api/produccion/ordenes/*');
+            return $request->is('api/_pact/*');
         }
 
         $pactHeader = $request->header('X-Pact-Request');
-        if (is_string($pactHeader) && strtolower($pactHeader) === 'true') {
+        if (is_string($pactHeader) && strtolower($pactHeader) === 'true' && $this->hasValidPactSecret($request)) {
             return true;
         }
 
@@ -88,5 +92,51 @@ class DenyUsersMiddleware
         $users = str_replace('|', ',', $users);
         $items = array_map('trim', explode(',', $users));
         return array_values(array_filter($items, fn ($u) => $u !== ''));
+    }
+
+    /**
+     * @param string $users
+     * @return array
+     */
+    private function resolveBlockedUsers(string $users): array
+    {
+        $fromRoute = $this->parseUsers($users);
+        if ($fromRoute !== []) {
+            return $fromRoute;
+        }
+
+        $fromConfig = config('keycloak.blocked_users', []);
+        if (!is_array($fromConfig)) {
+            return [];
+        }
+
+        $normalized = array_values(array_filter(array_map(static function ($value) {
+            return is_string($value) ? trim($value) : '';
+        }, $fromConfig), static fn (string $value) => $value !== ''));
+
+        return array_values(array_unique($normalized));
+    }
+
+    /**
+     * @return bool
+     */
+    private function isPactBypassEnvironment(): bool
+    {
+        return app()->environment(['local', 'testing']);
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    private function hasValidPactSecret(Request $request): bool
+    {
+        $expected = (string) env('PACT_BYPASS_HEADER_SECRET', '');
+        if ($expected === '') {
+            return true;
+        }
+
+        $provided = $request->header('X-Pact-Secret', '');
+        return is_string($provided) && hash_equals($expected, $provided);
     }
 }

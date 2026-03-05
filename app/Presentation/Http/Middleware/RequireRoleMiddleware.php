@@ -60,12 +60,16 @@ class RequireRoleMiddleware
      */
     private function shouldBypassForPact(Request $request): bool
     {
-        if (app()->environment(['local', 'testing']) && (bool) env('PACT_BYPASS_AUTH', false)) {
+        if (!$this->isPactBypassEnvironment()) {
+            return false;
+        }
+
+        if ((bool) env('PACT_BYPASS_AUTH', false)) {
             return $request->is('api/_pact/*');
         }
 
         $pactHeader = $request->header('X-Pact-Request');
-        if (app()->environment(['local', 'testing']) && is_string($pactHeader) && strtolower($pactHeader) === 'true') {
+        if (is_string($pactHeader) && strtolower($pactHeader) === 'true' && $this->hasValidPactSecret($request)) {
             return true;
         }
 
@@ -142,5 +146,28 @@ class RequireRoleMiddleware
         }
 
         return [];
+    }
+
+    /**
+     * @return bool
+     */
+    private function isPactBypassEnvironment(): bool
+    {
+        return app()->environment(['local', 'testing']);
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    private function hasValidPactSecret(Request $request): bool
+    {
+        $expected = (string) env('PACT_BYPASS_HEADER_SECRET', '');
+        if ($expected === '') {
+            return true;
+        }
+
+        $provided = $request->header('X-Pact-Secret', '');
+        return is_string($provided) && hash_equals($expected, $provided);
     }
 }

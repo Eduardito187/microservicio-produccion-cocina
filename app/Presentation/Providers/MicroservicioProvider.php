@@ -77,7 +77,6 @@ use App\Infrastructure\Persistence\Repository\KpiRepository;
 use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
 use App\Infrastructure\Persistence\Repository\EntregaEvidenciaRepository;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Route;
 
 /**
  * @class MicroservicioProvider
@@ -265,7 +264,6 @@ class MicroservicioProvider extends ServiceProvider
             TransactionManager::class
         );
 
-        Route::middleware('api')->prefix('api')->group(app_path('Presentation/Routes/api.php'));
     }
 
     /**

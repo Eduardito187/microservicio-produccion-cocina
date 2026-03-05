@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Firebase\JWT\JWT;
+use Throwable;
 
 /**
  * @class LoginController
@@ -47,14 +48,30 @@ class LoginController
 
         $tokenUrl = $baseUrl.'/realms/'.$realm.'/protocol/openid-connect/token';
         $requireDpop = (bool) config('keycloak.require_dpop', false);
-        $request = Http::asForm();
+        $request = Http::asForm()
+            ->connectTimeout(2)
+            ->timeout(5);
 
         if ($requireDpop) {
             $dpop = $this->buildDpopProof($tokenUrl, 'POST');
             $request = $request->withHeaders(['DPoP' => $dpop]);
         }
 
-        $response = $request->post($tokenUrl, $payload);
+        try {
+            $response = $request->post($tokenUrl, $payload);
+        } catch (Throwable $e) {
+            Log::error('Login en Keycloak no disponible', [
+                'username' => $data['username'],
+                'realm' => $realm,
+                'client_id' => $clientId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'error' => 'keycloak_unavailable',
+                'error_description' => 'Unable to reach identity provider',
+            ], 503);
+        }
 
         $body = $response->json();
 

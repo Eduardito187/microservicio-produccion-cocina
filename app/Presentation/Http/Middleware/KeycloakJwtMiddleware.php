@@ -49,19 +49,8 @@ class KeycloakJwtMiddleware
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $jwks = $this->getJwks();
-
-        if ($jwks === null) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
-        try {
-            $keys = JWK::parseKeySet($jwks);
-            $decoded = JWT::decode($token, $keys);
-            $claims = json_decode(
-                json_encode($decoded, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR
-            );
-        } catch (Throwable $e) {
+        $claims = $this->decodeClaimsWithCachedJwks($token);
+        if ($claims === null) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
@@ -86,12 +75,16 @@ class KeycloakJwtMiddleware
      */
     private function shouldBypassAuthForPact(Request $request): bool
     {
-        if (app()->environment(['local', 'testing']) && (bool) env('PACT_BYPASS_AUTH', false)) {
+        if (!$this->isPactBypassEnvironment()) {
+            return false;
+        }
+
+        if ((bool) env('PACT_BYPASS_AUTH', false)) {
             return $request->is('api/_pact/*');
         }
 
         $pactHeader = $request->header('X-Pact-Request');
-        if (app()->environment(['local', 'testing']) && is_string($pactHeader) && strtolower($pactHeader) === 'true') {
+        if (is_string($pactHeader) && strtolower($pactHeader) === 'true' && $this->hasValidPactSecret($request)) {
             return true;
         }
 
@@ -112,12 +105,18 @@ class KeycloakJwtMiddleware
     private function getJwks(): ?array
     {
         $ttl = config('keycloak.jwks_ttl', 600);
-        $cacheKey = 'keycloak.jwks';
+        $cacheKey = $this->jwksCacheKey();
 
         return Cache::remember($cacheKey, $ttl, function () {
             $url = rtrim(config('keycloak.base_url'), '/')
                 .'/realms/'.config('keycloak.realm').'/protocol/openid-connect/certs';
-            $response = Http::get($url);
+            try {
+                $response = Http::connectTimeout(2)
+                    ->timeout(5)
+                    ->get($url);
+            } catch (Throwable $e) {
+                return null;
+            }
 
             if (!$response->ok()) {
                 return null;
@@ -277,5 +276,77 @@ class KeycloakJwtMiddleware
     {
         $data = strtr($data, '-_', '+/');
         return base64_decode($data);
+    }
+
+    /**
+     * @param string $token
+     * @return ?array
+     */
+    private function decodeClaimsWithCachedJwks(string $token): ?array
+    {
+        $jwks = $this->getJwks();
+        $claims = $this->decodeClaims($token, $jwks);
+        if ($claims !== null) {
+            return $claims;
+        }
+
+        Cache::forget($this->jwksCacheKey());
+        $jwks = $this->getJwks();
+        return $this->decodeClaims($token, $jwks);
+    }
+
+    /**
+     * @param string $token
+     * @param ?array $jwks
+     * @return ?array
+     */
+    private function decodeClaims(string $token, ?array $jwks): ?array
+    {
+        if ($jwks === null) {
+            return null;
+        }
+
+        try {
+            $keys = JWK::parseKeySet($jwks);
+            $decoded = JWT::decode($token, $keys);
+            $claims = json_decode(
+                json_encode($decoded, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR
+            );
+
+            return is_array($claims) ? $claims : null;
+        } catch (Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    private function jwksCacheKey(): string
+    {
+        return 'keycloak.jwks';
+    }
+
+    /**
+     * @return bool
+     */
+    private function isPactBypassEnvironment(): bool
+    {
+        return app()->environment(['local', 'testing']);
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    private function hasValidPactSecret(Request $request): bool
+    {
+        $expected = (string) env('PACT_BYPASS_HEADER_SECRET', '');
+        if ($expected === '') {
+            return true;
+        }
+
+        $provided = $request->header('X-Pact-Secret', '');
+        return is_string($provided) && hash_equals($expected, $provided);
     }
 }

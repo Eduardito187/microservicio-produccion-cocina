@@ -69,7 +69,7 @@ use App\Presentation\Http\Controllers\LoginController;
 use App\Presentation\Http\Controllers\ProxyController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['keycloak.jwt', 'role:cocinero,planificador,despachador,produccion'])->group(function () {
+Route::middleware(['keycloak.jwt', 'deny.users', 'role:cocinero,planificador,despachador,produccion'])->group(function () {
     Route::post('/produccion/ordenes/generar', GenerarOPController::class)
         ->middleware('role:planificador')
         ->name('produccion.ordenes.generar');
