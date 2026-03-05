@@ -57,12 +57,12 @@ class RefreshController
         $body = $response->json();
 
         if ($response->ok()) {
-            Log::info('Keycloak refresh success', [
+            Log::info('Refresh de Keycloak exitoso', [
                 'realm' => $realm,
                 'client_id' => $clientId,
             ]);
         } else {
-            Log::warning('Keycloak refresh failed', [
+            Log::warning('Refresh de Keycloak fallido', [
                 'realm' => $realm,
                 'client_id' => $clientId,
                 'status' => $response->status(),

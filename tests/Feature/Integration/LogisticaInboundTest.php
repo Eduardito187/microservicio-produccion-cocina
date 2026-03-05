@@ -10,9 +10,9 @@ use App\Application\Integration\Handlers\EntregaFallidaHandler;
 use App\Application\Integration\Handlers\LogisticaPaqueteEstadoActualizadoHandler;
 use App\Application\Integration\Handlers\PaqueteEnRutaHandler;
 use App\Application\Shared\DomainEventPublisherInterface;
-use App\Domain\Produccion\Events\OrdenEntregaCompletada;
+use App\Domain\Produccion\Events\EntregaInconsistenciaDetectada;
+use App\Domain\Produccion\Events\PaqueteEntregado;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use AppDomainProduccionEventsEntregaInconsistenciaDetectada;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -196,6 +196,15 @@ class LogisticaInboundTest extends TestCase
      */
     public function test_logistica_estado_actualizado_emite_completada_cuando_todos_confirmados_e_incluye_entrega_y_contrato(): void
     {
+        DB::table('calendario')->insert([
+            'id' => 'cal-2',
+            'fecha' => '2026-03-02',
+            'entrega_id' => '33333333-3333-3333-3333-333333333333',
+            'contrato_id' => '44444444-4444-4444-4444-444444444444',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         DB::table('orden_produccion')->insert([
             'id' => 'op-2',
             'fecha' => '2026-03-02',
@@ -226,20 +235,36 @@ class LogisticaInboundTest extends TestCase
                 'updated_at' => now(),
             ],
         ]);
+        DB::table('calendario_item')->insert([
+            [
+                'id' => 'ci-21',
+                'calendario_id' => 'cal-2',
+                'item_despacho_id' => 'it-21',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 'ci-22',
+                'calendario_id' => 'cal-2',
+                'item_despacho_id' => 'it-22',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
 
         $publisher = $this->createMock(DomainEventPublisherInterface::class);
         $publisher->expects($this->once())
             ->method('publish')
             ->with(
                 $this->callback(function (array $events): bool {
-                    if (count($events) !== 1 || !$events[0] instanceof OrdenEntregaCompletada) {
+                    if (count($events) !== 1 || !$events[0] instanceof PaqueteEntregado) {
                         return false;
                     }
                     $payload = $events[0]->toArray();
                     return $events[0]->aggregateId() === 'op-2'
-                        && ($payload['entregaId'] ?? null) === '33333333-3333-3333-3333-333333333333'
+                        && ($payload['calendarioId'] ?? null) === 'cal-2'
                         && ($payload['contratoId'] ?? null) === '44444444-4444-4444-4444-444444444444'
-                        && ($payload['confirmedPackages'] ?? null) === 2;
+                        && ($payload['estado'] ?? null) === 'entregado';
                 }),
                 'op-2'
             );
@@ -339,6 +364,15 @@ class LogisticaInboundTest extends TestCase
      */
     public function test_logistica_estado_actualizado_no_reemite_evento_cuando_completion_event_id_ya_existe(): void
     {
+        DB::table('calendario')->insert([
+            'id' => 'cal-4',
+            'fecha' => '2026-03-02',
+            'entrega_id' => '77777777-7777-7777-7777-777777777777',
+            'contrato_id' => '88888888-8888-8888-8888-888888888888',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         DB::table('orden_produccion')->insert([
             'id' => 'op-4',
             'fecha' => '2026-03-02',
@@ -369,13 +403,35 @@ class LogisticaInboundTest extends TestCase
                 'updated_at' => now(),
             ],
         ]);
+        DB::table('calendario_item')->insert([
+            [
+                'id' => 'ci-41',
+                'calendario_id' => 'cal-4',
+                'item_despacho_id' => 'it-41',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 'ci-42',
+                'calendario_id' => 'cal-4',
+                'item_despacho_id' => 'it-42',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
 
         $publisher = $this->createMock(DomainEventPublisherInterface::class);
         $publisher->expects($this->once())
             ->method('publish')
             ->with(
                 $this->callback(function (array $events): bool {
-                    return count($events) === 1 && $events[0] instanceof OrdenEntregaCompletada;
+                    if (count($events) !== 1 || !$events[0] instanceof PaqueteEntregado) {
+                        return false;
+                    }
+                    $payload = $events[0]->toArray();
+                    return ($payload['estado'] ?? null) === 'entregado'
+                        && ($payload['calendarioId'] ?? null) === 'cal-4'
+                        && ($payload['contratoId'] ?? null) === '88888888-8888-8888-8888-888888888888';
                 }),
                 'op-4'
             );
@@ -590,7 +646,7 @@ class LogisticaInboundTest extends TestCase
         $this->assertDatabaseHas('delivery_inconsistency_queue', [
             'event_id' => 'evt-lg-71',
             'op_id' => 'op-7',
-            'reason' => 'missing_delivery_context_for_completion',
+            'reason' => 'missing_delivery_context_for_consolidated_event',
         ]);
 
         $progress = DB::table('order_delivery_progress')->where('op_id', 'op-7')->first();
@@ -653,9 +709,108 @@ class LogisticaInboundTest extends TestCase
 
         $count = DB::table('delivery_inconsistency_queue')
             ->where('event_id', 'evt-lg-81')
-            ->where('reason', 'missing_delivery_context_for_completion')
+            ->where('reason', 'missing_delivery_context_for_consolidated_event')
             ->count();
 
         $this->assertSame(1, $count);
+    }
+
+    /**
+     * @return void
+     */
+    public function test_logistica_estado_actualizado_emite_consolidado_no_entregado_cuando_todos_fallidos(): void
+    {
+        DB::table('calendario')->insert([
+            'id' => 'cal-9',
+            'fecha' => '2026-03-02',
+            'entrega_id' => '12121212-1212-1212-1212-121212121212',
+            'contrato_id' => '34343434-3434-3434-3434-343434343434',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('orden_produccion')->insert([
+            'id' => 'op-9',
+            'fecha' => '2026-03-02',
+            'estado' => 'DESPACHADA',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('item_despacho')->insert([
+            [
+                'id' => 'it-91',
+                'op_id' => 'op-9',
+                'product_id' => null,
+                'paquete_id' => 'pkg-91',
+                'entrega_id' => '12121212-1212-1212-1212-121212121212',
+                'contrato_id' => '34343434-3434-3434-3434-343434343434',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 'it-92',
+                'op_id' => 'op-9',
+                'product_id' => null,
+                'paquete_id' => 'pkg-92',
+                'entrega_id' => '12121212-1212-1212-1212-121212121212',
+                'contrato_id' => '34343434-3434-3434-3434-343434343434',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        DB::table('calendario_item')->insert([
+            [
+                'id' => 'ci-91',
+                'calendario_id' => 'cal-9',
+                'item_despacho_id' => 'it-91',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 'ci-92',
+                'calendario_id' => 'cal-9',
+                'item_despacho_id' => 'it-92',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        $publisher = $this->createMock(DomainEventPublisherInterface::class);
+        $publisher->expects($this->once())
+            ->method('publish')
+            ->with(
+                $this->callback(function (array $events): bool {
+                    if (count($events) !== 1 || !$events[0] instanceof PaqueteEntregado) {
+                        return false;
+                    }
+                    $payload = $events[0]->toArray();
+                    return ($payload['ordenProduccionId'] ?? null) === 'op-9'
+                        && ($payload['calendarioId'] ?? null) === 'cal-9'
+                        && ($payload['contratoId'] ?? null) === '34343434-3434-3434-3434-343434343434'
+                        && ($payload['estado'] ?? null) === 'no entregado';
+                }),
+                'op-9'
+            );
+        $this->app->instance(DomainEventPublisherInterface::class, $publisher);
+
+        $handler = $this->app->make(LogisticaPaqueteEstadoActualizadoHandler::class);
+
+        $handler->handle([
+            'packageId' => 'pkg-91',
+            'deliveryStatus' => 'Failed',
+            'occurredOn' => '2026-03-02T16:00:00Z',
+        ], ['event_id' => 'evt-lg-91']);
+
+        $handler->handle([
+            'packageId' => 'pkg-92',
+            'deliveryStatus' => 'Fallido',
+            'occurredOn' => '2026-03-02T16:05:00Z',
+        ], ['event_id' => 'evt-lg-92']);
+
+        $progress = DB::table('order_delivery_progress')->where('op_id', 'op-9')->first();
+        $this->assertNotNull($progress);
+        $this->assertNotNull($progress->completion_event_id);
     }
 }

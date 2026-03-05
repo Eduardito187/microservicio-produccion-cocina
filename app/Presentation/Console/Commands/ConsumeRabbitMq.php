@@ -79,30 +79,30 @@ class ConsumeRabbitMq extends Command
         $once = (bool) $this->option('once');
 
         if ($queue === '') {
-            logger()->error('Inbound consumer misconfigured (missing INBOUND_RABBITMQ_QUEUE)');
-            $this->error('INBOUND_RABBITMQ_QUEUE is required for inbound consumer.');
+            logger()->error('Consumidor inbound mal configurado (falta INBOUND_RABBITMQ_QUEUE)');
+            $this->error('INBOUND_RABBITMQ_QUEUE es obligatorio para el consumidor inbound.');
             return self::FAILURE;
         }
 
         if ($exchange === '') {
-            logger()->error('Inbound consumer misconfigured (missing INBOUND_RABBITMQ_EXCHANGE)');
-            $this->error('INBOUND_RABBITMQ_EXCHANGE is required for inbound consumer.');
+            logger()->error('Consumidor inbound mal configurado (falta INBOUND_RABBITMQ_EXCHANGE)');
+            $this->error('INBOUND_RABBITMQ_EXCHANGE es obligatorio para el consumidor inbound.');
             return self::FAILURE;
         }
         $keys = array_filter(array_map('trim', explode(',', (string) $bindingKey)));
         if ($keys === []) {
-            logger()->error('Inbound consumer misconfigured (missing INBOUND_RABBITMQ_ROUTING_KEYS)');
-            $this->error('INBOUND_RABBITMQ_ROUTING_KEYS is required for inbound consumer.');
+            logger()->error('Consumidor inbound mal configurado (falta INBOUND_RABBITMQ_ROUTING_KEYS)');
+            $this->error('INBOUND_RABBITMQ_ROUTING_KEYS es obligatorio para el consumidor inbound.');
             return self::FAILURE;
         }
 
         if ($this->isSelfConsumeConfig($queue, $exchange, $bindingKey)) {
-            logger()->error('Inbound consumer misconfigured (inbound matches outbound configuration)', [
+            logger()->error('Consumidor inbound mal configurado (inbound coincide con configuracion outbound)', [
                 'inbound_queue' => $queue,
                 'inbound_exchange' => $exchange,
                 'inbound_routing_keys' => $bindingKey,
             ]);
-            $this->error('Inbound configuration must not match outbox exchange/queue.');
+            $this->error('La configuracion inbound no debe coincidir con el exchange/queue de outbox.');
             return self::FAILURE;
         }
 
@@ -293,7 +293,7 @@ class ConsumeRabbitMq extends Command
                 $eventId = $this->deterministicEventId($routingKey, $eventPayload);
                 $schemaVersion = 1;
                 $occurredOn = (new DateTimeImmutable('now'))->format(DATE_ATOM);
-                logger()->warning('Inbound message without envelope; normalized using routing key', [
+                logger()->warning('Mensaje inbound sin sobre; normalizado usando routing key', [
                     'routing_key' => $routingKey,
                     'event_id' => $eventId,
                 ]);
@@ -304,7 +304,7 @@ class ConsumeRabbitMq extends Command
                 $routingKey
             );
 
-            logger()->info('RabbitMQ message received', [
+            logger()->info('Mensaje RabbitMQ recibido', [
                 'routing_key' => $routingKey,
                 'event_id' => $eventId,
                 'event_name' => $eventName,
@@ -326,7 +326,7 @@ class ConsumeRabbitMq extends Command
             }
             if ($correlationId === null || $correlationId === '') {
                 $correlationId = (string) Str::uuid();
-                logger()->warning('correlation_id missing; generated new one', [
+                logger()->warning('correlation_id ausente; se genero uno nuevo', [
                     'event_id' => $eventId,
                     'event_name' => $eventName,
                     'correlation_id' => $correlationId,
@@ -378,7 +378,7 @@ class ConsumeRabbitMq extends Command
                 $shouldRequeue = false;
             }
 
-            logger()->error('RabbitMQ message handling failed', [
+            logger()->error('Fallo el procesamiento del mensaje RabbitMQ', [
                 'event_id' => $eventId ?? null,
                 'event_name' => $eventName ?? null,
                 'correlation_id' => $correlationId ?? null,
@@ -502,7 +502,7 @@ class ConsumeRabbitMq extends Command
         $channel = $this->resolveChannel($msg);
         $deliveryTag = $this->resolveDeliveryTag($msg);
         if ($channel === null || $deliveryTag === null) {
-            logger()->warning('RabbitMQ ack skipped (missing channel or delivery tag)');
+            logger()->warning('Se omitio ack de RabbitMQ (falta canal o delivery tag)');
             return;
         }
         $channel->basic_ack($deliveryTag);
@@ -518,7 +518,7 @@ class ConsumeRabbitMq extends Command
         $channel = $this->resolveChannel($msg);
         $deliveryTag = $this->resolveDeliveryTag($msg);
         if ($channel === null || $deliveryTag === null) {
-            logger()->warning('RabbitMQ nack skipped (missing channel or delivery tag)', [
+            logger()->warning('Se omitio nack de RabbitMQ (falta canal o delivery tag)', [
                 'requeue' => $requeue,
             ]);
             return;
@@ -585,7 +585,7 @@ class ConsumeRabbitMq extends Command
         }
         $retryMessage = new AMQPMessage($msg->getBody(), $properties);
         $msg->getChannel()->basic_publish($retryMessage, $retryExchange, $retryRoutingKey);
-        logger()->info('RabbitMQ message scheduled for retry', [
+        logger()->info('Mensaje RabbitMQ programado para reintento', [
             'retry_exchange' => $retryExchange,
             'retry_routing_key' => $retryRoutingKey,
             'delay_seconds' => $delaySeconds,

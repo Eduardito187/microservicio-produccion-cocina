@@ -37,10 +37,9 @@ class CalendarioServicioGenerarHandler implements IntegrationEventHandlerInterfa
      */
     public function handle(array $payload, array $meta = []): void
     {
-        $this->logger->info('Calendario service generate event received', [
+        $this->logger->info('Evento de generacion de servicio de calendario recibido', [
             'payload' => $payload,
             'meta' => $meta,
         ]);
     }
 }
-

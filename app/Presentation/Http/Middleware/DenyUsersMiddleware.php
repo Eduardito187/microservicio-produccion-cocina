@@ -43,7 +43,7 @@ class DenyUsersMiddleware
 
         if ((is_string($sub) && in_array($sub, $blocked, true)) ||
             (is_string($username) && in_array($username, $blocked, true))) {
-            Log::warning('Keycloak user blocked', [
+            Log::warning('Usuario de Keycloak bloqueado', [
                 'sub' => $sub,
                 'preferred_username' => $username,
             ]);

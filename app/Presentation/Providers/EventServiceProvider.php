@@ -28,7 +28,7 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     /**
-     * Register any events for your application.
+     * Registrar eventos de la aplicacion.
      */
     public function boot(): void
     {
@@ -36,7 +36,7 @@ class EventServiceProvider extends ServiceProvider
     }
 
     /**
-     * Determine if events and listeners should be automatically discovered.
+     * Determinar si eventos y listeners se descubren automaticamente.
      */
     public function shouldDiscoverEvents(): bool
     {

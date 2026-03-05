@@ -61,7 +61,7 @@ class RecalculoProduccionService
         $items = $payload['items'] ?? null;
 
         if (!is_string($fecha) || $fecha === '' || !is_array($items)) {
-            $this->logger->info('Recalculo OP skipped (missing fecha/items)');
+            $this->logger->info('Recalculo OP omitido (falta fecha/items)');
             return false;
         }
 
@@ -85,7 +85,7 @@ class RecalculoProduccionService
         $itemsDespacho = $payload['itemsDespacho'] ?? ($payload['items_despacho'] ?? null);
 
         if (!is_string($ordenProduccionId) || $ordenProduccionId === '' || !is_array($itemsDespacho)) {
-            $this->logger->info('Recalculo despacho skipped (missing ordenProduccionId/itemsDespacho)');
+            $this->logger->info('Recalculo de despacho omitido (falta ordenProduccionId/itemsDespacho)');
             return false;
         }
 

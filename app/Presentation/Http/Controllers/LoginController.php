@@ -59,13 +59,13 @@ class LoginController
         $body = $response->json();
 
         if ($response->ok()) {
-            Log::info('Keycloak login success', [
+            Log::info('Login en Keycloak exitoso', [
                 'username' => $data['username'],
                 'realm' => $realm,
                 'client_id' => $clientId,
             ]);
         } else {
-            Log::warning('Keycloak login failed', [
+            Log::warning('Login en Keycloak fallido', [
                 'username' => $data['username'],
                 'realm' => $realm,
                 'client_id' => $clientId,

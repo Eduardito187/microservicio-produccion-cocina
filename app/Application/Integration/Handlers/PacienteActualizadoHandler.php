@@ -70,7 +70,7 @@ class PacienteActualizadoHandler implements IntegrationEventHandlerInterface
             }
 
             if ($existing === null && $event->nombre === null) {
-                $this->logger->warning('Paciente update ignored (missing nombre for create)', [
+                $this->logger->warning('Actualizacion de paciente ignorada (falta nombre para crear)', [
                     'paciente_id' => $event->id,
                 ]);
                 return;

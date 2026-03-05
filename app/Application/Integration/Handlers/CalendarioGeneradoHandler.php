@@ -78,7 +78,7 @@ class CalendarioGeneradoHandler implements IntegrationEventHandlerInterface
                     );
                 });
             } catch (\Throwable $e) {
-                $this->logger->warning('Invalid calendario date ignored', [
+                $this->logger->warning('Fecha de calendario invalida ignorada', [
                     'fecha' => $fechaRaw,
                     'error' => $e->getMessage(),
                 ]);
@@ -104,4 +104,3 @@ class CalendarioGeneradoHandler implements IntegrationEventHandlerInterface
         );
     }
 }
-

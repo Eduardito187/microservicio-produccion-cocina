@@ -83,14 +83,14 @@ class RegistrarInboundEventHandler
             try {
                 $this->inboundEventRepository->save($event);
             } catch (DuplicateRecordException $exception) {
-                $this->logger->info('Inbound event duplicate', [
+                $this->logger->info('Evento inbound duplicado', [
                     'event_id' => $command->eventId,
                     'event_name' => $command->eventName,
                     'correlation_id' => $correlationId,
                 ]);
                 return true;
             } catch (\Throwable $exception) {
-                $this->logger->error('Inbound event insert failed', [
+                $this->logger->error('Fallo al insertar evento inbound', [
                     'event_id' => $command->eventId,
                     'event_name' => $command->eventName,
                     'correlation_id' => $correlationId,

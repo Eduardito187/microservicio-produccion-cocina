@@ -106,7 +106,7 @@ class RabbitMqEventBus implements BusInterface
                     $channel->queue_bind($queue, $exchange, $bindingKey);
                 }
 
-                Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Rabbit outbound sending', [
+                Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Enviando salida Rabbit', [
                     'event' => $name,
                     'event_id' => $eventId,
                     'schema_version' => $meta['schema_version'] ?? null,
@@ -124,7 +124,7 @@ class RabbitMqEventBus implements BusInterface
                 ]);
 
                 $channel->basic_publish($message, $exchange, $routingKey);
-                Log::info('RabbitMQ publish success', [
+                Log::info('Publicacion en RabbitMQ exitosa', [
                     'event_id' => $eventId,
                     'event_name' => $name,
                     'exchange' => $exchange,
@@ -135,7 +135,7 @@ class RabbitMqEventBus implements BusInterface
                     'aggregate_id' => $meta['aggregate_id'] ?? null,
                     'payload' => $payload,
                 ]);
-                Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Rabbit outbound sent', [
+                Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Salida Rabbit enviada', [
                     'event' => $name,
                     'event_id' => $eventId,
                     'schema_version' => $meta['schema_version'] ?? null,
@@ -148,14 +148,14 @@ class RabbitMqEventBus implements BusInterface
                 ]);
                 return;
             } catch (\Throwable $e) {
-                Log::error('RabbitMQ publish failed', [
+                Log::error('Error al publicar en RabbitMQ', [
                     'event_id' => $eventId,
                     'event_name' => $name,
                     'attempt' => $attempt,
                     'error' => $e->getMessage(),
                     'payload' => $payload,
                 ]);
-                Log::channel(self::OUTBOUND_LOG_CHANNEL)->error('Rabbit outbound failed', [
+                Log::channel(self::OUTBOUND_LOG_CHANNEL)->error('Fallo de salida Rabbit', [
                     'event' => $name,
                     'event_id' => $eventId,
                     'schema_version' => $meta['schema_version'] ?? null,

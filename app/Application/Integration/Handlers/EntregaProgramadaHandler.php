@@ -83,7 +83,7 @@ class EntregaProgramadaHandler implements IntegrationEventHandlerInterface
             try {
                 $this->itemDespachoRepository->byId($event->itemDespachoId);
             } catch (EntityNotFoundException $e) {
-                $this->logger->warning('EntregaProgramada ignored (item_despacho not found)', [
+                $this->logger->warning('EntregaProgramada ignorada (item_despacho no encontrado)', [
                     'item_despacho_id' => $event->itemDespachoId,
                 ]);
                 return;

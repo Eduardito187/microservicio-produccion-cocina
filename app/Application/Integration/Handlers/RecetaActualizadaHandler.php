@@ -70,7 +70,7 @@ class RecetaActualizadaHandler implements IntegrationEventHandlerInterface
             }
 
             if ($existing === null && $event->nombre === null) {
-                $this->logger->warning('Receta update ignored (missing nombre for create)', [
+                $this->logger->warning('Actualizacion de receta ignorada (falta nombre para crear)', [
                     'receta_id' => $event->id,
                 ]);
                 return;

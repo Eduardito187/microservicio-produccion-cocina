@@ -86,7 +86,7 @@ use Illuminate\Support\Facades\Route;
 class MicroservicioProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Registrar los servicios de la aplicacion.
      */
     public function register(): void
     {
@@ -269,7 +269,7 @@ class MicroservicioProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap any application services.
+     * Inicializar los servicios de la aplicacion.
      */
     public function boot(): void
     {

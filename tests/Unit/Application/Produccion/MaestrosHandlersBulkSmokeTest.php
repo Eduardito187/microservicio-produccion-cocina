@@ -112,18 +112,18 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
                 }
             } elseif (str_starts_with($baseName, 'Actualizar')) {
                 if (method_exists($repository, 'byId')) {
-                    $repository->method('byId')->willReturn($entity);
+                    $repository->method('byId')->willReturn($entity ?? $this->dummyEntityFromRepositoryById($repository));
                 }
                 if (method_exists($repository, 'save')) {
                     $repository->method('save')->willReturn('e28e9cc2-5225-40c0-b88b-2341f96d76a3');
                 }
             } elseif (str_starts_with($baseName, 'Eliminar')) {
                 if (method_exists($repository, 'byId')) {
-                    $repository->method('byId')->willReturn($entity);
+                    $repository->method('byId')->willReturn($entity ?? $this->dummyEntityFromRepositoryById($repository));
                 }
             } elseif (str_starts_with($baseName, 'Ver')) {
                 if (method_exists($repository, 'byId')) {
-                    $repository->method('byId')->willReturn($entity);
+                    $repository->method('byId')->willReturn($entity ?? $this->dummyEntityFromRepositoryById($repository));
                 }
             } elseif (str_starts_with($baseName, 'Listar')) {
                 if (method_exists($repository, 'list')) {
@@ -255,6 +255,32 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
                     return $reflectionClass->newInstance();
                 }
             }
+        }
+
+        return new class {
+        };
+    }
+
+    /**
+     * @param object $repository
+     * @return mixed
+     */
+    private function dummyEntityFromRepositoryById(object $repository): mixed
+    {
+        try {
+            $method = new \ReflectionMethod($repository, 'byId');
+            $returnType = $method->getReturnType();
+
+            if ($returnType instanceof ReflectionNamedType) {
+                $typeName = $returnType->getName();
+                if ($returnType->allowsNull()) {
+                    return $this->dummyValueForType($typeName, true) ?? $this->dummyObject($typeName);
+                }
+
+                return $this->dummyValueForType($typeName, false);
+            }
+        } catch (\Throwable $e) {
+            // Best effort for smoke tests.
         }
 
         return new class {

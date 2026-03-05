@@ -13,7 +13,7 @@ use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Aggregate\ProgresoEntregaOrden;
 use App\Domain\Produccion\Aggregate\SeguimientoEntregaPaquete;
 use App\Domain\Produccion\Events\EntregaInconsistenciaDetectada;
-use App\Domain\Produccion\Events\OrdenEntregaCompletada;
+use App\Domain\Produccion\Events\PaqueteEntregado;
 use App\Domain\Produccion\ValueObjects\ContratoId;
 use App\Domain\Produccion\ValueObjects\DriverId;
 use App\Domain\Produccion\ValueObjects\EntregaId;
@@ -88,7 +88,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         $occurredOn = $this->parseOccurredOn($command->occurredOn);
         $occurredAt = $occurredOn?->toDatabase();
         $driverId = $this->parseDriverId($command->driverId);
-        $this->logger->info('Processing logistic package status update', [
+        $this->logger->info('Procesando actualizacion de estado logistico del paquete', [
             'event_id' => $command->eventId,
             'package_id' => $command->packageId,
             'driver_id' => $driverId?->value(),
@@ -183,7 +183,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
         if ($rows->isEmpty()) {
             $this->kpiRepository->increment('alert_package_unknown', 1);
-            $this->logger->warning('Package status update received for unknown package', [
+            $this->logger->warning('Actualizacion de estado recibida para paquete desconocido', [
                 'event_id' => $eventId,
                 'package_id' => $packageId,
                 'driver_id' => $driverId?->value(),
@@ -200,7 +200,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         foreach ($rows as $row) {
             if ((!is_string($row->op_id) || $row->op_id === '') && !$missingOpAlertRaised) {
                 $this->kpiRepository->increment('alert_missing_op_id', 1);
-                $this->logger->warning('Package status update without op_id relation', [
+                $this->logger->warning('Actualizacion de estado sin relacion op_id', [
                     'event_id' => $eventId,
                     'package_id' => $packageId,
                     'item_despacho_id' => $row->id,
@@ -229,7 +229,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
             if (!$changed && $currentStatus !== null && $currentStatus->value() !== $nextStatus->value()) {
                 $this->kpiRepository->increment('delivery_state_blocked_terminal', 1);
-                $this->logger->warning('Package status transition blocked by aggregate policy', [
+                $this->logger->warning('Transicion de estado bloqueada por politica del agregado', [
                     'event_id' => $eventId,
                     'package_id' => $packageId,
                     'op_id' => $row->op_id,
@@ -240,7 +240,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                 ]);
             }
 
-            $this->logger->info('Package status transition processed', [
+            $this->logger->info('Transicion de estado del paquete procesada', [
                 'event_id' => $eventId,
                 'package_id' => $packageId,
                 'op_id' => $row->op_id,
@@ -290,13 +290,19 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
         foreach (array_keys($opIds) as $opId) {
             $projection = $this->syncOrderProgress($opId, $occurredOn);
-            if ($projection['total_packages'] === 0 || $projection['completed_packages'] !== $projection['total_packages']) {
+            if ($projection['total_packages'] === 0) {
                 continue;
             }
 
-            if ($projection['entrega_id'] === null || $projection['contrato_id'] === null) {
+            $allDelivered = $projection['completed_packages'] === $projection['total_packages'];
+            $allFailed = $projection['failed_packages'] === $projection['total_packages'];
+            if (!$allDelivered && !$allFailed) {
+                continue;
+            }
+
+            if ($projection['calendario_id'] === null || $projection['contrato_id'] === null) {
                 $this->kpiRepository->increment('alert_missing_delivery_context', 1);
-                $this->logger->warning('Order delivery completion blocked by missing delivery context', [
+                $this->logger->warning('Evento consolidado bloqueado por contexto de entrega faltante', [
                     'event_id' => $eventId,
                     'package_id' => $packageId,
                     'op_id' => $opId,
@@ -307,7 +313,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                     $opId,
                     $eventId,
                     $packageId,
-                    'missing_delivery_context_for_completion',
+                    'missing_delivery_context_for_consolidated_event',
                     [
                         'projection' => $projection,
                         'payload' => $payload,
@@ -339,18 +345,15 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                     'updated_at' => now(),
                 ]);
 
-            $event = new OrdenEntregaCompletada(
+            $event = new PaqueteEntregado(
                 $opId,
-                $projection['entrega_id'],
+                $projection['calendario_id'],
                 $projection['contrato_id'],
-                $projection['total_packages'],
-                $projection['completed_packages'],
-                0,
-                $completedAt
+                $allDelivered ? 'entregado' : 'no entregado'
             );
             $this->eventPublisher->publish([$event], $opId);
             $this->kpiRepository->increment('delivery_orders_completed', 1);
-            $this->logger->info('Order delivery completed event published', [
+            $this->logger->info('Evento consolidado de entrega publicado', [
                 'event_id' => $eventId,
                 'op_id' => $opId,
                 'package_id' => $packageId,
@@ -358,6 +361,8 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                 'completion_event_id' => $completionEventId,
                 'total_packages' => $projection['total_packages'],
                 'completed_packages' => $projection['completed_packages'],
+                'failed_packages' => $projection['failed_packages'],
+                'estado' => $allDelivered ? 'entregado' : 'no entregado',
             ]);
         }
     }
@@ -427,7 +432,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             ]);
 
             $this->kpiRepository->increment('delivery_inconsistency_events', 1);
-            $this->logger->warning('Delivery inconsistency enqueued', [
+            $this->logger->warning('Inconsistencia de entrega encolada', [
                 'event_id' => $eventId,
                 'package_id' => $packageId,
                 'op_id' => $opId,
@@ -449,7 +454,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                 'updated_at' => now(),
             ]);
 
-        $this->logger->info('Delivery inconsistency deduplicated', [
+        $this->logger->info('Inconsistencia de entrega deduplicada', [
             'event_id' => $eventId,
             'package_id' => $packageId,
             'op_id' => $opId,
@@ -497,6 +502,12 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             ->where('delivery_status', 'confirmada')
             ->distinct()
             ->count('paquete_id');
+        $failedPackages = (int) DB::table('item_despacho')
+            ->where('op_id', $opId)
+            ->whereNotNull('paquete_id')
+            ->where('delivery_status', 'fallida')
+            ->distinct()
+            ->count('paquete_id');
 
         $progress = new ProgresoEntregaOrden($opId, $totalPackages, $completedPackages);
         $existingProgress = DB::table('order_delivery_progress')->where('op_id', $opId)->first();
@@ -529,6 +540,14 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             }
         }
 
+        $calendarioIdRaw = DB::table('item_despacho as i')
+            ->join('calendario_item as ci', 'ci.item_despacho_id', '=', 'i.id')
+            ->where('i.op_id', $opId)
+            ->whereNotNull('ci.calendario_id')
+            ->orderBy('ci.id')
+            ->value('ci.calendario_id');
+        $calendarioId = is_string($calendarioIdRaw) && $calendarioIdRaw !== '' ? $calendarioIdRaw : null;
+
         DB::table('order_delivery_progress')->updateOrInsert(
             ['op_id' => $opId],
             [
@@ -546,10 +565,12 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         return [
             'total_packages' => $totalPackages,
             'completed_packages' => $completedPackages,
+            'failed_packages' => $failedPackages,
             'pending_packages' => $pendingPackages,
             'all_completed_at' => $allCompletedAt,
             'entrega_id' => $entregaId,
             'contrato_id' => $contratoId,
+            'calendario_id' => $calendarioId,
         ];
     }
 
@@ -575,7 +596,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         try {
             return new DriverId($value);
         } catch (\Throwable $e) {
-            $this->logger->warning('driver_id ignored because format is invalid', ['driver_id' => $value]);
+            $this->logger->warning('driver_id ignorado porque el formato es invalido', ['driver_id' => $value]);
             return null;
         }
     }

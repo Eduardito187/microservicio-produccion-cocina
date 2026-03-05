@@ -62,7 +62,7 @@ class DireccionGeocodificadaHandler implements IntegrationEventHandlerInterface
 
         $this->transactionAggregate->runTransaction(function () use ($event): void {
             if ($event->geo === null) {
-                $this->logger->warning('Direccion geocodificada ignored (missing geo)', [
+                $this->logger->warning('Direccion geocodificada ignorada (falta geo)', [
                     'direccion_id' => $event->id,
                 ]);
                 return;
@@ -71,7 +71,7 @@ class DireccionGeocodificadaHandler implements IntegrationEventHandlerInterface
             try {
                 $direccion = $this->direccionRepository->byId($event->id);
             } catch (EntityNotFoundException $e) {
-                $this->logger->warning('Direccion geocodificada ignored (direccion not found)', [
+                $this->logger->warning('Direccion geocodificada ignorada (direccion no encontrada)', [
                     'direccion_id' => $event->id,
                 ]);
                 return;

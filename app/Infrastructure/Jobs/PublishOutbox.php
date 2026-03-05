@@ -70,11 +70,11 @@ class PublishOutbox implements ShouldQueue
                     'locked_by' => $claimId,
                 ]);
 
-            logger()->info('Outbox claimed', [
+            logger()->info('Outbox tomado', [
                 'claim_id' => $claimId,
                 'count' => count($ids),
             ]);
-            Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Rabbit outbound batch', [
+            Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Lote saliente Rabbit', [
                 'claim_id' => $claimId,
                 'pending' => count($ids),
                 'exchange' => (string) config('rabbitmq.exchange', ''),
@@ -84,7 +84,7 @@ class PublishOutbox implements ShouldQueue
         });
 
         if ($claimedIds === []) {
-            logger()->info('Outbox empty', ['claim_id' => $claimId]);
+            logger()->info('Outbox vacio', ['claim_id' => $claimId]);
             return;
         }
 
@@ -107,7 +107,7 @@ class PublishOutbox implements ShouldQueue
                         ]
                     );
 
-                    logger()->info('Outbox publishing', [
+                    logger()->info('Publicando outbox', [
                         'event_id' => $row->event_id,
                         'event_name' => $row->event_name,
                         'aggregate_id' => $row->aggregate_id,
@@ -115,7 +115,7 @@ class PublishOutbox implements ShouldQueue
                         'correlation_id' => $row->correlation_id,
                         'payload' => $row->payload,
                     ]);
-                    Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Rabbit outbound queued event', [
+                    Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Evento encolado de salida Rabbit', [
                         'event' => $row->event_name,
                         'event_id' => $row->event_id,
                         'aggregate_id' => $row->aggregate_id,
@@ -141,13 +141,13 @@ class PublishOutbox implements ShouldQueue
                         'locked_by' => null,
                     ])->save();
 
-                    logger()->info('Outbox published', [
+                    logger()->info('Outbox publicado', [
                         'event_id' => $row->event_id,
                         'event_name' => $row->event_name,
                         'aggregate_id' => $row->aggregate_id,
                     ]);
                 } catch (\Throwable $e) {
-                    logger()->error('Outbox publish failed', [
+                    logger()->error('Error al publicar outbox', [
                         'event_id' => $row->event_id,
                         'event_name' => $row->event_name,
                         'aggregate_id' => $row->aggregate_id,

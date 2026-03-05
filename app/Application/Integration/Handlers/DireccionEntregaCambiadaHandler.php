@@ -71,14 +71,14 @@ class DireccionEntregaCambiadaHandler implements IntegrationEventHandlerInterfac
 
         $this->transactionAggregate->runTransaction(function () use ($event): void {
             if ($event->paqueteId === null) {
-                $this->logger->warning('DireccionEntregaCambiada ignored (missing paqueteId)');
+                $this->logger->warning('DireccionEntregaCambiada ignorada (falta paqueteId)');
                 return;
             }
 
             try {
                 $paquete = $this->paqueteRepository->byId($event->paqueteId);
             } catch (EntityNotFoundException $e) {
-                $this->logger->warning('DireccionEntregaCambiada ignored (paquete not found)', [
+                $this->logger->warning('DireccionEntregaCambiada ignorada (paquete no encontrado)', [
                     'paquete_id' => $event->paqueteId,
                 ]);
                 return;

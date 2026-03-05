@@ -65,7 +65,7 @@ class ContratoCanceladoHandler implements IntegrationEventHandlerInterface
             try {
                 $suscripcion = $this->suscripcionRepository->byId($event->contratoId);
             } catch (EntityNotFoundException $e) {
-                $this->logger->warning('Contrato cancelado ignored (contrato not found)', [
+                $this->logger->warning('Contrato cancelado ignorado (contrato no encontrado)', [
                     'contrato_id' => $event->contratoId,
                 ]);
                 return;

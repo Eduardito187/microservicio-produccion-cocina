@@ -70,7 +70,7 @@ class SuscripcionActualizadaHandler implements IntegrationEventHandlerInterface
             }
 
             if ($existing === null && $event->nombre === null) {
-                $this->logger->warning('Suscripcion update ignored (missing nombre for create)', [
+                $this->logger->warning('Actualizacion de suscripcion ignorada (falta nombre para crear)', [
                     'suscripcion_id' => $event->id,
                 ]);
                 return;

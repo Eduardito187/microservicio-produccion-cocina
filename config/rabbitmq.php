@@ -94,6 +94,7 @@ return [
         \App\Domain\Produccion\Events\OrdenProduccionCerrada::class => 'produccion.orden-cerrada',
         \App\Domain\Produccion\Events\OrdenProduccionDespachada::class => 'produccion.orden-despachada',
         \App\Domain\Produccion\Events\OrdenEntregaCompletada::class => 'produccion.orden-entrega-completada',
+        \App\Domain\Produccion\Events\PaqueteEntregado::class => 'paquete.entregado',
         \App\Domain\Produccion\Events\EntregaInconsistenciaDetectada::class => 'produccion.entrega-inconsistencia-detectada',
         \App\Domain\Produccion\Events\ProduccionBatchCreado::class => 'produccion.batch-orden-creado',
     ],

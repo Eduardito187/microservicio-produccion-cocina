@@ -69,7 +69,7 @@ class PaqueteEnRutaHandler implements IntegrationEventHandlerInterface
     {
         $eventId = $meta['event_id'] ?? null;
         if (!is_string($eventId) || $eventId === '') {
-            $this->logger->warning('PaqueteEnRuta ignored (missing event_id)');
+            $this->logger->warning('PaqueteEnRuta ignorado (falta event_id)');
             return;
         }
 

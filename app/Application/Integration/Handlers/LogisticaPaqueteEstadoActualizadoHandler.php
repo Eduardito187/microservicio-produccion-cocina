@@ -48,13 +48,13 @@ class LogisticaPaqueteEstadoActualizadoHandler implements IntegrationEventHandle
     {
         $eventId = $meta['event_id'] ?? null;
         if (!is_string($eventId) || $eventId === '') {
-            $this->logger->warning('logistica.paquete.estado-actualizado ignored (missing event_id)');
+            $this->logger->warning('logistica.paquete.estado-actualizado ignorado (falta event_id)');
             return;
         }
 
         $packageId = $this->getString($payload, ['packageId', 'paqueteId', 'package_id', 'paquete_id']);
         if ($packageId === null || $packageId === '') {
-            $this->logger->warning('logistica.paquete.estado-actualizado ignored (missing package id)', [
+            $this->logger->warning('logistica.paquete.estado-actualizado ignorado (falta package id)', [
                 'event_id' => $eventId,
             ]);
             return;

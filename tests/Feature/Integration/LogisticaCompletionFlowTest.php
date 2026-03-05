@@ -7,7 +7,7 @@ namespace Tests\Feature\Integration;
 
 use App\Application\Integration\Handlers\LogisticaPaqueteEstadoActualizadoHandler;
 use App\Application\Shared\DomainEventPublisherInterface;
-use App\Domain\Produccion\Events\OrdenEntregaCompletada;
+use App\Domain\Produccion\Events\PaqueteEntregado;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -25,6 +25,15 @@ class LogisticaCompletionFlowTest extends TestCase
      */
     public function test_orden_con_n_paquetes_no_emite_hasta_recibir_ultimo_completed(): void
     {
+        DB::table('calendario')->insert([
+            'id' => 'cal-n-1',
+            'fecha' => '2026-03-02',
+            'entrega_id' => 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+            'contrato_id' => 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         DB::table('orden_produccion')->insert([
             'id' => 'op-n-1',
             'fecha' => '2026-03-02',
@@ -65,21 +74,43 @@ class LogisticaCompletionFlowTest extends TestCase
                 'updated_at' => now(),
             ],
         ]);
+        DB::table('calendario_item')->insert([
+            [
+                'id' => 'ci-n-11',
+                'calendario_id' => 'cal-n-1',
+                'item_despacho_id' => 'it-n-11',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 'ci-n-12',
+                'calendario_id' => 'cal-n-1',
+                'item_despacho_id' => 'it-n-12',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 'ci-n-13',
+                'calendario_id' => 'cal-n-1',
+                'item_despacho_id' => 'it-n-13',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
 
         $publisher = $this->createMock(DomainEventPublisherInterface::class);
         $publisher->expects($this->once())
             ->method('publish')
             ->with(
                 $this->callback(function (array $events): bool {
-                    if (count($events) !== 1 || !$events[0] instanceof OrdenEntregaCompletada) {
+                    if (count($events) !== 1 || !$events[0] instanceof PaqueteEntregado) {
                         return false;
                     }
 
                     $payload = $events[0]->toArray();
-                    return ($payload['entregaId'] ?? null) === 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
+                    return ($payload['calendarioId'] ?? null) === 'cal-n-1'
                         && ($payload['contratoId'] ?? null) === 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'
-                        && ($payload['totalPackages'] ?? null) === 3
-                        && ($payload['completedPackages'] ?? null) === 3;
+                        && ($payload['estado'] ?? null) === 'entregado';
                 }),
                 'op-n-1'
             );
@@ -125,6 +156,15 @@ class LogisticaCompletionFlowTest extends TestCase
      */
     public function test_evento_duplicado_no_duplica_conteo_ni_emision(): void
     {
+        DB::table('calendario')->insert([
+            'id' => 'cal-n-2',
+            'fecha' => '2026-03-02',
+            'entrega_id' => 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+            'contrato_id' => 'dddddddd-dddd-4ddd-8ddd-dddddddddddd',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         DB::table('orden_produccion')->insert([
             'id' => 'op-n-2',
             'fecha' => '2026-03-02',
@@ -143,9 +183,25 @@ class LogisticaCompletionFlowTest extends TestCase
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+        DB::table('calendario_item')->insert([
+            'id' => 'ci-n-21',
+            'calendario_id' => 'cal-n-2',
+            'item_despacho_id' => 'it-n-21',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         $publisher = $this->createMock(DomainEventPublisherInterface::class);
-        $publisher->expects($this->once())->method('publish');
+        $publisher->expects($this->once())
+            ->method('publish')
+            ->with(
+                $this->callback(function (array $events): bool {
+                    return count($events) === 1
+                        && $events[0] instanceof PaqueteEntregado
+                        && (($events[0]->toArray()['estado'] ?? null) === 'entregado');
+                }),
+                'op-n-2'
+            );
         $this->app->instance(DomainEventPublisherInterface::class, $publisher);
 
         $handler = $this->app->make(LogisticaPaqueteEstadoActualizadoHandler::class);

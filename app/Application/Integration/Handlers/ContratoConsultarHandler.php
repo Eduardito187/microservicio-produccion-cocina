@@ -37,10 +37,9 @@ class ContratoConsultarHandler implements IntegrationEventHandlerInterface
      */
     public function handle(array $payload, array $meta = []): void
     {
-        $this->logger->info('Contrato consultar event received (no-op)', [
+        $this->logger->info('Evento de consulta de contrato recibido (sin accion)', [
             'payload' => $payload,
             'meta' => $meta,
         ]);
     }
 }
-

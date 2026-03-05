@@ -46,7 +46,7 @@ class IntegrationEventRouter
     {
         $handler = $this->handlers[$eventName] ?? null;
         if (!$handler) {
-            $this->logger->warning('Integration event ignored (no handler)', [
+            $this->logger->warning('Evento de integracion ignorado (sin handler)', [
                 'event' => $eventName,
                 'meta' => $meta,
             ]);

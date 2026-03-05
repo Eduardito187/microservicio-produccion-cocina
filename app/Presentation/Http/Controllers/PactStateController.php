@@ -42,7 +42,7 @@ class PactStateController
         }
 
         try {
-            Log::info('[PACT_SETUP] State received', ['state' => $state, 'params' => $params]);
+            Log::info('[PACT_SETUP] Estado recibido', ['state' => $state, 'params' => $params]);
             DB::beginTransaction();
             switch ($state) {
                 case 'product PIZZA-PEP exists':
@@ -52,7 +52,7 @@ class PactStateController
                     $this->ensureOrdenAndPorcion($params);
                     break;
                 default:
-                    Log::warning('[PACT_SETUP] Unknown state', ['state' => $state, 'params' => $params]);
+                    Log::warning('[PACT_SETUP] Estado desconocido', ['state' => $state, 'params' => $params]);
                     break;
             }
 

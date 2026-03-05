@@ -69,7 +69,7 @@ class EntregaConfirmadaHandler implements IntegrationEventHandlerInterface
     {
         $eventId = $meta['event_id'] ?? null;
         if (!is_string($eventId) || $eventId === '') {
-            $this->logger->warning('EntregaConfirmada ignored (missing event_id)');
+            $this->logger->warning('EntregaConfirmada ignorada (falta event_id)');
             return;
         }
 

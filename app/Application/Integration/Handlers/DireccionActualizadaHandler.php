@@ -70,7 +70,7 @@ class DireccionActualizadaHandler implements IntegrationEventHandlerInterface
             }
 
             if ($existing === null && $event->linea1 === null) {
-                $this->logger->warning('Direccion update ignored (missing linea1 for create)', [
+                $this->logger->warning('Actualizacion de direccion ignorada (falta linea1 para crear)', [
                     'direccion_id' => $event->id,
                 ]);
                 return;

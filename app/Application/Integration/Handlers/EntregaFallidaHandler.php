@@ -69,7 +69,7 @@ class EntregaFallidaHandler implements IntegrationEventHandlerInterface
     {
         $eventId = $meta['event_id'] ?? null;
         if (!is_string($eventId) || $eventId === '') {
-            $this->logger->warning('EntregaFallida ignored (missing event_id)');
+            $this->logger->warning('EntregaFallida ignorada (falta event_id)');
             return;
         }
 

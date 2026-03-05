@@ -45,7 +45,7 @@ class RequireRoleMiddleware
             }
         }
 
-        Log::warning('Keycloak role denied', [
+        Log::warning('Rol de Keycloak denegado', [
             'required' => $required,
             'available' => $available,
             'sub' => $claims['sub'] ?? null,
