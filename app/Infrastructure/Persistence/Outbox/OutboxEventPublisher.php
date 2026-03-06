@@ -9,7 +9,6 @@ use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
 use App\Domain\Shared\Events\Interface\DomainEventInterface;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Shared\OutboxUnitOfWorkInterface;
-use App\Infrastructure\Jobs\PublishOutbox;
 
 /**
  * @class OutboxEventPublisher
@@ -51,20 +50,5 @@ class OutboxEventPublisher implements DomainEventPublisherInterface
         }
 
         $this->outboxUnitOfWork->register($events, $aggregateId);
-
-        if ((bool) env('OUTBOX_SKIP_DISPATCH', false) || app()->runningUnitTests()) {
-            return;
-        }
-
-        $this->transactionManager->afterCommit(function (): void {
-            $dispatchSync = (bool) env('OUTBOX_DISPATCH_SYNC', true);
-
-            if ($dispatchSync) {
-                PublishOutbox::dispatchSync();
-                return;
-            }
-
-            PublishOutbox::dispatch();
-        });
     }
 }

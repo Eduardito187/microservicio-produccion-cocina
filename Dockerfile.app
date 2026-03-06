@@ -2,7 +2,7 @@ FROM php:8.2-apache
 
 # System deps + PHP extensions
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git unzip curl ca-certificates gnupg \
+    git unzip curl ca-certificates gnupg cron \
     libpng-dev libzip-dev libonig-dev libxml2-dev \
  && docker-php-ext-install pdo_mysql zip bcmath \
  && docker-php-ext-install sockets \

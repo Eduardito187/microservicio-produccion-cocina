@@ -46,15 +46,26 @@ class CalendarioRepository implements CalendarioRepositoryInterface
      */
     public function save(Calendario $calendario): string
     {
-        $model = CalendarioModel::query()->updateOrCreate(
-            ['id' => $calendario->id],
-            [
-                'fecha' => $calendario->fecha->format('Y-m-d'),
-                'entrega_id' => $calendario->entregaId,
-                'contrato_id' => $calendario->contratoId,
-                'estado' => is_int($calendario->estado) || is_string($calendario->estado) ? (int) $calendario->estado : null,
-            ]
+        $fecha = $calendario->fecha->format('Y-m-d');
+        $attributes = [
+            'entrega_id'  => $calendario->entregaId,
+            'contrato_id' => $calendario->contratoId,
+            'estado'      => is_int($calendario->estado) || is_string($calendario->estado) ? (int) $calendario->estado : null,
+        ];
+
+        // Buscar por ID determinístico (entregaId + fecha), NO solo por fecha.
+        // Distintos entregaId en la misma fecha producen calendarios separados.
+        $model = CalendarioModel::query()->where('id', $calendario->id)->first();
+        if ($model !== null) {
+            $model->fill($attributes);
+            $model->save();
+            return $model->id;
+        }
+
+        $model = CalendarioModel::query()->create(
+            ['id' => $calendario->id, 'fecha' => $fecha] + $attributes
         );
+
         return $model->id;
     }
 

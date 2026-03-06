@@ -7,7 +7,6 @@ namespace App\Presentation\Console;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Console\Scheduling\Schedule;
-use App\Infrastructure\Jobs\PublishOutbox;
 
 /**
  * @class Kernel
@@ -20,7 +19,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->job(new PublishOutbox())->everyMinute();
+        $schedule->command('outbox:publish')->everyMinute()->withoutOverlapping();
     }
 
     /**

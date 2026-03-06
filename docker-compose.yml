@@ -1,6 +1,7 @@
 services:
   laravel_app:
     container_name: laravel_app
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile.app
@@ -17,12 +18,14 @@ services:
       RUN_PACT_ON_START: "0"
       RUN_UNIT_TESTS_ON_START: "0"
       RUN_RABBITMQ_CONSUMER: "1"
+      RUN_CRON_SCHEDULER: "1"
     depends_on:
       mysql_server:
         condition: service_healthy
 
   mysql_server:
     container_name: mysql_server
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile.mysql

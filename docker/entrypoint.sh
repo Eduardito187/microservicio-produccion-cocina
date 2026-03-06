@@ -65,6 +65,21 @@ fi
 apache2-foreground &
 APACHE_PID=$!
 
+# Start Laravel scheduler via system cron (optional)
+if [ "${RUN_CRON_SCHEDULER:-1}" = "1" ]; then
+  echo "[entrypoint] configuring cron scheduler..."
+  cat > /etc/cron.d/laravel-scheduler <<'CRON_EOF'
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+* * * * * root cd /var/www/html && php artisan schedule:run >> /proc/1/fd/1 2>> /proc/1/fd/2
+CRON_EOF
+  chmod 0644 /etc/cron.d/laravel-scheduler
+  crontab /etc/cron.d/laravel-scheduler
+  cron
+  echo "[entrypoint] cron scheduler started."
+  run_artisan schedule:run
+fi
+
 # Wait until app is responding locally
 echo "[entrypoint] waiting for app to be ready..."
 until curl -fsS http://127.0.0.1/ >/dev/null; do

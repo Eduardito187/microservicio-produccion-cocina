@@ -66,6 +66,12 @@ docker compose up --build
 
 php artisan queue:work
 
+### Scheduler/Cron en Docker
+
+- El contenedor `laravel_app` inicia cron automáticamente (`RUN_CRON_SCHEDULER=1`).
+- Cron ejecuta `php artisan schedule:run` cada minuto.
+- Como `Kernel` agenda `outbox:publish`, los eventos del outbox se publican por cron (no por request HTTP).
+
 
 ### Ejemplos curl
 

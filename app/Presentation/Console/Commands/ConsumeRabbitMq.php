@@ -160,7 +160,7 @@ class ConsumeRabbitMq extends Command
         $retryQueue = $retryQueue !== ''
             ? $retryQueue
             : ($queue !== '' ? $queue . '.retry.' . $this->normalizeQueueToken($exchange) : '');
-        $retryRoutingKey = $retryRoutingKey !== '' ? $retryRoutingKey : $queue;
+        $retryRoutingKey = $retryRoutingKey !== '' ? $retryRoutingKey : ($keys[0] ?? $queue);
 
         if ($retryExchange !== '' && $retryQueue !== '') {
             $channel->exchange_declare(
@@ -389,7 +389,10 @@ class ConsumeRabbitMq extends Command
             if ($shouldRequeue) {
                 $delay = $this->resolveRetryDelay($retryCount);
                 if ($delay > 0 && $retryExchange !== '' && $retryQueue !== '') {
-                    $this->publishToRetry($msg, $retryExchange, $retryRoutingKey, $delay);
+                    // Usar el routing key ORIGINAL del mensaje para que el reintento
+                    // llegue al handler correcto y no a un routing key global hardcodeado.
+                    $effectiveRetryRoutingKey = ($routingKey !== '') ? $routingKey : $retryRoutingKey;
+                    $this->publishToRetry($msg, $retryExchange, $effectiveRetryRoutingKey, $delay);
                     $this->ackMessage($msg);
                     return;
                 }
@@ -682,11 +685,11 @@ class ConsumeRabbitMq extends Command
             'contrato.cancelado' => ['contratoId'],
             'calendario.servicio.generar' => ['contratoId', 'diasPermitidos', 'horarioPreferido'],
             'calendario.generado' => ['contratoId', 'listaFechasEntrega'],
-            'CalendarioEntregaCreado' => ['calendarioId|id|entregaId', 'fecha'],
+            'CalendarioEntregaCreado' => ['calendarioId|id|entregaId|suscripcionId', 'fecha|date|occurredOn|occurred_on'],
             'EntregaProgramada' => ['calendarioId', 'itemDespachoId'],
             'DiaSinEntregaMarcado' => ['calendarioId'],
             'DireccionEntregaCambiada' => ['direccionId'],
-            'calendarios.crear-dia' => ['calendarioId|id|entregaId', 'fecha'],
+            'calendarios.crear-dia' => ['calendarioId|id|entregaId|suscripcionId', 'fecha|date|occurredOn|occurred_on'],
             'calendarios.sin-entrega' => ['calendarioId'],
             'calendarios.direccion-entrega-cambiada' => ['direccionId'],
             'EntregaConfirmada' => ['paqueteId'],

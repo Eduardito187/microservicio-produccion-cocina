@@ -76,14 +76,31 @@ class CalendarioEntregaCreadoEvent
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);
-        $fecha = $p->getString(['fecha', 'date'], null, true);
-        $entregaId = $p->getString(['entregaId', 'entrega_id']);
+
+        // 'fecha' puede venir como 'fecha', 'date' o derivarse de 'occurredOn'
+        $fecha = $p->getString(['fecha', 'date']);
+        if ($fecha === null) {
+            $occurredOn = $p->getString(['occurredOn', 'occurred_on']);
+            if ($occurredOn !== null) {
+                // Extrae la parte de fecha del timestamp ISO (YYYY-MM-DD)
+                $fecha = substr($occurredOn, 0, 10);
+            }
+        }
+        if ($fecha === null) {
+            throw new \InvalidArgumentException('Missing required field: fecha|date|occurredOn');
+        }
+
+        // 'entregaId' puede venir como entregaId, entrega_id o suscripcionId
+        $entregaId = $p->getString(['entregaId', 'entrega_id', 'suscripcionId']);
+
+        // 'id' puede venir como id, calendarioId, calendario_id;
+        // si no está, se genera a partir de entregaId + fecha
         $id = $p->getString(['id', 'calendarioId', 'calendario_id']);
         if ($id === null && $entregaId !== null) {
             $id = self::buildCalendarId($entregaId, $fecha);
         }
         if ($id === null) {
-            throw new \InvalidArgumentException('Missing required field: id|calendarioId|calendario_id|entregaId');
+            throw new \InvalidArgumentException('Missing required field: id|calendarioId|entregaId|suscripcionId');
         }
 
         return new self(

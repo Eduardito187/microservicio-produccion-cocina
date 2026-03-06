@@ -157,19 +157,41 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             $encodedEvidence = json_encode(['value' => $evidence]);
         }
 
-        DB::table('package_delivery_history')->updateOrInsert(
-            ['event_id' => $eventId],
-            [
-                'package_id' => $packageId,
-                'received_status' => $receivedStatus !== '' ? strtolower(trim($receivedStatus)) : null,
-                'driver_id' => $driverId,
-                'evidence' => $encodedEvidence,
-                'payload' => json_encode($payload),
-                'occurred_on' => $occurredAt,
-                'updated_at' => now(),
-                'created_at' => now(),
-            ]
-        );
+        $normalizedStatus = $receivedStatus !== '' ? strtolower(trim($receivedStatus)) : null;
+        $encodedPayload   = json_encode($payload);
+
+        $existing = DB::table('package_delivery_history')
+            ->where('event_id', $eventId)
+            ->first();
+
+        if ($existing !== null) {
+            DB::table('package_delivery_history')
+                ->where('event_id', $eventId)
+                ->update([
+                    'package_id'      => $packageId,
+                    'received_status' => $normalizedStatus,
+                    'driver_id'       => $driverId,
+                    'evidence'        => $encodedEvidence,
+                    'payload'         => $encodedPayload,
+                    'occurred_on'     => $occurredAt,
+                    'updated_at'      => now(),
+                ]);
+            return;
+        }
+
+        // Se listan todos los campos explícitamente para que 'id' nunca quede fuera
+        DB::table('package_delivery_history')->insert([
+            'id'              => (string) Str::uuid(),
+            'event_id'        => $eventId,
+            'package_id'      => $packageId,
+            'received_status' => $normalizedStatus,
+            'driver_id'       => $driverId,
+            'evidence'        => $encodedEvidence,
+            'payload'         => $encodedPayload,
+            'occurred_on'     => $occurredAt,
+            'created_at'      => now(),
+            'updated_at'      => now(),
+        ]);
     }
 
     private function syncDispatchStatusAndEmitCompletionIfReady(string $eventId, string $packageId, PackageStatus $nextStatus, ?OccurredOn $occurredOn, ?DriverId $driverId, array $payload): void
