@@ -17,6 +17,10 @@ return new class extends Migration
 
     private function dropForeignKeysForColumn(string $table, string $column): void
     {
+        if (!$this->isMysql()) {
+            return;
+        }
+
         $database = DB::getDatabaseName();
         $rows = DB::select(
             'SELECT CONSTRAINT_NAME
@@ -42,6 +46,10 @@ return new class extends Migration
 
     private function dropKnownForeignIfExists(string $table, string $constraint): void
     {
+        if (!$this->isMysql()) {
+            return;
+        }
+
         try {
             $safeTable = str_replace('`', '``', $table);
             $safeConstraint = str_replace('`', '``', $constraint);
@@ -90,6 +98,10 @@ return new class extends Migration
 
     private function hasForeignToReceta(string $table): bool
     {
+        if (!$this->isMysql()) {
+            return false;
+        }
+
         if (!Schema::hasTable($table) || !Schema::hasTable('receta') || !Schema::hasColumn($table, 'receta_id')) {
             return false;
         }
@@ -110,6 +122,10 @@ return new class extends Migration
 
     private function addForeignToRecetaIfPossible(string $table, string $constraintName): void
     {
+        if (!$this->isMysql()) {
+            return;
+        }
+
         if (!Schema::hasTable($table) || !Schema::hasTable('receta') || !Schema::hasColumn($table, 'receta_id')) {
             return;
         }

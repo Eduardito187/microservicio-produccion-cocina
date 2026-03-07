@@ -15,15 +15,19 @@ return new class extends Migration
      * olvidara proporcionarlo.
      *
      * Requiere MySQL 8.0+ (expresiones en DEFAULT).
+     * No-op en otros motores (SQLite, etc.).
      */
     public function up(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         if (!Schema::hasTable('package_delivery_history')) {
             return;
         }
 
         if (!Schema::hasColumn('package_delivery_history', 'id')) {
-            // Si la columna no existe, la añadimos como PK con default UUID
             DB::statement(
                 "ALTER TABLE `package_delivery_history`
                  ADD COLUMN `id` CHAR(36) NOT NULL DEFAULT (UUID()) FIRST,
@@ -32,7 +36,6 @@ return new class extends Migration
             return;
         }
 
-        // La columna existe pero puede no tener DEFAULT — lo forzamos
         DB::statement(
             "ALTER TABLE `package_delivery_history`
              MODIFY COLUMN `id` CHAR(36) NOT NULL DEFAULT (UUID())"
@@ -44,6 +47,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         if (!Schema::hasTable('package_delivery_history')) {
             return;
         }
