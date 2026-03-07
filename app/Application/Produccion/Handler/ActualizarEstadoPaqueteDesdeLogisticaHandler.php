@@ -218,6 +218,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         $trackingUpserted = false;
         $packageCompletedMetricCounted = false;
         $missingOpAlertRaised = false;
+        $anyChanged = false;
 
         foreach ($rows as $row) {
             if ((!is_string($row->op_id) || $row->op_id === '') && !$missingOpAlertRaised) {
@@ -300,6 +301,10 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                 $trackingUpserted = true;
             }
 
+            if ($changed) {
+                $anyChanged = true;
+            }
+
             if ($changed && $nextStatus->isCompleted() && !$packageCompletedMetricCounted) {
                 $this->kpiRepository->increment('delivery_packages_completed', 1);
                 $packageCompletedMetricCounted = true;
@@ -308,6 +313,10 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             if (is_string($row->op_id) && $row->op_id !== '') {
                 $opIds[$row->op_id] = true;
             }
+        }
+
+        if (!$anyChanged) {
+            return;
         }
 
         foreach (array_keys($opIds) as $opId) {
@@ -429,9 +438,9 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
     private function enqueueInconsistency(?string $opId, string $eventId, string $packageId, string $reason, array $payload): void
     {
-        $eventIdValue = $this->isUuid($eventId) ? $eventId : null;
-        $packageIdValue = $this->isUuid($packageId) ? $packageId : null;
-        $opIdValue = $this->isUuid($opId) ? $opId : null;
+        $eventIdValue = ($eventId !== '') ? $eventId : null;
+        $packageIdValue = ($packageId !== '') ? $packageId : null;
+        $opIdValue = ($opId !== null && $opId !== '') ? $opId : null;
 
         $alreadyExists = false;
         if ($eventIdValue !== null) {
