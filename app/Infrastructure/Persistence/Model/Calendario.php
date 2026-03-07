@@ -29,9 +29,11 @@ class Calendario extends BaseModel
 
     public function setFechaAttribute(mixed $value): void
     {
-        $this->attributes['fecha'] = $value instanceof \DateTimeInterface
-            ? $value->format('Y-m-d')
-            : (is_string($value) ? substr($value, 0, 10) : $value);
+        if ($value === null) {
+            $this->attributes['fecha'] = null;
+            return;
+        }
+        $this->attributes['fecha'] = \Carbon\Carbon::parse($value)->format('Y-m-d');
     }
 
     /**
