@@ -27,6 +27,13 @@ class Calendario extends BaseModel
         'estado' => 'integer',
     ];
 
+    public function setFechaAttribute(mixed $value): void
+    {
+        $this->attributes['fecha'] = $value instanceof \DateTimeInterface
+            ? $value->format('Y-m-d')
+            : (is_string($value) ? substr($value, 0, 10) : $value);
+    }
+
     /**
      * @return HasMany
      */

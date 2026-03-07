@@ -80,19 +80,19 @@ class ConsumeRabbitMq extends Command
 
         if ($queue === '') {
             logger()->error('Consumidor inbound mal configurado (falta INBOUND_RABBITMQ_QUEUE)');
-            $this->error('INBOUND_RABBITMQ_QUEUE es obligatorio para el consumidor inbound.');
+            $this->error('INBOUND_RABBITMQ_QUEUE is required for inbound consumer.');
             return self::FAILURE;
         }
 
         if ($exchange === '') {
             logger()->error('Consumidor inbound mal configurado (falta INBOUND_RABBITMQ_EXCHANGE)');
-            $this->error('INBOUND_RABBITMQ_EXCHANGE es obligatorio para el consumidor inbound.');
+            $this->error('INBOUND_RABBITMQ_EXCHANGE is required for inbound consumer.');
             return self::FAILURE;
         }
         $keys = array_filter(array_map('trim', explode(',', (string) $bindingKey)));
         if ($keys === []) {
             logger()->error('Consumidor inbound mal configurado (falta INBOUND_RABBITMQ_ROUTING_KEYS)');
-            $this->error('INBOUND_RABBITMQ_ROUTING_KEYS es obligatorio para el consumidor inbound.');
+            $this->error('INBOUND_RABBITMQ_ROUTING_KEYS is required for inbound consumer.');
             return self::FAILURE;
         }
 
@@ -102,7 +102,7 @@ class ConsumeRabbitMq extends Command
                 'inbound_exchange' => $exchange,
                 'inbound_routing_keys' => $bindingKey,
             ]);
-            $this->error('La configuracion inbound no debe coincidir con el exchange/queue de outbox.');
+            $this->error('Inbound configuration must not match outbox exchange/queue.');
             return self::FAILURE;
         }
 
