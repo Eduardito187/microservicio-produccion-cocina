@@ -4,7 +4,9 @@
  */
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -22,9 +24,11 @@ return new class extends Migration
             }
         }
 
-        DB::statement('ALTER TABLE order_item MODIFY op_id CHAR(36) NOT NULL');
-        DB::statement('ALTER TABLE produccion_batch MODIFY op_id CHAR(36) NOT NULL');
-        DB::statement('ALTER TABLE item_despacho MODIFY op_id CHAR(36) NOT NULL');
+        foreach ($tables as $table) {
+            Schema::table($table, function (Blueprint $blueprint) {
+                $blueprint->char('op_id', 36)->nullable(false)->change();
+            });
+        }
     }
 
     /**
@@ -32,8 +36,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('ALTER TABLE order_item MODIFY op_id CHAR(36) NULL');
-        DB::statement('ALTER TABLE produccion_batch MODIFY op_id CHAR(36) NULL');
-        DB::statement('ALTER TABLE item_despacho MODIFY op_id CHAR(36) NULL');
+        $tables = ['order_item', 'produccion_batch', 'item_despacho'];
+
+        foreach ($tables as $table) {
+            Schema::table($table, function (Blueprint $blueprint) {
+                $blueprint->char('op_id', 36)->nullable()->change();
+            });
+        }
     }
 };
