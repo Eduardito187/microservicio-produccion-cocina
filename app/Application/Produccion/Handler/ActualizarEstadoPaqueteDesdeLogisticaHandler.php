@@ -492,21 +492,27 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             $completedAt = is_string($existingTracking->completed_at) ? $existingTracking->completed_at : null;
         }
 
+        $values = [
+            'op_id' => $opId,
+            'entrega_id' => $entregaId,
+            'contrato_id' => $contratoId,
+            'driver_id' => $driverId,
+            'status' => $status,
+            'status_locked' => $statusLocked,
+            'completed_at' => $completedAt,
+            'last_event_id' => $eventId,
+            'last_occurred_on' => $occurredAt,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ];
+
+        if ($existingTracking === null) {
+            $values['id'] = (string) \Illuminate\Support\Str::uuid();
+        }
+
         DB::table('package_delivery_tracking')->updateOrInsert(
             ['package_id' => $packageId],
-            [
-                'op_id' => $opId,
-                'entrega_id' => $entregaId,
-                'contrato_id' => $contratoId,
-                'driver_id' => $driverId,
-                'status' => $status,
-                'status_locked' => $statusLocked,
-                'completed_at' => $completedAt,
-                'last_event_id' => $eventId,
-                'last_occurred_on' => $occurredAt,
-                'updated_at' => now(),
-                'created_at' => now(),
-            ]
+            $values
         );
     }
 
@@ -570,18 +576,24 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             ->value('ci.calendario_id');
         $calendarioId = is_string($calendarioIdRaw) && $calendarioIdRaw !== '' ? $calendarioIdRaw : null;
 
+        $progressValues = [
+            'total_packages' => $totalPackages,
+            'completed_packages' => $completedPackages,
+            'pending_packages' => $pendingPackages,
+            'all_completed_at' => $allCompletedAt,
+            'entrega_id' => $entregaId,
+            'contrato_id' => $contratoId,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ];
+
+        if ($existingProgress === null) {
+            $progressValues['id'] = (string) \Illuminate\Support\Str::uuid();
+        }
+
         DB::table('order_delivery_progress')->updateOrInsert(
             ['op_id' => $opId],
-            [
-                'total_packages' => $totalPackages,
-                'completed_packages' => $completedPackages,
-                'pending_packages' => $pendingPackages,
-                'all_completed_at' => $allCompletedAt,
-                'entrega_id' => $entregaId,
-                'contrato_id' => $contratoId,
-                'updated_at' => now(),
-                'created_at' => now(),
-            ]
+            $progressValues
         );
 
         return [
