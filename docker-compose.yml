@@ -30,16 +30,16 @@ services:
       context: .
       dockerfile: Dockerfile.mysql
     environment:
-      - MYSQL_DATABASE=produccion_cocina
-      - MYSQL_USER=appuser
-      - MYSQL_PASSWORD=13011973
-      - MYSQL_ROOT_PASSWORD=13011973
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
       - "33006:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p13011973"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${DB_ROOT_PASSWORD}"]
       interval: 5s
       timeout: 5s
       retries: 30
