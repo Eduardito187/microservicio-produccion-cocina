@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Support\ServiceProvider;
 
 /**
  * @class AppServiceProvider
- * @package App\Presentation\Providers
  */
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $password = 'admin123';
         //
     }
 
