@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\CrearProductoHandler;
 use App\Application\Produccion\Command\CrearProducto;
+use App\Application\Produccion\Handler\CrearProductoHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
  * @class CrearProductoController
- * @package App\Presentation\Http\Controllers
  */
 class CrearProductoController
 {
@@ -23,17 +23,12 @@ class CrearProductoController
 
     /**
      * Constructor
-     *
-     * @param CrearProductoHandler $handler
      */
-    public function __construct(CrearProductoHandler $handler) {
+    public function __construct(CrearProductoHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Domain\Shared\Events\BaseDomainEvent;
 
 /**
  * @class DireccionActualizada
- * @package App\Domain\Produccion\Events
  */
 class DireccionActualizada extends BaseDomainEvent
 {
@@ -50,25 +50,16 @@ class DireccionActualizada extends BaseDomainEvent
 
     /**
      * Constructor
-     *
-     * @param string|int|null $direccionId
-     * @param string|null $nombre
-     * @param string $linea1
-     * @param string|null $linea2
-     * @param string|null $ciudad
-     * @param string|null $provincia
-     * @param string|null $pais
-     * @param array|null $geo
      */
     public function __construct(
         string|int|null $direccionId,
-        string|null $nombre,
+        ?string $nombre,
         string $linea1,
-        string|null $linea2,
-        string|null $ciudad,
-        string|null $provincia,
-        string|null $pais,
-        array|null $geo
+        ?string $linea2,
+        ?string $ciudad,
+        ?string $provincia,
+        ?string $pais,
+        ?array $geo
     ) {
         parent::__construct($direccionId);
         $this->nombre = $nombre;
@@ -80,9 +71,6 @@ class DireccionActualizada extends BaseDomainEvent
         $this->geo = $geo;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [

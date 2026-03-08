@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -11,13 +12,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @class ContratoEventsTest
- * @package Tests\Unit\Application\Integration
  */
 class ContratoEventsTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_suscripcion_creada_event_parsea_payload_contrato_creado(): void
     {
         $event = SuscripcionCreadaEvent::fromPayload([
@@ -35,9 +32,6 @@ class ContratoEventsTest extends TestCase
         $this->assertSame('2026-03-02', $event->fechaFin);
     }
 
-    /**
-     * @return void
-     */
     public function test_contrato_cancelado_event_parsea_payload(): void
     {
         $event = ContratoCanceladoEvent::fromPayload([

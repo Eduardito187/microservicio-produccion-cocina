@@ -1,21 +1,20 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\OrderItem as OrdenItemModel;
-use App\Domain\Produccion\Repository\OrdenItemRepositoryInterface;
-use App\Infrastructure\Persistence\Repository\ProductRepository;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\OrdenItem;
+use App\Domain\Produccion\Repository\OrdenItemRepositoryInterface;
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
+use App\Domain\Shared\Exception\EntityNotFoundException;
+use App\Infrastructure\Persistence\Model\OrderItem as OrdenItemModel;
 
 /**
  * @class OrdenItemRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class OrdenItemRepository implements OrdenItemRepositoryInterface
 {
@@ -26,23 +25,20 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
 
     /**
      * Constructor
-     *
-     * @param ProductRepository $productRepository
      */
-    public function __construct(ProductRepository $productRepository) {
+    public function __construct(ProductRepository $productRepository)
+    {
         $this->productRepository = $productRepository;
     }
 
     /**
-     * @param string $id
      * @throws EntityNotFoundException
-     * @return OrdenItem|null
      */
     public function byId(string $id): ?OrdenItem
     {
         $row = OrdenItemModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("El orden item de produccion id: {$id} no existe.");
         }
 
@@ -57,10 +53,6 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
         );
     }
 
-    /**
-     * @param OrdenItem $item
-     * @return void
-     */
     public function save(OrdenItem $item): void
     {
         if ($item->productId == null) {
@@ -77,7 +69,7 @@ class OrdenItemRepository implements OrdenItemRepositoryInterface
                 'price' => $item->price,
                 'final_price' => $item->finalPrice,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]
         );
     }

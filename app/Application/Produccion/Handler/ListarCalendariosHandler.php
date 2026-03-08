@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ListarCalendarios;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Calendario;
+use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
 
 /**
  * @class ListarCalendariosHandler
- * @package App\Application\Produccion\Handler
  */
 class ListarCalendariosHandler
 {
@@ -28,9 +28,6 @@ class ListarCalendariosHandler
 
     /**
      * Constructor
-     *
-     * @param CalendarioRepositoryInterface $calendarioRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         CalendarioRepositoryInterface $calendarioRepository,
@@ -40,10 +37,6 @@ class ListarCalendariosHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param ListarCalendarios $command
-     * @return array
-     */
     public function __invoke(ListarCalendarios $command): array
     {
         return $this->transactionAggregate->runTransaction(function (): array {
@@ -51,10 +44,6 @@ class ListarCalendariosHandler
         });
     }
 
-    /**
-     * @param Calendario $calendario
-     * @return array
-     */
     private function mapCalendario(Calendario $calendario): array
     {
         return [

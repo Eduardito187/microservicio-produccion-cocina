@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Application\Integration\Events\Support\Payload;
 
 /**
  * @class CalendarioEntregaCreadoEvent
- * @package App\Application\Integration\Events
  */
 class CalendarioEntregaCreadoEvent
 {
@@ -45,13 +45,6 @@ class CalendarioEntregaCreadoEvent
 
     /**
      * Constructor
-     *
-     * @param string $id
-     * @param string $fecha
-     * @param ?string $hora
-     * @param ?string $entregaId
-     * @param ?string $contratoId
-     * @param ?int $estado
      */
     public function __construct(
         string $id,
@@ -69,10 +62,6 @@ class CalendarioEntregaCreadoEvent
         $this->estado = $estado;
     }
 
-    /**
-     * @param array $payload
-     * @return self
-     */
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);
@@ -113,14 +102,10 @@ class CalendarioEntregaCreadoEvent
         );
     }
 
-    /**
-     * @param string $entregaId
-     * @param string $fecha
-     * @return string
-     */
     private static function buildCalendarId(string $entregaId, string $fecha): string
     {
         $hash = md5($entregaId . '|' . $fecha);
+
         return sprintf(
             '%s-%s-%s-%s-%s',
             substr($hash, 0, 8),

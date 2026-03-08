@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -6,19 +7,15 @@
 namespace Tests\Unit\Application\Integration;
 
 use App\Application\Integration\RecalculoProduccionService;
-use App\Application\Produccion\Handler\GenerarOPHandler;
 use App\Application\Produccion\Handler\DespachadorOPHandler;
+use App\Application\Produccion\Handler\GenerarOPHandler;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @class RecalculoProduccionServiceTest
- * @package Tests\Unit\Application\Integration
  */
 class RecalculoProduccionServiceTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_try_generar_op_valida_payload(): void
     {
         $generar = $this->createMock(GenerarOPHandler::class);
@@ -30,9 +27,6 @@ class RecalculoProduccionServiceTest extends TestCase
         $this->assertFalse($service->tryGenerarOP(['fecha' => '2025-10-10']));
     }
 
-    /**
-     * @return void
-     */
     public function test_try_generar_op_ejecuta_handler(): void
     {
         $generar = $this->createMock(GenerarOPHandler::class);
@@ -51,9 +45,6 @@ class RecalculoProduccionServiceTest extends TestCase
         $this->assertTrue($service->tryGenerarOP($payload));
     }
 
-    /**
-     * @return void
-     */
     public function test_try_despachar_op_valida_payload(): void
     {
         $generar = $this->createMock(GenerarOPHandler::class);
@@ -65,9 +56,6 @@ class RecalculoProduccionServiceTest extends TestCase
         $this->assertFalse($service->tryDespacharOP(['ordenProduccionId' => 'x']));
     }
 
-    /**
-     * @return void
-     */
     public function test_try_despachar_op_ejecuta_handler(): void
     {
         $generar = $this->createMock(GenerarOPHandler::class);

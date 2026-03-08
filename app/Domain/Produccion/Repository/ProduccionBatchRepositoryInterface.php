@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,24 +10,17 @@ use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
 
 /**
  * @class ProduccionBatchRepositoryInterface
- * @package App\Domain\Produccion\Repository
  */
 interface ProduccionBatchRepositoryInterface
 {
-    /**
-     * @param string|null $id
-     * @return AggregateProduccionBatch|null
-     */
-    public function byId(string|null $id): ? AggregateProduccionBatch;
+    public function byId(?string $id): ?AggregateProduccionBatch;
 
     /**
-     * @param string|null $ordenProduccionId
      * @return AggregateProduccionBatch[]
      */
-    public function byOrderId(string|null $ordenProduccionId): array;
+    public function byOrderId(?string $ordenProduccionId): array;
 
     /**
-     * @param AggregateProduccionBatch $pb
      * @return int
      */
     public function save(AggregateProduccionBatch $pb): string;

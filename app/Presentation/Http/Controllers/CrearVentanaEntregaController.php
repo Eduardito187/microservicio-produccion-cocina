@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\CrearVentanaEntregaHandler;
 use App\Application\Produccion\Command\CrearVentanaEntrega;
+use App\Application\Produccion\Handler\CrearVentanaEntregaHandler;
+use DateTimeImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use DateTimeImmutable;
 
 /**
  * @class CrearVentanaEntregaController
- * @package App\Presentation\Http\Controllers
  */
 class CrearVentanaEntregaController
 {
@@ -24,17 +24,12 @@ class CrearVentanaEntregaController
 
     /**
      * Constructor
-     *
-     * @param CrearVentanaEntregaHandler $handler
      */
-    public function __construct(CrearVentanaEntregaHandler $handler) {
+    public function __construct(CrearVentanaEntregaHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([

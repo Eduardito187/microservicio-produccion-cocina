@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @class Direccion
- * @package App\Infrastructure\Persistence\Model
  */
 class Direccion extends BaseModel
 {
@@ -26,9 +26,6 @@ class Direccion extends BaseModel
         'geo' => 'array',
     ];
 
-    /**
-     * @return HasMany
-     */
     public function paquetes(): HasMany
     {
         return $this->hasMany(Paquete::class, 'direccion_id');

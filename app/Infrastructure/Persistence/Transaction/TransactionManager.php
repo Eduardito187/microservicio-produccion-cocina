@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -11,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * @class TransactionManager
- * @package App\Infrastructure\Persistence\Transaction
  */
 class TransactionManager implements TransactionManagerInterface
 {
@@ -22,17 +22,12 @@ class TransactionManager implements TransactionManagerInterface
 
     /**
      * Constructor
-     *
-     * @param OutboxUnitOfWorkInterface $outboxUnitOfWork
      */
     public function __construct(OutboxUnitOfWorkInterface $outboxUnitOfWork)
     {
         $this->outboxUnitOfWork = $outboxUnitOfWork;
     }
 
-    /**
-     * @param callable $callback
-     */
     public function run(callable $callback): mixed
     {
         $this->outboxUnitOfWork->clear();
@@ -42,6 +37,7 @@ class TransactionManager implements TransactionManagerInterface
                 $result = $callback();
                 // Persist pending domain events in outbox before commit.
                 $this->outboxUnitOfWork->flush();
+
                 return $result;
             });
         } finally {
@@ -49,10 +45,6 @@ class TransactionManager implements TransactionManagerInterface
         }
     }
 
-    /**
-     * @param callable $callback
-     * @return void
-     */
     public function afterCommit(callable $callback): void
     {
         DB::afterCommit($callback);

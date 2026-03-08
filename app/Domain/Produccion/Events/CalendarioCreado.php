@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,7 +11,6 @@ use DateTimeImmutable;
 
 /**
  * @class CalendarioCreado
- * @package App\Domain\Produccion\Events
  */
 class CalendarioCreado extends BaseDomainEvent
 {
@@ -21,9 +21,6 @@ class CalendarioCreado extends BaseDomainEvent
 
     /**
      * Constructor
-     *
-     * @param string|int|null $calendarioId
-     * @param DateTimeImmutable $fecha
      */
     public function __construct(
         string|int|null $calendarioId,
@@ -33,9 +30,6 @@ class CalendarioCreado extends BaseDomainEvent
         $this->fecha = $fecha;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [

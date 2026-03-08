@@ -1,20 +1,20 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\ProductRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Produccion\Command\CrearProducto;
-use App\Domain\Produccion\Events\ProductoCreado;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Products;
+use App\Domain\Produccion\Events\ProductoCreado;
+use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 
 /**
  * @class CrearProductoHandler
- * @package App\Application\Produccion\Handler
  */
 class CrearProductoHandler
 {
@@ -35,10 +35,6 @@ class CrearProductoHandler
 
     /**
      * Constructor
-     *
-     * @param ProductRepositoryInterface $productRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         ProductRepositoryInterface $productRepository,
@@ -51,7 +47,6 @@ class CrearProductoHandler
     }
 
     /**
-     * @param CrearProducto $command
      * @return int
      */
     public function __invoke(CrearProducto $command): string

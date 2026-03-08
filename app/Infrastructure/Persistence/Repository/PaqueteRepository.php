@@ -1,31 +1,31 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\Paquete as PaqueteModel;
+use App\Domain\Produccion\Entity\Paquete;
 use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Entity\Paquete;
+use App\Infrastructure\Persistence\Model\Paquete as PaqueteModel;
 
 /**
  * @class PaqueteRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class PaqueteRepository implements PaqueteRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param  int  $id
+     *
      * @throws EntityNotFoundException
-     * @return Paquete|null
      */
     public function byId(string|int $id): ?Paquete
     {
         $row = PaqueteModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("El paquete id: {$id} no existe.");
         }
 
@@ -38,7 +38,6 @@ class PaqueteRepository implements PaqueteRepositoryInterface
     }
 
     /**
-     * @param Paquete $paquete
      * @return int
      */
     public function save(Paquete $paquete): string
@@ -51,6 +50,7 @@ class PaqueteRepository implements PaqueteRepositoryInterface
                 'direccion_id' => $paquete->direccionId,
             ]
         );
+
         return $model->id;
     }
 
@@ -74,8 +74,7 @@ class PaqueteRepository implements PaqueteRepositoryInterface
     }
 
     /**
-     * @param int $id
-     * @return void
+     * @param  int  $id
      */
     public function delete(string|int $id): void
     {

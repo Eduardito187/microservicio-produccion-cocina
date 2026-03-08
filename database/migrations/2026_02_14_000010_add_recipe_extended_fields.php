@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -15,18 +16,18 @@ return new class extends Migration
     public function up(): void
     {
         $tableName = Schema::hasTable('receta') ? 'receta' : 'receta_version';
-        if (!Schema::hasTable($tableName)) {
+        if (! Schema::hasTable($tableName)) {
             return;
         }
 
         Schema::table($tableName, function (Blueprint $table) use ($tableName): void {
-            if (!Schema::hasColumn($tableName, 'description')) {
+            if (! Schema::hasColumn($tableName, 'description')) {
                 $table->text('description')->nullable()->after('nombre');
             }
-            if (!Schema::hasColumn($tableName, 'instructions')) {
+            if (! Schema::hasColumn($tableName, 'instructions')) {
                 $table->text('instructions')->nullable()->after('description');
             }
-            if (!Schema::hasColumn($tableName, 'total_calories')) {
+            if (! Schema::hasColumn($tableName, 'total_calories')) {
                 $table->unsignedInteger('total_calories')->nullable()->after('instructions');
             }
         });
@@ -38,7 +39,7 @@ return new class extends Migration
     public function down(): void
     {
         $tableName = Schema::hasTable('receta') ? 'receta' : 'receta_version';
-        if (!Schema::hasTable($tableName)) {
+        if (! Schema::hasTable($tableName)) {
             return;
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -12,16 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @class DenyUsersMiddleware
- * @package App\Presentation\Http\Middleware
  */
 class DenyUsersMiddleware
 {
-    /**
-     * @param Request $request
-     * @param Closure $next
-     * @param string $users
-     * @return Response
-     */
     public function handle(Request $request, Closure $next, string $users = ''): Response
     {
         if ($this->shouldBypassForPact($request) || $this->shouldBypassForTests()) {
@@ -29,7 +23,7 @@ class DenyUsersMiddleware
         }
 
         $claims = $request->attributes->get('token');
-        if (!is_array($claims)) {
+        if (! is_array($claims)) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
@@ -47,19 +41,16 @@ class DenyUsersMiddleware
                 'sub' => $sub,
                 'preferred_username' => $username,
             ]);
+
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
         return $next($request);
     }
 
-    /**
-     * @param Request $request
-     * @return bool
-     */
     private function shouldBypassForPact(Request $request): bool
     {
-        if (!$this->isPactBypassEnvironment()) {
+        if (! $this->isPactBypassEnvironment()) {
             return false;
         }
 
@@ -75,29 +66,19 @@ class DenyUsersMiddleware
         return false;
     }
 
-    /**
-     * @return bool
-     */
     private function shouldBypassForTests(): bool
     {
         return app()->runningUnitTests();
     }
 
-    /**
-     * @param string $users
-     * @return array
-     */
     private function parseUsers(string $users): array
     {
         $users = str_replace('|', ',', $users);
         $items = array_map('trim', explode(',', $users));
+
         return array_values(array_filter($items, fn ($u) => $u !== ''));
     }
 
-    /**
-     * @param string $users
-     * @return array
-     */
     private function resolveBlockedUsers(string $users): array
     {
         $fromRoute = $this->parseUsers($users);
@@ -106,7 +87,7 @@ class DenyUsersMiddleware
         }
 
         $fromConfig = config('keycloak.blocked_users', []);
-        if (!is_array($fromConfig)) {
+        if (! is_array($fromConfig)) {
             return [];
         }
 
@@ -117,18 +98,11 @@ class DenyUsersMiddleware
         return array_values(array_unique($normalized));
     }
 
-    /**
-     * @return bool
-     */
     private function isPactBypassEnvironment(): bool
     {
         return app()->environment(['local', 'testing']);
     }
 
-    /**
-     * @param Request $request
-     * @return bool
-     */
     private function hasValidPactSecret(Request $request): bool
     {
         $expected = (string) env('PACT_BYPASS_HEADER_SECRET', '');
@@ -137,6 +111,7 @@ class DenyUsersMiddleware
         }
 
         $provided = $request->header('X-Pact-Secret', '');
+
         return is_string($provided) && hash_equals($expected, $provided);
     }
 }

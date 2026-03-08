@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Application\Produccion\Command;
 
 /**
  * @class CrearDireccion
- * @package App\Application\Produccion\Command
  */
 class CrearDireccion
 {
@@ -48,23 +48,15 @@ class CrearDireccion
 
     /**
      * Constructor
-     *
-     * @param string|null $nombre
-     * @param string $linea1
-     * @param string|null $linea2
-     * @param string|null $ciudad
-     * @param string|null $provincia
-     * @param string|null $pais
-     * @param array|null $geo
      */
     public function __construct(
-        string|null $nombre,
+        ?string $nombre,
         string $linea1,
-        string|null $linea2 = null,
-        string|null $ciudad = null,
-        string|null $provincia = null,
-        string|null $pais = null,
-        array|null $geo = null
+        ?string $linea2 = null,
+        ?string $ciudad = null,
+        ?string $provincia = null,
+        ?string $pais = null,
+        ?array $geo = null
     ) {
         $this->nombre = $nombre;
         $this->linea1 = $linea1;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,18 +10,12 @@ use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
 
 /**
  * @class OrdenProduccionRepositoryInterface
- * @package App\Domain\Produccion\Repository
  */
 interface OrdenProduccionRepositoryInterface
 {
-    /**
-     * @param string|null $id
-     * @return AggregateOrdenProduccion|null
-     */
-    public function byId(string|null $id): ? AggregateOrdenProduccion;
+    public function byId(?string $id): ?AggregateOrdenProduccion;
 
     /**
-     * @param AggregateOrdenProduccion $aggregateOrdenProduccion
      * @return int
      */
     public function save(AggregateOrdenProduccion $aggregateOrdenProduccion): string;

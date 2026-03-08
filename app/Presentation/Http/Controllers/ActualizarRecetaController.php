@@ -1,12 +1,13 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\ActualizarRecetaHandler;
 use App\Application\Produccion\Command\ActualizarReceta;
+use App\Application\Produccion\Handler\ActualizarRecetaHandler;
 use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -34,7 +35,7 @@ class ActualizarRecetaController
         ]);
 
         $nombre = $data['nombre'] ?? ($data['name'] ?? null);
-        if (!is_string($nombre) || trim($nombre) === '') {
+        if (! is_string($nombre) || trim($nombre) === '') {
             return response()->json(['message' => 'El campo nombre o name es requerido.'], 422);
         }
 

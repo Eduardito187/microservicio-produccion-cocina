@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,17 +10,13 @@ use Illuminate\Support\Str;
 
 /**
  * @trait HasUuid
- * @package App\Infrastructure\Persistence\Model\Concerns
  */
 trait HasUuid
 {
-    /**
-     * @return void
-     */
     protected static function bootHasUuid(): void
     {
         static::creating(function ($model): void {
-            if (!$model->getKey()) {
+            if (! $model->getKey()) {
                 $model->setAttribute($model->getKeyName(), (string) Str::uuid());
             }
         });

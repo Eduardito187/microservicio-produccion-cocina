@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -12,13 +13,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @class PacienteEliminadoHandlerTest
- * @package Tests\Unit\Application\Integration
  */
 class PacienteEliminadoHandlerTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_handle_elimina_paciente_por_evento(): void
     {
         $repo = $this->createMock(PacienteRepositoryInterface::class);

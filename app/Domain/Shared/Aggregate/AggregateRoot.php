@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -6,9 +7,9 @@
 namespace App\Domain\Shared\Aggregate;
 
 use App\Domain\Shared\Events\Interface\DomainEventInterface;
+
 /**
  * @trait AggregateRoot
- * @package App\Domain\Shared\Aggregate
  */
 trait AggregateRoot
 {
@@ -17,10 +18,6 @@ trait AggregateRoot
      */
     private array $events = [];
 
-    /**
-     * @param DomainEventInterface $event
-     * @return void
-     */
     protected function record(DomainEventInterface $event): void
     {
         $this->events[] = $event;
@@ -36,5 +33,4 @@ trait AggregateRoot
 
         return $e;
     }
-
 }

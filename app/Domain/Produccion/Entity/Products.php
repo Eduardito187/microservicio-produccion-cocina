@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Domain\Produccion\Entity;
 
 /**
  * @class Products
- * @package App\Domain\Produccion\Entity
  */
 class Products
 {
@@ -33,11 +33,6 @@ class Products
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param string $sku
-     * @param float $price
-     * @param float $special_price
      */
     public function __construct(
         string|int|null $id,

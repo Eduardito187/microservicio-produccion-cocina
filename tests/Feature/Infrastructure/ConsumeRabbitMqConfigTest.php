@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,15 +11,11 @@ use Tests\TestCase;
 
 /**
  * @class ConsumeRabbitMqConfigTest
- * @package Tests\Feature\Infrastructure
  */
 class ConsumeRabbitMqConfigTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_consumer_falla_si_inbound_no_esta_configurado(): void
     {
         config([
@@ -32,9 +29,6 @@ class ConsumeRabbitMqConfigTest extends TestCase
             ->assertExitCode(1);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_falla_si_falta_routing_keys(): void
     {
         config([
@@ -48,9 +42,6 @@ class ConsumeRabbitMqConfigTest extends TestCase
             ->assertExitCode(1);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_falla_si_inbound_apunta_a_outbox(): void
     {
         config([

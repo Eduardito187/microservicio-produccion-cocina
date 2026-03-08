@@ -1,14 +1,15 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\InboundEventRepositoryInterface;
 use App\Application\Produccion\Command\RegistrarInboundEvent;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\InboundEvent;
+use App\Domain\Produccion\Repository\InboundEventRepositoryInterface;
 use App\Domain\Shared\Exception\DuplicateRecordException;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
@@ -16,7 +17,6 @@ use Psr\Log\NullLogger;
 
 /**
  * @class RegistrarInboundEventHandler
- * @package App\Application\Produccion\Handler
  */
 class RegistrarInboundEventHandler
 {
@@ -42,11 +42,6 @@ class RegistrarInboundEventHandler
 
     /**
      * Constructor
-     *
-     * @param InboundEventRepositoryInterface $inboundEventRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param ?LoggerInterface $logger
-     * @param string $supportedSchemaVersions
      */
     public function __construct(
         InboundEventRepositoryInterface $inboundEventRepository,
@@ -56,14 +51,10 @@ class RegistrarInboundEventHandler
     ) {
         $this->inboundEventRepository = $inboundEventRepository;
         $this->transactionAggregate = $transactionAggregate;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
         $this->supportedSchemaVersions = $supportedSchemaVersions;
     }
 
-    /**
-     * @param RegistrarInboundEvent $command
-     * @return bool
-     */
     public function __invoke(RegistrarInboundEvent $command): bool
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): bool {
@@ -88,6 +79,7 @@ class RegistrarInboundEventHandler
                     'event_name' => $command->eventName,
                     'correlation_id' => $correlationId,
                 ]);
+
                 return true;
             } catch (\Throwable $exception) {
                 $this->logger->error('Fallo al insertar evento inbound', [
@@ -104,15 +96,13 @@ class RegistrarInboundEventHandler
         });
     }
 
-    /**
-     * @return string
-     */
     private function generateUuidV4(): string
     {
         $bytes = random_bytes(16);
-        $bytes[6] = chr((ord($bytes[6]) & 0x0f) | 0x40);
-        $bytes[8] = chr((ord($bytes[8]) & 0x3f) | 0x80);
+        $bytes[6] = chr((ord($bytes[6]) & 0x0F) | 0x40);
+        $bytes[8] = chr((ord($bytes[8]) & 0x3F) | 0x80);
         $hex = bin2hex($bytes);
+
         return sprintf(
             '%s-%s-%s-%s-%s',
             substr($hex, 0, 8),
@@ -123,10 +113,6 @@ class RegistrarInboundEventHandler
         );
     }
 
-    /**
-     * @param int|null $schemaVersion
-     * @return int
-     */
     private function resolveSchemaVersion(?int $schemaVersion): int
     {
         if ($schemaVersion === null) {
@@ -139,7 +125,7 @@ class RegistrarInboundEventHandler
         }
 
         $version = $schemaVersion ?? $supportedInts[0];
-        if (!in_array($version, $supportedInts, true)) {
+        if (! in_array($version, $supportedInts, true)) {
             throw new InvalidArgumentException('Unsupported schema_version: ' . $version);
         }
 

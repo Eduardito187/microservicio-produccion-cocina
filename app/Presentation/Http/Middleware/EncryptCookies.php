@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Cookie\Middleware\EncryptCookies as Middleware;
 
 /**
  * @class EncryptCookies
- * @package App\Presentation\Http\Middleware
  */
 class EncryptCookies extends Middleware
 {

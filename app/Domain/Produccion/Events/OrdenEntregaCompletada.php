@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -11,7 +12,6 @@ use DateTimeZone;
 
 /**
  * @class OrdenEntregaCompletada
- * @package App\Domain\Produccion\Events
  */
 class OrdenEntregaCompletada extends BaseDomainEvent
 {
@@ -45,15 +45,6 @@ class OrdenEntregaCompletada extends BaseDomainEvent
      */
     private $completedAt;
 
-    /**
-     * @param string|int|null $ordenProduccionId
-     * @param ?string $entregaId
-     * @param ?string $contratoId
-     * @param int $totalPackages
-     * @param int $confirmedPackages
-     * @param int $failedPackages
-     * @param DateTimeImmutable $completedAt
-     */
     public function __construct(
         string|int|null $ordenProduccionId,
         ?string $entregaId,
@@ -72,9 +63,6 @@ class OrdenEntregaCompletada extends BaseDomainEvent
         $this->completedAt = $completedAt;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         $utc = $this->completedAt->setTimezone(new DateTimeZone('UTC'));

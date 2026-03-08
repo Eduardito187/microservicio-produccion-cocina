@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\ActualizarCalendarioItemHandler;
 use App\Application\Produccion\Command\ActualizarCalendarioItem;
+use App\Application\Produccion\Handler\ActualizarCalendarioItemHandler;
 use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
  * @class ActualizarCalendarioItemController
- * @package App\Presentation\Http\Controllers
  */
 class ActualizarCalendarioItemController
 {
@@ -24,18 +24,12 @@ class ActualizarCalendarioItemController
 
     /**
      * Constructor
-     *
-     * @param ActualizarCalendarioItemHandler $handler
      */
-    public function __construct(ActualizarCalendarioItemHandler $handler) {
+    public function __construct(ActualizarCalendarioItemHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param Request $request
-     * @param string $id
-     * @return JsonResponse
-     */
     public function __invoke(Request $request, string $id): JsonResponse
     {
         $data = $request->validate([

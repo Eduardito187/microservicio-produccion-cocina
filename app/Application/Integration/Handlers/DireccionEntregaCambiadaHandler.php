@@ -1,22 +1,22 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Integration\Handlers;
 
+use App\Application\Integration\CalendarProcessManager;
 use App\Application\Integration\Events\DireccionEntregaCambiadaEvent;
 use App\Application\Integration\IntegrationEventHandlerInterface;
-use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Application\Integration\CalendarProcessManager;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
  * @class DireccionEntregaCambiadaHandler
- * @package App\Application\Integration\Handlers
  */
 class DireccionEntregaCambiadaHandler implements IntegrationEventHandlerInterface
 {
@@ -42,11 +42,6 @@ class DireccionEntregaCambiadaHandler implements IntegrationEventHandlerInterfac
 
     /**
      * Constructor
-     *
-     * @param PaqueteRepositoryInterface $paqueteRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param CalendarProcessManager $calendarProcessManager
-     * @param ?LoggerInterface $logger
      */
     public function __construct(
         PaqueteRepositoryInterface $paqueteRepository,
@@ -57,14 +52,9 @@ class DireccionEntregaCambiadaHandler implements IntegrationEventHandlerInterfac
         $this->paqueteRepository = $paqueteRepository;
         $this->transactionAggregate = $transactionAggregate;
         $this->calendarProcessManager = $calendarProcessManager;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = DireccionEntregaCambiadaEvent::fromPayload($payload);
@@ -72,6 +62,7 @@ class DireccionEntregaCambiadaHandler implements IntegrationEventHandlerInterfac
         $this->transactionAggregate->runTransaction(function () use ($event): void {
             if ($event->paqueteId === null) {
                 $this->logger->warning('DireccionEntregaCambiada ignorada (falta paqueteId)');
+
                 return;
             }
 
@@ -81,6 +72,7 @@ class DireccionEntregaCambiadaHandler implements IntegrationEventHandlerInterfac
                 $this->logger->warning('DireccionEntregaCambiada ignorada (paquete no encontrado)', [
                     'paquete_id' => $event->paqueteId,
                 ]);
+
                 return;
             }
 

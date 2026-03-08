@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -14,7 +15,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('paciente')) {
+        if (! Schema::hasTable('paciente')) {
             return;
         }
 
@@ -33,7 +34,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (!Schema::hasTable('paciente')) {
+        if (! Schema::hasTable('paciente')) {
             return;
         }
 

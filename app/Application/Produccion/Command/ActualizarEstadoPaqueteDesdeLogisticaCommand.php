@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Application\Produccion\Command;
 
 /**
  * @class ActualizarEstadoPaqueteDesdeLogisticaCommand
- * @package App\Application\Produccion\Command
  */
 class ActualizarEstadoPaqueteDesdeLogisticaCommand
 {
@@ -46,15 +46,6 @@ class ActualizarEstadoPaqueteDesdeLogisticaCommand
      */
     public $payload;
 
-    /**
-     * @param string $eventId
-     * @param string $packageId
-     * @param string $deliveryStatus
-     * @param ?string $occurredOn
-     * @param ?string $driverId
-     * @param mixed $deliveryEvidence
-     * @param array $payload
-     */
     public function __construct(
         string $eventId,
         string $packageId,

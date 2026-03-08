@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,7 +11,6 @@ use DateTimeImmutable;
 
 /**
  * @class OrdenProduccionDespachada
- * @package App\Domain\Produccion\Events
  */
 class OrdenProduccionDespachada extends BaseDomainEvent
 {
@@ -26,10 +26,6 @@ class OrdenProduccionDespachada extends BaseDomainEvent
 
     /**
      * Constructor
-     *
-     * @param string|int|null $opId
-     * @param DateTimeImmutable $fecha
-     * @param int $itemsDespachoCount
      */
     public function __construct(
         string|int|null $opId,
@@ -41,9 +37,6 @@ class OrdenProduccionDespachada extends BaseDomainEvent
         $this->itemsDespachoCount = $itemsDespachoCount;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [

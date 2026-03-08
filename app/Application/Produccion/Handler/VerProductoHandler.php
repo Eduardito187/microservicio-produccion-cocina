@@ -1,19 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\ProductRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\VerProducto;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Products;
+use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 
 /**
  * @class VerProductoHandler
- * @package App\Application\Produccion\Handler
  */
 class VerProductoHandler
 {
@@ -29,9 +28,6 @@ class VerProductoHandler
 
     /**
      * Constructor
-     *
-     * @param ProductRepositoryInterface $productRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         ProductRepositoryInterface $productRepository,
@@ -41,22 +37,15 @@ class VerProductoHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param VerProducto $command
-     * @return array
-     */
     public function __invoke(VerProducto $command): array
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): array {
             $product = $this->productRepository->byId((string) $command->id);
+
             return $this->mapProducto($product);
         });
     }
 
-    /**
-     * @param Products $product
-     * @return array
-     */
     private function mapProducto(Products $product): array
     {
         return [

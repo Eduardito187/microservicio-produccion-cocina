@@ -1,17 +1,17 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 use App\Application\Produccion\Command\EliminarCalendarioItem;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 
 /**
  * @class EliminarCalendarioItemHandler
- * @package App\Application\Produccion\Handler
  */
 class EliminarCalendarioItemHandler
 {
@@ -27,9 +27,6 @@ class EliminarCalendarioItemHandler
 
     /**
      * Constructor
-     *
-     * @param CalendarioItemRepositoryInterface $calendarioItemRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         CalendarioItemRepositoryInterface $calendarioItemRepository,
@@ -39,10 +36,6 @@ class EliminarCalendarioItemHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param EliminarCalendarioItem $command
-     * @return void
-     */
     public function __invoke(EliminarCalendarioItem $command): void
     {
         $this->transactionAggregate->runTransaction(function () use ($command): void {

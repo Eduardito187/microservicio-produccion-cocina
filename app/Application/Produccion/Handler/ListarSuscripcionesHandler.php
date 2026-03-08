@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ListarSuscripciones;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Suscripcion;
+use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 
 /**
  * @class ListarSuscripcionesHandler
- * @package App\Application\Produccion\Handler
  */
 class ListarSuscripcionesHandler
 {
@@ -28,9 +28,6 @@ class ListarSuscripcionesHandler
 
     /**
      * Constructor
-     *
-     * @param SuscripcionRepositoryInterface $suscripcionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         SuscripcionRepositoryInterface $suscripcionRepository,
@@ -40,10 +37,6 @@ class ListarSuscripcionesHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param ListarSuscripciones $command
-     * @return array
-     */
     public function __invoke(ListarSuscripciones $command): array
     {
         return $this->transactionAggregate->runTransaction(function (): array {
@@ -51,10 +44,6 @@ class ListarSuscripcionesHandler
         });
     }
 
-    /**
-     * @param Suscripcion $suscripcion
-     * @return array
-     */
     private function mapSuscripcion(Suscripcion $suscripcion): array
     {
         return [

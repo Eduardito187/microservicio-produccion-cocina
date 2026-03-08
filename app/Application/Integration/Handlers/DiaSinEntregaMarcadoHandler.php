@@ -1,21 +1,21 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Integration\Handlers;
 
+use App\Application\Integration\CalendarProcessManager;
+use App\Application\Integration\Events\DiaSinEntregaMarcadoEvent;
+use App\Application\Integration\IntegrationEventHandlerInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
-use App\Application\Integration\IntegrationEventHandlerInterface;
-use App\Application\Integration\Events\DiaSinEntregaMarcadoEvent;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Application\Integration\CalendarProcessManager;
 
 /**
  * @class DiaSinEntregaMarcadoHandler
- * @package App\Application\Integration\Handlers
  */
 class DiaSinEntregaMarcadoHandler implements IntegrationEventHandlerInterface
 {
@@ -41,11 +41,6 @@ class DiaSinEntregaMarcadoHandler implements IntegrationEventHandlerInterface
 
     /**
      * Constructor
-     *
-     * @param CalendarioRepositoryInterface $calendarioRepository
-     * @param CalendarioItemRepositoryInterface $calendarioItemRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param CalendarProcessManager $calendarProcessManager
      */
     public function __construct(
         CalendarioRepositoryInterface $calendarioRepository,
@@ -59,11 +54,6 @@ class DiaSinEntregaMarcadoHandler implements IntegrationEventHandlerInterface
         $this->calendarProcessManager = $calendarProcessManager;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = DiaSinEntregaMarcadoEvent::fromPayload($payload);

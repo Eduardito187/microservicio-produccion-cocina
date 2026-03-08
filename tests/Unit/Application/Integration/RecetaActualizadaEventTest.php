@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,13 +11,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @class RecetaActualizadaEventTest
- * @package Tests\Unit\Application\Integration
  */
 class RecetaActualizadaEventTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_from_payload_with_new_recipe_contract(): void
     {
         $event = RecetaActualizadaEvent::fromPayload([

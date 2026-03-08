@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Domain\Shared\Events\BaseDomainEvent;
 
 /**
  * @class RecetaVersionCreada
- * @package App\Domain\Produccion\Events
  */
 class RecetaVersionCreada extends BaseDomainEvent
 {
@@ -45,23 +45,15 @@ class RecetaVersionCreada extends BaseDomainEvent
 
     /**
      * Constructor
-     *
-     * @param string|int|null $recetaId
-     * @param string $nombre
-     * @param array|null $nutrientes
-     * @param array|null $ingredientes
-     * @param string|null $description
-     * @param string|null $instructions
-     * @param int|null $totalCalories
      */
     public function __construct(
         string|int|null $recetaId,
         string $nombre,
-        array|null $nutrientes,
-        array|null $ingredientes,
-        string|null $description = null,
-        string|null $instructions = null,
-        int|null $totalCalories = null
+        ?array $nutrientes,
+        ?array $ingredientes,
+        ?string $description = null,
+        ?string $instructions = null,
+        ?int $totalCalories = null
     ) {
         parent::__construct($recetaId);
         $this->nombre = $nombre;
@@ -72,9 +64,6 @@ class RecetaVersionCreada extends BaseDomainEvent
         $this->totalCalories = $totalCalories;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [

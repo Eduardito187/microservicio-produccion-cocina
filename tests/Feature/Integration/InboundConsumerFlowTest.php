@@ -1,13 +1,14 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace Tests\Feature\Integration;
 
-use App\Presentation\Console\Commands\ConsumeRabbitMq;
-use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
 use App\Application\Integration\IntegrationEventRouter;
+use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
+use App\Presentation\Console\Commands\ConsumeRabbitMq;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PhpAmqpLib\Message\AMQPMessage;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -15,17 +16,11 @@ use Tests\TestCase;
 
 /**
  * @class InboundConsumerFlowTest
- * @package Tests\Feature\Integration
  */
 class InboundConsumerFlowTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @param array $decoded
-     * @param MockObject $channel
-     * @return AMQPMessage
-     */
     private function makeMessage(array $decoded, MockObject $channel, string $routingKey = 'inbound.key'): AMQPMessage
     {
         $msg = new AMQPMessage(json_encode($decoded));
@@ -34,12 +29,10 @@ class InboundConsumerFlowTest extends TestCase
             'delivery_tag' => 1,
             'routing_key' => $routingKey,
         ];
+
         return $msg;
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_flow_happy_path(): void
     {
         $handler = $this->createMock(RegistrarInboundEventHandler::class);
@@ -70,9 +63,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_flow_payload_invalido_envia_nack(): void
     {
         config(['rabbitmq.inbound.max_retries' => 0]);
@@ -105,9 +95,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_resuelve_evento_por_routing_key_alias(): void
     {
         config([
@@ -149,9 +136,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_resuelve_evento_paciente_eliminado_por_routing_key_alias(): void
     {
         config([
@@ -195,9 +179,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_resuelve_evento_paciente_eliminado_por_event_name_alias(): void
     {
         config([
@@ -242,9 +223,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_acepta_mensaje_sin_envelope_usando_routing_key(): void
     {
         config([
@@ -285,9 +263,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_resuelve_evento_suscripcion_por_routing_key_alias(): void
     {
         config([
@@ -329,9 +304,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_resuelve_evento_contrato_creado_por_routing_key_alias(): void
     {
         config([
@@ -376,9 +348,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_resuelve_evento_contrato_cancelado_por_routing_key_alias(): void
     {
         config([
@@ -420,9 +389,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_resuelve_evento_receta_por_routing_key_alias_con_nuevo_payload(): void
     {
         config([
@@ -477,9 +443,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_resuelve_evento_receta_por_event_name_con_puntos(): void
     {
         config([
@@ -535,9 +498,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_resuelve_evento_calendario_crear_dia_por_alias(): void
     {
         config([
@@ -582,9 +542,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_resuelve_evento_calendarioentrega_creada_legado(): void
     {
         config([
@@ -633,9 +590,6 @@ class InboundConsumerFlowTest extends TestCase
         $command->testProcessMessage($msg);
     }
 
-    /**
-     * @return void
-     */
     public function test_consumer_resuelve_evento_calendario_direccion_cambiada_por_alias(): void
     {
         config([

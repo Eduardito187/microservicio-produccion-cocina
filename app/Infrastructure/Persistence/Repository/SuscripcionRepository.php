@@ -1,31 +1,31 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\Suscripcion as SuscripcionModel;
+use App\Domain\Produccion\Entity\Suscripcion;
 use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Entity\Suscripcion;
+use App\Infrastructure\Persistence\Model\Suscripcion as SuscripcionModel;
 
 /**
  * @class SuscripcionRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class SuscripcionRepository implements SuscripcionRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param  int  $id
+     *
      * @throws EntityNotFoundException
-     * @return Suscripcion|null
      */
     public function byId(string|int $id): ?Suscripcion
     {
         $row = SuscripcionModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("La suscripcion id: {$id} no existe.");
         }
 
@@ -43,7 +43,6 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
     }
 
     /**
-     * @param Suscripcion $suscripcion
      * @return int
      */
     public function save(Suscripcion $suscripcion): string
@@ -61,6 +60,7 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
                 'cancelado_at' => $suscripcion->canceladoAt,
             ]
         );
+
         return $model->id;
     }
 
@@ -89,8 +89,7 @@ class SuscripcionRepository implements SuscripcionRepositoryInterface
     }
 
     /**
-     * @param int $id
-     * @return void
+     * @param  int  $id
      */
     public function delete(string|int $id): void
     {

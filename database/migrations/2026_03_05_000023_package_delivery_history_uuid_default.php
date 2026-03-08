@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -23,22 +24,23 @@ return new class extends Migration
             return;
         }
 
-        if (!Schema::hasTable('package_delivery_history')) {
+        if (! Schema::hasTable('package_delivery_history')) {
             return;
         }
 
-        if (!Schema::hasColumn('package_delivery_history', 'id')) {
+        if (! Schema::hasColumn('package_delivery_history', 'id')) {
             DB::statement(
-                "ALTER TABLE `package_delivery_history`
+                'ALTER TABLE `package_delivery_history`
                  ADD COLUMN `id` CHAR(36) NOT NULL DEFAULT (UUID()) FIRST,
-                 ADD PRIMARY KEY (`id`)"
+                 ADD PRIMARY KEY (`id`)'
             );
+
             return;
         }
 
         DB::statement(
-            "ALTER TABLE `package_delivery_history`
-             MODIFY COLUMN `id` CHAR(36) NOT NULL DEFAULT (UUID())"
+            'ALTER TABLE `package_delivery_history`
+             MODIFY COLUMN `id` CHAR(36) NOT NULL DEFAULT (UUID())'
         );
     }
 
@@ -51,17 +53,17 @@ return new class extends Migration
             return;
         }
 
-        if (!Schema::hasTable('package_delivery_history')) {
+        if (! Schema::hasTable('package_delivery_history')) {
             return;
         }
 
-        if (!Schema::hasColumn('package_delivery_history', 'id')) {
+        if (! Schema::hasColumn('package_delivery_history', 'id')) {
             return;
         }
 
         DB::statement(
-            "ALTER TABLE `package_delivery_history`
-             MODIFY COLUMN `id` CHAR(36) NOT NULL"
+            'ALTER TABLE `package_delivery_history`
+             MODIFY COLUMN `id` CHAR(36) NOT NULL'
         );
     }
 };

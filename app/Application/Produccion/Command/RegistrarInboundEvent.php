@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Application\Produccion\Command;
 
 /**
  * @class RegistrarInboundEvent
- * @package App\Application\Produccion\Command
  */
 class RegistrarInboundEvent
 {
@@ -43,21 +43,14 @@ class RegistrarInboundEvent
 
     /**
      * Constructor
-     *
-     * @param string $eventId
-     * @param string $eventName
-     * @param string|null $occurredOn
-     * @param string $payload
-     * @param int|null $schemaVersion
-     * @param string|null $correlationId
      */
     public function __construct(
         string $eventId,
         string $eventName,
-        string|null $occurredOn,
+        ?string $occurredOn,
         string $payload,
-        int|null $schemaVersion = null,
-        string|null $correlationId = null
+        ?int $schemaVersion = null,
+        ?string $correlationId = null
     ) {
         $this->eventId = $eventId;
         $this->eventName = $eventName;

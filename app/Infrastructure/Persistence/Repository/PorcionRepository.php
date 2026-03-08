@@ -1,31 +1,31 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\Porcion as PorcionModel;
+use App\Domain\Produccion\Entity\Porcion;
 use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Entity\Porcion;
+use App\Infrastructure\Persistence\Model\Porcion as PorcionModel;
 
 /**
  * @class PorcionRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class PorcionRepository implements PorcionRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param  int  $id
+     *
      * @throws EntityNotFoundException
-     * @return Porcion|null
      */
     public function byId(string|int $id): ?Porcion
     {
         $row = PorcionModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("La porcion id: {$id} no existe.");
         }
 
@@ -37,7 +37,6 @@ class PorcionRepository implements PorcionRepositoryInterface
     }
 
     /**
-     * @param Porcion $porcion
      * @return int
      */
     public function save(Porcion $porcion): string
@@ -72,8 +71,7 @@ class PorcionRepository implements PorcionRepositoryInterface
     }
 
     /**
-     * @param int $id
-     * @return void
+     * @param  int  $id
      */
     public function delete(string|int $id): void
     {

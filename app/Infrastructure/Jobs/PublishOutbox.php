@@ -1,26 +1,26 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Jobs;
 
+use App\Application\Shared\BusInterface;
 use App\Infrastructure\Persistence\Model\EventStore;
 use App\Infrastructure\Persistence\Model\Outbox;
+use DateTimeImmutable;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use App\Application\Shared\BusInterface;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Carbon;
-use Illuminate\Bus\Queueable;
 use Illuminate\Support\Str;
-use DateTimeImmutable;
 
 /**
  * @class PublishOutbox
- * @package App\Infrastructure\Jobs
  */
 class PublishOutbox implements ShouldQueue
 {
@@ -32,10 +32,6 @@ class PublishOutbox implements ShouldQueue
      */
     public function __construct() {}
 
-    /**
-     * @param BusInterface $bus
-     * @return void
-     */
     public function handle(BusInterface $bus): void
     {
         $claimId = (string) Str::uuid();
@@ -85,6 +81,7 @@ class PublishOutbox implements ShouldQueue
 
         if ($claimedIds === []) {
             logger()->info('Outbox vacio', ['claim_id' => $claimId]);
+
             return;
         }
 

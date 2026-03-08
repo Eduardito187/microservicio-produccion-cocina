@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ActualizarPaquete;
 use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Events\PaqueteActualizado;
+use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 
 /**
  * @class ActualizarPaqueteHandler
- * @package App\Application\Produccion\Handler
  */
 class ActualizarPaqueteHandler
 {
@@ -34,10 +34,6 @@ class ActualizarPaqueteHandler
 
     /**
      * Constructor
-     *
-     * @param PaqueteRepositoryInterface $paqueteRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         PaqueteRepositoryInterface $paqueteRepository,
@@ -50,7 +46,6 @@ class ActualizarPaqueteHandler
     }
 
     /**
-     * @param ActualizarPaquete $command
      * @return int
      */
     public function __invoke(ActualizarPaquete $command): string

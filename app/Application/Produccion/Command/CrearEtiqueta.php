@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Application\Produccion\Command;
 
 /**
  * @class CrearEtiqueta
- * @package App\Application\Produccion\Command
  */
 class CrearEtiqueta
 {
@@ -28,15 +28,11 @@ class CrearEtiqueta
 
     /**
      * Constructor
-     *
-     * @param string|int|null $suscripcionId
-     * @param string|int|null $pacienteId
-     * @param array|null $qrPayload
      */
     public function __construct(
         string|int|null $suscripcionId,
         string|int|null $pacienteId,
-        array|null $qrPayload = null
+        ?array $qrPayload = null
     ) {
         $this->suscripcionId = $suscripcionId;
         $this->pacienteId = $pacienteId;

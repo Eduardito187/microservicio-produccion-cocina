@@ -1,22 +1,22 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Integration\Handlers;
 
-use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
-use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Integration\Events\DireccionActualizadaEvent;
+use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Direccion;
+use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
  * @class DireccionActualizadaHandler
- * @package App\Application\Integration\Handlers
  */
 class DireccionActualizadaHandler implements IntegrationEventHandlerInterface
 {
@@ -37,10 +37,6 @@ class DireccionActualizadaHandler implements IntegrationEventHandlerInterface
 
     /**
      * Constructor
-     *
-     * @param DireccionRepositoryInterface $direccionRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param ?LoggerInterface $logger
      */
     public function __construct(
         DireccionRepositoryInterface $direccionRepository,
@@ -49,14 +45,9 @@ class DireccionActualizadaHandler implements IntegrationEventHandlerInterface
     ) {
         $this->direccionRepository = $direccionRepository;
         $this->transactionAggregate = $transactionAggregate;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = DireccionActualizadaEvent::fromPayload($payload);
@@ -73,6 +64,7 @@ class DireccionActualizadaHandler implements IntegrationEventHandlerInterface
                 $this->logger->warning('Actualizacion de direccion ignorada (falta linea1 para crear)', [
                     'direccion_id' => $event->id,
                 ]);
+
                 return;
             }
 

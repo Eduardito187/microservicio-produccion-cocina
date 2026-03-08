@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @class Porcion
- * @package App\Infrastructure\Persistence\Model
  */
 class Porcion extends BaseModel
 {
@@ -22,9 +22,6 @@ class Porcion extends BaseModel
      */
     protected $guarded = [];
 
-    /**
-     * @return HasMany
-     */
     public function batches(): HasMany
     {
         return $this->hasMany(ProduccionBatch::class, 'porcion_id');

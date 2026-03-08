@@ -10,7 +10,6 @@ use App\Application\Integration\Events\Support\Payload;
 
 /**
  * @class DireccionEntregaCambiadaEvent
- * @package App\Application\Integration\Events
  */
 class DireccionEntregaCambiadaEvent
 {
@@ -31,10 +30,6 @@ class DireccionEntregaCambiadaEvent
 
     /**
      * Constructor
-     *
-     * @param ?string $paqueteId
-     * @param ?string $itemDespachoId
-     * @param ?string $direccionId
      */
     public function __construct(
         ?string $paqueteId,
@@ -46,10 +41,6 @@ class DireccionEntregaCambiadaEvent
         $this->direccionId = $direccionId;
     }
 
-    /**
-     * @param array $payload
-     * @return self
-     */
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);

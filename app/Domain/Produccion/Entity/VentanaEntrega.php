@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use DateTimeImmutable;
 
 /**
  * @class VentanaEntrega
- * @package App\Domain\Produccion\Entity
  */
 class VentanaEntrega
 {
@@ -45,13 +45,6 @@ class VentanaEntrega
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param DateTimeImmutable $desde
-     * @param DateTimeImmutable $hasta
-     * @param ?string $entregaId
-     * @param ?string $contratoId
-     * @param int|string|null $estado
      */
     public function __construct(
         string|int|null $id,

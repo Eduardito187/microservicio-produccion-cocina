@@ -1,26 +1,26 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http;
 
+use App\Presentation\Http\Middleware\Authenticate;
+use App\Presentation\Http\Middleware\DenyUsersMiddleware;
+use App\Presentation\Http\Middleware\EncryptCookies;
 use App\Presentation\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Presentation\Http\Middleware\RedirectIfAuthenticated;
 use App\Presentation\Http\Middleware\RequireRoleMiddleware;
-use App\Presentation\Http\Middleware\DenyUsersMiddleware;
+use App\Presentation\Http\Middleware\TrimStrings;
+use App\Presentation\Http\Middleware\TrustHosts;
+use App\Presentation\Http\Middleware\TrustProxies;
 use App\Presentation\Http\Middleware\ValidateSignature;
 use App\Presentation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use App\Presentation\Http\Middleware\EncryptCookies;
-use App\Presentation\Http\Middleware\TrustProxies;
-use App\Presentation\Http\Middleware\Authenticate;
-use App\Presentation\Http\Middleware\TrimStrings;
-use App\Presentation\Http\Middleware\TrustHosts;
 
 /**
  * @class Kernel
- * @package App\Presentation\Http
  */
 class Kernel extends HttpKernel
 {
@@ -58,7 +58,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];

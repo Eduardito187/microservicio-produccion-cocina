@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Application\Produccion\Command;
 
 /**
  * @class CrearRecetaVersion
- * @package App\Application\Produccion\Command
  */
 class CrearRecetaVersion
 {
@@ -43,21 +43,14 @@ class CrearRecetaVersion
 
     /**
      * Constructor
-     *
-     * @param string $nombre
-     * @param array|null $nutrientes
-     * @param array|null $ingredientes
-     * @param string|null $description
-     * @param string|null $instructions
-     * @param int|null $totalCalories
      */
     public function __construct(
         string $nombre,
-        array|null $nutrientes = null,
-        array|null $ingredientes = null,
-        string|null $description = null,
-        string|null $instructions = null,
-        int|null $totalCalories = null
+        ?array $nutrientes = null,
+        ?array $ingredientes = null,
+        ?string $description = null,
+        ?string $instructions = null,
+        ?int $totalCalories = null
     ) {
         $this->nombre = $nombre;
         $this->nutrientes = $nutrientes;

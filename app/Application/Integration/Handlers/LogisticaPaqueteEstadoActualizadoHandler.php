@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -13,7 +14,6 @@ use Psr\Log\NullLogger;
 
 /**
  * @class LogisticaPaqueteEstadoActualizadoHandler
- * @package App\Application\Integration\Handlers
  */
 class LogisticaPaqueteEstadoActualizadoHandler implements IntegrationEventHandlerInterface
 {
@@ -27,28 +27,20 @@ class LogisticaPaqueteEstadoActualizadoHandler implements IntegrationEventHandle
      */
     private $logger;
 
-    /**
-     * @param ActualizarEstadoPaqueteDesdeLogisticaHandler $commandHandler
-     * @param ?LoggerInterface $logger
-     */
     public function __construct(
         ActualizarEstadoPaqueteDesdeLogisticaHandler $commandHandler,
         ?LoggerInterface $logger = null
     ) {
         $this->commandHandler = $commandHandler;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $eventId = $meta['event_id'] ?? null;
-        if (!is_string($eventId) || $eventId === '') {
+        if (! is_string($eventId) || $eventId === '') {
             $this->logger->warning('logistica.paquete.estado-actualizado ignorado (falta event_id)');
+
             return;
         }
 
@@ -57,6 +49,7 @@ class LogisticaPaqueteEstadoActualizadoHandler implements IntegrationEventHandle
             $this->logger->warning('logistica.paquete.estado-actualizado ignorado (falta package id)', [
                 'event_id' => $eventId,
             ]);
+
             return;
         }
 
@@ -77,15 +70,10 @@ class LogisticaPaqueteEstadoActualizadoHandler implements IntegrationEventHandle
         ($this->commandHandler)($command);
     }
 
-    /**
-     * @param array $payload
-     * @param array $keys
-     * @return ?string
-     */
     private function getString(array $payload, array $keys): ?string
     {
         foreach ($keys as $key) {
-            if (!array_key_exists($key, $payload)) {
+            if (! array_key_exists($key, $payload)) {
                 continue;
             }
 

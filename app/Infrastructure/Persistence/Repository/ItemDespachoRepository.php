@@ -1,31 +1,29 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\ItemDespacho as ItemDespachoModel;
+use App\Domain\Produccion\Entity\ItemDespacho;
 use App\Domain\Produccion\Repository\ItemDespachoRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Entity\ItemDespacho;
+use App\Infrastructure\Persistence\Model\ItemDespacho as ItemDespachoModel;
 
 /**
  * @class ItemDespachoRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class ItemDespachoRepository implements ItemDespachoRepositoryInterface
 {
     /**
-     * @param string $id
      * @throws EntityNotFoundException
-     * @return ItemDespacho|null
      */
     public function byId(string $id): ?ItemDespacho
     {
         $row = ItemDespachoModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("El item despacho id: {$id} no existe.");
         }
 
@@ -43,10 +41,6 @@ class ItemDespachoRepository implements ItemDespachoRepositoryInterface
         );
     }
 
-    /**
-     * @param ItemDespacho $item
-     * @return void
-     */
     public function save(ItemDespacho $item): void
     {
         ItemDespachoModel::updateOrCreate(

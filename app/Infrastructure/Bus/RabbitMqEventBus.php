@@ -1,32 +1,24 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Bus;
 
-use PhpAmqpLib\Connection\AMQPStreamConnection;
 use App\Application\Shared\BusInterface;
-use PhpAmqpLib\Message\AMQPMessage;
-use Illuminate\Support\Facades\Log;
 use DateTimeImmutable;
+use Illuminate\Support\Facades\Log;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 
 /**
  * @class RabbitMqEventBus
- * @package App\Infrastructure\Bus
  */
 class RabbitMqEventBus implements BusInterface
 {
     private const OUTBOUND_LOG_CHANNEL = 'rabbit_audit_outbound';
 
-    /**
-     * @param string $eventId
-     * @param string $name
-     * @param array $payload
-     * @param DateTimeImmutable $occurredOn
-     * @param array $meta
-     * @return void
-     */
     public function publish(string $eventId, string $name, array $payload, DateTimeImmutable $occurredOn, array $meta = []): void
     {
         $messageBody = json_encode([
@@ -39,7 +31,7 @@ class RabbitMqEventBus implements BusInterface
             'payload' => $payload,
         ], JSON_UNESCAPED_SLASHES);
 
-        if (!is_string($messageBody)) {
+        if (! is_string($messageBody)) {
             throw new \RuntimeException('Unable to encode outbox message');
         }
 
@@ -146,6 +138,7 @@ class RabbitMqEventBus implements BusInterface
                     'queue' => $queue ?? null,
                     'attempt' => $attempt,
                 ]);
+
                 return;
             } catch (\Throwable $e) {
                 Log::error('Error al publicar en RabbitMQ', [
@@ -185,11 +178,6 @@ class RabbitMqEventBus implements BusInterface
         }
     }
 
-    /**
-     * @param string $eventName
-     * @param ?string $mappedQueue
-     * @return string
-     */
     private function resolveRoutingKey(string $eventName, ?string $mappedQueue): string
     {
         if (is_string($mappedQueue) && $mappedQueue !== '') {
@@ -203,6 +191,7 @@ class RabbitMqEventBus implements BusInterface
 
         $normalized = str_replace(['\\', ' '], ['.', '_'], $eventName);
         $normalized = preg_replace('/[^a-zA-Z0-9._-]/', '', $normalized);
+
         return strtolower($normalized ?? $eventName);
     }
 }

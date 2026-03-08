@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\CrearRecetaVersionHandler;
 use App\Application\Produccion\Command\CrearRecetaVersion;
+use App\Application\Produccion\Handler\CrearRecetaVersionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
  * @class CrearRecetaVersionController
- * @package App\Presentation\Http\Controllers
  */
 class CrearRecetaVersionController
 {
@@ -23,17 +23,12 @@ class CrearRecetaVersionController
 
     /**
      * Constructor
-     *
-     * @param CrearRecetaVersionHandler $handler
      */
-    public function __construct(CrearRecetaVersionHandler $handler) {
+    public function __construct(CrearRecetaVersionHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -48,7 +43,7 @@ class CrearRecetaVersionController
         ]);
 
         $nombre = $data['nombre'] ?? ($data['name'] ?? null);
-        if (!is_string($nombre) || trim($nombre) === '') {
+        if (! is_string($nombre) || trim($nombre) === '') {
             return response()->json(['message' => 'El campo nombre o name es requerido.'], 422);
         }
 

@@ -1,17 +1,17 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
 use App\Application\Produccion\Command\ActualizarVentanaEntrega;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
 
 /**
  * @class ActualizarVentanaEntregaHandler
- * @package App\Application\Produccion\Handler
  */
 class ActualizarVentanaEntregaHandler
 {
@@ -27,9 +27,6 @@ class ActualizarVentanaEntregaHandler
 
     /**
      * Constructor
-     *
-     * @param VentanaEntregaRepositoryInterface $ventanaEntregaRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         VentanaEntregaRepositoryInterface $ventanaEntregaRepository,
@@ -40,7 +37,6 @@ class ActualizarVentanaEntregaHandler
     }
 
     /**
-     * @param ActualizarVentanaEntrega $command
      * @return int
      */
     public function __invoke(ActualizarVentanaEntrega $command): string

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Domain\Shared\Events\BaseDomainEvent;
 
 /**
  * @class PaqueteParaDespachoCreado
- * @package App\Domain\Produccion\Events
  */
 class PaqueteParaDespachoCreado extends BaseDomainEvent
 {
@@ -50,15 +50,6 @@ class PaqueteParaDespachoCreado extends BaseDomainEvent
 
     /**
      * Constructor
-     *
-     * @param string|int $paqueteId
-     * @param string $number
-     * @param string|int $patientId
-     * @param string $patientName
-     * @param string $deliveryAddress
-     * @param float $deliveryLatitude
-     * @param float $deliveryLongitude
-     * @param string $deliveryDate
      */
     public function __construct(
         string|int $paqueteId,
@@ -80,9 +71,6 @@ class PaqueteParaDespachoCreado extends BaseDomainEvent
         $this->deliveryDate = $deliveryDate;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [

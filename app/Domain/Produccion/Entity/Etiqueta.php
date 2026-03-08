@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Domain\Produccion\Entity;
 
 /**
  * @class Etiqueta
- * @package App\Domain\Produccion\Entity
  */
 class Etiqueta
 {
@@ -33,17 +33,12 @@ class Etiqueta
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param string|int|null $suscripcionId
-     * @param string|int|null $pacienteId
-     * @param array|null $qrPayload
      */
     public function __construct(
         string|int|null $id,
         string|int|null $suscripcionId,
         string|int|null $pacienteId,
-        array|null $qrPayload = null
+        ?array $qrPayload = null
     ) {
         $this->id = $id;
         $this->suscripcionId = $suscripcionId;

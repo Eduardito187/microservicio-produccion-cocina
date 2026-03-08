@@ -1,86 +1,86 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Providers;
 
-use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
-use App\Infrastructure\Persistence\Repository\OrdenProduccionRepository;
-use App\Infrastructure\Persistence\Repository\ProduccionBatchRepository;
-use App\Infrastructure\Persistence\Repository\PacienteRepository;
-use App\Infrastructure\Persistence\Repository\DireccionRepository;
-use App\Infrastructure\Persistence\Repository\VentanaEntregaRepository;
-use App\Infrastructure\Persistence\Repository\PorcionRepository;
-use App\Infrastructure\Persistence\Repository\RecetaRepository;
-use App\Infrastructure\Persistence\Repository\RecetaVersionRepository;
-use App\Infrastructure\Persistence\Repository\SuscripcionRepository;
-use App\Infrastructure\Persistence\Repository\CalendarioRepository;
-use App\Infrastructure\Persistence\Repository\CalendarioItemRepository;
-use App\Infrastructure\Persistence\Repository\EtiquetaRepository;
-use App\Infrastructure\Persistence\Repository\PaqueteRepository;
-use App\Infrastructure\Persistence\Repository\ProductRepository;
-use App\Infrastructure\Persistence\Repository\InboundEventRepository;
-use App\Infrastructure\Persistence\Repository\ItemDespachoRepository;
+use App\Application\Analytics\KpiRepositoryInterface;
+use App\Application\Integration\Handlers\CalendarioEntregaCreadoHandler;
+use App\Application\Integration\Handlers\CalendarioGeneradoHandler;
+use App\Application\Integration\Handlers\CalendarioServicioGenerarHandler;
+use App\Application\Integration\Handlers\ContratoCanceladoHandler;
+use App\Application\Integration\Handlers\ContratoConsultarHandler;
+use App\Application\Integration\Handlers\DiaSinEntregaMarcadoHandler;
+use App\Application\Integration\Handlers\DireccionActualizadaHandler;
+use App\Application\Integration\Handlers\DireccionCreadaHandler;
+use App\Application\Integration\Handlers\DireccionEntregaCambiadaHandler;
+use App\Application\Integration\Handlers\DireccionGeocodificadaHandler;
+use App\Application\Integration\Handlers\EntregaConfirmadaHandler;
+use App\Application\Integration\Handlers\EntregaFallidaHandler;
+use App\Application\Integration\Handlers\EntregaProgramadaHandler;
+use App\Application\Integration\Handlers\LogisticaPaqueteEstadoActualizadoHandler;
+use App\Application\Integration\Handlers\PacienteActualizadoHandler;
+use App\Application\Integration\Handlers\PacienteCreadoHandler;
+use App\Application\Integration\Handlers\PacienteEliminadoHandler;
+use App\Application\Integration\Handlers\PaqueteEnRutaHandler;
+use App\Application\Integration\Handlers\RecetaActualizadaHandler;
+use App\Application\Integration\Handlers\SuscripcionActualizadaHandler;
+use App\Application\Integration\Handlers\SuscripcionCreadaHandler;
+use App\Application\Integration\Handlers\SuscripcionCrearHandler;
+use App\Application\Integration\IntegrationEventRouter;
+use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
+use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
+use App\Application\Shared\BusInterface;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Shared\OutboxStoreInterface;
 use App\Application\Shared\OutboxUnitOfWorkInterface;
-use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
-use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
-use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
+use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
+use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
+use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
 use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
-use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
+use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
+use App\Domain\Produccion\Repository\InboundEventRepositoryInterface;
+use App\Domain\Produccion\Repository\ItemDespachoRepositoryInterface;
+use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
+use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
+use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
+use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
+use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 use App\Domain\Produccion\Repository\RecetaRepositoryInterface;
 use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
-use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
-use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
-use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
-use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
-use App\Domain\Produccion\Repository\ProductRepositoryInterface;
-use App\Domain\Produccion\Repository\InboundEventRepositoryInterface;
-use App\Domain\Produccion\Repository\ItemDespachoRepositoryInterface;
-use App\Infrastructure\Persistence\Transaction\TransactionManager;
+use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
+use App\Infrastructure\Bus\HttpEventBus;
+use App\Infrastructure\Bus\RabbitMqEventBus;
 use App\Infrastructure\Persistence\Outbox\OutboxEventPublisher;
 use App\Infrastructure\Persistence\Outbox\OutboxStoreAdapter;
 use App\Infrastructure\Persistence\Outbox\OutboxUnitOfWork;
-use App\Application\Shared\BusInterface;
-use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
-use App\Infrastructure\Bus\HttpEventBus;
-use App\Infrastructure\Bus\RabbitMqEventBus;
-use App\Application\Integration\IntegrationEventRouter;
-use App\Application\Integration\Handlers\DireccionCreadaHandler;
-use App\Application\Integration\Handlers\DireccionActualizadaHandler;
-use App\Application\Integration\Handlers\DireccionGeocodificadaHandler;
-use App\Application\Integration\Handlers\PacienteCreadoHandler;
-use App\Application\Integration\Handlers\PacienteActualizadoHandler;
-use App\Application\Integration\Handlers\PacienteEliminadoHandler;
-use App\Application\Integration\Handlers\RecetaActualizadaHandler;
-use App\Application\Integration\Handlers\SuscripcionCreadaHandler;
-use App\Application\Integration\Handlers\SuscripcionCrearHandler;
-use App\Application\Integration\Handlers\SuscripcionActualizadaHandler;
-use App\Application\Integration\Handlers\ContratoCanceladoHandler;
-use App\Application\Integration\Handlers\ContratoConsultarHandler;
-use App\Application\Integration\Handlers\CalendarioEntregaCreadoHandler;
-use App\Application\Integration\Handlers\CalendarioServicioGenerarHandler;
-use App\Application\Integration\Handlers\CalendarioGeneradoHandler;
-use App\Application\Integration\Handlers\EntregaProgramadaHandler;
-use App\Application\Integration\Handlers\DiaSinEntregaMarcadoHandler;
-use App\Application\Integration\Handlers\DireccionEntregaCambiadaHandler;
-use App\Application\Integration\Handlers\EntregaConfirmadaHandler;
-use App\Application\Integration\Handlers\EntregaFallidaHandler;
-use App\Application\Integration\Handlers\PaqueteEnRutaHandler;
-use App\Application\Integration\Handlers\LogisticaPaqueteEstadoActualizadoHandler;
-use App\Application\Analytics\KpiRepositoryInterface;
-use App\Infrastructure\Persistence\Repository\KpiRepository;
-use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
+use App\Infrastructure\Persistence\Repository\CalendarioItemRepository;
+use App\Infrastructure\Persistence\Repository\CalendarioRepository;
+use App\Infrastructure\Persistence\Repository\DireccionRepository;
 use App\Infrastructure\Persistence\Repository\EntregaEvidenciaRepository;
+use App\Infrastructure\Persistence\Repository\EtiquetaRepository;
+use App\Infrastructure\Persistence\Repository\InboundEventRepository;
+use App\Infrastructure\Persistence\Repository\ItemDespachoRepository;
+use App\Infrastructure\Persistence\Repository\KpiRepository;
+use App\Infrastructure\Persistence\Repository\OrdenProduccionRepository;
+use App\Infrastructure\Persistence\Repository\PacienteRepository;
+use App\Infrastructure\Persistence\Repository\PaqueteRepository;
+use App\Infrastructure\Persistence\Repository\PorcionRepository;
+use App\Infrastructure\Persistence\Repository\ProduccionBatchRepository;
+use App\Infrastructure\Persistence\Repository\ProductRepository;
+use App\Infrastructure\Persistence\Repository\RecetaRepository;
+use App\Infrastructure\Persistence\Repository\RecetaVersionRepository;
+use App\Infrastructure\Persistence\Repository\SuscripcionRepository;
+use App\Infrastructure\Persistence\Repository\VentanaEntregaRepository;
+use App\Infrastructure\Persistence\Transaction\TransactionManager;
 use Illuminate\Support\ServiceProvider;
 
 /**
  * @class MicroservicioProvider
- * @package App\Presentation\Providers
  */
 class MicroservicioProvider extends ServiceProvider
 {
@@ -205,11 +205,12 @@ class MicroservicioProvider extends ServiceProvider
 
         $this->app->bind(BusInterface::class, function () {
             $driver = env('EVENTBUS_DRIVER', 'http');
-            return $driver === 'rabbitmq' ? new RabbitMqEventBus() : new HttpEventBus();
+
+            return $driver === 'rabbitmq' ? new RabbitMqEventBus : new HttpEventBus;
         });
 
         $this->app->singleton(IntegrationEventRouter::class, function ($app) {
-            $router = new IntegrationEventRouter();
+            $router = new IntegrationEventRouter;
 
             $router->register('DireccionCreada', $app->make(DireccionCreadaHandler::class));
             $router->register('DireccionActualizada', $app->make(DireccionActualizadaHandler::class));

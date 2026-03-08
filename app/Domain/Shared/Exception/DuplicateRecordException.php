@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,8 +10,5 @@ use RuntimeException;
 
 /**
  * @class DuplicateRecordException
- * @package App\Domain\Shared\Exception
  */
-class DuplicateRecordException extends RuntimeException
-{
-}
+class DuplicateRecordException extends RuntimeException {}

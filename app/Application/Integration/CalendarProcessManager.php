@@ -8,9 +8,9 @@ namespace App\Application\Integration;
 
 /**
  * @class CalendarProcessManager
- * @package App\Application\Integration
  */
-class CalendarProcessManager {
+class CalendarProcessManager
+{
     /**
      * @var RecalculoProduccionService
      */
@@ -18,8 +18,6 @@ class CalendarProcessManager {
 
     /**
      * Constructor
-     *
-     * @param RecalculoProduccionService $recalculoProduccionService
      */
     public function __construct(
         RecalculoProduccionService $recalculoProduccionService
@@ -27,28 +25,19 @@ class CalendarProcessManager {
         $this->recalculoProduccionService = $recalculoProduccionService;
     }
 
-    /**
-     * @param array $payload
-     * @return void
-     */
-    public function onEntregaProgramada(array $payload): void {
+    public function onEntregaProgramada(array $payload): void
+    {
         $this->recalculoProduccionService->tryGenerarOP($payload);
         $this->recalculoProduccionService->tryDespacharOP($payload);
     }
 
-    /**
-     * @param array $payload
-     * @return void
-     */
-    public function onDiaSinEntregaMarcado(array $payload): void {
+    public function onDiaSinEntregaMarcado(array $payload): void
+    {
         $this->recalculoProduccionService->tryGenerarOP($payload);
     }
 
-    /**
-     * @param array $payload
-     * @return void
-     */
-    public function onDireccionEntregaCambiada(array $payload): void {
+    public function onDireccionEntregaCambiada(array $payload): void
+    {
         $this->recalculoProduccionService->tryDespacharOP($payload);
     }
 }

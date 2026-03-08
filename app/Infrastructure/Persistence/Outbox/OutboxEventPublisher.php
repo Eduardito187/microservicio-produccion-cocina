@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Outbox;
 
-use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
-use App\Domain\Shared\Events\Interface\DomainEventInterface;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Shared\OutboxUnitOfWorkInterface;
+use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
+use App\Domain\Shared\Events\Interface\DomainEventInterface;
 
 /**
  * @class OutboxEventPublisher
- * @package App\Infrastructure\Persistence\Outbox
  */
 class OutboxEventPublisher implements DomainEventPublisherInterface
 {
@@ -28,9 +28,6 @@ class OutboxEventPublisher implements DomainEventPublisherInterface
 
     /**
      * Constructor
-     *
-     * @param OutboxUnitOfWorkInterface $outboxUnitOfWork
-     * @param TransactionManagerInterface $transactionManager
      */
     public function __construct(OutboxUnitOfWorkInterface $outboxUnitOfWork, TransactionManagerInterface $transactionManager)
     {
@@ -39,9 +36,7 @@ class OutboxEventPublisher implements DomainEventPublisherInterface
     }
 
     /**
-     * @param DomainEventInterface[] $events
-     * @param mixed $aggregateId
-     * @return void
+     * @param  DomainEventInterface[]  $events
      */
     public function publish(array $events, mixed $aggregateId): void
     {

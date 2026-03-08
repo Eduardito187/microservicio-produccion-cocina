@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -6,16 +7,15 @@
 namespace App\Application\Integration\Handlers;
 
 use App\Application\Integration\Events\DireccionGeocodificadaEvent;
-use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
  * @class DireccionGeocodificadaHandler
- * @package App\Application\Integration\Handlers
  */
 class DireccionGeocodificadaHandler implements IntegrationEventHandlerInterface
 {
@@ -36,10 +36,6 @@ class DireccionGeocodificadaHandler implements IntegrationEventHandlerInterface
 
     /**
      * Constructor
-     *
-     * @param DireccionRepositoryInterface $direccionRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param ?LoggerInterface $logger
      */
     public function __construct(
         DireccionRepositoryInterface $direccionRepository,
@@ -48,14 +44,9 @@ class DireccionGeocodificadaHandler implements IntegrationEventHandlerInterface
     ) {
         $this->direccionRepository = $direccionRepository;
         $this->transactionAggregate = $transactionAggregate;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = DireccionGeocodificadaEvent::fromPayload($payload);
@@ -65,6 +56,7 @@ class DireccionGeocodificadaHandler implements IntegrationEventHandlerInterface
                 $this->logger->warning('Direccion geocodificada ignorada (falta geo)', [
                     'direccion_id' => $event->id,
                 ]);
+
                 return;
             }
 
@@ -74,6 +66,7 @@ class DireccionGeocodificadaHandler implements IntegrationEventHandlerInterface
                 $this->logger->warning('Direccion geocodificada ignorada (direccion no encontrada)', [
                     'direccion_id' => $event->id,
                 ]);
+
                 return;
             }
 

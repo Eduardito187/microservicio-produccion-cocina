@@ -1,20 +1,20 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Produccion\Command\CrearDireccion;
-use App\Domain\Produccion\Events\DireccionCreada;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Direccion;
+use App\Domain\Produccion\Events\DireccionCreada;
+use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 
 /**
  * @class CrearDireccionHandler
- * @package App\Application\Produccion\Handler
  */
 class CrearDireccionHandler
 {
@@ -35,10 +35,6 @@ class CrearDireccionHandler
 
     /**
      * Constructor
-     *
-     * @param DireccionRepositoryInterface $direccionRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         DireccionRepositoryInterface $direccionRepository,
@@ -51,7 +47,6 @@ class CrearDireccionHandler
     }
 
     /**
-     * @param CrearDireccion $command
      * @return int
      */
     public function __invoke(CrearDireccion $command): string

@@ -1,17 +1,17 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\EliminarPorcion;
+use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
 
 /**
  * @class EliminarPorcionHandler
- * @package App\Application\Produccion\Handler
  */
 class EliminarPorcionHandler
 {
@@ -27,9 +27,6 @@ class EliminarPorcionHandler
 
     /**
      * Constructor
-     *
-     * @param PorcionRepositoryInterface $porcionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         PorcionRepositoryInterface $porcionRepository,
@@ -39,10 +36,6 @@ class EliminarPorcionHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param EliminarPorcion $command
-     * @return void
-     */
     public function __invoke(EliminarPorcion $command): void
     {
         $this->transactionAggregate->runTransaction(function () use ($command): void {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -16,7 +17,7 @@ return new class extends Migration
     {
         if (Schema::hasTable('delivery_inconsistency_queue')) {
             Schema::table('delivery_inconsistency_queue', function (Blueprint $table) {
-                if (!Schema::hasColumn('delivery_inconsistency_queue', 'reason')) {
+                if (! Schema::hasColumn('delivery_inconsistency_queue', 'reason')) {
                     return;
                 }
 

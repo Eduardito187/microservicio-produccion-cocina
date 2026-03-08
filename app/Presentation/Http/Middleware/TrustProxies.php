@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,7 +11,6 @@ use Illuminate\Http\Request;
 
 /**
  * @class TrustProxies
- * @package App\Presentation\Http\Middleware
  */
 class TrustProxies extends Middleware
 {

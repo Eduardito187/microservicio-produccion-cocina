@@ -1,24 +1,21 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace Tests\Unit\Domain\Shared;
 
-use App\Domain\Shared\ValueObjects\ValueObject;
 use App\Domain\Shared\Events\BaseDomainEvent;
-use PHPUnit\Framework\TestCase;
+use App\Domain\Shared\ValueObjects\ValueObject;
 use DateTimeImmutable;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @class SharedKernelTest
- * @package Tests\Unit\Domain\Shared
  */
 class SharedKernelTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_base_domain_event_defaults_and_accessors(): void
     {
         $fixed = new DateTimeImmutable('2025-11-04 10:00:00');
@@ -33,16 +30,12 @@ class SharedKernelTest extends TestCase
         $this->assertInstanceOf(DateTimeImmutable::class, $event2->occurredOn());
     }
 
-    /**
-     * @return void
-     */
     public function test_value_object_equals_uses_state_equality(): void
     {
-        $value = new class(1) extends ValueObject {
+        $value = new class(1) extends ValueObject
+        {
             /**
              * Constructor
-             *
-             * @param int $aux
              */
             public function __construct(public int $aux) {}
         };

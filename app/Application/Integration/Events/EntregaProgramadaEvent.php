@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Application\Integration\Events\Support\Payload;
 
 /**
  * @class EntregaProgramadaEvent
- * @package App\Application\Integration\Events
  */
 class EntregaProgramadaEvent
 {
@@ -55,15 +55,6 @@ class EntregaProgramadaEvent
 
     /**
      * Constructor
-     *
-     * @param string $calendarioId
-     * @param string $itemDespachoId
-     * @param ?string $ordenProduccionId
-     * @param ?array $items
-     * @param ?array $itemsDespacho
-     * @param ?string $pacienteId
-     * @param ?string $direccionId
-     * @param ?string $ventanaEntregaId
      */
     public function __construct(
         string $calendarioId,
@@ -85,10 +76,6 @@ class EntregaProgramadaEvent
         $this->ventanaEntregaId = $ventanaEntregaId;
     }
 
-    /**
-     * @param array $payload
-     * @return self
-     */
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);

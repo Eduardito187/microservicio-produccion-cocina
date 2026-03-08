@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -17,40 +18,24 @@ use RuntimeException;
 
 /**
  * @class RegistrarInboundEventHandlerTest
- * @package Tests\Unit\Application\Produccion
  */
 class RegistrarInboundEventHandlerTest extends TestCase
 {
-    /**
-     * @return TransactionAggregate
-     */
     private function tx(): TransactionAggregate
     {
-        $transactionManager = new class implements TransactionManagerInterface {
-            /**
-             * @param callable $callback
-             * @return mixed
-             */
+        $transactionManager = new class implements TransactionManagerInterface
+        {
             public function run(callable $callback): mixed
             {
                 return $callback();
             }
 
-            /**
-             * @param callable $callback
-             * @return void
-             */
-            public function afterCommit(callable $callback): void
-            {
-            }
+            public function afterCommit(callable $callback): void {}
         };
 
         return new TransactionAggregate($transactionManager);
     }
 
-    /**
-     * @return void
-     */
     public function test_si_event_id_ya_existe_retorna_true_por_duplicado(): void
     {
         $repository = $this->createMock(InboundEventRepositoryInterface::class);
@@ -70,9 +55,6 @@ class RegistrarInboundEventHandlerTest extends TestCase
         $this->assertTrue($duplicate);
     }
 
-    /**
-     * @return void
-     */
     public function test_si_error_no_controlado_se_relanzara(): void
     {
         $repository = $this->createMock(InboundEventRepositoryInterface::class);
@@ -92,9 +74,6 @@ class RegistrarInboundEventHandlerTest extends TestCase
         ));
     }
 
-    /**
-     * @return void
-     */
     public function test_si_event_id_no_existe_guarda_y_retorna_false(): void
     {
         $repository = $this->createMock(InboundEventRepositoryInterface::class);
@@ -124,9 +103,6 @@ class RegistrarInboundEventHandlerTest extends TestCase
         $this->assertFalse($duplicate);
     }
 
-    /**
-     * @return void
-     */
     public function test_schema_version_no_soportada_lanza_excepcion(): void
     {
         $repository = $this->createMock(InboundEventRepositoryInterface::class);
@@ -144,9 +120,6 @@ class RegistrarInboundEventHandlerTest extends TestCase
         ));
     }
 
-    /**
-     * @return void
-     */
     public function test_schema_version_requerida_lanza_excepcion(): void
     {
         $repository = $this->createMock(InboundEventRepositoryInterface::class);

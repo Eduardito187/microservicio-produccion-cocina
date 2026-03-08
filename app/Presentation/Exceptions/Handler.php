@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,7 +11,6 @@ use Throwable;
 
 /**
  * @class Handler
- * @package App\Presentation\Exceptions
  */
 class Handler extends ExceptionHandler
 {

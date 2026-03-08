@@ -1,12 +1,13 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\ListarRecetasHandler;
 use App\Application\Produccion\Command\ListarRecetas;
+use App\Application\Produccion\Handler\ListarRecetasHandler;
 use Illuminate\Http\JsonResponse;
 
 class ListarRecetasController
@@ -20,7 +21,8 @@ class ListarRecetasController
 
     public function __invoke(): JsonResponse
     {
-        $rows = $this->handler->__invoke(new ListarRecetas());
+        $rows = $this->handler->__invoke(new ListarRecetas);
+
         return response()->json($rows);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use DateTimeImmutable;
 
 /**
  * @class ActualizarVentanaEntrega
- * @package App\Application\Produccion\Command
  */
 class ActualizarVentanaEntrega
 {
@@ -30,10 +30,6 @@ class ActualizarVentanaEntrega
 
     /**
      * Constructor
-     *
-     * @param string $id
-     * @param DateTimeImmutable $desde
-     * @param DateTimeImmutable $hasta
      */
     public function __construct(string $id, DateTimeImmutable $desde, DateTimeImmutable $hasta)
     {

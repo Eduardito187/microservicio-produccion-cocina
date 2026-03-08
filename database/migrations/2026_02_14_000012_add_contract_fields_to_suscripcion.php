@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -15,25 +16,25 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('suscripcion', function (Blueprint $table): void {
-            if (!Schema::hasColumn('suscripcion', 'paciente_id')) {
+            if (! Schema::hasColumn('suscripcion', 'paciente_id')) {
                 $table->uuid('paciente_id')->nullable()->after('nombre');
             }
-            if (!Schema::hasColumn('suscripcion', 'tipo_servicio')) {
+            if (! Schema::hasColumn('suscripcion', 'tipo_servicio')) {
                 $table->string('tipo_servicio')->nullable()->after('paciente_id');
             }
-            if (!Schema::hasColumn('suscripcion', 'fecha_inicio')) {
+            if (! Schema::hasColumn('suscripcion', 'fecha_inicio')) {
                 $table->date('fecha_inicio')->nullable()->after('tipo_servicio');
             }
-            if (!Schema::hasColumn('suscripcion', 'fecha_fin')) {
+            if (! Schema::hasColumn('suscripcion', 'fecha_fin')) {
                 $table->date('fecha_fin')->nullable()->after('fecha_inicio');
             }
-            if (!Schema::hasColumn('suscripcion', 'estado')) {
+            if (! Schema::hasColumn('suscripcion', 'estado')) {
                 $table->string('estado', 30)->default('ACTIVA')->after('fecha_fin');
             }
-            if (!Schema::hasColumn('suscripcion', 'motivo_cancelacion')) {
+            if (! Schema::hasColumn('suscripcion', 'motivo_cancelacion')) {
                 $table->text('motivo_cancelacion')->nullable()->after('estado');
             }
-            if (!Schema::hasColumn('suscripcion', 'cancelado_at')) {
+            if (! Schema::hasColumn('suscripcion', 'cancelado_at')) {
                 $table->timestamp('cancelado_at')->nullable()->after('motivo_cancelacion');
             }
         });

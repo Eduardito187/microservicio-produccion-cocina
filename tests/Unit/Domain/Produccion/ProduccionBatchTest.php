@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -13,13 +14,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @class ProduccionBatchTest
- * @package Tests\Unit\Domain\Produccion
  */
 class ProduccionBatchTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_procesar_y_despachar_cambian_estado_y_cantidades(): void
     {
         $batch = new ProduccionBatch(
@@ -45,9 +42,6 @@ class ProduccionBatchTest extends TestCase
         $this->assertSame(EstadoPlanificado::DESPACHADO, $batch->estado);
     }
 
-    /**
-     * @return void
-     */
     public function test_no_permite_despachar_si_no_esta_procesando(): void
     {
         $batch = new ProduccionBatch(

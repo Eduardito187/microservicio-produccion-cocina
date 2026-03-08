@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Application\Integration\Events\Support\Payload;
 
 /**
  * @class EntregaConfirmadaEvent
- * @package App\Application\Integration\Events
  */
 class EntregaConfirmadaEvent
 {
@@ -35,11 +35,6 @@ class EntregaConfirmadaEvent
 
     /**
      * Constructor
-     *
-     * @param string $paqueteId
-     * @param ?string $fotoUrl
-     * @param ?array $geo
-     * @param ?string $occurredOn
      */
     public function __construct(
         string $paqueteId,
@@ -53,10 +48,6 @@ class EntregaConfirmadaEvent
         $this->occurredOn = $occurredOn;
     }
 
-    /**
-     * @param array $payload
-     * @return self
-     */
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);

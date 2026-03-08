@@ -1,23 +1,22 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\InboundEvent as InboundEventModel;
+use App\Domain\Produccion\Entity\InboundEvent;
 use App\Domain\Produccion\Repository\InboundEventRepositoryInterface;
 use App\Domain\Shared\Exception\DuplicateRecordException;
-use App\Domain\Produccion\Entity\InboundEvent;
+use App\Infrastructure\Persistence\Model\InboundEvent as InboundEventModel;
 
 /**
  * @class InboundEventRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class InboundEventRepository implements InboundEventRepositoryInterface
 {
     /**
-     * @param InboundEvent $event
      * @return int
      */
     public function save(InboundEvent $event): string

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Application\Produccion\Command;
 
 /**
  * @class CrearProducto
- * @package App\Application\Produccion\Command
  */
 class CrearProducto
 {
@@ -28,10 +28,6 @@ class CrearProducto
 
     /**
      * Constructor
-     *
-     * @param string $sku
-     * @param float $price
-     * @param float $specialPrice
      */
     public function __construct(string $sku, float $price, float $specialPrice = 0.0)
     {

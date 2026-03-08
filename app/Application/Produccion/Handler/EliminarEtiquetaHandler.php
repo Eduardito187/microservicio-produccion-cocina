@@ -1,17 +1,17 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\EliminarEtiqueta;
+use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
 
 /**
  * @class EliminarEtiquetaHandler
- * @package App\Application\Produccion\Handler
  */
 class EliminarEtiquetaHandler
 {
@@ -27,9 +27,6 @@ class EliminarEtiquetaHandler
 
     /**
      * Constructor
-     *
-     * @param EtiquetaRepositoryInterface $etiquetaRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         EtiquetaRepositoryInterface $etiquetaRepository,
@@ -39,10 +36,6 @@ class EliminarEtiquetaHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param EliminarEtiqueta $command
-     * @return void
-     */
     public function __invoke(EliminarEtiqueta $command): void
     {
         $this->transactionAggregate->runTransaction(function () use ($command): void {

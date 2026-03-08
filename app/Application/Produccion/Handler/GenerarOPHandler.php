@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
+use App\Application\Produccion\Command\GenerarOP;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Application\Produccion\Command\GenerarOP;
 
 /**
  * @class GenerarOPHandler
- * @package App\Application\Produccion\Handler
  */
 class GenerarOPHandler
 {
@@ -28,9 +28,6 @@ class GenerarOPHandler
 
     /**
      * Constructor
-     *
-     * @param OrdenProduccionRepositoryInterface $ordenProduccionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         OrdenProduccionRepositoryInterface $ordenProduccionRepository,
@@ -40,10 +37,6 @@ class GenerarOPHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param GenerarOP $command
-     * @return string|int|null
-     */
     public function __invoke(GenerarOP $command): string|int|null
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): string {
@@ -51,6 +44,7 @@ class GenerarOPHandler
                 $command->fecha
             );
             $ordenProduccion->agregarItems($command->items);
+
             return $this->ordenProduccionRepository->save($ordenProduccion);
         });
     }

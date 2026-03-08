@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Domain\Produccion\ValueObjects\OccurredOn;
 
 /**
  * @class ProgresoEntregaOrden
- * @package App\Domain\Produccion\Aggregate
  */
 class ProgresoEntregaOrden
 {
@@ -38,11 +38,6 @@ class ProgresoEntregaOrden
      */
     private $allCompletedAt;
 
-    /**
-     * @param string $opId
-     * @param int $totalPackages
-     * @param int $completedPackages
-     */
     public function __construct(string $opId, int $totalPackages, int $completedPackages)
     {
         $this->opId = $opId;
@@ -52,10 +47,6 @@ class ProgresoEntregaOrden
         $this->allCompletedAt = null;
     }
 
-    /**
-     * @param OccurredOn $occurredOn
-     * @return bool
-     */
     public function markAllCompletedIfReady(OccurredOn $occurredOn): bool
     {
         if ($this->totalPackages === 0 || $this->completedPackages < $this->totalPackages) {
@@ -67,12 +58,10 @@ class ProgresoEntregaOrden
         }
 
         $this->allCompletedAt = $occurredOn;
+
         return true;
     }
 
-    /**
-     * @return int
-     */
     public function pendingPackages(): int
     {
         return $this->pendingPackages;

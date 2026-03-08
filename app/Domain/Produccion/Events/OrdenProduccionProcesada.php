@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,7 +11,6 @@ use DateTimeImmutable;
 
 /**
  * @class OrdenProduccionProcesada
- * @package App\Domain\Produccion\Events
  */
 class OrdenProduccionProcesada extends BaseDomainEvent
 {
@@ -21,9 +21,6 @@ class OrdenProduccionProcesada extends BaseDomainEvent
 
     /**
      * Constructor
-     *
-     * @param string|int|null $opId
-     * @param DateTimeImmutable $fecha
      */
     public function __construct(
         string|int|null $opId,
@@ -33,13 +30,10 @@ class OrdenProduccionProcesada extends BaseDomainEvent
         $this->fecha = $fecha;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [
-            'fecha' => $this->fecha->format(DATE_ATOM)
+            'fecha' => $this->fecha->format(DATE_ATOM),
         ];
     }
 }

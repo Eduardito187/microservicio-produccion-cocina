@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -16,10 +17,10 @@ return new class extends Migration
     {
         if (Schema::hasTable('item_despacho')) {
             Schema::table('item_despacho', function (Blueprint $table) {
-                if (!Schema::hasColumn('item_despacho', 'contrato_id')) {
+                if (! Schema::hasColumn('item_despacho', 'contrato_id')) {
                     $table->string('contrato_id')->nullable()->after('entrega_id');
                 }
-                if (!Schema::hasColumn('item_despacho', 'driver_id')) {
+                if (! Schema::hasColumn('item_despacho', 'driver_id')) {
                     $table->uuid('driver_id')->nullable()->after('contrato_id');
                 }
             });
@@ -27,7 +28,7 @@ return new class extends Migration
 
         if (Schema::hasTable('entrega_evidencia')) {
             Schema::table('entrega_evidencia', function (Blueprint $table) {
-                if (!Schema::hasColumn('entrega_evidencia', 'driver_id')) {
+                if (! Schema::hasColumn('entrega_evidencia', 'driver_id')) {
                     $table->uuid('driver_id')->nullable()->after('status');
                 }
             });

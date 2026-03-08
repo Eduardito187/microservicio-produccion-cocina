@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,7 +11,6 @@ use DomainException;
 
 /**
  * @class PackageStatus
- * @package App\Domain\Produccion\ValueObjects
  */
 class PackageStatus extends ValueObject
 {
@@ -19,9 +19,6 @@ class PackageStatus extends ValueObject
      */
     private $value;
 
-    /**
-     * @param string $value
-     */
     public function __construct(string $value)
     {
         $normalized = strtolower(trim($value));
@@ -30,36 +27,26 @@ class PackageStatus extends ValueObject
         }
 
         $allowed = ['pendiente', 'en_ruta', 'fallida', 'estado_actualizado', 'confirmada'];
-        if (!in_array($normalized, $allowed, true)) {
+        if (! in_array($normalized, $allowed, true)) {
             throw new DomainException('Invalid PackageStatus: ' . $value);
         }
 
         $this->value = $normalized;
     }
 
-    /**
-     * @return string
-     */
     public function value(): string
     {
         return $this->value;
     }
 
-    /**
-     * @return bool
-     */
     public function isCompleted(): bool
     {
         return $this->value === 'confirmada';
     }
 
-    /**
-     * @param PackageStatus $next
-     * @return bool
-     */
     public function canTransitionTo(PackageStatus $next): bool
     {
-        if (!$this->isCompleted()) {
+        if (! $this->isCompleted()) {
             return true;
         }
 

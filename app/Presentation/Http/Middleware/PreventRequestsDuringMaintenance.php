@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as Mi
 
 /**
  * @class PreventRequestsDuringMaintenance
- * @package App\Presentation\Http\Middleware
  */
 class PreventRequestsDuringMaintenance extends Middleware
 {

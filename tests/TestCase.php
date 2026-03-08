@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 /**
  * @class TestCase
- * @package Tests
  */
 abstract class TestCase extends BaseTestCase
 {

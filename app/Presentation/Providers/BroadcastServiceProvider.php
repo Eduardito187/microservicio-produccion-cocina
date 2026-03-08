@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,7 +11,6 @@ use Illuminate\Support\ServiceProvider;
 
 /**
  * @class BroadcastServiceProvider
- * @package App\Presentation\Providers
  */
 class BroadcastServiceProvider extends ServiceProvider
 {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use DateTimeImmutable;
 
 /**
  * @class CrearVentanaEntrega
- * @package App\Application\Produccion\Command
  */
 class CrearVentanaEntrega
 {
@@ -25,9 +25,6 @@ class CrearVentanaEntrega
 
     /**
      * Constructor
-     *
-     * @param DateTimeImmutable $desde
-     * @param DateTimeImmutable $hasta
      */
     public function __construct(DateTimeImmutable $desde, DateTimeImmutable $hasta)
     {

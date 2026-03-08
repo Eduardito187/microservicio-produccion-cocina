@@ -1,33 +1,33 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\VentanaEntrega as VentanaEntregaModel;
+use App\Domain\Produccion\Entity\VentanaEntrega;
 use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Entity\VentanaEntrega;
+use App\Infrastructure\Persistence\Model\VentanaEntrega as VentanaEntregaModel;
 use DateTimeImmutable;
 use DateTimeInterface;
 
 /**
  * @class VentanaEntregaRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param  int  $id
+     *
      * @throws EntityNotFoundException
-     * @return VentanaEntrega|null
      */
     public function byId(string|int $id): ?VentanaEntrega
     {
         $row = VentanaEntregaModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("La ventana de entrega id: {$id} no existe.");
         }
 
@@ -42,7 +42,6 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
     }
 
     /**
-     * @param VentanaEntrega $ventanaEntrega
      * @return int
      */
     public function save(VentanaEntrega $ventanaEntrega): string
@@ -83,18 +82,13 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
     }
 
     /**
-     * @param int $id
-     * @return void
+     * @param  int  $id
      */
     public function delete(string|int $id): void
     {
         VentanaEntregaModel::query()->whereKey($id)->delete();
     }
 
-    /**
-     * @param string|DateTimeInterface $value
-     * @return DateTimeImmutable
-     */
     private function convertDateTime(string|DateTimeInterface $value): DateTimeImmutable
     {
         if ($value instanceof DateTimeInterface) {

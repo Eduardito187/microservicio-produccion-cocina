@@ -1,31 +1,29 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\Product as ProductModel;
+use App\Domain\Produccion\Entity\Products;
 use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Entity\Products;
+use App\Infrastructure\Persistence\Model\Product as ProductModel;
 
 /**
  * @class ProductRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class ProductRepository implements ProductRepositoryInterface
 {
     /**
-     * @param string $id
      * @throws EntityNotFoundException
-     * @return Products|null
      */
     public function byId(string $id): ?Products
     {
         $row = ProductModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("El producto id: {$id} no existe.");
         }
 
@@ -37,15 +35,11 @@ class ProductRepository implements ProductRepositoryInterface
         );
     }
 
-    /**
-     * @param string $sku
-     * @return Products|null
-     */
     public function bySku(string $sku): ?Products
     {
         $row = ProductModel::where('sku', $sku)->first();
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("El producto sku: {$sku} no existe.");
         }
 
@@ -57,16 +51,13 @@ class ProductRepository implements ProductRepositoryInterface
         );
     }
 
-    /**
-     * @param Products $product
-     * @return string
-     */
     public function save(Products $product): string
     {
         $model = ProductModel::query()->updateOrCreate(
             ['id' => $product->id],
             ['sku' => $product->sku, 'price' => $product->price, 'special_price' => $product->special_price]
         );
+
         return $model->id;
     }
 
@@ -90,8 +81,7 @@ class ProductRepository implements ProductRepositoryInterface
     }
 
     /**
-     * @param int $id
-     * @return void
+     * @param  int  $id
      */
     public function delete(string|int $id): void
     {

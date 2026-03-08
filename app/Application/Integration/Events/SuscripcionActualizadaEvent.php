@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Application\Integration\Events\Support\Payload;
 
 /**
  * @class SuscripcionActualizadaEvent
- * @package App\Application\Integration\Events
  */
 class SuscripcionActualizadaEvent
 {
@@ -45,21 +45,14 @@ class SuscripcionActualizadaEvent
 
     /**
      * Constructor
-     *
-     * @param string $id
-     * @param ?string $nombre
-     * @param string|null $pacienteId
-     * @param string|null $tipoServicio
-     * @param string|null $fechaInicio
-     * @param string|null $fechaFin
      */
     public function __construct(
         string $id,
         ?string $nombre,
-        string|null $pacienteId = null,
-        string|null $tipoServicio = null,
-        string|null $fechaInicio = null,
-        string|null $fechaFin = null
+        ?string $pacienteId = null,
+        ?string $tipoServicio = null,
+        ?string $fechaInicio = null,
+        ?string $fechaFin = null
     ) {
         $this->id = $id;
         $this->nombre = $nombre;
@@ -69,10 +62,6 @@ class SuscripcionActualizadaEvent
         $this->fechaFin = $fechaFin;
     }
 
-    /**
-     * @param array $payload
-     * @return self
-     */
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -171,7 +172,7 @@ return [
         // App\Presentation\Providers\BroadcastServiceProvider::class,
         App\Presentation\Providers\EventServiceProvider::class,
         App\Presentation\Providers\RouteServiceProvider::class,
-        App\Presentation\Providers\MicroservicioProvider::class
+        App\Presentation\Providers\MicroservicioProvider::class,
     ])->toArray(),
 
     /*
@@ -190,5 +191,5 @@ return [
     ])->toArray(),
 
     'endpoint' => env('EVENTBUS_ENDPOINT', 'http://127.0.0.1:8000/api/event-bus'),
-    'timeout'  => env('EVENTBUS_TIMEOUT', 5),
+    'timeout' => env('EVENTBUS_TIMEOUT', 5),
 ];

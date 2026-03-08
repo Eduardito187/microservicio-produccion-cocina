@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,19 +11,15 @@ use Tests\TestCase;
 
 /**
  * @class CalendarioCrudTest
- * @package Tests\Feature\Maestros
  */
 class CalendarioCrudTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_crear_actualizar_y_eliminar_calendario(): void
     {
         $create = $this->postJson(route('calendarios.crear'), [
-            'fecha' => '2026-01-10'
+            'fecha' => '2026-01-10',
         ]);
 
         $create->assertCreated()->assertJsonStructure(['calendarioId']);
@@ -34,7 +31,7 @@ class CalendarioCrudTest extends TestCase
             ->assertOk()->assertJsonFragment(['id' => $calendarioId, 'fecha' => '2026-01-10']);
 
         $update = $this->putJson(route('calendarios.actualizar', ['id' => $calendarioId]), [
-            'fecha' => '2026-01-11'
+            'fecha' => '2026-01-11',
         ]);
 
         $update->assertOk()->assertJsonPath('calendarioId', $calendarioId);

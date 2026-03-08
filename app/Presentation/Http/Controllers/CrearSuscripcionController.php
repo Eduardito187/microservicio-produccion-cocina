@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\CrearSuscripcionHandler;
 use App\Application\Produccion\Command\CrearSuscripcion;
+use App\Application\Produccion\Handler\CrearSuscripcionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
  * @class CrearSuscripcionController
- * @package App\Presentation\Http\Controllers
  */
 class CrearSuscripcionController
 {
@@ -23,17 +23,12 @@ class CrearSuscripcionController
 
     /**
      * Constructor
-     *
-     * @param CrearSuscripcionHandler $handler
      */
-    public function __construct(CrearSuscripcionHandler $handler) {
+    public function __construct(CrearSuscripcionHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([

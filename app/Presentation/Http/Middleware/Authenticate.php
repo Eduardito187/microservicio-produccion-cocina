@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,7 +11,6 @@ use Illuminate\Http\Request;
 
 /**
  * @class Authenticate
- * @package App\Presentation\Http\Middleware
  */
 class Authenticate extends Middleware
 {

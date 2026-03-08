@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Domain\Shared\Aggregate\AggregateRoot;
 
 /**
  * @class Paquete
- * @package App\Domain\Produccion\Aggregate
  */
 class Paquete
 {
@@ -37,11 +37,6 @@ class Paquete
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param string|int $etiquetaId
-     * @param string|int $ventanaId
-     * @param string|int $direccionId
      */
     public function __construct(
         string|int|null $id,
@@ -55,13 +50,6 @@ class Paquete
         $this->direccionId = $direccionId;
     }
 
-    /**
-     * @param string|int|null $id
-     * @param string|int $etiquetaId
-     * @param string|int $ventanaId
-     * @param string|int $direccionId
-     * @return Paquete
-     */
     public static function crear(
         string|int|null $id,
         string|int $etiquetaId,
@@ -75,18 +63,11 @@ class Paquete
             $direccionId
         );
 
-        //$self->record();
+        // $self->record();
 
         return $self;
     }
 
-    /**
-     * @param int $id
-     * @param string|int $etiquetaId
-     * @param string|int $ventanaId
-     * @param string|int $direccionId
-     * @return Paquete
-     */
     public static function reconstitute(
         int $id,
         string|int $etiquetaId,

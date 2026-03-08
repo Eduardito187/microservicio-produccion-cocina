@@ -1,30 +1,25 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Middleware;
 
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Request;
+use Closure;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
-use Closure;
 
 /**
  * @class KeycloakJwtMiddleware
- * @package App\Presentation\Http\Middleware
  */
 class KeycloakJwtMiddleware
 {
-    /**
-     * @param Request $request
-     * @param Closure $next
-     * @return Response
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if ($this->shouldBypassAuthForPact($request) || $this->shouldBypassForTests()) {
@@ -33,7 +28,7 @@ class KeycloakJwtMiddleware
 
         $auth = $request->header('Authorization', '');
 
-        if (!is_string($auth) || $auth === '') {
+        if (! is_string($auth) || $auth === '') {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
@@ -54,12 +49,12 @@ class KeycloakJwtMiddleware
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        if (!$this->isValidIssuer($claims) || !$this->isValidAudience($claims)) {
+        if (! $this->isValidIssuer($claims) || ! $this->isValidAudience($claims)) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
         if ($this->shouldRequireDpop($claims)) {
-            if (!$this->isValidDpop($request, $claims)) {
+            if (! $this->isValidDpop($request, $claims)) {
                 return response()->json(['message' => 'Unauthorized'], 401);
             }
         }
@@ -69,13 +64,9 @@ class KeycloakJwtMiddleware
         return $next($request);
     }
 
-    /**
-     * @param Request $request
-     * @return bool
-     */
     private function shouldBypassAuthForPact(Request $request): bool
     {
-        if (!$this->isPactBypassEnvironment()) {
+        if (! $this->isPactBypassEnvironment()) {
             return false;
         }
 
@@ -91,17 +82,11 @@ class KeycloakJwtMiddleware
         return false;
     }
 
-    /**
-     * @return bool
-     */
     private function shouldBypassForTests(): bool
     {
         return app()->runningUnitTests();
     }
 
-    /**
-     * @return ?array
-     */
     private function getJwks(): ?array
     {
         $ttl = config('keycloak.jwks_ttl', 600);
@@ -109,7 +94,7 @@ class KeycloakJwtMiddleware
 
         return Cache::remember($cacheKey, $ttl, function () {
             $url = rtrim(config('keycloak.base_url'), '/')
-                .'/realms/'.config('keycloak.realm').'/protocol/openid-connect/certs';
+                . '/realms/' . config('keycloak.realm') . '/protocol/openid-connect/certs';
             try {
                 $response = Http::connectTimeout(2)
                     ->timeout(5)
@@ -118,13 +103,13 @@ class KeycloakJwtMiddleware
                 return null;
             }
 
-            if (!$response->ok()) {
+            if (! $response->ok()) {
                 return null;
             }
 
             $data = $response->json();
 
-            if (!is_array($data) || !isset($data['keys'])) {
+            if (! is_array($data) || ! isset($data['keys'])) {
                 return null;
             }
 
@@ -132,20 +117,13 @@ class KeycloakJwtMiddleware
         });
     }
 
-    /**
-     * @param array $claims
-     * @return bool
-     */
     private function isValidIssuer(array $claims): bool
     {
         $expected = config('keycloak.issuer');
+
         return isset($claims['iss']) && $claims['iss'] === $expected;
     }
 
-    /**
-     * @param array $claims
-     * @return bool
-     */
     private function isValidAudience(array $claims): bool
     {
         $expected = config('keycloak.client_id');
@@ -171,25 +149,16 @@ class KeycloakJwtMiddleware
         return false;
     }
 
-    /**
-     * @param array $claims
-     * @return bool
-     */
     private function shouldRequireDpop(array $claims): bool
     {
         return (bool) config('keycloak.require_dpop', false) && (($claims['typ'] ?? null) === 'DPoP');
     }
 
-    /**
-     * @param Request $request
-     * @param array $claims
-     * @return bool
-     */
     private function isValidDpop(Request $request, array $claims): bool
     {
         $dpop = $request->header('DPoP');
 
-        if (!is_string($dpop) || $dpop === '') {
+        if (! is_string($dpop) || $dpop === '') {
             return false;
         }
 
@@ -208,7 +177,7 @@ class KeycloakJwtMiddleware
 
         $jwk = $header['jwk'] ?? null;
 
-        if (!is_array($jwk)) {
+        if (! is_array($jwk)) {
             return false;
         }
 
@@ -222,7 +191,7 @@ class KeycloakJwtMiddleware
         $cnf = $claims['cnf'] ?? [];
         $expectedJkt = is_array($cnf) ? ($cnf['jkt'] ?? null) : null;
 
-        if (!is_string($expectedJkt)) {
+        if (! is_string($expectedJkt)) {
             return false;
         }
 
@@ -235,53 +204,38 @@ class KeycloakJwtMiddleware
         return true;
     }
 
-    /**
-     * @param array $jwk
-     * @return ?string
-     */
     private function jwkThumbprint(array $jwk): ?string
     {
         if (($jwk['kty'] ?? null) !== 'EC' || ($jwk['crv'] ?? null) !== 'P-256') {
             return null;
         }
-        if (!isset($jwk['x'], $jwk['y'])) {
+        if (! isset($jwk['x'], $jwk['y'])) {
             return null;
         }
 
         $data = json_encode(
             ['crv' => $jwk['crv'], 'kty' => $jwk['kty'], 'x' => $jwk['x'], 'y' => $jwk['y']], JSON_UNESCAPED_SLASHES
-            );
+        );
 
-        if (!is_string($data)) {
+        if (! is_string($data)) {
             return null;
         }
 
         return $this->base64UrlEncode(hash('sha256', $data, true));
     }
 
-    /**
-     * @param string $data
-     * @return string
-     */
     private function base64UrlEncode(string $data): string
     {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
 
-    /**
-     * @param string $data
-     * @return string
-     */
     private function base64UrlDecode(string $data): string
     {
         $data = strtr($data, '-_', '+/');
+
         return base64_decode($data);
     }
 
-    /**
-     * @param string $token
-     * @return ?array
-     */
     private function decodeClaimsWithCachedJwks(string $token): ?array
     {
         $jwks = $this->getJwks();
@@ -292,14 +246,10 @@ class KeycloakJwtMiddleware
 
         Cache::forget($this->jwksCacheKey());
         $jwks = $this->getJwks();
+
         return $this->decodeClaims($token, $jwks);
     }
 
-    /**
-     * @param string $token
-     * @param ?array $jwks
-     * @return ?array
-     */
     private function decodeClaims(string $token, ?array $jwks): ?array
     {
         if ($jwks === null) {
@@ -319,26 +269,16 @@ class KeycloakJwtMiddleware
         }
     }
 
-    /**
-     * @return string
-     */
     private function jwksCacheKey(): string
     {
         return 'keycloak.jwks';
     }
 
-    /**
-     * @return bool
-     */
     private function isPactBypassEnvironment(): bool
     {
         return app()->environment(['local', 'testing']);
     }
 
-    /**
-     * @param Request $request
-     * @return bool
-     */
     private function hasValidPactSecret(Request $request): bool
     {
         $expected = (string) env('PACT_BYPASS_HEADER_SECRET', '');
@@ -347,6 +287,7 @@ class KeycloakJwtMiddleware
         }
 
         $provided = $request->header('X-Pact-Secret', '');
+
         return is_string($provided) && hash_equals($expected, $provided);
     }
 }

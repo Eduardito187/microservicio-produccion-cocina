@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,11 +8,9 @@ namespace App\Domain\Produccion\Entity;
 
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
-use App\Domain\Produccion\Entity\Products;
 
 /**
  * @class OrdenItem
- * @package App\Domain\Produccion\Entity
  */
 class OrdenItem
 {
@@ -52,14 +51,6 @@ class OrdenItem
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param string|int|null $ordenProduccionId
-     * @param string|int|null $productId
-     * @param Qty $qty
-     * @param Sku $sku
-     * @param float $price
-     * @param float $finalPrice
      */
     public function __construct(
         string|int|null $id,
@@ -79,10 +70,6 @@ class OrdenItem
         $this->finalPrice = $finalPrice;
     }
 
-    /**
-     * @param Products $product
-     * @return void
-     */
     public function loadProduct(Products $product): void
     {
         $this->productId = $product->id;
@@ -93,17 +80,11 @@ class OrdenItem
         }
     }
 
-    /**
-     * @return Sku
-     */
     public function sku(): Sku
     {
         return $this->sku;
     }
 
-    /**
-     * @return Qty
-     */
     public function qty(): Qty
     {
         return $this->qty;

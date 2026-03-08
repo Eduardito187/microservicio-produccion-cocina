@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Infrastructure\Persistence\Model;
 
 /**
  * @class PackageDeliveryHistory
- * @package App\Infrastructure\Persistence\Model
  */
 class PackageDeliveryHistory extends BaseModel
 {

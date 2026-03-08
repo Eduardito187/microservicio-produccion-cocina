@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,11 +10,10 @@ use App\Application\Integration\Events\Support\Payload;
 
 /**
  * @class PaqueteEnRutaEvent
- * @package App\Application\Integration\Events
  */
 class PaqueteEnRutaEvent
 {
-        /**
+    /**
      * @var string
      */
     public $paqueteId;
@@ -30,10 +30,6 @@ class PaqueteEnRutaEvent
 
     /**
      * Constructor
-     *
-     * @param string $paqueteId
-     * @param ?string $rutaId
-     * @param ?string $occurredOn
      */
     public function __construct(
         string $paqueteId,
@@ -45,10 +41,6 @@ class PaqueteEnRutaEvent
         $this->occurredOn = $occurredOn;
     }
 
-    /**
-     * @param array $payload
-     * @return self
-     */
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);

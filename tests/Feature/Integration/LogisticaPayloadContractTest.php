@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -13,15 +14,11 @@ use Tests\TestCase;
 
 /**
  * @class LogisticaPayloadContractTest
- * @package Tests\Feature\Integration
  */
 class LogisticaPayloadContractTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_contract_completed_se_mapea_a_confirmada(): void
     {
         DB::table('orden_produccion')->insert([
@@ -72,9 +69,6 @@ class LogisticaPayloadContractTest extends TestCase
         ]);
     }
 
-    /**
-     * @return void
-     */
     public function test_contract_evidencia_string_y_objeto_se_parsean_correctamente(): void
     {
         DB::table('orden_produccion')->insert([
@@ -150,9 +144,6 @@ class LogisticaPayloadContractTest extends TestCase
         $this->assertStringContainsString('lng', $record->geo);
     }
 
-    /**
-     * @return void
-     */
     public function test_contract_driver_id_valido_se_guarda_e_invalido_se_ignora(): void
     {
         DB::table('orden_produccion')->insert([

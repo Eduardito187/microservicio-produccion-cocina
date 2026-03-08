@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ListarEtiquetas;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Etiqueta;
+use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
 
 /**
  * @class ListarEtiquetasHandler
- * @package App\Application\Produccion\Handler
  */
 class ListarEtiquetasHandler
 {
@@ -28,9 +28,6 @@ class ListarEtiquetasHandler
 
     /**
      * Constructor
-     *
-     * @param EtiquetaRepositoryInterface $etiquetaRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         EtiquetaRepositoryInterface $etiquetaRepository,
@@ -40,10 +37,6 @@ class ListarEtiquetasHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param ListarEtiquetas $command
-     * @return array
-     */
     public function __invoke(ListarEtiquetas $command): array
     {
         return $this->transactionAggregate->runTransaction(function (): array {
@@ -51,10 +44,6 @@ class ListarEtiquetasHandler
         });
     }
 
-    /**
-     * @param Etiqueta $etiqueta
-     * @return array
-     */
     private function mapEtiqueta(Etiqueta $etiqueta): array
     {
         return [

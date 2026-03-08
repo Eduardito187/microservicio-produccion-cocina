@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Http\Middleware\TrustHosts as Middleware;
 
 /**
  * @class TrustHosts
- * @package App\Presentation\Http\Middleware
  */
 class TrustHosts extends Middleware
 {

@@ -1,22 +1,22 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Integration\Handlers;
 
-use App\Application\Integration\IntegrationEventHandlerInterface;
-use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 use App\Application\Integration\Events\PacienteActualizadoEvent;
+use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Paciente;
+use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
  * @class PacienteActualizadoHandler
- * @package App\Application\Integration\Handlers
  */
 class PacienteActualizadoHandler implements IntegrationEventHandlerInterface
 {
@@ -37,10 +37,6 @@ class PacienteActualizadoHandler implements IntegrationEventHandlerInterface
 
     /**
      * Constructor
-     *
-     * @param PacienteRepositoryInterface $pacienteRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param ?LoggerInterface $logger
      */
     public function __construct(
         PacienteRepositoryInterface $pacienteRepository,
@@ -49,14 +45,9 @@ class PacienteActualizadoHandler implements IntegrationEventHandlerInterface
     ) {
         $this->pacienteRepository = $pacienteRepository;
         $this->transactionAggregate = $transactionAggregate;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = PacienteActualizadoEvent::fromPayload($payload);
@@ -73,6 +64,7 @@ class PacienteActualizadoHandler implements IntegrationEventHandlerInterface
                 $this->logger->warning('Actualizacion de paciente ignorada (falta nombre para crear)', [
                     'paciente_id' => $event->id,
                 ]);
+
                 return;
             }
 

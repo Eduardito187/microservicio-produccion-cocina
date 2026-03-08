@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Application\Produccion\Command;
 
 /**
  * @class DespachadorOP
- * @package App\Application\Produccion\Command
  */
 class DespachadorOP
 {
@@ -38,16 +38,14 @@ class DespachadorOP
 
     /**
      * Constructor
-     *
-     * @param array $dataApi
      */
     public function __construct(
         array $dataApi
     ) {
-        $this->ordenProduccionId = $dataApi["ordenProduccionId"];
-        $this->itemsDespacho = $dataApi["itemsDespacho"];
-        $this->pacienteId = $dataApi["pacienteId"];
-        $this->direccionId = $dataApi["direccionId"];
-        $this->ventanaEntrega = $dataApi["ventanaEntrega"];
+        $this->ordenProduccionId = $dataApi['ordenProduccionId'];
+        $this->itemsDespacho = $dataApi['itemsDespacho'];
+        $this->pacienteId = $dataApi['pacienteId'];
+        $this->direccionId = $dataApi['direccionId'];
+        $this->ventanaEntrega = $dataApi['ventanaEntrega'];
     }
 }

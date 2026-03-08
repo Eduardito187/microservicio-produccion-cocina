@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Integration\Handlers;
 
-use App\Application\Integration\IntegrationEventHandlerInterface;
-use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Integration\Events\PacienteCreadoEvent;
+use App\Application\Integration\IntegrationEventHandlerInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Paciente;
+use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 
 /**
  * @class PacienteCreadoHandler
- * @package App\Application\Integration\Handlers
  */
 class PacienteCreadoHandler implements IntegrationEventHandlerInterface
 {
@@ -29,9 +29,6 @@ class PacienteCreadoHandler implements IntegrationEventHandlerInterface
 
     /**
      * Constructor
-     *
-     * @param PacienteRepositoryInterface $pacienteRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         PacienteRepositoryInterface $pacienteRepository,
@@ -41,11 +38,6 @@ class PacienteCreadoHandler implements IntegrationEventHandlerInterface
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = PacienteCreadoEvent::fromPayload($payload);

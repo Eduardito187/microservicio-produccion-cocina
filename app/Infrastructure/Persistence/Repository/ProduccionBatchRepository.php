@@ -1,33 +1,31 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\ProduccionBatch as ProduccionBatchModel;
 use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
-use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Enum\EstadoPlanificado;
+use App\Domain\Produccion\Repository\ProduccionBatchRepositoryInterface;
 use App\Domain\Produccion\ValueObjects\Qty;
+use App\Domain\Shared\Exception\EntityNotFoundException;
+use App\Infrastructure\Persistence\Model\ProduccionBatch as ProduccionBatchModel;
 
 /**
  * @class ProduccionBatchRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
 {
     /**
-     * @param string|null $id
      * @throws EntityNotFoundException
-     * @return AggregateProduccionBatch|null
      */
-    public function byId(string|null $id): ?AggregateProduccionBatch
+    public function byId(?string $id): ?AggregateProduccionBatch
     {
         $row = ProduccionBatchModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("El batch de produccion id: {$id} no existe.");
         }
 
@@ -48,10 +46,9 @@ class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
     }
 
     /**
-     * @param string|null $ordenProduccionId
      * @return AggregateProduccionBatch[]
      */
-    public function byOrderId(string|null $ordenProduccionId): array
+    public function byOrderId(?string $ordenProduccionId): array
     {
         if ($ordenProduccionId == null) {
             return [];
@@ -59,7 +56,7 @@ class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
 
         $batchs = ProduccionBatchModel::where('op_id', $ordenProduccionId)->get();
 
-        if (!$batchs) {
+        if (! $batchs) {
             return [];
         }
 
@@ -86,7 +83,6 @@ class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
     }
 
     /**
-     * @param AggregateProduccionBatch $pb
      * @return int
      */
     public function save(AggregateProduccionBatch $pb): string
@@ -104,7 +100,7 @@ class ProduccionBatchRepository implements ProduccionBatchRepositoryInterface
                 'rendimiento' => $pb->rendimiento,
                 'qty' => $pb->qty->value(),
                 'posicion' => $pb->posicion,
-                'ruta' => $pb->ruta
+                'ruta' => $pb->ruta,
             ]
         );
 

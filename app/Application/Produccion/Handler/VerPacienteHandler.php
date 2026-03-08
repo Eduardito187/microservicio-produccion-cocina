@@ -1,19 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\VerPaciente;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Paciente;
+use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 
 /**
  * @class VerPacienteHandler
- * @package App\Application\Produccion\Handler
  */
 class VerPacienteHandler
 {
@@ -29,9 +28,6 @@ class VerPacienteHandler
 
     /**
      * Constructor
-     *
-     * @param PacienteRepositoryInterface $pacienteRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         PacienteRepositoryInterface $pacienteRepository,
@@ -41,22 +37,15 @@ class VerPacienteHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param VerPaciente $command
-     * @return array
-     */
     public function __invoke(VerPaciente $command): array
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): array {
             $paciente = $this->pacienteRepository->byId($command->id);
+
             return $this->mapPaciente($paciente);
         });
     }
 
-    /**
-     * @param Paciente $paciente
-     * @return array
-     */
     private function mapPaciente(Paciente $paciente): array
     {
         return [

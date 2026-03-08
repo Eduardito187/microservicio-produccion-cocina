@@ -1,20 +1,20 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Produccion\Command\CrearPaquete;
-use App\Domain\Produccion\Events\PaqueteCreado;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Paquete;
+use App\Domain\Produccion\Events\PaqueteCreado;
+use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 
 /**
  * @class CrearPaqueteHandler
- * @package App\Application\Produccion\Handler
  */
 class CrearPaqueteHandler
 {
@@ -35,10 +35,6 @@ class CrearPaqueteHandler
 
     /**
      * Constructor
-     *
-     * @param PaqueteRepositoryInterface $paqueteRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         PaqueteRepositoryInterface $paqueteRepository,
@@ -51,7 +47,6 @@ class CrearPaqueteHandler
     }
 
     /**
-     * @param CrearPaquete $command
      * @return int
      */
     public function __invoke(CrearPaquete $command): string

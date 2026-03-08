@@ -1,20 +1,20 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\CrearCalendarioItem;
 use App\Application\Shared\DomainEventPublisherInterface;
-use App\Domain\Produccion\Events\CalendarioItemCreado;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\CalendarioItem;
+use App\Domain\Produccion\Events\CalendarioItemCreado;
+use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 
 /**
  * @class CrearCalendarioItemHandler
- * @package App\Application\Produccion\Handler
  */
 class CrearCalendarioItemHandler
 {
@@ -35,10 +35,6 @@ class CrearCalendarioItemHandler
 
     /**
      * Constructor
-     *
-     * @param CalendarioItemRepositoryInterface $calendarioItemRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         CalendarioItemRepositoryInterface $calendarioItemRepository,
@@ -51,7 +47,6 @@ class CrearCalendarioItemHandler
     }
 
     /**
-     * @param CrearCalendarioItem $command
      * @return int
      */
     public function __invoke(CrearCalendarioItem $command): string

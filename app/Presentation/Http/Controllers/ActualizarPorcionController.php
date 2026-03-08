@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\ActualizarPorcionHandler;
 use App\Application\Produccion\Command\ActualizarPorcion;
+use App\Application\Produccion\Handler\ActualizarPorcionHandler;
 use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
  * @class ActualizarPorcionController
- * @package App\Presentation\Http\Controllers
  */
 class ActualizarPorcionController
 {
@@ -24,18 +24,12 @@ class ActualizarPorcionController
 
     /**
      * Constructor
-     *
-     * @param ActualizarPorcionHandler $handler
      */
-    public function __construct(ActualizarPorcionHandler $handler) {
+    public function __construct(ActualizarPorcionHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param Request $request
-     * @param string $id
-     * @return JsonResponse
-     */
     public function __invoke(Request $request, string $id): JsonResponse
     {
         $data = $request->validate([

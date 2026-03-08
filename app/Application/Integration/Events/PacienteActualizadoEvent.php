@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Application\Integration\Events\Support\Payload;
 
 /**
  * @class PacienteActualizadoEvent
- * @package App\Application\Integration\Events
  */
 class PacienteActualizadoEvent
 {
@@ -35,11 +35,6 @@ class PacienteActualizadoEvent
 
     /**
      * Constructor
-     *
-     * @param string $id
-     * @param ?string $nombre
-     * @param ?string $documento
-     * @param ?string $suscripcionId
      */
     public function __construct(
         string $id,
@@ -53,10 +48,6 @@ class PacienteActualizadoEvent
         $this->suscripcionId = $suscripcionId;
     }
 
-    /**
-     * @param array $payload
-     * @return self
-     */
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);

@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ListarPorciones;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Porcion;
+use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
 
 /**
  * @class ListarPorcionesHandler
- * @package App\Application\Produccion\Handler
  */
 class ListarPorcionesHandler
 {
@@ -28,9 +28,6 @@ class ListarPorcionesHandler
 
     /**
      * Constructor
-     *
-     * @param PorcionRepositoryInterface $porcionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         PorcionRepositoryInterface $porcionRepository,
@@ -40,10 +37,6 @@ class ListarPorcionesHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param ListarPorciones $command
-     * @return array
-     */
     public function __invoke(ListarPorciones $command): array
     {
         return $this->transactionAggregate->runTransaction(function (): array {
@@ -51,10 +44,6 @@ class ListarPorcionesHandler
         });
     }
 
-    /**
-     * @param Porcion $porcion
-     * @return array
-     */
     private function mapPorcion(Porcion $porcion): array
     {
         return [

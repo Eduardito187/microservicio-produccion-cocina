@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -12,7 +13,6 @@ use App\Domain\Shared\Aggregate\AggregateRoot;
 
 /**
  * @class SeguimientoEntregaPaquete
- * @package App\Domain\Produccion\Aggregate
  */
 class SeguimientoEntregaPaquete
 {
@@ -58,16 +58,6 @@ class SeguimientoEntregaPaquete
      */
     private $completedAt;
 
-    /**
-     * @param string $packageId
-     * @param ?string $opId
-     * @param ?string $entregaId
-     * @param ?string $contratoId
-     * @param ?PackageStatus $status
-     * @param bool $statusLocked
-     * @param ?DriverId $driverId
-     * @param ?OccurredOn $completedAt
-     */
     public function __construct(
         string $packageId,
         ?string $opId,
@@ -89,18 +79,15 @@ class SeguimientoEntregaPaquete
     }
 
     /**
-     * @param PackageStatus $nextStatus
-     * @param ?DriverId $driverId
-     * @param OccurredOn $occurredOn
      * @return bool true if state changed
      */
     public function applyStatus(PackageStatus $nextStatus, ?DriverId $driverId, OccurredOn $occurredOn): bool
     {
-        if ($this->statusLocked && !$nextStatus->isCompleted()) {
+        if ($this->statusLocked && ! $nextStatus->isCompleted()) {
             return false;
         }
 
-        if ($this->status !== null && !$this->status->canTransitionTo($nextStatus)) {
+        if ($this->status !== null && ! $this->status->canTransitionTo($nextStatus)) {
             return false;
         }
 
@@ -121,9 +108,6 @@ class SeguimientoEntregaPaquete
         return $changed;
     }
 
-    /**
-     * @return bool
-     */
     public function isCompleted(): bool
     {
         return $this->status !== null && $this->status->isCompleted();

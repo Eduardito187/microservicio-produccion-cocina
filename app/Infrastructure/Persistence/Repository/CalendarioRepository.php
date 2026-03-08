@@ -1,33 +1,33 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\Calendario as CalendarioModel;
+use App\Domain\Produccion\Entity\Calendario;
 use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Entity\Calendario;
+use App\Infrastructure\Persistence\Model\Calendario as CalendarioModel;
 use DateTimeImmutable;
 use DateTimeInterface;
 
 /**
  * @class CalendarioRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class CalendarioRepository implements CalendarioRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param  int  $id
+     *
      * @throws EntityNotFoundException
-     * @return Calendario|null
      */
     public function byId(string|int $id): ?Calendario
     {
         $row = CalendarioModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("El calendario id: {$id} no existe.");
         }
 
@@ -41,16 +41,15 @@ class CalendarioRepository implements CalendarioRepositoryInterface
     }
 
     /**
-     * @param Calendario $calendario
      * @return int
      */
     public function save(Calendario $calendario): string
     {
         $fecha = $calendario->fecha->format('Y-m-d');
         $attributes = [
-            'entrega_id'  => $calendario->entregaId,
+            'entrega_id' => $calendario->entregaId,
             'contrato_id' => $calendario->contratoId,
-            'estado'      => is_int($calendario->estado) || is_string($calendario->estado) ? (int) $calendario->estado : null,
+            'estado' => is_int($calendario->estado) || is_string($calendario->estado) ? (int) $calendario->estado : null,
         ];
 
         // Buscar por ID determinístico (entregaId + fecha), NO solo por fecha.
@@ -59,6 +58,7 @@ class CalendarioRepository implements CalendarioRepositoryInterface
         if ($model !== null) {
             $model->fill($attributes);
             $model->save();
+
             return $model->id;
         }
 
@@ -90,18 +90,13 @@ class CalendarioRepository implements CalendarioRepositoryInterface
     }
 
     /**
-     * @param int $id
-     * @return void
+     * @param  int  $id
      */
     public function delete(string|int $id): void
     {
         CalendarioModel::query()->whereKey($id)->delete();
     }
 
-    /**
-     * @param string|DateTimeInterface $value
-     * @return DateTimeImmutable
-     */
     private function convertDate(string|DateTimeInterface $value): DateTimeImmutable
     {
         if ($value instanceof DateTimeInterface) {

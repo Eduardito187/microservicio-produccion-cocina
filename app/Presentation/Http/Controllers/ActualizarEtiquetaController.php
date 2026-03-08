@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\ActualizarEtiquetaHandler;
 use App\Application\Produccion\Command\ActualizarEtiqueta;
+use App\Application\Produccion\Handler\ActualizarEtiquetaHandler;
 use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
  * @class ActualizarEtiquetaController
- * @package App\Presentation\Http\Controllers
  */
 class ActualizarEtiquetaController
 {
@@ -24,18 +24,12 @@ class ActualizarEtiquetaController
 
     /**
      * Constructor
-     *
-     * @param ActualizarEtiquetaHandler $handler
      */
-    public function __construct(ActualizarEtiquetaHandler $handler) {
+    public function __construct(ActualizarEtiquetaHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param Request $request
-     * @param string $id
-     * @return JsonResponse
-     */
     public function __invoke(Request $request, string $id): JsonResponse
     {
         $data = $request->validate([

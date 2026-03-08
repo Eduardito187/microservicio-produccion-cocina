@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,13 +11,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @class PacienteEliminadoEventTest
- * @package Tests\Unit\Application\Integration
  */
 class PacienteEliminadoEventTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_from_payload_parsea_paciente_id(): void
     {
         $event = PacienteEliminadoEvent::fromPayload([

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -12,15 +13,11 @@ use Tests\TestCase;
 
 /**
  * @class CalendarioItemCrudTest
- * @package Tests\Feature\Maestros
  */
 class CalendarioItemCrudTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_crear_actualizar_y_eliminar_calendario_item(): void
     {
         $calendarioId = (string) Str::uuid();
@@ -28,7 +25,7 @@ class CalendarioItemCrudTest extends TestCase
             'id' => $calendarioId,
             'fecha' => '2026-01-10',
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ]);
 
         $productId = (string) Str::uuid();
@@ -38,7 +35,7 @@ class CalendarioItemCrudTest extends TestCase
             'price' => 10.0,
             'special_price' => 0,
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ]);
 
         $opId = (string) Str::uuid();
@@ -47,7 +44,7 @@ class CalendarioItemCrudTest extends TestCase
             'fecha' => '2026-01-10',
             'estado' => 'CREADA',
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ]);
 
         $itemDespachoId = (string) Str::uuid();
@@ -57,11 +54,11 @@ class CalendarioItemCrudTest extends TestCase
             'product_id' => $productId,
             'paquete_id' => null,
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ]);
 
         $create = $this->postJson(route('calendario-items.crear'), [
-            'calendarioId' => $calendarioId, 'itemDespachoId' => $itemDespachoId
+            'calendarioId' => $calendarioId, 'itemDespachoId' => $itemDespachoId,
         ]);
 
         $create->assertCreated()->assertJsonStructure(['calendarioItemId']);
@@ -73,7 +70,7 @@ class CalendarioItemCrudTest extends TestCase
             ->assertOk()->assertJsonFragment(['id' => $calendarioItemId]);
 
         $update = $this->putJson(route('calendario-items.actualizar', ['id' => $calendarioItemId]), [
-            'calendarioId' => $calendarioId, 'itemDespachoId' => $itemDespachoId
+            'calendarioId' => $calendarioId, 'itemDespachoId' => $itemDespachoId,
         ]);
 
         $update->assertOk()->assertJsonPath('calendarioItemId', $calendarioItemId);

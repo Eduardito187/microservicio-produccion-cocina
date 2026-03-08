@@ -1,19 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\VerEtiqueta;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Etiqueta;
+use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
 
 /**
  * @class VerEtiquetaHandler
- * @package App\Application\Produccion\Handler
  */
 class VerEtiquetaHandler
 {
@@ -29,9 +28,6 @@ class VerEtiquetaHandler
 
     /**
      * Constructor
-     *
-     * @param EtiquetaRepositoryInterface $etiquetaRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         EtiquetaRepositoryInterface $etiquetaRepository,
@@ -41,22 +37,15 @@ class VerEtiquetaHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param VerEtiqueta $command
-     * @return array
-     */
     public function __invoke(VerEtiqueta $command): array
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): array {
             $etiqueta = $this->etiquetaRepository->byId($command->id);
+
             return $this->mapEtiqueta($etiqueta);
         });
     }
 
-    /**
-     * @param Etiqueta $etiqueta
-     * @return array
-     */
     private function mapEtiqueta(Etiqueta $etiqueta): array
     {
         return [

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Domain\Shared\Events\BaseDomainEvent;
 
 /**
  * @class PacienteActualizado
- * @package App\Domain\Produccion\Events
  */
 class PacienteActualizado extends BaseDomainEvent
 {
@@ -30,16 +30,11 @@ class PacienteActualizado extends BaseDomainEvent
 
     /**
      * Constructor
-     *
-     * @param string|int|null $pacienteId
-     * @param string $nombre
-     * @param string|null $documento
-     * @param string|int|null $suscripcionId
      */
     public function __construct(
         string|int|null $pacienteId,
         string $nombre,
-        string|null $documento,
+        ?string $documento,
         string|int|null $suscripcionId
     ) {
         parent::__construct($pacienteId);
@@ -48,9 +43,6 @@ class PacienteActualizado extends BaseDomainEvent
         $this->suscripcionId = $suscripcionId;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [

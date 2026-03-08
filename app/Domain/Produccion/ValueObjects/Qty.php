@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,7 +11,6 @@ use DomainException;
 
 /**
  * @class Qty
- * @package App\Domain\Produccion\ValueObjects
  */
 class Qty extends ValueObject
 {
@@ -21,8 +21,6 @@ class Qty extends ValueObject
 
     /**
      * Constructor
-     *
-     * @param int $value
      */
     public function __construct(int $value)
     {
@@ -33,18 +31,11 @@ class Qty extends ValueObject
         $this->value = $value;
     }
 
-    /**
-     * @return int
-     */
     public function value(): int
     {
         return $this->value;
     }
 
-    /**
-     * @param Qty $other
-     * @return Qty
-     */
     public function add(Qty $other): self
     {
         return new self($this->value + $other->value());

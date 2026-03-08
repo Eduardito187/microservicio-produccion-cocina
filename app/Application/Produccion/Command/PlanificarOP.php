@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Application\Produccion\Command;
 
 /**
  * @class PlanificarOP
- * @package App\Application\Produccion\Command
  */
 class PlanificarOP
 {
@@ -23,13 +23,11 @@ class PlanificarOP
 
     /**
      * Constructor
-     *
-     * @param array $dataApi
      */
     public function __construct(
         array $dataApi
     ) {
-        $this->ordenProduccionId = $dataApi["ordenProduccionId"];
-        $this->porcionId = $dataApi["porcionId"];
+        $this->ordenProduccionId = $dataApi['ordenProduccionId'];
+        $this->porcionId = $dataApi['porcionId'];
     }
 }

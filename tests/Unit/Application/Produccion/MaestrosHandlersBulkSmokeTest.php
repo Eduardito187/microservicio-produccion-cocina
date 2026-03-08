@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -15,32 +16,19 @@ use ReflectionNamedType;
 
 /**
  * @class MaestrosHandlersBulkSmokeTest
- * @package Tests\Unit\Application\Produccion
  */
 class MaestrosHandlersBulkSmokeTest extends TestCase
 {
-    /**
-     * @return TransactionAggregate
-     */
     private function tx(): TransactionAggregate
     {
-        $transactionManager = new class implements TransactionManagerInterface {
-            /**
-             * @param callable $callback
-             * @return mixed
-             */
+        $transactionManager = new class implements TransactionManagerInterface
+        {
             public function run(callable $callback): mixed
             {
                 return $callback();
             }
 
-            /**
-             * @param callable $callback
-             * @return void
-             */
-            public function afterCommit(callable $callback): void
-            {
-            }
+            public function afterCommit(callable $callback): void {}
         };
 
         return new TransactionAggregate($transactionManager);
@@ -78,7 +66,7 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         if ($constructor) {
             foreach ($constructor->getParameters() as $idx => $param) {
                 $type = $param->getType();
-                if (!$type instanceof ReflectionNamedType) {
+                if (! $type instanceof ReflectionNamedType) {
                     $args[] = $param->allowsNull() ? null : 'TEST';
                     continue;
                 }
@@ -151,9 +139,6 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         }
     }
 
-    /**
-     * @return array
-     */
     public static function handlersProvider(): array
     {
         $handlersPath = realpath(__DIR__ . '/../../../../app/Application/Produccion/Handler');
@@ -163,7 +148,7 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         foreach (($dir !== '' ? glob($dir) : []) ?: [] as $file) {
             $class = basename($file, '.php');
 
-            if (!preg_match('/^(Crear|Actualizar|Eliminar|Ver|Listar)/', $class)) {
+            if (! preg_match('/^(Crear|Actualizar|Eliminar|Ver|Listar)/', $class)) {
                 continue;
             }
             if (str_contains($class, 'OP')) {
@@ -193,10 +178,6 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         return $out;
     }
 
-    /**
-     * @param string $data
-     * @return object
-     */
     private function instantiateWithDummies(string $data): object
     {
         $reflectionClass = new ReflectionClass($data);
@@ -218,11 +199,6 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         return $reflectionClass->newInstanceArgs($args);
     }
 
-    /**
-     * @param string $typeName
-     * @param bool $nullable
-     * @return mixed
-     */
     private function dummyValueForType(string $typeName, bool $nullable): mixed
     {
         return match ($typeName) {
@@ -236,10 +212,6 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
         };
     }
 
-    /**
-     * @param string $typeName
-     * @return object
-     */
     private function dummyObject(string $typeName): object
     {
         if (interface_exists($typeName)) {
@@ -251,20 +223,15 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
             if ($reflectionClass->isInstantiable()) {
                 $constructor = $reflectionClass->getConstructor();
 
-                if (!$constructor || $constructor->getNumberOfRequiredParameters() === 0) {
+                if (! $constructor || $constructor->getNumberOfRequiredParameters() === 0) {
                     return $reflectionClass->newInstance();
                 }
             }
         }
 
-        return new class {
-        };
+        return new class {};
     }
 
-    /**
-     * @param object $repository
-     * @return mixed
-     */
     private function dummyEntityFromRepositoryById(object $repository): mixed
     {
         try {
@@ -283,7 +250,6 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
             // Best effort for smoke tests.
         }
 
-        return new class {
-        };
+        return new class {};
     }
 }

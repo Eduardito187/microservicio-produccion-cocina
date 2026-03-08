@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Domain\Shared\Events\BaseDomainEvent;
 
 /**
  * @class PaqueteCreado
- * @package App\Domain\Produccion\Events
  */
 class PaqueteCreado extends BaseDomainEvent
 {
@@ -30,11 +30,6 @@ class PaqueteCreado extends BaseDomainEvent
 
     /**
      * Constructor
-     *
-     * @param string|int|null $paqueteId
-     * @param string|int|null $etiquetaId
-     * @param string|int|null $ventanaId
-     * @param string|int|null $direccionId
      */
     public function __construct(
         string|int|null $paqueteId,
@@ -48,9 +43,6 @@ class PaqueteCreado extends BaseDomainEvent
         $this->direccionId = $direccionId;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [

@@ -1,31 +1,31 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\RecetaVersion as RecetaVersionModel;
+use App\Domain\Produccion\Entity\RecetaVersion;
 use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Entity\RecetaVersion;
+use App\Infrastructure\Persistence\Model\RecetaVersion as RecetaVersionModel;
 
 /**
  * @class RecetaVersionRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class RecetaVersionRepository implements RecetaVersionRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param  int  $id
+     *
      * @throws EntityNotFoundException
-     * @return RecetaVersion|null
      */
     public function byId(string|int $id): ?RecetaVersion
     {
         $row = RecetaVersionModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("La receta id: {$id} no existe.");
         }
 
@@ -41,7 +41,6 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
     }
 
     /**
-     * @param RecetaVersion $recetaVersion
      * @return int
      */
     public function save(RecetaVersion $recetaVersion): string
@@ -57,6 +56,7 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
                 'total_calories' => $recetaVersion->totalCalories,
             ]
         );
+
         return $model->id;
     }
 
@@ -83,8 +83,7 @@ class RecetaVersionRepository implements RecetaVersionRepositoryInterface
     }
 
     /**
-     * @param int $id
-     * @return void
+     * @param  int  $id
      */
     public function delete(string|int $id): void
     {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,19 +11,15 @@ use App\Domain\Shared\Exception\EntityNotFoundException;
 
 /**
  * @class CalendarioItemRepositoryInterface
- * @package App\Domain\Produccion\Repository
  */
 interface CalendarioItemRepositoryInterface
 {
     /**
-     * @param string|int $id
      * @throws EntityNotFoundException
-     * @return CalendarioItem|null
      */
     public function byId(string|int $id): ?CalendarioItem;
 
     /**
-     * @param CalendarioItem $item
      * @return int
      */
     public function save(CalendarioItem $item): string;
@@ -32,15 +29,7 @@ interface CalendarioItemRepositoryInterface
      */
     public function list(): array;
 
-    /**
-     * @param string|int $id
-     * @return void
-     */
     public function delete(string|int $id): void;
 
-    /**
-     * @param string|int $calendarioId
-     * @return void
-     */
     public function deleteByCalendarioId(string|int $calendarioId): void;
 }

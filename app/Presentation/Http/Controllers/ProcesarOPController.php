@@ -1,20 +1,20 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
+use App\Application\Produccion\Command\ProcesadorOP;
 use App\Application\Produccion\Handler\ProcesadorOPHandler;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Application\Produccion\Command\ProcesadorOP;
+use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use DomainException;
 
 /**
  * @class ProcesarOPController
- * @package App\Presentation\Http\Controllers
  */
 class ProcesarOPController
 {
@@ -25,17 +25,12 @@ class ProcesarOPController
 
     /**
      * Constructor
-     *
-     * @param ProcesadorOPHandler $handler
      */
-    public function __construct(ProcesadorOPHandler $handler) {
+    public function __construct(ProcesadorOPHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate(['ordenProduccionId' => ['required', 'uuid']]);

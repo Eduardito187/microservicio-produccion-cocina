@@ -1,22 +1,22 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Integration\Handlers;
 
-use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 use App\Application\Integration\Events\SuscripcionActualizadaEvent;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\Suscripcion;
+use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
  * @class SuscripcionActualizadaHandler
- * @package App\Application\Integration\Handlers
  */
 class SuscripcionActualizadaHandler implements IntegrationEventHandlerInterface
 {
@@ -37,10 +37,6 @@ class SuscripcionActualizadaHandler implements IntegrationEventHandlerInterface
 
     /**
      * Constructor
-     *
-     * @param SuscripcionRepositoryInterface $suscripcionRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param ?LoggerInterface $logger
      */
     public function __construct(
         SuscripcionRepositoryInterface $suscripcionRepository,
@@ -49,14 +45,9 @@ class SuscripcionActualizadaHandler implements IntegrationEventHandlerInterface
     ) {
         $this->suscripcionRepository = $suscripcionRepository;
         $this->transactionAggregate = $transactionAggregate;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = SuscripcionActualizadaEvent::fromPayload($payload);
@@ -73,6 +64,7 @@ class SuscripcionActualizadaHandler implements IntegrationEventHandlerInterface
                 $this->logger->warning('Actualizacion de suscripcion ignorada (falta nombre para crear)', [
                     'suscripcion_id' => $event->id,
                 ]);
+
                 return;
             }
 

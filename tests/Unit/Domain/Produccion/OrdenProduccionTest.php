@@ -1,29 +1,26 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace Tests\Unit\Domain\Produccion;
 
-use App\Domain\Produccion\Events\OrdenProduccionPlanificada;
-use App\Domain\Produccion\Events\OrdenProduccionProcesada;
-use App\Domain\Produccion\Events\OrdenProduccionCerrada;
-use App\Domain\Produccion\Events\OrdenProduccionCreada;
 use App\Domain\Produccion\Aggregate\OrdenProduccion;
 use App\Domain\Produccion\Enum\EstadoOP;
-use PHPUnit\Framework\TestCase;
+use App\Domain\Produccion\Events\OrdenProduccionCerrada;
+use App\Domain\Produccion\Events\OrdenProduccionCreada;
+use App\Domain\Produccion\Events\OrdenProduccionPlanificada;
+use App\Domain\Produccion\Events\OrdenProduccionProcesada;
 use DateTimeImmutable;
 use DomainException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @class OrdenProduccionTest
- * @package Tests\Unit\Domain\Produccion
  */
 class OrdenProduccionTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_crear_inicia_en_estado_creada_y_registra_evento(): void
     {
         $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'));
@@ -34,9 +31,6 @@ class OrdenProduccionTest extends TestCase
         $this->assertSame(OrdenProduccionCreada::class, $events[0]->name());
     }
 
-    /**
-     * @return void
-     */
     public function test_agregar_items_solo_permitido_en_creada(): void
     {
         $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'));
@@ -50,9 +44,6 @@ class OrdenProduccionTest extends TestCase
         $ordenProduccion->agregarItems([['sku' => 'SKU3', 'qty' => 1]]);
     }
 
-    /**
-     * @return void
-     */
     public function test_transiciones_planificar_procesar_cerrar_registran_eventos(): void
     {
         $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'));
@@ -77,9 +68,6 @@ class OrdenProduccionTest extends TestCase
         $this->assertSame(OrdenProduccionCerrada::class, $events[2]->name());
     }
 
-    /**
-     * @return void
-     */
     public function test_no_permite_transiciones_invalidas(): void
     {
         $ordenProduccion = OrdenProduccion::crear(new DateTimeImmutable('2025-11-04'));

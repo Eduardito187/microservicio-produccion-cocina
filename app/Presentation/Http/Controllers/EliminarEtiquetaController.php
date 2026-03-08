@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\EliminarEtiquetaHandler;
 use App\Application\Produccion\Command\EliminarEtiqueta;
+use App\Application\Produccion\Handler\EliminarEtiquetaHandler;
 use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 
 /**
  * @class EliminarEtiquetaController
- * @package App\Presentation\Http\Controllers
  */
 class EliminarEtiquetaController
 {
@@ -23,21 +23,17 @@ class EliminarEtiquetaController
 
     /**
      * Constructor
-     *
-     * @param EliminarEtiquetaHandler $handler
      */
-    public function __construct(EliminarEtiquetaHandler $handler) {
+    public function __construct(EliminarEtiquetaHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param string $id
-     * @return JsonResponse
-     */
     public function __invoke(string $id): JsonResponse
     {
         try {
             $this->handler->__invoke(new EliminarEtiqueta($id));
+
             return response()->json(null, 204);
         } catch (EntityNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], 404);

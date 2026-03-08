@@ -1,17 +1,17 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ProcesadorOP;
+use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 
 /**
  * @class ProcesadorOPHandler
- * @package App\Application\Produccion\Handler
  */
 class ProcesadorOPHandler
 {
@@ -27,9 +27,6 @@ class ProcesadorOPHandler
 
     /**
      * Constructor
-     *
-     * @param OrdenProduccionRepositoryInterface $ordenProduccionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         OrdenProduccionRepositoryInterface $ordenProduccionRepository,
@@ -39,16 +36,13 @@ class ProcesadorOPHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param ProcesadorOP $command
-     * @return string|int|null
-     */
     public function __invoke(ProcesadorOP $command): string|int|null
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): string {
             $ordenProduccion = $this->ordenProduccionRepository->byId($command->opId);
             $ordenProduccion->procesarBatches();
             $ordenProduccion->procesar();
+
             return $this->ordenProduccionRepository->save($ordenProduccion);
         });
     }

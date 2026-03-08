@@ -1,20 +1,20 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
 use App\Application\Produccion\Command\RegistrarInboundEvent;
-use Symfony\Component\HttpFoundation\Response;
+use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
 use Illuminate\Http\JsonResponse;
-use InvalidArgumentException;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @class EventBusController
- * @package App\Presentation\Http\Controllers
  */
 class EventBusController
 {
@@ -25,16 +25,15 @@ class EventBusController
 
     /**
      * Constructor
-     *
-     * @param RegistrarInboundEventHandler $handler
      */
-    public function __construct(RegistrarInboundEventHandler $handler) {
+    public function __construct(RegistrarInboundEventHandler $handler)
+    {
         $this->handler = $handler;
     }
 
     /**
      * Summary of __invoke
-     * @param \Illuminate\Http\Request $request
+     *
      * @return JsonResponse
      */
     public function __invoke(Request $request)
@@ -48,13 +47,13 @@ class EventBusController
         }
 
         $data = $request->validate([
-            'event' => ['required','string','max:150'],
-            'occurred_on' => ['nullable','string'],
-            'payload' => ['required','array'],
-            'event_id' => ['nullable','uuid'],
-            'schema_version' => ['required','integer'],
-            'correlation_id' => ['nullable','uuid'],
-            'aggregate_id' => ['nullable','string','max:100'],
+            'event' => ['required', 'string', 'max:150'],
+            'occurred_on' => ['nullable', 'string'],
+            'payload' => ['required', 'array'],
+            'event_id' => ['nullable', 'uuid'],
+            'schema_version' => ['required', 'integer'],
+            'correlation_id' => ['nullable', 'uuid'],
+            'aggregate_id' => ['nullable', 'string', 'max:100'],
         ]);
 
         $eventId = $data['event_id'] ?? (string) \Illuminate\Support\Str::uuid();
@@ -95,16 +94,12 @@ class EventBusController
 
         return response()->json(
             [
-                'status' => 'ok'
+                'status' => 'ok',
             ],
             Response::HTTP_OK
         );
     }
 
-    /**
-     * @param array $data
-     * @return string
-     */
     private function hashEnvelope(array $data): string
     {
         return hash(
@@ -113,9 +108,9 @@ class EventBusController
                 [
                     $data['event'] ?? '',
                     $data['occurred_on'] ?? '',
-                    $data['payload'] ?? []
+                    $data['payload'] ?? [],
                 ],
-                 JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES
+                JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
             )
         );
     }

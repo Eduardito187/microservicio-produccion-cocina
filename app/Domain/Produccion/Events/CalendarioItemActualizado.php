@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Domain\Shared\Events\BaseDomainEvent;
 
 /**
  * @class CalendarioItemActualizado
- * @package App\Domain\Produccion\Events
  */
 class CalendarioItemActualizado extends BaseDomainEvent
 {
@@ -25,10 +25,6 @@ class CalendarioItemActualizado extends BaseDomainEvent
 
     /**
      * Constructor
-     *
-     * @param string|int|null $calendarioItemId
-     * @param string|int $calendarioId
-     * @param string|int $itemDespachoId
      */
     public function __construct(
         string|int|null $calendarioItemId,
@@ -40,9 +36,6 @@ class CalendarioItemActualizado extends BaseDomainEvent
         $this->itemDespachoId = $itemDespachoId;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [

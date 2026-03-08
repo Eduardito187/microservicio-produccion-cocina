@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,15 +11,11 @@ use Tests\TestCase;
 
 /**
  * @class GenerarOPValidationTest
- * @package Tests\Feature\Produccion
  */
 class GenerarOPValidationTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_generar_op_rechaza_items_invalidos(): void
     {
         $response = $this->postJson(route('produccion.ordenes.generar'), [

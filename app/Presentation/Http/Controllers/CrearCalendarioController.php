@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\CrearCalendarioHandler;
 use App\Application\Produccion\Command\CrearCalendario;
+use App\Application\Produccion\Handler\CrearCalendarioHandler;
+use DateTimeImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use DateTimeImmutable;
 
 /**
  * @class CrearCalendarioController
- * @package App\Presentation\Http\Controllers
  */
 class CrearCalendarioController
 {
@@ -24,17 +24,12 @@ class CrearCalendarioController
 
     /**
      * Constructor
-     *
-     * @param CrearCalendarioHandler $handler
      */
-    public function __construct(CrearCalendarioHandler $handler) {
+    public function __construct(CrearCalendarioHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([

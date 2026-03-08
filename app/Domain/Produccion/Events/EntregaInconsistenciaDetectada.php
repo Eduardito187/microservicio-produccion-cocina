@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Domain\Shared\Events\BaseDomainEvent;
 
 /**
  * @class EntregaInconsistenciaDetectada
- * @package App\Domain\Produccion\Events
  */
 class EntregaInconsistenciaDetectada extends BaseDomainEvent
 {
@@ -33,13 +33,6 @@ class EntregaInconsistenciaDetectada extends BaseDomainEvent
      */
     private $payload;
 
-    /**
-     * @param ?string $opId
-     * @param string $reason
-     * @param ?string $eventId
-     * @param ?string $packageId
-     * @param array $payload
-     */
     public function __construct(?string $opId, string $reason, ?string $eventId, ?string $packageId, array $payload = [])
     {
         parent::__construct($opId);
@@ -49,9 +42,6 @@ class EntregaInconsistenciaDetectada extends BaseDomainEvent
         $this->payload = $payload;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [

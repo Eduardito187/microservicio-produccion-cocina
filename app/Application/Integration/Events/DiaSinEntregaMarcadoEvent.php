@@ -10,7 +10,6 @@ use App\Application\Integration\Events\Support\Payload;
 
 /**
  * @class DiaSinEntregaMarcadoEvent
- * @package App\Application\Integration\Events
  */
 class DiaSinEntregaMarcadoEvent
 {
@@ -26,9 +25,6 @@ class DiaSinEntregaMarcadoEvent
 
     /**
      * Constructor
-     *
-     * @param string $calendarioId
-     * @param ?string $fecha
      */
     public function __construct(
         string $calendarioId,
@@ -38,10 +34,6 @@ class DiaSinEntregaMarcadoEvent
         $this->fecha = $fecha;
     }
 
-    /**
-     * @param array $payload
-     * @return self
-     */
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);

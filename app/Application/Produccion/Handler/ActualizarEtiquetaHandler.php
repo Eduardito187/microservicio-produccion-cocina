@@ -1,17 +1,17 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ActualizarEtiqueta;
+use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
 
 /**
  * @class ActualizarEtiquetaHandler
- * @package App\Application\Produccion\Handler
  */
 class ActualizarEtiquetaHandler
 {
@@ -27,9 +27,6 @@ class ActualizarEtiquetaHandler
 
     /**
      * Constructor
-     *
-     * @param EtiquetaRepositoryInterface $etiquetaRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         EtiquetaRepositoryInterface $etiquetaRepository,
@@ -40,7 +37,6 @@ class ActualizarEtiquetaHandler
     }
 
     /**
-     * @param ActualizarEtiqueta $command
      * @return int
      */
     public function __invoke(ActualizarEtiqueta $command): string

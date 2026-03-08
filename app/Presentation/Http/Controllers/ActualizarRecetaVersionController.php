@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\ActualizarRecetaVersionHandler;
 use App\Application\Produccion\Command\ActualizarRecetaVersion;
+use App\Application\Produccion\Handler\ActualizarRecetaVersionHandler;
 use App\Domain\Shared\Exception\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
  * @class ActualizarRecetaVersionController
- * @package App\Presentation\Http\Controllers
  */
 class ActualizarRecetaVersionController
 {
@@ -24,18 +24,12 @@ class ActualizarRecetaVersionController
 
     /**
      * Constructor
-     *
-     * @param ActualizarRecetaVersionHandler $handler
      */
-    public function __construct(ActualizarRecetaVersionHandler $handler) {
+    public function __construct(ActualizarRecetaVersionHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param Request $request
-     * @param string $id
-     * @return JsonResponse
-     */
     public function __invoke(Request $request, string $id): JsonResponse
     {
         $data = $request->validate([
@@ -49,7 +43,7 @@ class ActualizarRecetaVersionController
             'totalCalories' => ['nullable', 'integer', 'min:0'],
         ]);
         $nombre = $data['nombre'] ?? ($data['name'] ?? null);
-        if (!is_string($nombre) || trim($nombre) === '') {
+        if (! is_string($nombre) || trim($nombre) === '') {
             return response()->json(['message' => 'El campo nombre o name es requerido.'], 422);
         }
 

@@ -1,13 +1,14 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace Tests\Unit\Presentation;
 
-use App\Presentation\Console\Commands\ConsumeRabbitMq;
-use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
 use App\Application\Integration\IntegrationEventRouter;
+use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
+use App\Presentation\Console\Commands\ConsumeRabbitMq;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 use PHPUnit\Framework\TestCase;
@@ -15,23 +16,17 @@ use ReflectionClass;
 
 /**
  * @class ConsumeRabbitMqRetryPolicyTest
- * @package Tests\Unit\Presentation
  */
 class ConsumeRabbitMqRetryPolicyTest extends TestCase
 {
-    /**
-     * @return ConsumeRabbitMq
-     */
     private function makeCommand(): ConsumeRabbitMq
     {
         $handler = $this->createMock(RegistrarInboundEventHandler::class);
         $router = $this->createMock(IntegrationEventRouter::class);
+
         return new ConsumeRabbitMq($handler, $router);
     }
 
-    /**
-     * @return void
-     */
     public function test_get_retry_count_uses_x_death_count(): void
     {
         $command = $this->makeCommand();
@@ -50,9 +45,6 @@ class ConsumeRabbitMqRetryPolicyTest extends TestCase
         $this->assertSame(2, $count);
     }
 
-    /**
-     * @return void
-     */
     public function test_resolve_retry_delay_uses_configured_list(): void
     {
         $command = $this->makeCommand();

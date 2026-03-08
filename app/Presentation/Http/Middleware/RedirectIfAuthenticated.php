@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -13,7 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @class RedirectIfAuthenticated
- * @package App\Presentation\Http\Middleware
  */
 class RedirectIfAuthenticated
 {

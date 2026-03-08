@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Application\Integration\Events\Support\Payload;
 
 /**
  * @class DireccionGeocodificadaEvent
- * @package App\Application\Integration\Events
  */
 class DireccionGeocodificadaEvent
 {
@@ -25,9 +25,6 @@ class DireccionGeocodificadaEvent
 
     /**
      * Constructor
-     *
-     * @param string $id
-     * @param ?array $geo
      */
     public function __construct(
         string $id,
@@ -37,10 +34,6 @@ class DireccionGeocodificadaEvent
         $this->geo = $geo;
     }
 
-    /**
-     * @param array $payload
-     * @return self
-     */
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);

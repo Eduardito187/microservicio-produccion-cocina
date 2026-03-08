@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Domain\Produccion\Aggregate;
 
-use App\Domain\Produccion\Events\ProduccionBatchCreado;
 use App\Domain\Produccion\Enum\EstadoPlanificado;
-use App\Domain\Shared\Aggregate\AggregateRoot;
+use App\Domain\Produccion\Events\ProduccionBatchCreado;
 use App\Domain\Produccion\ValueObjects\Qty;
+use App\Domain\Shared\Aggregate\AggregateRoot;
 use DomainException;
 
 /**
  * @class ProduccionBatch
- * @package App\Domain\Produccion\Aggregate
  */
 class ProduccionBatch
 {
@@ -81,19 +81,6 @@ class ProduccionBatch
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param string|int $ordenProduccionId
-     * @param string|int $productoId
-     * @param string|int $porcionId
-     * @param int $cantPlanificada
-     * @param int $cantProducida
-     * @param int $mermaGr
-     * @param EstadoPlanificado $estado
-     * @param float $rendimiento
-     * @param Qty $qty
-     * @param int $posicion
-     * @param array|null $ruta
      */
     public function __construct(
         string|int|null $id,
@@ -107,7 +94,7 @@ class ProduccionBatch
         float $rendimiento,
         Qty $qty,
         int $posicion,
-        array|null $ruta = []
+        ?array $ruta = []
     ) {
         $this->id = $id;
         $this->ordenProduccionId = $ordenProduccionId;
@@ -123,21 +110,6 @@ class ProduccionBatch
         $this->ruta = $ruta;
     }
 
-    /**
-     * @param string|int|null $id
-     * @param string|int $ordenProduccionId
-     * @param string|int $productoId
-     * @param string|int $porcionId
-     * @param int $cantPlanificada
-     * @param int $cantProducida
-     * @param int $mermaGr
-     * @param EstadoPlanificado $estado
-     * @param float $rendimiento
-     * @param Qty $qty
-     * @param int $posicion
-     * @param array $ruta
-     * @return ProduccionBatch
-     */
     public static function crear(
         string|int|null $id,
         string|int $ordenProduccionId,
@@ -151,8 +123,7 @@ class ProduccionBatch
         Qty $qty,
         int $posicion,
         array $ruta
-    ): self
-    {
+    ): self {
         $self = new self(
             $id,
             $ordenProduccionId,
@@ -184,11 +155,10 @@ class ProduccionBatch
 
     /**
      * @throws DomainException
-     * @return void
      */
     public function procesar(): void
     {
-        if (!in_array($this->estado, [EstadoPlanificado::PROGRAMADO], true)) {
+        if (! in_array($this->estado, [EstadoPlanificado::PROGRAMADO], true)) {
             throw new DomainException('No se puede procesar en su estado actual el batch.');
         }
 
@@ -198,11 +168,10 @@ class ProduccionBatch
 
     /**
      * @throws DomainException
-     * @return void
      */
     public function despachar(): void
     {
-        if (!in_array($this->estado, [EstadoPlanificado::PROCESANDO], true)) {
+        if (! in_array($this->estado, [EstadoPlanificado::PROCESANDO], true)) {
             throw new DomainException('No se puede despachar en su estado actual el batch.');
         }
 

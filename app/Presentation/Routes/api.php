@@ -1,72 +1,73 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
-use App\Presentation\Http\Controllers\ActualizarCalendarioItemController;
-use App\Presentation\Http\Controllers\ActualizarVentanaEntregaController;
-use App\Presentation\Http\Controllers\ActualizarRecetaController;
-use App\Presentation\Http\Controllers\EliminarVentanaEntregaController;
-use App\Presentation\Http\Controllers\EliminarCalendarioItemController;
-use App\Presentation\Http\Controllers\ListarVentanasEntregaController;
-use App\Presentation\Http\Controllers\ActualizarSuscripcionController;
-use App\Presentation\Http\Controllers\ListarCalendarioItemsController;
-use App\Presentation\Http\Controllers\EliminarRecetaController;
 use App\Presentation\Http\Controllers\ActualizarCalendarioController;
-use App\Presentation\Http\Controllers\ListarRecetasController;
-use App\Presentation\Http\Controllers\CrearVentanaEntregaController;
+use App\Presentation\Http\Controllers\ActualizarCalendarioItemController;
 use App\Presentation\Http\Controllers\ActualizarDireccionController;
-use App\Presentation\Http\Controllers\CrearCalendarioItemController;
-use App\Presentation\Http\Controllers\EliminarSuscripcionController;
-use App\Presentation\Http\Controllers\ListarSuscripcionesController;
-use App\Presentation\Http\Controllers\ActualizarPacienteController;
-use App\Presentation\Http\Controllers\EliminarCalendarioController;
-use App\Presentation\Http\Controllers\ActualizarProductoController;
-use App\Presentation\Http\Controllers\CrearRecetaController;
 use App\Presentation\Http\Controllers\ActualizarEtiquetaController;
-use App\Presentation\Http\Controllers\ListarDireccionesController;
-use App\Presentation\Http\Controllers\VerVentanaEntregaController;
-use App\Presentation\Http\Controllers\ActualizarPorcionController;
-use App\Presentation\Http\Controllers\EliminarDireccionController;
-use App\Presentation\Http\Controllers\ListarCalendariosController;
-use App\Presentation\Http\Controllers\VerCalendarioItemController;
+use App\Presentation\Http\Controllers\ActualizarPacienteController;
 use App\Presentation\Http\Controllers\ActualizarPaqueteController;
-use App\Presentation\Http\Controllers\EliminarProductoController;
-use App\Presentation\Http\Controllers\EliminarPacienteController;
-use App\Presentation\Http\Controllers\CrearSuscripcionController;
-use App\Presentation\Http\Controllers\EliminarEtiquetaController;
-use App\Presentation\Http\Controllers\VerRecetaController;
+use App\Presentation\Http\Controllers\ActualizarPorcionController;
+use App\Presentation\Http\Controllers\ActualizarProductoController;
+use App\Presentation\Http\Controllers\ActualizarRecetaController;
+use App\Presentation\Http\Controllers\ActualizarSuscripcionController;
+use App\Presentation\Http\Controllers\ActualizarVentanaEntregaController;
 use App\Presentation\Http\Controllers\CrearCalendarioController;
-use App\Presentation\Http\Controllers\EliminarPorcionController;
-use App\Presentation\Http\Controllers\ListarPorcionesController;
-use App\Presentation\Http\Controllers\ListarPacientesController;
-use App\Presentation\Http\Controllers\ListarEtiquetasController;
-use App\Presentation\Http\Controllers\EliminarPaqueteController;
-use App\Presentation\Http\Controllers\ListarProductosController;
+use App\Presentation\Http\Controllers\CrearCalendarioItemController;
 use App\Presentation\Http\Controllers\CrearDireccionController;
-use App\Presentation\Http\Controllers\VerSuscripcionController;
-use App\Presentation\Http\Controllers\ListarPaquetesController;
-use App\Presentation\Http\Controllers\VerCalendarioController;
-use App\Presentation\Http\Controllers\CrearPacienteController;
 use App\Presentation\Http\Controllers\CrearEtiquetaController;
-use App\Presentation\Http\Controllers\CrearProductoController;
+use App\Presentation\Http\Controllers\CrearPacienteController;
 use App\Presentation\Http\Controllers\CrearPaqueteController;
-use App\Presentation\Http\Controllers\PlanificarOPController;
 use App\Presentation\Http\Controllers\CrearPorcionController;
-use App\Presentation\Http\Controllers\VerDireccionController;
+use App\Presentation\Http\Controllers\CrearProductoController;
+use App\Presentation\Http\Controllers\CrearRecetaController;
+use App\Presentation\Http\Controllers\CrearSuscripcionController;
+use App\Presentation\Http\Controllers\CrearVentanaEntregaController;
 use App\Presentation\Http\Controllers\DespacharOPController;
-use App\Presentation\Http\Controllers\VerPacienteController;
-use App\Presentation\Http\Controllers\VerEtiquetaController;
-use App\Presentation\Http\Controllers\VerProductoController;
-use App\Presentation\Http\Controllers\VerPaqueteController;
-use App\Presentation\Http\Controllers\ProcesarOPController;
-use App\Presentation\Http\Controllers\VerPorcionController;
-use App\Presentation\Http\Controllers\GenerarOPController;
-use App\Presentation\Http\Controllers\PactStateController;
+use App\Presentation\Http\Controllers\EliminarCalendarioController;
+use App\Presentation\Http\Controllers\EliminarCalendarioItemController;
+use App\Presentation\Http\Controllers\EliminarDireccionController;
+use App\Presentation\Http\Controllers\EliminarEtiquetaController;
+use App\Presentation\Http\Controllers\EliminarPacienteController;
+use App\Presentation\Http\Controllers\EliminarPaqueteController;
+use App\Presentation\Http\Controllers\EliminarPorcionController;
+use App\Presentation\Http\Controllers\EliminarProductoController;
+use App\Presentation\Http\Controllers\EliminarRecetaController;
+use App\Presentation\Http\Controllers\EliminarSuscripcionController;
+use App\Presentation\Http\Controllers\EliminarVentanaEntregaController;
 use App\Presentation\Http\Controllers\EventBusController;
-use App\Presentation\Http\Controllers\RefreshController;
+use App\Presentation\Http\Controllers\GenerarOPController;
+use App\Presentation\Http\Controllers\ListarCalendarioItemsController;
+use App\Presentation\Http\Controllers\ListarCalendariosController;
+use App\Presentation\Http\Controllers\ListarDireccionesController;
+use App\Presentation\Http\Controllers\ListarEtiquetasController;
+use App\Presentation\Http\Controllers\ListarPacientesController;
+use App\Presentation\Http\Controllers\ListarPaquetesController;
+use App\Presentation\Http\Controllers\ListarPorcionesController;
+use App\Presentation\Http\Controllers\ListarProductosController;
+use App\Presentation\Http\Controllers\ListarRecetasController;
+use App\Presentation\Http\Controllers\ListarSuscripcionesController;
+use App\Presentation\Http\Controllers\ListarVentanasEntregaController;
 use App\Presentation\Http\Controllers\LoginController;
+use App\Presentation\Http\Controllers\PactStateController;
+use App\Presentation\Http\Controllers\PlanificarOPController;
+use App\Presentation\Http\Controllers\ProcesarOPController;
 use App\Presentation\Http\Controllers\ProxyController;
+use App\Presentation\Http\Controllers\RefreshController;
+use App\Presentation\Http\Controllers\VerCalendarioController;
+use App\Presentation\Http\Controllers\VerCalendarioItemController;
+use App\Presentation\Http\Controllers\VerDireccionController;
+use App\Presentation\Http\Controllers\VerEtiquetaController;
+use App\Presentation\Http\Controllers\VerPacienteController;
+use App\Presentation\Http\Controllers\VerPaqueteController;
+use App\Presentation\Http\Controllers\VerPorcionController;
+use App\Presentation\Http\Controllers\VerProductoController;
+use App\Presentation\Http\Controllers\VerRecetaController;
+use App\Presentation\Http\Controllers\VerSuscripcionController;
+use App\Presentation\Http\Controllers\VerVentanaEntregaController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['keycloak.jwt', 'deny.users', 'role:cocinero,planificador,despachador,produccion'])->group(function () {
@@ -152,7 +153,7 @@ Route::middleware(['keycloak.jwt', 'deny.users', 'role:cocinero,planificador,des
     // api eventos
     Route::post('/event-bus', EventBusController::class)->middleware('role:produccion');
 
-    //API Gateway
+    // API Gateway
     Route::get('/users', [ProxyController::class, 'users']);
     Route::get('/posts', [ProxyController::class, 'posts']);
 });
@@ -160,6 +161,6 @@ Route::middleware(['keycloak.jwt', 'deny.users', 'role:cocinero,planificador,des
 // test
 Route::post('/_pact/setup', PactStateController::class);
 
-//KeyCloak
+// KeyCloak
 Route::post('/login', LoginController::class);
 Route::post('/refresh', RefreshController::class);

@@ -1,31 +1,31 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\CalendarioItem as CalendarioItemModel;
+use App\Domain\Produccion\Entity\CalendarioItem;
 use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Entity\CalendarioItem;
+use App\Infrastructure\Persistence\Model\CalendarioItem as CalendarioItemModel;
 
 /**
  * @class CalendarioItemRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class CalendarioItemRepository implements CalendarioItemRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param  int  $id
+     *
      * @throws EntityNotFoundException
-     * @return CalendarioItem|null
      */
     public function byId(string|int $id): ?CalendarioItem
     {
         $row = CalendarioItemModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("El calendario item id: {$id} no existe.");
         }
 
@@ -37,7 +37,6 @@ class CalendarioItemRepository implements CalendarioItemRepositoryInterface
     }
 
     /**
-     * @param CalendarioItem $item
      * @return int
      */
     public function save(CalendarioItem $item): string
@@ -49,6 +48,7 @@ class CalendarioItemRepository implements CalendarioItemRepositoryInterface
                 'item_despacho_id' => $item->itemDespachoId,
             ]
         );
+
         return $model->id;
     }
 
@@ -71,18 +71,13 @@ class CalendarioItemRepository implements CalendarioItemRepositoryInterface
     }
 
     /**
-     * @param int $id
-     * @return void
+     * @param  int  $id
      */
     public function delete(string|int $id): void
     {
         CalendarioItemModel::query()->whereKey($id)->delete();
     }
 
-    /**
-     * @param string|int $calendarioId
-     * @return void
-     */
     public function deleteByCalendarioId(string|int $calendarioId): void
     {
         CalendarioItemModel::query()->where('calendario_id', $calendarioId)->delete();

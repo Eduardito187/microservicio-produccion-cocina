@@ -9,11 +9,14 @@
 		"prepare": "[ -d .git ] && husky || true"
 	},
 	"lint-staged": {
-		"*.php": "./vendor/bin/pint"
+		"*.php": "./vendor/bin/pint",
+		"*.{js,ts}": "eslint --fix"
 	},
 	"devDependencies": {
 		"@pact-foundation/pact": "^16.0.4",
+		"@eslint/js": "^9.0.0",
 		"axios": "^1.13.2",
+		"eslint": "^9.0.0",
 		"husky": "^9.1.0",
 		"laravel-vite-plugin": "^1.0.0",
 		"lint-staged": "^15.2.0",

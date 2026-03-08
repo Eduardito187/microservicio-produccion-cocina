@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @class Calendario
- * @package App\Infrastructure\Persistence\Model
  */
 class Calendario extends BaseModel
 {
@@ -31,14 +31,12 @@ class Calendario extends BaseModel
     {
         if ($value === null) {
             $this->attributes['fecha'] = null;
+
             return;
         }
         $this->attributes['fecha'] = \Carbon\Carbon::parse($value)->format('Y-m-d');
     }
 
-    /**
-     * @return HasMany
-     */
     public function items(): HasMany
     {
         return $this->hasMany(CalendarioItem::class, 'calendario_id');

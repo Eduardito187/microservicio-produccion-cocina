@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use DateTimeImmutable;
 
 /**
  * @class CrearCalendario
- * @package App\Application\Produccion\Command
  */
 class CrearCalendario
 {
@@ -20,8 +20,6 @@ class CrearCalendario
 
     /**
      * Constructor
-     *
-     * @param DateTimeImmutable $fecha
      */
     public function __construct(DateTimeImmutable $fecha)
     {

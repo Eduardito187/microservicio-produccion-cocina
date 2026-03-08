@@ -1,24 +1,21 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace Tests\Unit\Application\Shared;
 
-use App\Application\Shared\SimpleEventPublisher;
 use App\Application\Shared\BusInterface;
-use PHPUnit\Framework\TestCase;
+use App\Application\Shared\SimpleEventPublisher;
 use DateTimeImmutable;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @class BusTest
- * @package Tests\Unit\Application\Shared
  */
 class BusTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_publica_evento_con_datos_correctos(): void
     {
         $bus = $this->createMock(BusInterface::class);

@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\CrearEtiqueta;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Etiqueta;
+use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
 
 /**
  * @class CrearEtiquetaHandler
- * @package App\Application\Produccion\Handler
  */
 class CrearEtiquetaHandler
 {
@@ -28,9 +28,6 @@ class CrearEtiquetaHandler
 
     /**
      * Constructor
-     *
-     * @param EtiquetaRepositoryInterface $etiquetaRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         EtiquetaRepositoryInterface $etiquetaRepository,
@@ -41,7 +38,6 @@ class CrearEtiquetaHandler
     }
 
     /**
-     * @param CrearEtiqueta $command
      * @return int
      */
     public function __invoke(CrearEtiqueta $command): string

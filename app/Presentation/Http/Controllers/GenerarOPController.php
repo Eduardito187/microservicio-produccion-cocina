@@ -1,21 +1,21 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
+use App\Application\Produccion\Command\GenerarOP;
 use App\Application\Produccion\Handler\GenerarOPHandler;
 use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Presentation\Http\Requests\GenerarOPRequest;
-use App\Application\Produccion\Command\GenerarOP;
-use Illuminate\Http\JsonResponse;
 use DateTimeImmutable;
 use DomainException;
+use Illuminate\Http\JsonResponse;
 
 /**
  * @class GenerarOPController
- * @package App\Presentation\Http\Controllers
  */
 class GenerarOPController
 {
@@ -26,16 +26,14 @@ class GenerarOPController
 
     /**
      * Constructor
-     *
-     * @param GenerarOPHandler $handler
      */
-    public function __construct(GenerarOPHandler $handler) {
+    public function __construct(GenerarOPHandler $handler)
+    {
         $this->handler = $handler;
     }
 
     /**
-     * @param Request $request
-     * @return JsonResponse
+     * @param  Request  $request
      */
     public function __invoke(GenerarOPRequest $request): JsonResponse
     {

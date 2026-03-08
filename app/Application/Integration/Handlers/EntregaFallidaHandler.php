@@ -1,22 +1,22 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Integration\Handlers;
 
-use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
-use App\Application\Integration\IntegrationEventHandlerInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Application\Integration\Events\EntregaFallidaEvent;
 use App\Application\Analytics\KpiRepositoryInterface;
+use App\Application\Integration\Events\EntregaFallidaEvent;
+use App\Application\Integration\IntegrationEventHandlerInterface;
+use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
+use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use DateTimeImmutable;
 
 /**
  * @class EntregaFallidaHandler
- * @package App\Application\Integration\Handlers
  */
 class EntregaFallidaHandler implements IntegrationEventHandlerInterface
 {
@@ -42,11 +42,6 @@ class EntregaFallidaHandler implements IntegrationEventHandlerInterface
 
     /**
      * Constructor
-     *
-     * @param EntregaEvidenciaRepositoryInterface $evidenciaRepository
-     * @param KpiRepositoryInterface $kpiRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param ?LoggerInterface $logger
      */
     public function __construct(
         EntregaEvidenciaRepositoryInterface $evidenciaRepository,
@@ -57,19 +52,15 @@ class EntregaFallidaHandler implements IntegrationEventHandlerInterface
         $this->evidenciaRepository = $evidenciaRepository;
         $this->kpiRepository = $kpiRepository;
         $this->transactionAggregate = $transactionAggregate;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $eventId = $meta['event_id'] ?? null;
-        if (!is_string($eventId) || $eventId === '') {
+        if (! is_string($eventId) || $eventId === '') {
             $this->logger->warning('EntregaFallida ignorada (falta event_id)');
+
             return;
         }
 

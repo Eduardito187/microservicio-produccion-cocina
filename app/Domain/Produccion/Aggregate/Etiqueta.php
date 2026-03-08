@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Domain\Shared\Aggregate\AggregateRoot;
 
 /**
  * @class Etiqueta
- * @package App\Domain\Produccion\Aggregate
  */
 class Etiqueta
 {
@@ -42,12 +42,6 @@ class Etiqueta
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param string|int $recetaId
-     * @param string|int $suscripcionId
-     * @param string|int $pacienteId
-     * @param array $qrPayload
      */
     public function __construct(
         string|int|null $id,
@@ -63,14 +57,6 @@ class Etiqueta
         $this->qrPayload = $qrPayload;
     }
 
-    /**
-     * @param string|int|null $id
-     * @param string|int $recetaId
-     * @param string|int $suscripcionId
-     * @param string|int $pacienteId
-     * @param array $qrPayload
-     * @return Etiqueta
-     */
     public static function crear(
         string|int|null $id,
         string|int $recetaId,
@@ -86,19 +72,11 @@ class Etiqueta
             $qrPayload
         );
 
-        //$self->record();
+        // $self->record();
 
         return $self;
     }
 
-    /**
-     * @param int $id
-     * @param string|int $recetaId
-     * @param string|int $suscripcionId
-     * @param string|int $pacienteId
-     * @param array $qrPayload
-     * @return Etiqueta
-     */
     public static function reconstitute(
         int $id,
         string|int $recetaId,

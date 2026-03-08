@@ -1,22 +1,22 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Integration\Handlers;
 
-use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
-use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Integration\Events\RecetaActualizadaEvent;
+use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Domain\Produccion\Entity\RecetaVersion;
+use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
  * @class RecetaActualizadaHandler
- * @package App\Application\Integration\Handlers
  */
 class RecetaActualizadaHandler implements IntegrationEventHandlerInterface
 {
@@ -37,10 +37,6 @@ class RecetaActualizadaHandler implements IntegrationEventHandlerInterface
 
     /**
      * Constructor
-     *
-     * @param RecetaVersionRepositoryInterface $recetaVersionRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param ?LoggerInterface $logger
      */
     public function __construct(
         RecetaVersionRepositoryInterface $recetaVersionRepository,
@@ -49,14 +45,9 @@ class RecetaActualizadaHandler implements IntegrationEventHandlerInterface
     ) {
         $this->recetaVersionRepository = $recetaVersionRepository;
         $this->transactionAggregate = $transactionAggregate;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = RecetaActualizadaEvent::fromPayload($payload);
@@ -73,6 +64,7 @@ class RecetaActualizadaHandler implements IntegrationEventHandlerInterface
                 $this->logger->warning('Actualizacion de receta ignorada (falta nombre para crear)', [
                     'receta_id' => $event->id,
                 ]);
+
                 return;
             }
 

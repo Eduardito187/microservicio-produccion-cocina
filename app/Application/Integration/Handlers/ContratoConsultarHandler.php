@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -11,7 +12,6 @@ use Psr\Log\NullLogger;
 
 /**
  * @class ContratoConsultarHandler
- * @package App\Application\Integration\Handlers
  */
 class ContratoConsultarHandler implements IntegrationEventHandlerInterface
 {
@@ -20,20 +20,13 @@ class ContratoConsultarHandler implements IntegrationEventHandlerInterface
      */
     private $logger;
 
-    /**
-     * @param ?LoggerInterface $logger
-     */
     public function __construct(?LoggerInterface $logger = null)
     {
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
     /**
      * Evento de consulta sin efecto de escritura en este microservicio.
-     *
-     * @param array $payload
-     * @param array $meta
-     * @return void
      */
     public function handle(array $payload, array $meta = []): void
     {

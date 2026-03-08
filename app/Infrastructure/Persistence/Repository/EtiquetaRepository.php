@@ -1,31 +1,31 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\Etiqueta as EtiquetaModel;
+use App\Domain\Produccion\Entity\Etiqueta;
 use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Entity\Etiqueta;
+use App\Infrastructure\Persistence\Model\Etiqueta as EtiquetaModel;
 
 /**
  * @class EtiquetaRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class EtiquetaRepository implements EtiquetaRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param  int  $id
+     *
      * @throws EntityNotFoundException
-     * @return Etiqueta|null
      */
     public function byId(string|int $id): ?Etiqueta
     {
         $row = EtiquetaModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("La etiqueta id: {$id} no existe.");
         }
 
@@ -38,7 +38,6 @@ class EtiquetaRepository implements EtiquetaRepositoryInterface
     }
 
     /**
-     * @param Etiqueta $etiqueta
      * @return int
      */
     public function save(Etiqueta $etiqueta): string
@@ -75,8 +74,7 @@ class EtiquetaRepository implements EtiquetaRepositoryInterface
     }
 
     /**
-     * @param int $id
-     * @return void
+     * @param  int  $id
      */
     public function delete(string|int $id): void
     {

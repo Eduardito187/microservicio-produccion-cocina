@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -6,11 +7,11 @@
 namespace App\Presentation\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+
 // use Illuminate\Support\Facades\Gate;
 
 /**
  * @class AuthServiceProvider
- * @package App\Presentation\Providers
  */
 class AuthServiceProvider extends ServiceProvider
 {

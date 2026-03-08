@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -16,10 +17,10 @@ return new class extends Migration
     {
         if (Schema::hasTable('item_despacho')) {
             Schema::table('item_despacho', function (Blueprint $table) {
-                if (!Schema::hasColumn('item_despacho', 'delivery_status')) {
+                if (! Schema::hasColumn('item_despacho', 'delivery_status')) {
                     $table->string('delivery_status', 30)->nullable()->after('paquete_id');
                 }
-                if (!Schema::hasColumn('item_despacho', 'delivery_occurred_on')) {
+                if (! Schema::hasColumn('item_despacho', 'delivery_occurred_on')) {
                     $table->dateTime('delivery_occurred_on')->nullable()->after('delivery_status');
                 }
             });
@@ -27,7 +28,7 @@ return new class extends Migration
 
         if (Schema::hasTable('orden_produccion')) {
             Schema::table('orden_produccion', function (Blueprint $table) {
-                if (!Schema::hasColumn('orden_produccion', 'entrega_completada_at')) {
+                if (! Schema::hasColumn('orden_produccion', 'entrega_completada_at')) {
                     $table->dateTime('entrega_completada_at')->nullable()->after('estado');
                 }
             });
@@ -58,4 +59,3 @@ return new class extends Migration
         }
     }
 };
-

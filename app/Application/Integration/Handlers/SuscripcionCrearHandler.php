@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,12 +10,11 @@ use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Suscripcion;
 use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
-use Illuminate\Support\Str;
 use DateTimeImmutable;
+use Illuminate\Support\Str;
 
 /**
  * @class SuscripcionCrearHandler
- * @package App\Application\Integration\Handlers
  */
 class SuscripcionCrearHandler implements IntegrationEventHandlerInterface
 {
@@ -28,10 +28,6 @@ class SuscripcionCrearHandler implements IntegrationEventHandlerInterface
      */
     private $transactionAggregate;
 
-    /**
-     * @param SuscripcionRepositoryInterface $suscripcionRepository
-     * @param TransactionAggregate $transactionAggregate
-     */
     public function __construct(
         SuscripcionRepositoryInterface $suscripcionRepository,
         TransactionAggregate $transactionAggregate
@@ -40,11 +36,6 @@ class SuscripcionCrearHandler implements IntegrationEventHandlerInterface
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $id = $this->resolveId($payload, $meta);
@@ -75,11 +66,6 @@ class SuscripcionCrearHandler implements IntegrationEventHandlerInterface
         });
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return string
-     */
     private function resolveId(array $payload, array $meta): string
     {
         foreach (['id', 'suscripcionId', 'contratoId'] as $key) {
@@ -99,11 +85,6 @@ class SuscripcionCrearHandler implements IntegrationEventHandlerInterface
         return (string) Str::uuid();
     }
 
-    /**
-     * @param array $payload
-     * @param ?string $fechaInicio
-     * @return ?string
-     */
     private function resolveFechaFin(array $payload, ?string $fechaInicio): ?string
     {
         $fechaFin = $this->getString($payload, 'fechaFin');
@@ -116,7 +97,7 @@ class SuscripcionCrearHandler implements IntegrationEventHandlerInterface
         }
 
         $duracionDias = $payload['duracionDias'] ?? null;
-        if (!is_numeric($duracionDias)) {
+        if (! is_numeric($duracionDias)) {
             return null;
         }
 
@@ -129,11 +110,6 @@ class SuscripcionCrearHandler implements IntegrationEventHandlerInterface
         }
     }
 
-    /**
-     * @param array $payload
-     * @param string $key
-     * @return ?string
-     */
     private function getString(array $payload, string $key): ?string
     {
         $value = $payload[$key] ?? null;
@@ -148,4 +124,3 @@ class SuscripcionCrearHandler implements IntegrationEventHandlerInterface
         return is_string($value) ? $value : null;
     }
 }
-

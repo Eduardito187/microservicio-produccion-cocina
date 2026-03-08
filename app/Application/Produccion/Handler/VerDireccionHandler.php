@@ -1,19 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\VerDireccion;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Direccion;
+use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 
 /**
  * @class VerDireccionHandler
- * @package App\Application\Produccion\Handler
  */
 class VerDireccionHandler
 {
@@ -29,9 +28,6 @@ class VerDireccionHandler
 
     /**
      * Constructor
-     *
-     * @param DireccionRepositoryInterface $direccionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         DireccionRepositoryInterface $direccionRepository,
@@ -41,22 +37,15 @@ class VerDireccionHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param VerDireccion $command
-     * @return array
-     */
     public function __invoke(VerDireccion $command): array
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): array {
             $direccion = $this->direccionRepository->byId($command->id);
+
             return $this->mapDireccion($direccion);
         });
     }
 
-    /**
-     * @param Direccion $direccion
-     * @return array
-     */
     private function mapDireccion(Direccion $direccion): array
     {
         return [

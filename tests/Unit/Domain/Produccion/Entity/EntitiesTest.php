@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -11,13 +12,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @class EntitiesTest
- * @package Tests\Unit\Domain\Produccion\Entity
  */
 class EntitiesTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_products_assigns_properties(): void
     {
         $product = new Products(id: 10, sku: 'SKU-1', price: 25.5, special_price: 0.0);
@@ -28,9 +25,6 @@ class EntitiesTest extends TestCase
         $this->assertSame(0.0, $product->special_price);
     }
 
-    /**
-     * @return void
-     */
     public function test_item_despacho_assigns_properties(): void
     {
         $itemDespacho = new ItemDespacho(id: null, ordenProduccionId: 1, productId: 10, paqueteId: null);

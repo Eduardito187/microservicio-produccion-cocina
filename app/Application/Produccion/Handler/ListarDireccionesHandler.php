@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ListarDirecciones;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Direccion;
+use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 
 /**
  * @class ListarDireccionesHandler
- * @package App\Application\Produccion\Handler
  */
 class ListarDireccionesHandler
 {
@@ -28,9 +28,6 @@ class ListarDireccionesHandler
 
     /**
      * Constructor
-     *
-     * @param DireccionRepositoryInterface $direccionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         DireccionRepositoryInterface $direccionRepository,
@@ -40,10 +37,6 @@ class ListarDireccionesHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param ListarDirecciones $command
-     * @return array
-     */
     public function __invoke(ListarDirecciones $command): array
     {
         return $this->transactionAggregate->runTransaction(function (): array {
@@ -51,10 +44,6 @@ class ListarDireccionesHandler
         });
     }
 
-    /**
-     * @param Direccion $direccion
-     * @return array
-     */
     private function mapDireccion(Direccion $direccion): array
     {
         return [

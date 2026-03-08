@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\CrearPorcion;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Porcion;
+use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
 
 /**
  * @class CrearPorcionHandler
- * @package App\Application\Produccion\Handler
  */
 class CrearPorcionHandler
 {
@@ -28,9 +28,6 @@ class CrearPorcionHandler
 
     /**
      * Constructor
-     *
-     * @param PorcionRepositoryInterface $porcionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         PorcionRepositoryInterface $porcionRepository,
@@ -41,7 +38,6 @@ class CrearPorcionHandler
     }
 
     /**
-     * @param CrearPorcion $command
      * @return int
      */
     public function __invoke(CrearPorcion $command): string

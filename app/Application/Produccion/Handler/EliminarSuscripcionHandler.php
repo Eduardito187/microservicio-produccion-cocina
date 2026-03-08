@@ -1,17 +1,17 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\EliminarSuscripcion;
+use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 
 /**
  * @class EliminarSuscripcionHandler
- * @package App\Application\Produccion\Handler
  */
 class EliminarSuscripcionHandler
 {
@@ -27,9 +27,6 @@ class EliminarSuscripcionHandler
 
     /**
      * Constructor
-     *
-     * @param SuscripcionRepositoryInterface $suscripcionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         SuscripcionRepositoryInterface $suscripcionRepository,
@@ -39,10 +36,6 @@ class EliminarSuscripcionHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param EliminarSuscripcion $command
-     * @return void
-     */
     public function __invoke(EliminarSuscripcion $command): void
     {
         $this->transactionAggregate->runTransaction(function () use ($command): void {

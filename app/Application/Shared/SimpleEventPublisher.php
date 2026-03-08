@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use DateTimeImmutable;
 
 /**
  * @class SimpleEventPublisher
- * @package App\Application\Shared
  */
 class SimpleEventPublisher
 {
@@ -20,21 +20,14 @@ class SimpleEventPublisher
 
     /**
      * Constructor
-     *
-     * @param BusInterface $bus
      */
-    public function __construct(BusInterface $bus) {
+    public function __construct(BusInterface $bus)
+    {
         $this->bus = $bus;
     }
 
-    /**
-     * @param string $eventId
-     * @param string $name
-     * @param array $payload
-     * @return void
-     */
     public function publish(string $eventId, string $name, array $payload): void
     {
-        $this->bus->publish($eventId, $name, $payload, new DateTimeImmutable(), []);
+        $this->bus->publish($eventId, $name, $payload, new DateTimeImmutable, []);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -12,16 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @class RequireRoleMiddleware
- * @package App\Presentation\Http\Middleware
  */
 class RequireRoleMiddleware
 {
-    /**
-     * @param Request $request
-     * @param Closure $next
-     * @param string ...$roles
-     * @return Response
-     */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         if ($this->shouldBypassForPact($request) || $this->shouldBypassForTests()) {
@@ -29,7 +23,7 @@ class RequireRoleMiddleware
         }
 
         $claims = $request->attributes->get('token');
-        if (!is_array($claims)) {
+        if (! is_array($claims)) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
@@ -54,13 +48,9 @@ class RequireRoleMiddleware
         return response()->json(['message' => 'Forbidden'], 403);
     }
 
-    /**
-     * @param Request $request
-     * @return bool
-     */
     private function shouldBypassForPact(Request $request): bool
     {
-        if (!$this->isPactBypassEnvironment()) {
+        if (! $this->isPactBypassEnvironment()) {
             return false;
         }
 
@@ -76,18 +66,11 @@ class RequireRoleMiddleware
         return false;
     }
 
-    /**
-     * @return bool
-     */
     private function shouldBypassForTests(): bool
     {
         return app()->runningUnitTests();
     }
 
-    /**
-     * @param array $roles
-     * @return array
-     */
     private function parseRoles(array $roles): array
     {
         $items = [];
@@ -104,10 +87,6 @@ class RequireRoleMiddleware
         return array_values(array_unique($items));
     }
 
-    /**
-     * @param array $claims
-     * @return array
-     */
     private function extractRoles(array $claims): array
     {
         $roles = [];
@@ -129,10 +108,6 @@ class RequireRoleMiddleware
         return array_values(array_unique($roles));
     }
 
-    /**
-     * @param mixed $value
-     * @return array
-     */
     private function toArray(mixed $value): array
     {
         if (is_array($value)) {
@@ -142,24 +117,18 @@ class RequireRoleMiddleware
         if (is_object($value)) {
             /** @var array $arrayValue */
             $arrayValue = (array) $value;
+
             return $arrayValue;
         }
 
         return [];
     }
 
-    /**
-     * @return bool
-     */
     private function isPactBypassEnvironment(): bool
     {
         return app()->environment(['local', 'testing']);
     }
 
-    /**
-     * @param Request $request
-     * @return bool
-     */
     private function hasValidPactSecret(Request $request): bool
     {
         $expected = (string) env('PACT_BYPASS_HEADER_SECRET', '');
@@ -168,6 +137,7 @@ class RequireRoleMiddleware
         }
 
         $provided = $request->header('X-Pact-Secret', '');
+
         return is_string($provided) && hash_equals($expected, $provided);
     }
 }

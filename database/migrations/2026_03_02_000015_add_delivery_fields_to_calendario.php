@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -14,18 +15,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('calendario')) {
+        if (! Schema::hasTable('calendario')) {
             return;
         }
 
         Schema::table('calendario', function (Blueprint $table) {
-            if (!Schema::hasColumn('calendario', 'entrega_id')) {
+            if (! Schema::hasColumn('calendario', 'entrega_id')) {
                 $table->string('entrega_id')->nullable()->after('fecha');
             }
-            if (!Schema::hasColumn('calendario', 'contrato_id')) {
+            if (! Schema::hasColumn('calendario', 'contrato_id')) {
                 $table->string('contrato_id')->nullable()->after('entrega_id');
             }
-            if (!Schema::hasColumn('calendario', 'estado')) {
+            if (! Schema::hasColumn('calendario', 'estado')) {
                 $table->integer('estado')->nullable()->after('contrato_id');
             }
         });
@@ -36,7 +37,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (!Schema::hasTable('calendario')) {
+        if (! Schema::hasTable('calendario')) {
             return;
         }
 

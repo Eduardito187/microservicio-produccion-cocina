@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -15,7 +16,6 @@ use Psr\Log\NullLogger;
 
 /**
  * @class CalendarioGeneradoHandler
- * @package App\Application\Integration\Handlers
  */
 class CalendarioGeneradoHandler implements IntegrationEventHandlerInterface
 {
@@ -34,11 +34,6 @@ class CalendarioGeneradoHandler implements IntegrationEventHandlerInterface
      */
     private $logger;
 
-    /**
-     * @param CalendarioRepositoryInterface $calendarioRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param ?LoggerInterface $logger
-     */
     public function __construct(
         CalendarioRepositoryInterface $calendarioRepository,
         TransactionAggregate $transactionAggregate,
@@ -46,26 +41,21 @@ class CalendarioGeneradoHandler implements IntegrationEventHandlerInterface
     ) {
         $this->calendarioRepository = $calendarioRepository;
         $this->transactionAggregate = $transactionAggregate;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $contratoId = isset($payload['contratoId']) && is_string($payload['contratoId'])
             ? $payload['contratoId']
             : 'contrato';
         $fechas = $payload['listaFechasEntrega'] ?? [];
-        if (!is_array($fechas)) {
+        if (! is_array($fechas)) {
             return;
         }
 
         foreach ($fechas as $fechaRaw) {
-            if (!is_string($fechaRaw) || trim($fechaRaw) === '') {
+            if (! is_string($fechaRaw) || trim($fechaRaw) === '') {
                 continue;
             }
 
@@ -86,14 +76,10 @@ class CalendarioGeneradoHandler implements IntegrationEventHandlerInterface
         }
     }
 
-    /**
-     * @param string $contratoId
-     * @param string $fecha
-     * @return string
-     */
     private function buildId(string $contratoId, string $fecha): string
     {
         $hash = md5($contratoId . '|' . $fecha);
+
         return sprintf(
             '%s-%s-%s-%s-%s',
             substr($hash, 0, 8),

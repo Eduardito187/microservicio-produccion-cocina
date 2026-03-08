@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Domain\Produccion\Entity;
 
 /**
  * @class Paciente
- * @package App\Domain\Produccion\Entity
  */
 class Paciente
 {
@@ -33,16 +33,11 @@ class Paciente
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param string $nombre
-     * @param string|null $documento
-     * @param string|int|null $suscripcionId
      */
     public function __construct(
         string|int|null $id,
         string $nombre,
-        string|null $documento = null,
+        ?string $documento = null,
         string|int|null $suscripcionId = null
     ) {
         $this->id = $id;

@@ -1,20 +1,20 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Produccion\Command\CrearPaciente;
-use App\Domain\Produccion\Events\PacienteCreado;
+use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Paciente;
+use App\Domain\Produccion\Events\PacienteCreado;
+use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 
 /**
  * @class CrearPacienteHandler
- * @package App\Application\Produccion\Handler
  */
 class CrearPacienteHandler
 {
@@ -35,10 +35,6 @@ class CrearPacienteHandler
 
     /**
      * Constructor
-     *
-     * @param PacienteRepositoryInterface $pacienteRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         PacienteRepositoryInterface $pacienteRepository,
@@ -51,7 +47,6 @@ class CrearPacienteHandler
     }
 
     /**
-     * @param CrearPaciente $command
      * @return int
      */
     public function __invoke(CrearPaciente $command): string

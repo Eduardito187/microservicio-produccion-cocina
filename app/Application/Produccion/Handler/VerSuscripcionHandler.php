@@ -1,19 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\VerSuscripcion;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Suscripcion;
+use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 
 /**
  * @class VerSuscripcionHandler
- * @package App\Application\Produccion\Handler
  */
 class VerSuscripcionHandler
 {
@@ -29,9 +28,6 @@ class VerSuscripcionHandler
 
     /**
      * Constructor
-     *
-     * @param SuscripcionRepositoryInterface $suscripcionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         SuscripcionRepositoryInterface $suscripcionRepository,
@@ -41,22 +37,15 @@ class VerSuscripcionHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param VerSuscripcion $command
-     * @return array
-     */
     public function __invoke(VerSuscripcion $command): array
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): array {
             $suscripcion = $this->suscripcionRepository->byId($command->id);
+
             return $this->mapSuscripcion($suscripcion);
         });
     }
 
-    /**
-     * @param Suscripcion $suscripcion
-     * @return array
-     */
     private function mapSuscripcion(Suscripcion $suscripcion): array
     {
         return [

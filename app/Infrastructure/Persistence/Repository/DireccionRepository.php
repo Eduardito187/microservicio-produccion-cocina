@@ -1,31 +1,31 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\Direccion as DireccionModel;
+use App\Domain\Produccion\Entity\Direccion;
 use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Entity\Direccion;
+use App\Infrastructure\Persistence\Model\Direccion as DireccionModel;
 
 /**
  * @class DireccionRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class DireccionRepository implements DireccionRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param  int  $id
+     *
      * @throws EntityNotFoundException
-     * @return Direccion|null
      */
     public function byId(string|int $id): ?Direccion
     {
         $row = DireccionModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("La direccion id: {$id} no existe.");
         }
 
@@ -42,7 +42,6 @@ class DireccionRepository implements DireccionRepositoryInterface
     }
 
     /**
-     * @param Direccion $direccion
      * @return int
      */
     public function save(Direccion $direccion): string
@@ -59,6 +58,7 @@ class DireccionRepository implements DireccionRepositoryInterface
                 'geo' => $direccion->geo,
             ]
         );
+
         return $model->id;
     }
 
@@ -86,8 +86,7 @@ class DireccionRepository implements DireccionRepositoryInterface
     }
 
     /**
-     * @param int $id
-     * @return void
+     * @param  int  $id
      */
     public function delete(string|int $id): void
     {

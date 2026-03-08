@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -18,15 +19,11 @@ use Tests\TestCase;
 
 /**
  * @class LogisticaInboundTest
- * @package Tests\Feature\Integration
  */
 class LogisticaInboundTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_entrega_confirmada_guarda_evidencia_y_kpi(): void
     {
         $handler = $this->app->make(EntregaConfirmadaHandler::class);
@@ -52,9 +49,6 @@ class LogisticaInboundTest extends TestCase
         ]);
     }
 
-    /**
-     * @return void
-     */
     public function test_entrega_fallida_guarda_evidencia_y_kpi(): void
     {
         $handler = $this->app->make(EntregaFallidaHandler::class);
@@ -79,9 +73,6 @@ class LogisticaInboundTest extends TestCase
         ]);
     }
 
-    /**
-     * @return void
-     */
     public function test_paquete_en_ruta_guarda_evidencia_y_kpi(): void
     {
         $handler = $this->app->make(PaqueteEnRutaHandler::class);
@@ -106,9 +97,6 @@ class LogisticaInboundTest extends TestCase
         ]);
     }
 
-    /**
-     * @return void
-     */
     public function test_logistica_estado_actualizado_no_emite_completada_si_hay_paquete_fallido(): void
     {
         DB::table('orden_produccion')->insert([
@@ -191,9 +179,6 @@ class LogisticaInboundTest extends TestCase
         $this->assertNull($order->entrega_completada_at);
     }
 
-    /**
-     * @return void
-     */
     public function test_logistica_estado_actualizado_emite_completada_cuando_todos_confirmados_e_incluye_entrega_y_contrato(): void
     {
         DB::table('calendario')->insert([
@@ -257,10 +242,11 @@ class LogisticaInboundTest extends TestCase
             ->method('publish')
             ->with(
                 $this->callback(function (array $events): bool {
-                    if (count($events) !== 1 || !$events[0] instanceof PaqueteEntregado) {
+                    if (count($events) !== 1 || ! $events[0] instanceof PaqueteEntregado) {
                         return false;
                     }
                     $payload = $events[0]->toArray();
+
                     return $events[0]->aggregateId() === 'op-2'
                         && ($payload['calendarioId'] ?? null) === 'cal-2'
                         && ($payload['contratoId'] ?? null) === '44444444-4444-4444-4444-444444444444'
@@ -304,9 +290,6 @@ class LogisticaInboundTest extends TestCase
         $this->assertNotNull($order->entrega_completada_at);
     }
 
-    /**
-     * @return void
-     */
     public function test_logistica_estado_actualizado_bloquea_cambios_despues_de_completed(): void
     {
         DB::table('orden_produccion')->insert([
@@ -359,9 +342,6 @@ class LogisticaInboundTest extends TestCase
         ]);
     }
 
-    /**
-     * @return void
-     */
     public function test_logistica_estado_actualizado_no_reemite_evento_cuando_completion_event_id_ya_existe(): void
     {
         DB::table('calendario')->insert([
@@ -425,10 +405,11 @@ class LogisticaInboundTest extends TestCase
             ->method('publish')
             ->with(
                 $this->callback(function (array $events): bool {
-                    if (count($events) !== 1 || !$events[0] instanceof PaqueteEntregado) {
+                    if (count($events) !== 1 || ! $events[0] instanceof PaqueteEntregado) {
                         return false;
                     }
                     $payload = $events[0]->toArray();
+
                     return ($payload['estado'] ?? null) === 'entregado'
                         && ($payload['calendarioId'] ?? null) === 'cal-4'
                         && ($payload['contratoId'] ?? null) === '88888888-8888-8888-8888-888888888888';
@@ -470,9 +451,6 @@ class LogisticaInboundTest extends TestCase
         $this->assertNotNull($progress->completion_event_id);
     }
 
-    /**
-     * @return void
-     */
     public function test_logistica_estado_actualizado_guarda_driver_en_tracking_y_history(): void
     {
         DB::table('orden_produccion')->insert([
@@ -521,9 +499,6 @@ class LogisticaInboundTest extends TestCase
         ]);
     }
 
-    /**
-     * @return void
-     */
     public function test_logistica_estado_actualizado_mantiene_historial_y_actualiza_driver_actual(): void
     {
         DB::table('orden_produccion')->insert([
@@ -598,9 +573,6 @@ class LogisticaInboundTest extends TestCase
         ]);
     }
 
-    /**
-     * @return void
-     */
     public function test_logistica_estado_actualizado_encola_inconsistencia_si_falta_entrega_y_contrato(): void
     {
         DB::table('orden_produccion')->insert([
@@ -659,9 +631,6 @@ class LogisticaInboundTest extends TestCase
         $this->assertNull($order->entrega_completada_at);
     }
 
-    /**
-     * @return void
-     */
     public function test_logistica_estado_actualizado_deduplica_inconsistencia_por_evento_y_razon(): void
     {
         DB::table('orden_produccion')->insert([
@@ -715,9 +684,6 @@ class LogisticaInboundTest extends TestCase
         $this->assertSame(1, $count);
     }
 
-    /**
-     * @return void
-     */
     public function test_logistica_estado_actualizado_emite_consolidado_no_entregado_cuando_todos_fallidos(): void
     {
         DB::table('calendario')->insert([
@@ -782,10 +748,11 @@ class LogisticaInboundTest extends TestCase
             ->method('publish')
             ->with(
                 $this->callback(function (array $events): bool {
-                    if (count($events) !== 1 || !$events[0] instanceof PaqueteEntregado) {
+                    if (count($events) !== 1 || ! $events[0] instanceof PaqueteEntregado) {
                         return false;
                     }
                     $payload = $events[0]->toArray();
+
                     return ($payload['ordenProduccionId'] ?? null) === 'op-9'
                         && ($payload['calendarioId'] ?? null) === 'cal-9'
                         && ($payload['contratoId'] ?? null) === '34343434-3434-3434-3434-343434343434'

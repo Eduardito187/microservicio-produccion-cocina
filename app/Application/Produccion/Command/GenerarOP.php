@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use DateTimeImmutable;
 
 /**
  * @class GenerarOP
- * @package App\Application\Produccion\Command
  */
 class GenerarOP
 {
@@ -30,10 +30,6 @@ class GenerarOP
 
     /**
      * Constructor
-     *
-     * @param ?string $id
-     * @param DateTimeImmutable $fecha
-     * @param array $items
      */
     public function __construct(?string $id, DateTimeImmutable $fecha, array $items)
     {

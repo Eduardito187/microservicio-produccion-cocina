@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -14,7 +15,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('calendario')) {
+        if (! Schema::hasTable('calendario')) {
             Schema::create('calendario', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->date('fecha');
@@ -25,7 +26,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('direccion')) {
+        if (! Schema::hasTable('direccion')) {
             Schema::create('direccion', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->string('nombre')->nullable();
@@ -40,7 +41,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('failed_jobs')) {
+        if (! Schema::hasTable('failed_jobs')) {
             Schema::create('failed_jobs', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->string('uuid')->unique();
@@ -52,7 +53,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('inbound_events')) {
+        if (! Schema::hasTable('inbound_events')) {
             Schema::create('inbound_events', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('event_id');
@@ -66,7 +67,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('orden_produccion')) {
+        if (! Schema::hasTable('orden_produccion')) {
             Schema::create('orden_produccion', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->date('fecha');
@@ -76,7 +77,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('outbox')) {
+        if (! Schema::hasTable('outbox')) {
             Schema::create('outbox', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('event_id');
@@ -92,7 +93,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('porcion')) {
+        if (! Schema::hasTable('porcion')) {
             Schema::create('porcion', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->string('nombre')->unique();
@@ -102,7 +103,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('products')) {
+        if (! Schema::hasTable('products')) {
             Schema::create('products', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->string('sku')->unique();
@@ -113,7 +114,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('receta_version')) {
+        if (! Schema::hasTable('receta_version')) {
             Schema::create('receta_version', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->string('nombre')->unique();
@@ -124,7 +125,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('suscripcion')) {
+        if (! Schema::hasTable('suscripcion')) {
             Schema::create('suscripcion', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->string('nombre')->unique();
@@ -133,7 +134,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('ventana_entrega')) {
+        if (! Schema::hasTable('ventana_entrega')) {
             Schema::create('ventana_entrega', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->dateTime('desde');
@@ -143,7 +144,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('paciente')) {
+        if (! Schema::hasTable('paciente')) {
             Schema::create('paciente', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->string('nombre')->unique();
@@ -154,7 +155,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('order_item')) {
+        if (! Schema::hasTable('order_item')) {
             Schema::create('order_item', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->foreignUuid('op_id')->nullable()->constrained('orden_produccion')->cascadeOnDelete();
@@ -167,7 +168,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('produccion_batch')) {
+        if (! Schema::hasTable('produccion_batch')) {
             Schema::create('produccion_batch', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->foreignUuid('op_id')->nullable()->constrained('orden_produccion')->cascadeOnDelete();
@@ -191,7 +192,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('etiqueta')) {
+        if (! Schema::hasTable('etiqueta')) {
             Schema::create('etiqueta', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->foreignUuid('suscripcion_id')->nullable()->constrained('suscripcion')->nullOnDelete();
@@ -202,7 +203,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('paquete')) {
+        if (! Schema::hasTable('paquete')) {
             Schema::create('paquete', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->foreignUuid('etiqueta_id')->nullable()->constrained('etiqueta')->cascadeOnDelete();
@@ -213,7 +214,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('item_despacho')) {
+        if (! Schema::hasTable('item_despacho')) {
             Schema::create('item_despacho', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->foreignUuid('op_id')->nullable()->constrained('orden_produccion')->cascadeOnDelete();
@@ -224,7 +225,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('calendario_item')) {
+        if (! Schema::hasTable('calendario_item')) {
             Schema::create('calendario_item', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->foreignUuid('calendario_id')->nullable()->constrained('calendario')->cascadeOnDelete();

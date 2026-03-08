@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Domain\Produccion\Entity;
 
 /**
  * @class Porcion
- * @package App\Domain\Produccion\Entity
  */
 class Porcion
 {
@@ -28,10 +28,6 @@ class Porcion
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param string $nombre
-     * @param int $pesoGr
      */
     public function __construct(string|int|null $id, string $nombre, int $pesoGr)
     {

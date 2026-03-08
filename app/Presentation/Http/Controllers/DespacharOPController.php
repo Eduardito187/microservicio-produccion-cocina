@@ -1,20 +1,20 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
+use App\Application\Produccion\Command\DespachadorOP;
 use App\Application\Produccion\Handler\DespachadorOPHandler;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Application\Produccion\Command\DespachadorOP;
+use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use DomainException;
 
 /**
  * @class DespacharOPController
- * @package App\Presentation\Http\Controllers
  */
 class DespacharOPController
 {
@@ -25,17 +25,12 @@ class DespacharOPController
 
     /**
      * Constructor
-     *
-     * @param DespachadorOPHandler $handler
      */
-    public function __construct(DespachadorOPHandler $handler) {
+    public function __construct(DespachadorOPHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate(
@@ -45,7 +40,7 @@ class DespacharOPController
                 'itemsDespacho.*.sku' => ['required', 'string'],
                 'pacienteId' => ['required', 'uuid'],
                 'direccionId' => ['required', 'uuid'],
-                'ventanaEntrega' => ['required', 'uuid']
+                'ventanaEntrega' => ['required', 'uuid'],
             ]
         );
 

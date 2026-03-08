@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Domain\Produccion\Entity;
 
 /**
  * @class RecetaVersion
- * @package App\Domain\Produccion\Entity
  */
 class RecetaVersion
 {
@@ -48,23 +48,15 @@ class RecetaVersion
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param string $nombre
-     * @param array|null $nutrientes
-     * @param array|null $ingredientes
-     * @param string|null $description
-     * @param string|null $instructions
-     * @param int|null $totalCalories
      */
     public function __construct(
         string|int|null $id,
         string $nombre,
-        array|null $nutrientes = null,
-        array|null $ingredientes = null,
-        string|null $description = null,
-        string|null $instructions = null,
-        int|null $totalCalories = null
+        ?array $nutrientes = null,
+        ?array $ingredientes = null,
+        ?string $description = null,
+        ?string $instructions = null,
+        ?int $totalCalories = null
     ) {
         $this->id = $id;
         $this->nombre = $nombre;

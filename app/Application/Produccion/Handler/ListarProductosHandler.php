@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\ProductRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ListarProductos;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Products;
+use App\Domain\Produccion\Repository\ProductRepositoryInterface;
 
 /**
  * @class ListarProductosHandler
- * @package App\Application\Produccion\Handler
  */
 class ListarProductosHandler
 {
@@ -28,9 +28,6 @@ class ListarProductosHandler
 
     /**
      * Constructor
-     *
-     * @param ProductRepositoryInterface $productRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         ProductRepositoryInterface $productRepository,
@@ -40,10 +37,6 @@ class ListarProductosHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param ListarProductos $command
-     * @return array
-     */
     public function __invoke(ListarProductos $command): array
     {
         return $this->transactionAggregate->runTransaction(function (): array {
@@ -51,10 +44,6 @@ class ListarProductosHandler
         });
     }
 
-    /**
-     * @param Products $product
-     * @return array
-     */
     private function mapProducto(Products $product): array
     {
         return [

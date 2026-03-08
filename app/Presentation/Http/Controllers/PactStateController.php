@@ -1,39 +1,34 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
  * @class PactStateController
- * @package App\Presentation\Http\Controllers
  */
 class PactStateController
 {
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         $state = $request->input('state', '');
         $params = $request->input('params', $request->input('providerStateParams', []));
-        if (!is_array($params)) {
+        if (! is_array($params)) {
             $params = [];
         }
         if ($params === []) {
             $params = $request->only([
                 'ordenProduccionId',
                 'porcionId',
-                'productId'
+                'productId',
             ]);
         }
 
@@ -57,20 +52,19 @@ class PactStateController
             }
 
             DB::commit();
+
             return response()->json(['ok' => true, 'state' => $state], 200);
         } catch (\Throwable $e) {
             DB::rollBack();
-            Log::error('[ ] '.$state, ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            Log::error('[ ] ' . $state, ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+
             return response()->json(['ok' => false, 'state' => $state, 'error' => $e->getMessage()], 500);
         }
     }
 
-    /**
-     * @return void
-     */
     private function ensureProductSku1(): void
     {
-        $productTable = "products";
+        $productTable = 'products';
         $existingProductId = DB::table($productTable)->where('sku', 'PIZZA-PEP')->value('id');
         $productId = $existingProductId ?: (string) Str::uuid();
 
@@ -81,14 +75,11 @@ class PactStateController
                 'price' => 100,
                 'special_price' => 0,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]
         );
     }
 
-    /**
-     * @return void
-     */
     private function ensureOrdenAndPorcion(array $params): void
     {
         if ($params === []) {
@@ -98,7 +89,7 @@ class PactStateController
             ];
         }
 
-        $porcionTable = "porcion";
+        $porcionTable = 'porcion';
         $row = [];
         $porcionId = $params['porcionId'] ?? $params['porcion_id'] ?? (string) Str::uuid();
         $existingPorcionId = DB::table($porcionTable)->where('nombre', 'porcion_test')->value('id');
@@ -113,7 +104,7 @@ class PactStateController
         $row['updated_at'] = now();
         DB::table($porcionTable)->updateOrInsert(['id' => $porcionId], $row);
 
-        $productTable = "products";
+        $productTable = 'products';
         $existingProductId = DB::table($productTable)->where('sku', 'PIZZA-PEP')->value('id');
         $productId = $existingProductId ?: ($params['productId'] ?? $params['product_id'] ?? (string) Str::uuid());
         $row = [];
@@ -125,7 +116,7 @@ class PactStateController
         $row['updated_at'] = now();
         DB::table($productTable)->updateOrInsert(['id' => $productId], $row);
 
-        $orderTable = "orden_produccion";
+        $orderTable = 'orden_produccion';
         $row = [];
         $ordenId = $params['ordenProduccionId'] ?? $params['orden_produccion_id'] ?? (string) Str::uuid();
         DB::table('produccion_batch')->where('op_id', $ordenId)->delete();
@@ -137,7 +128,7 @@ class PactStateController
         $row['updated_at'] = now();
         DB::table($orderTable)->updateOrInsert(['id' => $ordenId], $row);
 
-        $orderItemTable = "order_item";
+        $orderItemTable = 'order_item';
         $row = [];
         $orderItemId = (string) Str::uuid();
         $row['id'] = $orderItemId;

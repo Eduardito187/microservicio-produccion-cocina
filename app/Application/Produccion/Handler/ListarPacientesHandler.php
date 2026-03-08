@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ListarPacientes;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Paciente;
+use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 
 /**
  * @class ListarPacientesHandler
- * @package App\Application\Produccion\Handler
  */
 class ListarPacientesHandler
 {
@@ -28,9 +28,6 @@ class ListarPacientesHandler
 
     /**
      * Constructor
-     *
-     * @param PacienteRepositoryInterface $pacienteRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         PacienteRepositoryInterface $pacienteRepository,
@@ -40,10 +37,6 @@ class ListarPacientesHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param ListarPacientes $command
-     * @return array
-     */
     public function __invoke(ListarPacientes $command): array
     {
         return $this->transactionAggregate->runTransaction(function (): array {
@@ -51,10 +44,6 @@ class ListarPacientesHandler
         });
     }
 
-    /**
-     * @param Paciente $paciente
-     * @return array
-     */
     private function mapPaciente(Paciente $paciente): array
     {
         return [

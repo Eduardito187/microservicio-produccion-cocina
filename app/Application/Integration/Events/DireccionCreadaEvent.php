@@ -10,7 +10,6 @@ use App\Application\Integration\Events\Support\Payload;
 
 /**
  * @class DireccionActualizadaEvent
- * @package App\Application\Integration\Events
  */
 class DireccionCreadaEvent
 {
@@ -56,15 +55,6 @@ class DireccionCreadaEvent
 
     /**
      * Constructor
-     *
-     * @param string $id
-     * @param ?string $nombre
-     * @param string $linea1
-     * @param ?string $linea2
-     * @param ?string $ciudad
-     * @param ?string $provincia
-     * @param ?string $pais
-     * @param ?array $geo
      */
     public function __construct(
         string $id,
@@ -86,10 +76,6 @@ class DireccionCreadaEvent
         $this->geo = $geo;
     }
 
-    /**
-     * @param array $payload
-     * @return self
-     */
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);

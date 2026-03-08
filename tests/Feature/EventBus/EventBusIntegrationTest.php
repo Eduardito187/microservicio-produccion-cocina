@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,15 +11,11 @@ use Tests\TestCase;
 
 /**
  * @class EventBusIntegrationTest
- * @package Tests\Feature\EventBus
  */
 class EventBusIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_event_bus_rechaza_sin_token_y_acepta_con_token_y_es_idempotente(): void
     {
         $_ENV['EVENTBUS_SECRET'] = 'test-secret';
@@ -50,9 +47,6 @@ class EventBusIntegrationTest extends TestCase
             ->assertOk()->assertJsonPath('status', 'duplicate');
     }
 
-    /**
-     * @return void
-     */
     public function test_event_bus_rechaza_schema_version_no_soportado(): void
     {
         $_ENV['EVENTBUS_SECRET'] = 'test-secret';

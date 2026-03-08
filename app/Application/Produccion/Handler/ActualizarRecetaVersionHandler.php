@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 use App\Application\Produccion\Command\ActualizarRecetaVersion;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Events\RecetaActualizada;
+use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 
 /**
  * @class ActualizarRecetaVersionHandler
- * @package App\Application\Produccion\Handler
  */
 class ActualizarRecetaVersionHandler
 {
@@ -34,10 +34,6 @@ class ActualizarRecetaVersionHandler
 
     /**
      * Constructor
-     *
-     * @param RecetaVersionRepositoryInterface $recetaVersionRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         RecetaVersionRepositoryInterface $recetaVersionRepository,
@@ -50,7 +46,6 @@ class ActualizarRecetaVersionHandler
     }
 
     /**
-     * @param ActualizarRecetaVersion $command
      * @return int
      */
     public function __invoke(ActualizarRecetaVersion $command): string

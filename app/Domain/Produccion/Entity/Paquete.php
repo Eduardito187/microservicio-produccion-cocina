@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Domain\Produccion\Entity;
 
 /**
  * @class Paquete
- * @package App\Domain\Produccion\Entity
  */
 class Paquete
 {
@@ -33,11 +33,6 @@ class Paquete
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param string|int|null $etiquetaId
-     * @param string|int|null $ventanaId
-     * @param string|int|null $direccionId
      */
     public function __construct(
         string|int|null $id,

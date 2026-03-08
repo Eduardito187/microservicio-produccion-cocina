@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,7 +11,6 @@ use Illuminate\Console\Command;
 
 /**
  * @class PublishOutboxCommand
- * @package App\Presentation\Console\Commands
  */
 class PublishOutboxCommand extends Command
 {
@@ -24,14 +24,11 @@ class PublishOutboxCommand extends Command
      */
     protected $description = 'Publica eventos pendientes del outbox hacia el bus configurado';
 
-    /**
-     * @return int
-     */
     public function handle(): int
     {
         PublishOutbox::dispatchSync();
         $this->info('Outbox procesado.');
+
         return self::SUCCESS;
     }
 }
-

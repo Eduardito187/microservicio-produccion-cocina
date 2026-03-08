@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -13,13 +14,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @class ProduccionBatchInvalidProcessTest
- * @package Tests\Unit\Domain\Produccion\Aggregate
  */
 class ProduccionBatchInvalidProcessTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_no_permite_procesar_si_no_esta_planificado(): void
     {
         $batch = ProduccionBatch::crear(

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @class Suscripcion
- * @package App\Infrastructure\Persistence\Model
  */
 class Suscripcion extends BaseModel
 {
@@ -27,17 +27,11 @@ class Suscripcion extends BaseModel
         'cancelado_at' => 'datetime',
     ];
 
-    /**
-     * @return HasMany
-     */
     public function pacientes(): HasMany
     {
         return $this->hasMany(Paciente::class, 'suscripcion_id');
     }
 
-    /**
-     * @return HasMany
-     */
     public function etiquetas(): HasMany
     {
         return $this->hasMany(Etiqueta::class, 'suscripcion_id');

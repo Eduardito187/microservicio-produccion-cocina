@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ActualizarCalendarioItem;
 use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Events\CalendarioItemActualizado;
+use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 
 /**
  * @class ActualizarCalendarioItemHandler
- * @package App\Application\Produccion\Handler
  */
 class ActualizarCalendarioItemHandler
 {
@@ -34,10 +34,6 @@ class ActualizarCalendarioItemHandler
 
     /**
      * Constructor
-     *
-     * @param CalendarioItemRepositoryInterface $calendarioItemRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         CalendarioItemRepositoryInterface $calendarioItemRepository,
@@ -50,7 +46,6 @@ class ActualizarCalendarioItemHandler
     }
 
     /**
-     * @param ActualizarCalendarioItem $command
      * @return int
      */
     public function __invoke(ActualizarCalendarioItem $command): string

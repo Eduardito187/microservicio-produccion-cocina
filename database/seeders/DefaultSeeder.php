@@ -1,25 +1,22 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Seeder;
-use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 /**
  * @class DefaultSeeder
- * @package Database\Seeders
  */
 class DefaultSeeder extends Seeder
 {
-    /**
-     * @return void
-     */
     public function run(): void
     {
         $now = Carbon::now();
@@ -44,45 +41,45 @@ class DefaultSeeder extends Seeder
                 [
                     [
                         'id' => (string) Str::uuid(),
-                        'nombre'       => 'Pizza Margarita v1',
-                        'description'  => 'Pizza clasica con tomate, mozzarella y albahaca.',
+                        'nombre' => 'Pizza Margarita v1',
+                        'description' => 'Pizza clasica con tomate, mozzarella y albahaca.',
                         'instructions' => 'Preparar masa, agregar salsa e ingredientes y hornear.',
-                        'nutrientes'   => json_encode([
-                            'calorias'      => 800,
-                            'proteinas'     => 30,
-                            'grasas'        => 25,
+                        'nutrientes' => json_encode([
+                            'calorias' => 800,
+                            'proteinas' => 30,
+                            'grasas' => 25,
                             'carbohidratos' => 100,
                         ]),
                         'ingredientes' => json_encode([
                             ['nombre' => 'Masa',      'cantidad' => '200g'],
                             ['nombre' => 'Tomate',    'cantidad' => '100g'],
-                            ['nombre' => 'Mozzarella','cantidad' => '100g'],
+                            ['nombre' => 'Mozzarella', 'cantidad' => '100g'],
                             ['nombre' => 'Albahaca',  'cantidad' => '5g'],
                         ]),
                         'total_calories' => 800,
-                        'created_at'  => $now,
-                        'updated_at'  => $now,
+                        'created_at' => $now,
+                        'updated_at' => $now,
                     ],
                     [
                         'id' => (string) Str::uuid(),
-                        'nombre'       => 'Pizza Pepperoni v1',
-                        'description'  => 'Pizza con pepperoni y queso mozzarella.',
+                        'nombre' => 'Pizza Pepperoni v1',
+                        'description' => 'Pizza con pepperoni y queso mozzarella.',
                         'instructions' => 'Preparar base, agregar salsa, queso y pepperoni, luego hornear.',
-                        'nutrientes'   => json_encode([
-                            'calorias'      => 950,
-                            'proteinas'     => 40,
-                            'grasas'        => 35,
+                        'nutrientes' => json_encode([
+                            'calorias' => 950,
+                            'proteinas' => 40,
+                            'grasas' => 35,
                             'carbohidratos' => 110,
                         ]),
                         'ingredientes' => json_encode([
                             ['nombre' => 'Masa',      'cantidad' => '200g'],
                             ['nombre' => 'Tomate',    'cantidad' => '100g'],
-                            ['nombre' => 'Mozzarella','cantidad' => '100g'],
+                            ['nombre' => 'Mozzarella', 'cantidad' => '100g'],
                             ['nombre' => 'Pepperoni', 'cantidad' => '50g'],
                         ]),
                         'total_calories' => 950,
-                        'created_at'  => $now,
-                        'updated_at'  => $now,
+                        'created_at' => $now,
+                        'updated_at' => $now,
                     ],
                 ],
                 ['nombre'], // conflict key

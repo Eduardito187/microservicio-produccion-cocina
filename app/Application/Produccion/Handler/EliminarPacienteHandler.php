@@ -1,17 +1,17 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\EliminarPaciente;
+use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 
 /**
  * @class EliminarPacienteHandler
- * @package App\Application\Produccion\Handler
  */
 class EliminarPacienteHandler
 {
@@ -27,9 +27,6 @@ class EliminarPacienteHandler
 
     /**
      * Constructor
-     *
-     * @param PacienteRepositoryInterface $pacienteRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         PacienteRepositoryInterface $pacienteRepository,
@@ -39,10 +36,6 @@ class EliminarPacienteHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param EliminarPaciente $command
-     * @return void
-     */
     public function __invoke(EliminarPaciente $command): void
     {
         $this->transactionAggregate->runTransaction(function () use ($command): void {

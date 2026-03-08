@@ -1,19 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\VerCalendario;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Calendario;
+use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
 
 /**
  * @class VerCalendarioHandler
- * @package App\Application\Produccion\Handler
  */
 class VerCalendarioHandler
 {
@@ -29,9 +28,6 @@ class VerCalendarioHandler
 
     /**
      * Constructor
-     *
-     * @param CalendarioRepositoryInterface $calendarioRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         CalendarioRepositoryInterface $calendarioRepository,
@@ -41,22 +37,15 @@ class VerCalendarioHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param VerCalendario $command
-     * @return array
-     */
     public function __invoke(VerCalendario $command): array
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): array {
             $calendario = $this->calendarioRepository->byId($command->id);
+
             return $this->mapCalendario($calendario);
         });
     }
 
-    /**
-     * @param Calendario $calendario
-     * @return array
-     */
     private function mapCalendario(Calendario $calendario): array
     {
         return [

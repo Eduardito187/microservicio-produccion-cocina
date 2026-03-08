@@ -1,12 +1,13 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -17,7 +18,7 @@ return new class extends Migration
 
     private function dropForeignKeysForColumn(string $table, string $column): void
     {
-        if (!$this->isMysql()) {
+        if (! $this->isMysql()) {
             return;
         }
 
@@ -34,7 +35,7 @@ return new class extends Migration
 
         foreach ($rows as $row) {
             $constraint = $row->CONSTRAINT_NAME ?? null;
-            if (!is_string($constraint) || $constraint === '') {
+            if (! is_string($constraint) || $constraint === '') {
                 continue;
             }
 
@@ -46,7 +47,7 @@ return new class extends Migration
 
     private function dropKnownForeignIfExists(string $table, string $constraint): void
     {
-        if (!$this->isMysql()) {
+        if (! $this->isMysql()) {
             return;
         }
 
@@ -66,6 +67,7 @@ return new class extends Migration
                 $safeTable = str_replace('`', '``', $table);
                 $safeIndex = str_replace('`', '``', $index);
                 DB::statement("ALTER TABLE `{$safeTable}` DROP INDEX `{$safeIndex}`");
+
                 return;
             }
 
@@ -77,11 +79,11 @@ return new class extends Migration
 
     private function migrateRecetaVersionIdToRecetaId(string $table): void
     {
-        if (!Schema::hasTable($table) || !Schema::hasColumn($table, 'receta_version_id')) {
+        if (! Schema::hasTable($table) || ! Schema::hasColumn($table, 'receta_version_id')) {
             return;
         }
 
-        if (!Schema::hasColumn($table, 'receta_id')) {
+        if (! Schema::hasColumn($table, 'receta_id')) {
             Schema::table($table, function (Blueprint $table): void {
                 $table->uuid('receta_id')->nullable();
             });
@@ -98,11 +100,11 @@ return new class extends Migration
 
     private function hasForeignToReceta(string $table): bool
     {
-        if (!$this->isMysql()) {
+        if (! $this->isMysql()) {
             return false;
         }
 
-        if (!Schema::hasTable($table) || !Schema::hasTable('receta') || !Schema::hasColumn($table, 'receta_id')) {
+        if (! Schema::hasTable($table) || ! Schema::hasTable('receta') || ! Schema::hasColumn($table, 'receta_id')) {
             return false;
         }
 
@@ -122,11 +124,11 @@ return new class extends Migration
 
     private function addForeignToRecetaIfPossible(string $table, string $constraintName): void
     {
-        if (!$this->isMysql()) {
+        if (! $this->isMysql()) {
             return;
         }
 
-        if (!Schema::hasTable($table) || !Schema::hasTable('receta') || !Schema::hasColumn($table, 'receta_id')) {
+        if (! Schema::hasTable($table) || ! Schema::hasTable('receta') || ! Schema::hasColumn($table, 'receta_id')) {
             return;
         }
 
@@ -156,7 +158,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasTable('receta_version') && !Schema::hasTable('receta')) {
+        if (Schema::hasTable('receta_version') && ! Schema::hasTable('receta')) {
             Schema::rename('receta_version', 'receta');
         }
 
@@ -205,7 +207,7 @@ return new class extends Migration
     {
         if (Schema::hasTable('produccion_batch') && Schema::hasColumn('produccion_batch', 'receta_id')) {
             $this->dropKnownForeignIfExists('produccion_batch', 'produccion_batch_receta_id_foreign');
-            if (!Schema::hasColumn('produccion_batch', 'receta_version_id')) {
+            if (! Schema::hasColumn('produccion_batch', 'receta_version_id')) {
                 Schema::table('produccion_batch', function (Blueprint $table): void {
                     $table->uuid('receta_version_id')->nullable();
                 });
@@ -220,7 +222,7 @@ return new class extends Migration
 
         if (Schema::hasTable('etiqueta') && Schema::hasColumn('etiqueta', 'receta_id')) {
             $this->dropKnownForeignIfExists('etiqueta', 'etiqueta_receta_id_foreign');
-            if (!Schema::hasColumn('etiqueta', 'receta_version_id')) {
+            if (! Schema::hasColumn('etiqueta', 'receta_version_id')) {
                 Schema::table('etiqueta', function (Blueprint $table): void {
                     $table->uuid('receta_version_id')->nullable();
                 });
@@ -233,7 +235,7 @@ return new class extends Migration
             });
         }
 
-        if (Schema::hasTable('receta') && !Schema::hasTable('receta_version')) {
+        if (Schema::hasTable('receta') && ! Schema::hasTable('receta_version')) {
             Schema::rename('receta', 'receta_version');
         }
     }

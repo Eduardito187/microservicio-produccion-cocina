@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,15 +11,11 @@ use Tests\TestCase;
 
 /**
  * @class SuscripcionCrudTest
- * @package Tests\Feature\Maestros
  */
 class SuscripcionCrudTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_crear_actualizar_y_eliminar_suscripcion(): void
     {
         $create = $this->postJson(route('suscripciones.crear'), ['nombre' => 'Suscripcion 1']);

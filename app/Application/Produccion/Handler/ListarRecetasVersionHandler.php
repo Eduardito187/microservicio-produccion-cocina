@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ListarRecetasVersion;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\RecetaVersion;
+use App\Domain\Produccion\Repository\RecetaVersionRepositoryInterface;
 
 /**
  * @class ListarRecetasVersionHandler
- * @package App\Application\Produccion\Handler
  */
 class ListarRecetasVersionHandler
 {
@@ -28,9 +28,6 @@ class ListarRecetasVersionHandler
 
     /**
      * Constructor
-     *
-     * @param RecetaVersionRepositoryInterface $recetaVersionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         RecetaVersionRepositoryInterface $recetaVersionRepository,
@@ -40,10 +37,6 @@ class ListarRecetasVersionHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param ListarRecetasVersion $command
-     * @return array
-     */
     public function __invoke(ListarRecetasVersion $command): array
     {
         return $this->transactionAggregate->runTransaction(function (): array {
@@ -51,10 +44,6 @@ class ListarRecetasVersionHandler
         });
     }
 
-    /**
-     * @param RecetaVersion $recetaVersion
-     * @return array
-     */
     private function mapReceta(RecetaVersion $recetaVersion): array
     {
         return [

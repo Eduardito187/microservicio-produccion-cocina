@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Integration\Handlers;
 
-use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
+use App\Application\Integration\Events\DireccionCreadaEvent;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Application\Integration\Events\DireccionCreadaEvent;
 use App\Domain\Produccion\Entity\Direccion;
+use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 
 /**
  * @class DireccionCreadaHandler
- * @package App\Application\Integration\Handlers
  */
 class DireccionCreadaHandler implements IntegrationEventHandlerInterface
 {
@@ -29,9 +29,6 @@ class DireccionCreadaHandler implements IntegrationEventHandlerInterface
 
     /**
      * Constructor
-     *
-     * @param DireccionRepositoryInterface $direccionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         DireccionRepositoryInterface $direccionRepository,
@@ -41,11 +38,6 @@ class DireccionCreadaHandler implements IntegrationEventHandlerInterface
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = DireccionCreadaEvent::fromPayload($payload);

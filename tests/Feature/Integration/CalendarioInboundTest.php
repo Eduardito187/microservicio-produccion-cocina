@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -6,30 +7,26 @@
 namespace Tests\Feature\Integration;
 
 use App\Application\Integration\Handlers\CalendarioEntregaCreadoHandler;
-use App\Application\Integration\Handlers\EntregaProgramadaHandler;
 use App\Application\Integration\Handlers\DiaSinEntregaMarcadoHandler;
 use App\Application\Integration\Handlers\DireccionEntregaCambiadaHandler;
+use App\Application\Integration\Handlers\EntregaProgramadaHandler;
 use App\Infrastructure\Persistence\Model\Calendario;
 use App\Infrastructure\Persistence\Model\CalendarioItem;
+use App\Infrastructure\Persistence\Model\Direccion;
 use App\Infrastructure\Persistence\Model\ItemDespacho;
 use App\Infrastructure\Persistence\Model\Paquete;
-use App\Infrastructure\Persistence\Model\Direccion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Tests\TestCase;
 
 /**
  * @class CalendarioInboundTest
- * @package Tests\Feature\Integration
  */
 class CalendarioInboundTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_calendario_entrega_creado_crea_calendario(): void
     {
         $handler = $this->app->make(CalendarioEntregaCreadoHandler::class);
@@ -50,9 +47,6 @@ class CalendarioInboundTest extends TestCase
         ]);
     }
 
-    /**
-     * @return void
-     */
     public function test_calendario_entrega_creado_legado_guarda_campos_y_crea_ventana(): void
     {
         $handler = $this->app->make(CalendarioEntregaCreadoHandler::class);
@@ -80,9 +74,6 @@ class CalendarioInboundTest extends TestCase
         ]);
     }
 
-    /**
-     * @return void
-     */
     public function test_entrega_programada_crea_calendario_item(): void
     {
         $opId = (string) Str::uuid();
@@ -127,9 +118,6 @@ class CalendarioInboundTest extends TestCase
         ]);
     }
 
-    /**
-     * @return void
-     */
     public function test_dia_sin_entrega_borra_calendario_y_items(): void
     {
         $opId = (string) Str::uuid();
@@ -177,9 +165,6 @@ class CalendarioInboundTest extends TestCase
         $this->assertDatabaseMissing('calendario_item', ['id' => 'ci-1']);
     }
 
-    /**
-     * @return void
-     */
     public function test_direccion_entrega_cambiada_actualiza_paquete(): void
     {
         Direccion::query()->create([

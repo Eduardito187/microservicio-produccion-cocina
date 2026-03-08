@@ -1,17 +1,17 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Outbox;
 
-use App\Domain\Shared\Events\Interface\DomainEventInterface;
-use App\Application\Shared\OutboxUnitOfWorkInterface;
 use App\Application\Shared\OutboxStoreInterface;
+use App\Application\Shared\OutboxUnitOfWorkInterface;
+use App\Domain\Shared\Events\Interface\DomainEventInterface;
 
 /**
  * @class OutboxUnitOfWork
- * @package App\Infrastructure\Persistence\Outbox
  */
 class OutboxUnitOfWork implements OutboxUnitOfWorkInterface
 {
@@ -27,8 +27,6 @@ class OutboxUnitOfWork implements OutboxUnitOfWorkInterface
 
     /**
      * Constructor
-     *
-     * @param OutboxStoreInterface $outboxStore
      */
     public function __construct(OutboxStoreInterface $outboxStore)
     {
@@ -36,9 +34,7 @@ class OutboxUnitOfWork implements OutboxUnitOfWorkInterface
     }
 
     /**
-     * @param DomainEventInterface[] $events
-     * @param mixed $aggregateId
-     * @return void
+     * @param  DomainEventInterface[]  $events
      */
     public function register(array $events, mixed $aggregateId): void
     {
@@ -52,9 +48,6 @@ class OutboxUnitOfWork implements OutboxUnitOfWorkInterface
         }
     }
 
-    /**
-     * @return void
-     */
     public function flush(): void
     {
         if ($this->pending === []) {
@@ -73,12 +66,8 @@ class OutboxUnitOfWork implements OutboxUnitOfWorkInterface
         $this->clear();
     }
 
-    /**
-     * @return void
-     */
     public function clear(): void
     {
         $this->pending = [];
     }
 }
-

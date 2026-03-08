@@ -1,22 +1,22 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Integration\Handlers;
 
-use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 use App\Application\Integration\Events\ContratoCanceladoEvent;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
+use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use DateTimeImmutable;
 
 /**
  * @class ContratoCanceladoHandler
- * @package App\Application\Integration\Handlers
  */
 class ContratoCanceladoHandler implements IntegrationEventHandlerInterface
 {
@@ -37,10 +37,6 @@ class ContratoCanceladoHandler implements IntegrationEventHandlerInterface
 
     /**
      * Constructor
-     *
-     * @param SuscripcionRepositoryInterface $suscripcionRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param ?LoggerInterface $logger
      */
     public function __construct(
         SuscripcionRepositoryInterface $suscripcionRepository,
@@ -49,14 +45,9 @@ class ContratoCanceladoHandler implements IntegrationEventHandlerInterface
     ) {
         $this->suscripcionRepository = $suscripcionRepository;
         $this->transactionAggregate = $transactionAggregate;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = ContratoCanceladoEvent::fromPayload($payload);
@@ -68,6 +59,7 @@ class ContratoCanceladoHandler implements IntegrationEventHandlerInterface
                 $this->logger->warning('Contrato cancelado ignorado (contrato no encontrado)', [
                     'contrato_id' => $event->contratoId,
                 ]);
+
                 return;
             }
 

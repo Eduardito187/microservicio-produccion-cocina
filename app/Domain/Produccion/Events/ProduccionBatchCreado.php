@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,11 +11,9 @@ use App\Domain\Shared\Events\BaseDomainEvent;
 
 /**
  * @class ProduccionBatchCreado
- * @package App\Domain\Produccion\Events
  */
 class ProduccionBatchCreado extends BaseDomainEvent
 {
-
     /**
      * @var string|int|null
      */
@@ -42,13 +41,6 @@ class ProduccionBatchCreado extends BaseDomainEvent
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param string|int|null $ordenProduccionId
-     * @param string|int|null $productoId
-     * @param string|int|null $porcionId
-     * @param Qty $qty
-     * @param int $posicion
      */
     public function __construct(
         string|int|null $id,
@@ -66,9 +58,6 @@ class ProduccionBatchCreado extends BaseDomainEvent
         $this->posicion = $posicion;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [
@@ -76,7 +65,7 @@ class ProduccionBatchCreado extends BaseDomainEvent
             'productoId' => $this->productoId !== null ? (string) $this->productoId : null,
             'porcionId' => $this->porcionId !== null ? (string) $this->porcionId : null,
             'qty' => $this->qty->value(),
-            'posicion' => $this->posicion
+            'posicion' => $this->posicion,
         ];
     }
 }

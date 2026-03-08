@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,15 +11,11 @@ use Tests\TestCase;
 
 /**
  * @class PorcionCrudTest
- * @package Tests\Feature\Maestros
  */
 class PorcionCrudTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_crear_actualizar_y_eliminar_porcion(): void
     {
         $create = $this->postJson(route('porciones.crear'), [

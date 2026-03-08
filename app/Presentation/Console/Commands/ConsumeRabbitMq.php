@@ -1,23 +1,23 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Console\Commands;
 
-use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
-use App\Application\Produccion\Command\RegistrarInboundEvent;
 use App\Application\Integration\IntegrationEventRouter;
+use App\Application\Produccion\Command\RegistrarInboundEvent;
+use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
+use DateTimeImmutable;
+use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
-use Illuminate\Console\Command;
 use PhpAmqpLib\Wire\AMQPTable;
-use Illuminate\Support\Str;
-use DateTimeImmutable;
 
 /**
  * @class ConsumeRabbitMq
- * @package App\Presentation\Console\Commands
  */
 class ConsumeRabbitMq extends Command
 {
@@ -51,9 +51,6 @@ class ConsumeRabbitMq extends Command
 
     /**
      * Constructor
-     *
-     * @param RegistrarInboundEventHandler $registrarInboundEventHandler
-     * @param IntegrationEventRouter $integrationEventRouter
      */
     public function __construct(
         RegistrarInboundEventHandler $registrarInboundEventHandler,
@@ -64,9 +61,6 @@ class ConsumeRabbitMq extends Command
         parent::__construct();
     }
 
-    /**
-     * @return int
-     */
     public function handle(): int
     {
         $inbound = config('rabbitmq.inbound', []);
@@ -81,18 +75,21 @@ class ConsumeRabbitMq extends Command
         if ($queue === '') {
             logger()->error('Consumidor inbound mal configurado (falta INBOUND_RABBITMQ_QUEUE)');
             $this->error('INBOUND_RABBITMQ_QUEUE is required for inbound consumer.');
+
             return self::FAILURE;
         }
 
         if ($exchange === '') {
             logger()->error('Consumidor inbound mal configurado (falta INBOUND_RABBITMQ_EXCHANGE)');
             $this->error('INBOUND_RABBITMQ_EXCHANGE is required for inbound consumer.');
+
             return self::FAILURE;
         }
         $keys = array_filter(array_map('trim', explode(',', (string) $bindingKey)));
         if ($keys === []) {
             logger()->error('Consumidor inbound mal configurado (falta INBOUND_RABBITMQ_ROUTING_KEYS)');
             $this->error('INBOUND_RABBITMQ_ROUTING_KEYS is required for inbound consumer.');
+
             return self::FAILURE;
         }
 
@@ -103,6 +100,7 @@ class ConsumeRabbitMq extends Command
                 'inbound_routing_keys' => $bindingKey,
             ]);
             $this->error('Inbound configuration must not match outbox exchange/queue.');
+
             return self::FAILURE;
         }
 
@@ -226,35 +224,21 @@ class ConsumeRabbitMq extends Command
         return self::SUCCESS;
     }
 
-    /**
-     * @param string $value
-     * @return string
-     */
     private function normalizeQueueToken(string $value): string
     {
         $normalized = preg_replace('/[^a-zA-Z0-9._-]/', '_', strtolower(trim($value)));
-        if (!is_string($normalized) || $normalized === '') {
+        if (! is_string($normalized) || $normalized === '') {
             return 'default';
         }
+
         return $normalized;
     }
 
-    /**
-     * @param AMQPMessage $msg
-     * @return void
-     */
     public function testProcessMessage(AMQPMessage $msg): void
     {
         $this->processMessage($msg, '', '', '');
     }
 
-    /**
-     * @param AMQPMessage $msg
-     * @param string $retryExchange
-     * @param string $retryQueue
-     * @param string $retryRoutingKey
-     * @return void
-     */
     private function processMessage(AMQPMessage $msg, string $retryExchange, string $retryQueue, string $retryRoutingKey): void
     {
         $payload = $msg->getBody();
@@ -269,7 +253,7 @@ class ConsumeRabbitMq extends Command
         $routingKey = $this->resolveRoutingKey($msg);
 
         try {
-            if (!is_array($decoded)) {
+            if (! is_array($decoded)) {
                 throw new \RuntimeException('Invalid JSON payload');
             }
 
@@ -288,7 +272,7 @@ class ConsumeRabbitMq extends Command
             $schemaVersion = $decoded['schema_version'] ?? ($decoded['schemaVersion'] ?? null);
             $aggregateId = $decoded['aggregate_id'] ?? ($decoded['aggregateId'] ?? null);
 
-            if (!$isEnvelope) {
+            if (! $isEnvelope) {
                 $eventPayload = $decoded;
                 $eventId = $this->deterministicEventId($routingKey, $eventPayload);
                 $schemaVersion = 1;
@@ -312,16 +296,16 @@ class ConsumeRabbitMq extends Command
                 'payload' => $eventPayload ?? $payload,
             ]);
 
-            if (!is_string($eventId) || $eventId === '' || !is_string($eventName) || $eventName === '') {
+            if (! is_string($eventId) || $eventId === '' || ! is_string($eventName) || $eventName === '') {
                 throw new \RuntimeException('Missing event_id or event name');
             }
-            if (!Str::isUuid($eventId)) {
+            if (! Str::isUuid($eventId)) {
                 throw new \RuntimeException('event_id must be a UUID');
             }
             if ($schemaVersion === null || $schemaVersion === '') {
                 throw new \RuntimeException('schema_version is required');
             }
-            if (!is_int($schemaVersion) && !(is_string($schemaVersion) && ctype_digit($schemaVersion))) {
+            if (! is_int($schemaVersion) && ! (is_string($schemaVersion) && ctype_digit($schemaVersion))) {
                 throw new \RuntimeException('schema_version must be an integer');
             }
             if ($correlationId === null || $correlationId === '') {
@@ -331,16 +315,16 @@ class ConsumeRabbitMq extends Command
                     'event_name' => $eventName,
                     'correlation_id' => $correlationId,
                 ]);
-            } elseif (!Str::isUuid($correlationId)) {
+            } elseif (! Str::isUuid($correlationId)) {
                 throw new \RuntimeException('correlation_id must be a UUID');
             }
-            if (!is_array($eventPayload)) {
+            if (! is_array($eventPayload)) {
                 throw new \RuntimeException('payload must be an object');
             }
             $this->validatePayload($eventName, $eventPayload);
 
             $payloadJson = json_encode($eventPayload);
-            if (!is_string($payloadJson)) {
+            if (! is_string($payloadJson)) {
                 throw new \RuntimeException('Unable to encode payload');
             }
 
@@ -355,7 +339,7 @@ class ConsumeRabbitMq extends Command
             );
 
             $isDuplicate = $this->registrarInboundEventHandler->__invoke($command);
-            if (!$isDuplicate) {
+            if (! $isDuplicate) {
                 $this->integrationEventRouter->dispatch(
                     $eventName,
                     is_array($eventPayload) ? $eventPayload : [],
@@ -394,6 +378,7 @@ class ConsumeRabbitMq extends Command
                     $effectiveRetryRoutingKey = ($routingKey !== '') ? $routingKey : $retryRoutingKey;
                     $this->publishToRetry($msg, $retryExchange, $effectiveRetryRoutingKey, $delay);
                     $this->ackMessage($msg);
+
                     return;
                 }
             }
@@ -402,36 +387,27 @@ class ConsumeRabbitMq extends Command
         }
     }
 
-    /**
-     * @param AMQPMessage $msg
-     * @return int
-     */
     private function getRetryCount(AMQPMessage $msg): int
     {
         $headers = $this->getMessageProperty($msg, 'application_headers');
-        if (!$headers instanceof AMQPTable) {
+        if (! $headers instanceof AMQPTable) {
             return 0;
         }
 
         $data = $headers->getNativeData();
         $xDeath = $data['x-death'] ?? null;
-        if (!is_array($xDeath) || $xDeath === []) {
+        if (! is_array($xDeath) || $xDeath === []) {
             return 0;
         }
 
         $first = $xDeath[0] ?? null;
-        if (!is_array($first) || !isset($first['count'])) {
+        if (! is_array($first) || ! isset($first['count'])) {
             return 0;
         }
 
         return (int) $first['count'];
     }
 
-    /**
-     * @param AMQPMessage $msg
-     * @param string $name
-     * @return mixed
-     */
     private function getMessageProperty(AMQPMessage $msg, string $name): mixed
     {
         try {
@@ -441,10 +417,6 @@ class ConsumeRabbitMq extends Command
         }
     }
 
-    /**
-     * @param AMQPMessage $msg
-     * @return mixed
-     */
     private function resolveChannel(AMQPMessage $msg): mixed
     {
         if (isset($msg->delivery_info) && is_array($msg->delivery_info)) {
@@ -460,10 +432,6 @@ class ConsumeRabbitMq extends Command
         }
     }
 
-    /**
-     * @param AMQPMessage $msg
-     * @return mixed
-     */
     private function resolveDeliveryTag(AMQPMessage $msg): mixed
     {
         if (isset($msg->delivery_info) && is_array($msg->delivery_info)) {
@@ -476,10 +444,6 @@ class ConsumeRabbitMq extends Command
         }
     }
 
-    /**
-     * @param AMQPMessage $msg
-     * @return string
-     */
     private function resolveRoutingKey(AMQPMessage $msg): string
     {
         if (isset($msg->delivery_info) && is_array($msg->delivery_info)) {
@@ -490,32 +454,25 @@ class ConsumeRabbitMq extends Command
         }
         try {
             $routingKey = $msg->getRoutingKey();
+
             return is_string($routingKey) ? $routingKey : '';
         } catch (\Throwable $e) {
             return '';
         }
     }
 
-    /**
-     * @param AMQPMessage $msg
-     * @return void
-     */
     private function ackMessage(AMQPMessage $msg): void
     {
         $channel = $this->resolveChannel($msg);
         $deliveryTag = $this->resolveDeliveryTag($msg);
         if ($channel === null || $deliveryTag === null) {
             logger()->warning('Se omitio ack de RabbitMQ (falta canal o delivery tag)');
+
             return;
         }
         $channel->basic_ack($deliveryTag);
     }
 
-    /**
-     * @param AMQPMessage $msg
-     * @param bool $requeue
-     * @return void
-     */
     private function nackMessage(AMQPMessage $msg, bool $requeue): void
     {
         $channel = $this->resolveChannel($msg);
@@ -524,15 +481,12 @@ class ConsumeRabbitMq extends Command
             logger()->warning('Se omitio nack de RabbitMQ (falta canal o delivery tag)', [
                 'requeue' => $requeue,
             ]);
+
             return;
         }
         $channel->basic_nack($deliveryTag, false, $requeue);
     }
 
-    /**
-     * @param int $retryCount
-     * @return int
-     */
     private function resolveRetryDelay(int $retryCount): int
     {
         $raw = '10,60,300';
@@ -550,12 +504,10 @@ class ConsumeRabbitMq extends Command
             return 0;
         }
         $index = min($retryCount, count($ints) - 1);
+
         return $ints[$index];
     }
 
-    /**
-     * @return int
-     */
     private function getInboundMaxRetries(): int
     {
         if (function_exists('config')) {
@@ -565,16 +517,10 @@ class ConsumeRabbitMq extends Command
                 return 3;
             }
         }
+
         return 3;
     }
 
-    /**
-     * @param AMQPMessage $msg
-     * @param string $retryExchange
-     * @param string $retryRoutingKey
-     * @param int $delaySeconds
-     * @return void
-     */
     private function publishToRetry(AMQPMessage $msg, string $retryExchange, string $retryRoutingKey, int $delaySeconds): void
     {
         $headers = $this->getMessageProperty($msg, 'application_headers');
@@ -595,12 +541,6 @@ class ConsumeRabbitMq extends Command
         ]);
     }
 
-    /**
-     * @param string $queue
-     * @param string $exchange
-     * @param string $bindingKeys
-     * @return bool
-     */
     private function isSelfConsumeConfig(string $queue, string $exchange, string $bindingKeys): bool
     {
         $outboxQueue = (string) config('rabbitmq.queue', '');
@@ -623,11 +563,6 @@ class ConsumeRabbitMq extends Command
         return false;
     }
 
-    /**
-     * @param string $eventName
-     * @param array $payload
-     * @return void
-     */
     private function validatePayload(string $eventName, array $payload): void
     {
         if (
@@ -637,15 +572,16 @@ class ConsumeRabbitMq extends Command
         ) {
             $hasId = isset($payload['id']) && $payload['id'] !== ''
                 || isset($payload['recetaId']) && $payload['recetaId'] !== '';
-            if (!$hasId) {
+            if (! $hasId) {
                 throw new \RuntimeException('payload missing required field: id|recetaId');
             }
-            if (!array_key_exists('name', $payload) && !array_key_exists('nombre', $payload)) {
+            if (! array_key_exists('name', $payload) && ! array_key_exists('nombre', $payload)) {
                 throw new \RuntimeException('payload missing required field: name|nombre');
             }
-            if (!array_key_exists('ingredients', $payload) && !array_key_exists('ingredientes', $payload)) {
+            if (! array_key_exists('ingredients', $payload) && ! array_key_exists('ingredientes', $payload)) {
                 throw new \RuntimeException('payload missing required field: ingredients|ingredientes');
             }
+
             return;
         }
 
@@ -653,19 +589,21 @@ class ConsumeRabbitMq extends Command
             $hasId = isset($payload['id']) && $payload['id'] !== ''
                 || isset($payload['suscripcionId']) && $payload['suscripcionId'] !== ''
                 || isset($payload['contratoId']) && $payload['contratoId'] !== '';
-            if (!$hasId) {
+            if (! $hasId) {
                 throw new \RuntimeException('payload missing required field: id|suscripcionId|contratoId');
             }
+
             return;
         }
 
         if ($eventName === 'suscripcion.crear') {
             $required = ['pacienteId', 'tipoServicio', 'planId', 'duracionDias', 'modalidadRevision', 'fechaInicio'];
             foreach ($required as $key) {
-                if (!array_key_exists($key, $payload) || $payload[$key] === null || $payload[$key] === '') {
+                if (! array_key_exists($key, $payload) || $payload[$key] === null || $payload[$key] === '') {
                     throw new \RuntimeException("payload missing required field: {$key}");
                 }
             }
+
             return;
         }
 
@@ -714,22 +652,19 @@ class ConsumeRabbitMq extends Command
                     break;
                 }
             }
-            if (!$found) {
+            if (! $found) {
                 throw new \RuntimeException("payload missing required field: {$key}");
             }
         }
     }
 
-    /**
-     * @param \Throwable $e
-     * @return bool
-     */
     private function isNonRetryable(\Throwable $e): bool
     {
         $message = $e->getMessage();
-        if (!is_string($message)) {
+        if (! is_string($message)) {
             return false;
         }
+
         return str_contains($message, 'payload missing required field')
             || str_contains($message, 'payload must be an object')
             || str_contains($message, 'event_id must be a UUID')
@@ -740,11 +675,6 @@ class ConsumeRabbitMq extends Command
             || str_contains($message, 'Invalid JSON payload');
     }
 
-    /**
-     * @param ?string $eventName
-     * @param string $routingKey
-     * @return ?string
-     */
     private function resolveEventName(?string $eventName, string $routingKey): ?string
     {
         $aliases = config('rabbitmq.inbound.event_aliases', []);
@@ -753,6 +683,7 @@ class ConsumeRabbitMq extends Command
             if (is_array($aliases) && isset($aliases[$eventName]) && is_string($aliases[$eventName])) {
                 return $aliases[$eventName];
             }
+
             return $eventName;
         }
 
@@ -767,17 +698,13 @@ class ConsumeRabbitMq extends Command
         return $routingKey;
     }
 
-    /**
-     * @param string $routingKey
-     * @param array $payload
-     * @return string
-     */
     private function deterministicEventId(string $routingKey, array $payload): string
     {
         $json = json_encode($payload);
-        if (!is_string($json)) {
+        if (! is_string($json)) {
             return (string) Str::uuid();
         }
+
         return \Ramsey\Uuid\Uuid::uuid5(\Ramsey\Uuid\Uuid::NAMESPACE_URL, $routingKey . '|' . $json)->toString();
     }
 }

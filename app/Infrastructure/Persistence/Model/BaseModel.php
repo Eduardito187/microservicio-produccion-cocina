@@ -1,16 +1,16 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Model;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Infrastructure\Persistence\Model\Concerns\HasUuid;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @class BaseModel
- * @package App\Infrastructure\Persistence\Model
  */
 class BaseModel extends Model
 {

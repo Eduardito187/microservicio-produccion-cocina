@@ -1,10 +1,9 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Domain\Produccion\Events;
 
-class RecetaActualizada extends RecetaVersionActualizada
-{
-}
+class RecetaActualizada extends RecetaVersionActualizada {}

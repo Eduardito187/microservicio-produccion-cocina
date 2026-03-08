@@ -1,10 +1,9 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Domain\Produccion\Repository;
 
-interface RecetaRepositoryInterface extends RecetaVersionRepositoryInterface
-{
-}
+interface RecetaRepositoryInterface extends RecetaVersionRepositoryInterface {}

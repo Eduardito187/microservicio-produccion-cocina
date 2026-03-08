@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -13,13 +14,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @class SeguimientoEntregaPaqueteTransitionTest
- * @package Tests\Unit\Domain\Produccion\Aggregate
  */
 class SeguimientoEntregaPaqueteTransitionTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_in_transit_a_completed_es_valido(): void
     {
         $aggregate = new SeguimientoEntregaPaquete(
@@ -43,9 +40,6 @@ class SeguimientoEntregaPaqueteTransitionTest extends TestCase
         $this->assertTrue($aggregate->isCompleted());
     }
 
-    /**
-     * @return void
-     */
     public function test_completed_a_otro_estado_esta_bloqueado(): void
     {
         $aggregate = new SeguimientoEntregaPaquete(

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Domain\Produccion\Entity;
 
 /**
  * @class InboundEvent
- * @package App\Domain\Produccion\Entity
  */
 class InboundEvent
 {
@@ -48,23 +48,15 @@ class InboundEvent
 
     /**
      * Constructor
-     *
-     * @param string|int|null $id
-     * @param string $eventId
-     * @param string $eventName
-     * @param string|null $occurredOn
-     * @param string $payload
-     * @param int|null $schemaVersion
-     * @param string|null $correlationId
      */
     public function __construct(
         string|int|null $id,
         string $eventId,
         string $eventName,
-        string|null $occurredOn,
+        ?string $occurredOn,
         string $payload,
-        int|null $schemaVersion = null,
-        string|null $correlationId = null
+        ?int $schemaVersion = null,
+        ?string $correlationId = null
     ) {
         $this->id = $id;
         $this->eventId = $eventId;

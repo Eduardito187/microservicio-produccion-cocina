@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,22 +11,18 @@ use Tests\TestCase;
 
 /**
  * @class RecetaVersionCrudTest
- * @package Tests\Feature\Maestros
  */
 class RecetaVersionCrudTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_crear_actualizar_y_eliminar_receta(): void
     {
         $create = $this->postJson(route('recetas.crear'), [
             'nombre' => 'Receta 1',
             'nutrientes' => ['calorias' => 100],
             'ingredientes' => ['harina' => 1],
-            'version' => 1
+            'version' => 1,
         ]);
 
         $create->assertCreated()->assertJsonStructure(['recetaId']);
@@ -39,7 +36,7 @@ class RecetaVersionCrudTest extends TestCase
             'nombre' => 'Receta 2',
             'nutrientes' => ['calorias' => 200],
             'ingredientes' => ['harina' => 2],
-            'version' => 2
+            'version' => 2,
         ]);
 
         $update->assertOk()->assertJsonPath('recetaId', $recetaId);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,19 +11,15 @@ use App\Domain\Shared\Exception\EntityNotFoundException;
 
 /**
  * @class PorcionRepositoryInterface
- * @package App\Domain\Produccion\Repository
  */
 interface PorcionRepositoryInterface
 {
     /**
-     * @param string|int $id
      * @throws EntityNotFoundException
-     * @return Porcion|null
      */
     public function byId(string|int $id): ?Porcion;
 
     /**
-     * @param Porcion $porcion
      * @return int
      */
     public function save(Porcion $porcion): string;
@@ -32,9 +29,5 @@ interface PorcionRepositoryInterface
      */
     public function list(): array;
 
-    /**
-     * @param string|int $id
-     * @return void
-     */
     public function delete(string|int $id): void;
 }

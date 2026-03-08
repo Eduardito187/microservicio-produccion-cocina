@@ -1,19 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Application\Produccion\Command\VerPorcion;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Porcion;
+use App\Domain\Produccion\Repository\PorcionRepositoryInterface;
 
 /**
  * @class VerPorcionHandler
- * @package App\Application\Produccion\Handler
  */
 class VerPorcionHandler
 {
@@ -29,9 +28,6 @@ class VerPorcionHandler
 
     /**
      * Constructor
-     *
-     * @param PorcionRepositoryInterface $porcionRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         PorcionRepositoryInterface $porcionRepository,
@@ -41,22 +37,15 @@ class VerPorcionHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param VerPorcion $command
-     * @return array
-     */
     public function __invoke(VerPorcion $command): array
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): array {
             $porcion = $this->porcionRepository->byId($command->id);
+
             return $this->mapPorcion($porcion);
         });
     }
 
-    /**
-     * @param Porcion $porcion
-     * @return array
-     */
     private function mapPorcion(Porcion $porcion): array
     {
         return [

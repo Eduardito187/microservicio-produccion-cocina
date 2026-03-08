@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,15 +11,11 @@ use Tests\TestCase;
 
 /**
  * @class DespacharOPValidationTest
- * @package Tests\Feature\Produccion
  */
 class DespacharOPValidationTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_despachar_op_rechaza_items_despacho_vacio(): void
     {
         $response = $this->postJson(route('produccion.ordenes.despachar'), [
@@ -33,4 +30,3 @@ class DespacharOPValidationTest extends TestCase
         $response->assertJsonValidationErrors(['itemsDespacho']);
     }
 }
-

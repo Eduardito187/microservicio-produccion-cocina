@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,8 +10,5 @@ use RuntimeException;
 
 /**
  * @class EntityNotFoundException
- * @package App\Domain\Shared\Exception
  */
-class EntityNotFoundException extends RuntimeException
-{
-}
+class EntityNotFoundException extends RuntimeException {}

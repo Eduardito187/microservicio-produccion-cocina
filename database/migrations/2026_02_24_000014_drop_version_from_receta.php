@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -16,7 +17,7 @@ return new class extends Migration
     {
         $tableName = Schema::hasTable('receta') ? 'receta' : (Schema::hasTable('receta_version') ? 'receta_version' : null);
 
-        if ($tableName === null || !Schema::hasColumn($tableName, 'version')) {
+        if ($tableName === null || ! Schema::hasColumn($tableName, 'version')) {
             return;
         }
 

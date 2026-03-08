@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,15 +8,9 @@ namespace App\Domain\Produccion\Policy;
 
 /**
  * @class PackageDeliveryTransitionPolicy
- * @package App\Domain\Produccion\Policy
  */
 class PackageDeliveryTransitionPolicy
 {
-    /**
-     * @param ?string $currentStatus
-     * @param string $nextStatus
-     * @return bool
-     */
     public static function canTransition(?string $currentStatus, string $nextStatus): bool
     {
         $current = self::normalize($currentStatus);
@@ -29,22 +24,14 @@ class PackageDeliveryTransitionPolicy
         return $next === 'confirmada';
     }
 
-    /**
-     * @param ?string $status
-     * @return bool
-     */
     public static function isCompleted(?string $status): bool
     {
         return self::normalize($status) === 'confirmada';
     }
 
-    /**
-     * @param ?string $status
-     * @return ?string
-     */
     private static function normalize(?string $status): ?string
     {
-        if (!is_string($status) || trim($status) === '') {
+        if (! is_string($status) || trim($status) === '') {
             return null;
         }
 

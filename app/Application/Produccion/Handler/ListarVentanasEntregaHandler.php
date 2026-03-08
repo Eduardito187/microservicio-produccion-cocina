@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -6,13 +7,12 @@
 namespace App\Application\Produccion\Handler;
 
 use App\Application\Produccion\Command\ListarVentanasEntrega;
-use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\VentanaEntrega;
+use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
 
 /**
  * @class ListarVentanasEntregaHandler
- * @package App\Application\Produccion\Handler
  */
 class ListarVentanasEntregaHandler
 {
@@ -28,9 +28,6 @@ class ListarVentanasEntregaHandler
 
     /**
      * Constructor
-     *
-     * @param VentanaEntregaRepositoryInterface $ventanaEntregaRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         VentanaEntregaRepositoryInterface $ventanaEntregaRepository,
@@ -40,10 +37,6 @@ class ListarVentanasEntregaHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param ListarVentanasEntrega $command
-     * @return array
-     */
     public function __invoke(ListarVentanasEntrega $command): array
     {
         return $this->transactionAggregate->runTransaction(function (): array {
@@ -51,10 +44,6 @@ class ListarVentanasEntregaHandler
         });
     }
 
-    /**
-     * @param VentanaEntrega $ventana
-     * @return array
-     */
     private function mapVentana(VentanaEntrega $ventana): array
     {
         return [

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Application\Integration\Events\Support\Payload;
 
 /**
  * @class RecetaActualizadaEvent
- * @package App\Application\Integration\Events
  */
 class RecetaActualizadaEvent
 {
@@ -50,14 +50,6 @@ class RecetaActualizadaEvent
 
     /**
      * Constructor
-     *
-     * @param string $id
-     * @param ?string $nombre
-     * @param ?array $nutrientes
-     * @param ?array $ingredientes
-     * @param ?string $description
-     * @param ?string $instructions
-     * @param ?int $totalCalories
      */
     public function __construct(
         string $id,
@@ -77,10 +69,6 @@ class RecetaActualizadaEvent
         $this->totalCalories = $totalCalories;
     }
 
-    /**
-     * @param array $payload
-     * @return self
-     */
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);

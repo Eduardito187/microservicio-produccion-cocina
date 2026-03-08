@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @class VentanaEntrega
- * @package App\Infrastructure\Persistence\Model
  */
 class VentanaEntrega extends BaseModel
 {
@@ -27,9 +27,6 @@ class VentanaEntrega extends BaseModel
         'estado' => 'integer',
     ];
 
-    /**
-     * @return HasMany
-     */
     public function paquetes(): HasMany
     {
         return $this->hasMany(Paquete::class, 'ventana_id');

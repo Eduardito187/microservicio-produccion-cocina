@@ -1,28 +1,24 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use Firebase\JWT\JWT;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Firebase\JWT\JWT;
 use Throwable;
 
 /**
  * @class LoginController
- * @package App\Presentation\Http\Controllers
  */
 class LoginController
 {
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -42,11 +38,11 @@ class LoginController
             'password' => $data['password'],
         ];
 
-        if (!empty($clientSecret)) {
+        if (! empty($clientSecret)) {
             $payload['client_secret'] = $clientSecret;
         }
 
-        $tokenUrl = $baseUrl.'/realms/'.$realm.'/protocol/openid-connect/token';
+        $tokenUrl = $baseUrl . '/realms/' . $realm . '/protocol/openid-connect/token';
         $requireDpop = (bool) config('keycloak.require_dpop', false);
         $request = Http::asForm()
             ->connectTimeout(2)
@@ -95,11 +91,6 @@ class LoginController
         return response()->json($body, $response->status());
     }
 
-    /**
-     * @param string $url
-     * @param string $method
-     * @return string
-     */
     private function buildDpopProof(string $url, string $method): string
     {
         $key = openssl_pkey_new([
@@ -120,7 +111,7 @@ class LoginController
             'y' => $this->base64UrlEncode($y ?: ''),
         ];
 
-        if (!is_string($privateKey) || $privateKey === '') {
+        if (! is_string($privateKey) || $privateKey === '') {
             throw new \RuntimeException('Unable to export DPoP private key');
         }
 
@@ -137,10 +128,6 @@ class LoginController
         ]);
     }
 
-    /**
-     * @param string $data
-     * @return string
-     */
     private function base64UrlEncode(string $data): string
     {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');

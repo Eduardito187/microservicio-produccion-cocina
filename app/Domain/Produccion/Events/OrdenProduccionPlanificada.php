@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -11,7 +12,6 @@ use DateTimeZone;
 
 /**
  * @class OrdenProduccionPlanificada
- * @package App\Domain\Produccion\Events
  */
 class OrdenProduccionPlanificada extends BaseDomainEvent
 {
@@ -47,14 +47,6 @@ class OrdenProduccionPlanificada extends BaseDomainEvent
 
     /**
      * Constructor
-     *
-     * @param string|int|null $opId
-     * @param DateTimeImmutable $fecha
-     * @param string $estadoAnterior
-     * @param string $estadoActual
-     * @param int $itemsCount
-     * @param int $batchesCount
-     * @param int $itemsDespachoCount
      */
     public function __construct(
         string|int|null $opId,
@@ -74,9 +66,6 @@ class OrdenProduccionPlanificada extends BaseDomainEvent
         $this->itemsDespachoCount = $itemsDespachoCount;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         $utc = $this->fecha->setTimezone(new DateTimeZone('UTC'));

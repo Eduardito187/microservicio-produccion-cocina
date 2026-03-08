@@ -1,19 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\VerVentanaEntrega;
-use App\Domain\Shared\Exception\EntityNotFoundException;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\VentanaEntrega;
+use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
 
 /**
  * @class VerVentanaEntregaHandler
- * @package App\Application\Produccion\Handler
  */
 class VerVentanaEntregaHandler
 {
@@ -29,9 +28,6 @@ class VerVentanaEntregaHandler
 
     /**
      * Constructor
-     *
-     * @param VentanaEntregaRepositoryInterface $ventanaEntregaRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         VentanaEntregaRepositoryInterface $ventanaEntregaRepository,
@@ -41,22 +37,15 @@ class VerVentanaEntregaHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param VerVentanaEntrega $command
-     * @return array
-     */
     public function __invoke(VerVentanaEntrega $command): array
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): array {
             $ventana = $this->ventanaEntregaRepository->byId($command->id);
+
             return $this->mapVentana($ventana);
         });
     }
 
-    /**
-     * @param VentanaEntrega $ventana
-     * @return array
-     */
     private function mapVentana(VentanaEntrega $ventana): array
     {
         return [

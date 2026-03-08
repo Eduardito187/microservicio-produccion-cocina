@@ -1,38 +1,35 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\OrdenProduccion as OrdenProduccionModel;
+use App\Application\Shared\DomainEventPublisherInterface;
 use App\Domain\Produccion\Aggregate\OrdenProduccion as AggregateOrdenProduccion;
 use App\Domain\Produccion\Aggregate\ProduccionBatch as AggregateProduccionBatch;
-use App\Infrastructure\Persistence\Model\VentanaEntrega as VentanaEntregaModel;
-use App\Infrastructure\Persistence\Repository\ProduccionBatchRepository;
-use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
-use App\Infrastructure\Persistence\Repository\ItemDespachoRepository;
-use App\Infrastructure\Persistence\Model\Direccion as DireccionModel;
-use App\Infrastructure\Persistence\Model\Paciente as PacienteModel;
-use App\Infrastructure\Persistence\Model\Etiqueta as EtiquetaModel;
-use App\Infrastructure\Persistence\Repository\OrdenItemRepository;
-use App\Infrastructure\Persistence\Model\Paquete as PaqueteModel;
-use App\Domain\Produccion\Events\PaqueteParaDespachoCreado;
-use App\Application\Shared\DomainEventPublisherInterface;
-use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Events\ProduccionBatchCreado;
-use App\Domain\Produccion\Enum\EstadoPlanificado;
 use App\Domain\Produccion\Entity\ItemDespacho;
-use App\Domain\Produccion\ValueObjects\Qty;
-use App\Domain\Produccion\ValueObjects\Sku;
 use App\Domain\Produccion\Entity\OrdenItem;
 use App\Domain\Produccion\Enum\EstadoOP;
+use App\Domain\Produccion\Enum\EstadoPlanificado;
+use App\Domain\Produccion\Events\PaqueteParaDespachoCreado;
+use App\Domain\Produccion\Events\ProduccionBatchCreado;
+use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
+use App\Domain\Produccion\ValueObjects\Qty;
+use App\Domain\Produccion\ValueObjects\Sku;
+use App\Domain\Shared\Exception\EntityNotFoundException;
+use App\Infrastructure\Persistence\Model\Direccion as DireccionModel;
+use App\Infrastructure\Persistence\Model\Etiqueta as EtiquetaModel;
+use App\Infrastructure\Persistence\Model\OrdenProduccion as OrdenProduccionModel;
+use App\Infrastructure\Persistence\Model\Paciente as PacienteModel;
+use App\Infrastructure\Persistence\Model\Paquete as PaqueteModel;
+use App\Infrastructure\Persistence\Model\VentanaEntrega as VentanaEntregaModel;
 use DateTimeImmutable;
 use DateTimeInterface;
 
 /**
  * @class OrdenProduccionRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
 {
@@ -58,11 +55,6 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
 
     /**
      * Constructor
-     *
-     * @param OrdenItemRepository $ordenItemRepository
-     * @param ItemDespachoRepository $itemDespachoRepository
-     * @param ProduccionBatchRepository $produccionBatchRepository
-     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         OrdenItemRepository $ordenItemRepository,
@@ -77,17 +69,15 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     }
 
     /**
-     * @param string|null $id
      * @throws EntityNotFoundException
-     * @return AggregateOrdenProduccion|null
      */
-    public function byId(string|null $id): ?AggregateOrdenProduccion
+    public function byId(?string $id): ?AggregateOrdenProduccion
     {
         $row = OrdenProduccionModel::query()
             ->with(['items.product', 'batches', 'despachoItems'])
             ->find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("La orden de produccion id: {$id} no existe.");
         }
 
@@ -108,7 +98,6 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     }
 
     /**
-     * @param AggregateOrdenProduccion $aggregateOrdenProduccion
      * @return int
      */
     public function save(AggregateOrdenProduccion $aggregateOrdenProduccion): string
@@ -117,7 +106,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
             ['id' => $aggregateOrdenProduccion->id()],
             [
                 'fecha' => $aggregateOrdenProduccion->fecha()->format('Y-m-d'),
-                'estado' => $aggregateOrdenProduccion->estado()->value
+                'estado' => $aggregateOrdenProduccion->estado()->value,
             ]
         );
         $orderId = $model->id;
@@ -131,7 +120,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return OrdenItem[]
      */
     private function mapItems($data): array
@@ -154,7 +143,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return AggregateProduccionBatch[]
      */
     private function mapItemsBatches($data): array
@@ -182,7 +171,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return ItemDespacho[]
      */
     private function mapItemsDespachos($data): array
@@ -208,11 +197,9 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     }
 
     /**
-     * @param string|null $opId
-     * @param OrdenItem[] $items
-     * @return void
+     * @param  OrdenItem[]  $items
      */
-    private function savedItems(string|null $opId, array $items): void
+    private function savedItems(?string $opId, array $items): void
     {
         foreach ($items as $item) {
             $this->ordenItemRepository->save(
@@ -228,9 +215,7 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
     }
 
     /**
-     * @param string|null $opId
-     * @param array $items
-     * @return void
+     * @param  string|null  $opId
      */
     private function savedBatch(array $items): void
     {
@@ -271,10 +256,6 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         }
     }
 
-    /**
-     * @param array $items
-     * @return void
-     */
     private function savedDespacho(array $items): void
     {
         foreach ($items as $item) {
@@ -299,13 +280,9 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         }
     }
 
-    /**
-     * @param string|int|null $ventanaEntregaId
-     * @return string|null
-     */
     private function resolveEntregaIdFromVentana(string|int|null $ventanaEntregaId): ?string
     {
-        if (!is_string($ventanaEntregaId) || $ventanaEntregaId === '') {
+        if (! is_string($ventanaEntregaId) || $ventanaEntregaId === '') {
             return null;
         }
 
@@ -315,16 +292,13 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         }
 
         $entregaId = $ventana->entrega_id ?? null;
+
         return is_string($entregaId) && $entregaId !== '' ? $entregaId : null;
     }
 
-    /**
-     * @param string|int|null $ventanaEntregaId
-     * @return string|null
-     */
     private function resolveContratoIdFromVentana(string|int|null $ventanaEntregaId): ?string
     {
-        if (!is_string($ventanaEntregaId) || $ventanaEntregaId === '') {
+        if (! is_string($ventanaEntregaId) || $ventanaEntregaId === '') {
             return null;
         }
 
@@ -334,13 +308,11 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         }
 
         $contratoId = $ventana->contrato_id ?? null;
+
         return is_string($contratoId) && $contratoId !== '' ? $contratoId : null;
     }
-    /**
-     * @param ItemDespacho $item
-     * @return string|null
-     */
-    private function resolvePaqueteId(ItemDespacho $item): string|null
+
+    private function resolvePaqueteId(ItemDespacho $item): ?string
     {
         if (
             $item->pacienteId === null
@@ -351,17 +323,17 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         }
 
         $paciente = PacienteModel::find($item->pacienteId);
-        if (!$paciente) {
+        if (! $paciente) {
             return null;
         }
 
         $direccion = DireccionModel::find($item->direccionId);
-        if (!$direccion) {
+        if (! $direccion) {
             return null;
         }
 
         $ventana = VentanaEntregaModel::find($item->ventanaEntregaId);
-        if (!$ventana) {
+        if (! $ventana) {
             return null;
         }
 
@@ -399,10 +371,6 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         return $paquete->id;
     }
 
-    /**
-     * @param string|DateTimeInterface $value
-     * @return DateTimeImmutable
-     */
     private function convertDate(string|DateTimeInterface $value): DateTimeImmutable
     {
         if ($value instanceof DateTimeInterface) {
@@ -412,20 +380,13 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         return new DateTimeImmutable($value . ' 00:00:00');
     }
 
-    /**
-     * @param string $packageId
-     * @return string
-     */
     private function buildPackageNumber(string $packageId): string
     {
         $normalized = strtoupper(str_replace('-', '', $packageId));
+
         return 'PKG-' . substr($normalized, 0, 12);
     }
 
-    /**
-     * @param DireccionModel $direccion
-     * @return string
-     */
     private function buildDeliveryAddress(DireccionModel $direccion): string
     {
         $parts = array_filter([
@@ -439,23 +400,17 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         return implode(', ', $parts);
     }
 
-    /**
-     * @param array $geo
-     * @return float
-     */
     private function extractLatitude(array $geo): float
     {
         $value = $geo['lat'] ?? $geo['latitude'] ?? 0;
+
         return is_numeric($value) ? (float) $value : 0.0;
     }
 
-    /**
-     * @param array $geo
-     * @return float
-     */
     private function extractLongitude(array $geo): float
     {
         $value = $geo['lng'] ?? $geo['lon'] ?? $geo['longitude'] ?? 0;
+
         return is_numeric($value) ? (float) $value : 0.0;
     }
 }

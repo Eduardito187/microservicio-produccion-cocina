@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -6,20 +7,16 @@
 namespace Tests\Unit\Domain\Produccion;
 
 use App\Domain\Produccion\Entity\OrdenItem;
+use App\Domain\Produccion\Entity\Products;
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
-use App\Domain\Produccion\Entity\Products;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @class OrdenItemTest
- * @package Tests\Unit\Domain\Produccion
  */
 class OrdenItemTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_load_product_setea_product_id_y_precios(): void
     {
         $item = new OrdenItem(null, null, null, new Qty(2), new Sku('PIZZA-PEP'));
@@ -31,9 +28,6 @@ class OrdenItemTest extends TestCase
         $this->assertSame(0.0, $item->finalPrice);
     }
 
-    /**
-     * @return void
-     */
     public function test_load_product_aplica_special_price_si_existe(): void
     {
         $item = new OrdenItem(null, null, null, new Qty(1), new Sku('PIZZA-MARG'));

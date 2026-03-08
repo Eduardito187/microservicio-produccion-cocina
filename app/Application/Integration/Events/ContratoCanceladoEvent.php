@@ -10,7 +10,6 @@ use App\Application\Integration\Events\Support\Payload;
 
 /**
  * @class ContratoCanceladoEvent
- * @package App\Application\Integration\Events
  */
 class ContratoCanceladoEvent
 {
@@ -26,20 +25,13 @@ class ContratoCanceladoEvent
 
     /**
      * Constructor
-     *
-     * @param string $contratoId
-     * @param string|null $motivoCancelacion
      */
-    public function __construct(string $contratoId, string|null $motivoCancelacion = null)
+    public function __construct(string $contratoId, ?string $motivoCancelacion = null)
     {
         $this->contratoId = $contratoId;
         $this->motivoCancelacion = $motivoCancelacion;
     }
 
-    /**
-     * @param array $payload
-     * @return self
-     */
     public static function fromPayload(array $payload): self
     {
         $p = new Payload($payload);

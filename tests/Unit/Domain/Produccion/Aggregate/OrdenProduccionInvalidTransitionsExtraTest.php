@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,19 +8,15 @@ namespace Tests\Unit\Domain\Produccion\Aggregate;
 
 use App\Domain\Produccion\Aggregate\OrdenProduccion;
 use App\Domain\Produccion\Enum\EstadoOP;
-use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 use DomainException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @class OrdenProduccionInvalidTransitionsExtraTest
- * @package Tests\Unit\Domain\Produccion\Aggregate
  */
 class OrdenProduccionInvalidTransitionsExtraTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_no_permite_planificar_si_no_esta_creada(): void
     {
         $ordenProduccion = OrdenProduccion::reconstitute(
@@ -29,9 +26,6 @@ class OrdenProduccionInvalidTransitionsExtraTest extends TestCase
         $ordenProduccion->planificar();
     }
 
-    /**
-     * @return void
-     */
     public function test_no_permite_procesar_si_no_esta_planificada(): void
     {
         $ordenProduccion = OrdenProduccion::reconstitute(
@@ -41,9 +35,6 @@ class OrdenProduccionInvalidTransitionsExtraTest extends TestCase
         $ordenProduccion->procesar();
     }
 
-    /**
-     * @return void
-     */
     public function test_no_permite_cerrar_si_no_esta_en_proceso(): void
     {
         $ordenProduccion = OrdenProduccion::reconstitute(

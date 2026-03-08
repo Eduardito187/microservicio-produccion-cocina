@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
 
 /**
  * @class ValidateSignature
- * @package App\Presentation\Http\Middleware
  */
 class ValidateSignature extends Middleware
 {

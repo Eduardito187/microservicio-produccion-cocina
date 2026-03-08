@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -14,7 +15,6 @@ use Psr\Log\NullLogger;
 
 /**
  * @class PacienteEliminadoHandler
- * @package App\Application\Integration\Handlers
  */
 class PacienteEliminadoHandler implements IntegrationEventHandlerInterface
 {
@@ -35,10 +35,6 @@ class PacienteEliminadoHandler implements IntegrationEventHandlerInterface
 
     /**
      * Constructor
-     *
-     * @param PacienteRepositoryInterface $pacienteRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param ?LoggerInterface $logger
      */
     public function __construct(
         PacienteRepositoryInterface $pacienteRepository,
@@ -47,14 +43,9 @@ class PacienteEliminadoHandler implements IntegrationEventHandlerInterface
     ) {
         $this->pacienteRepository = $pacienteRepository;
         $this->transactionAggregate = $transactionAggregate;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = PacienteEliminadoEvent::fromPayload($payload);

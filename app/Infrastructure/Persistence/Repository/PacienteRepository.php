@@ -1,31 +1,31 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Infrastructure\Persistence\Repository;
 
-use App\Infrastructure\Persistence\Model\Paciente as PacienteModel;
+use App\Domain\Produccion\Entity\Paciente;
 use App\Domain\Produccion\Repository\PacienteRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
-use App\Domain\Produccion\Entity\Paciente;
+use App\Infrastructure\Persistence\Model\Paciente as PacienteModel;
 
 /**
  * @class PacienteRepository
- * @package App\Infrastructure\Persistence\Repository
  */
 class PacienteRepository implements PacienteRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param  int  $id
+     *
      * @throws EntityNotFoundException
-     * @return Paciente|null
      */
     public function byId(string|int $id): ?Paciente
     {
         $row = PacienteModel::find($id);
 
-        if (!$row) {
+        if (! $row) {
             throw new EntityNotFoundException("El paciente id: {$id} no existe.");
         }
 
@@ -38,7 +38,6 @@ class PacienteRepository implements PacienteRepositoryInterface
     }
 
     /**
-     * @param Paciente $paciente
      * @return int
      */
     public function save(Paciente $paciente): string
@@ -51,6 +50,7 @@ class PacienteRepository implements PacienteRepositoryInterface
                 'suscripcion_id' => $paciente->suscripcionId,
             ]
         );
+
         return $model->id;
     }
 
@@ -74,8 +74,7 @@ class PacienteRepository implements PacienteRepositoryInterface
     }
 
     /**
-     * @param int $id
-     * @return void
+     * @param  int  $id
      */
     public function delete(string|int $id): void
     {

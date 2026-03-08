@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Application\Produccion\Handler\CrearDireccionHandler;
 use App\Application\Produccion\Command\CrearDireccion;
+use App\Application\Produccion\Handler\CrearDireccionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
  * @class CrearDireccionController
- * @package App\Presentation\Http\Controllers
  */
 class CrearDireccionController
 {
@@ -23,17 +23,12 @@ class CrearDireccionController
 
     /**
      * Constructor
-     *
-     * @param CrearDireccionHandler $handler
      */
-    public function __construct(CrearDireccionHandler $handler) {
+    public function __construct(CrearDireccionHandler $handler)
+    {
         $this->handler = $handler;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([

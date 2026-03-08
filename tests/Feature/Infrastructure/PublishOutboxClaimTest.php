@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -8,58 +9,41 @@ namespace Tests\Feature\Infrastructure;
 use App\Application\Shared\BusInterface;
 use App\Infrastructure\Jobs\PublishOutbox;
 use App\Infrastructure\Persistence\Model\Outbox;
+use DateTimeImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
-use DateTimeImmutable;
 
 /**
  * @class PublishOutboxClaimTest
- * @package Tests\Feature\Infrastructure
  */
 class PublishOutboxClaimTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_publish_outbox_does_not_publish_twice(): void
     {
         $published = [];
 
-        $this->app->instance(BusInterface::class, new class($published) implements BusInterface {
-            /**
-             * @var array
-             */
+        $this->app->instance(BusInterface::class, new class($published) implements BusInterface
+        {
             private array $published;
 
             /**
              * Constructor
-             *
-             * @param array & $published
              */
             public function __construct(array &$published)
             {
                 $this->published = &$published;
             }
 
-            /**
-             * @param string $eventId
-             * @param string $name
-             * @param array $payload
-             * @param DateTimeImmutable $occurredOn
-             * @param array $meta
-             * @return void
-             */
             public function publish(
                 string $eventId,
                 string $name,
                 array $payload,
                 DateTimeImmutable $occurredOn,
                 array $meta = []
-            ): void
-            {
+            ): void {
                 $this->published[] = $eventId;
             }
         });
@@ -73,7 +57,7 @@ class PublishOutboxClaimTest extends TestCase
             'occurred_on' => now(),
         ]);
 
-        $job = new PublishOutbox();
+        $job = new PublishOutbox;
         $job->handle($this->app->make(BusInterface::class));
         $job->handle($this->app->make(BusInterface::class));
 

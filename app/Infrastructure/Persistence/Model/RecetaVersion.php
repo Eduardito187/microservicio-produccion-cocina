@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @class RecetaVersion
- * @package App\Infrastructure\Persistence\Model
  */
 class RecetaVersion extends BaseModel
 {
@@ -27,17 +27,11 @@ class RecetaVersion extends BaseModel
         'total_calories' => 'integer',
     ];
 
-    /**
-     * @return HasMany
-     */
     public function batches(): HasMany
     {
         return $this->hasMany(ProduccionBatch::class, 'receta_id');
     }
 
-    /**
-     * @return HasMany
-     */
     public function etiquetas(): HasMany
     {
         return $this->hasMany(Etiqueta::class, 'receta_id');

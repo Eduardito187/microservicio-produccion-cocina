@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @class CalendarioItem
- * @package App\Infrastructure\Persistence\Model
  */
 class CalendarioItem extends BaseModel
 {
@@ -22,17 +22,11 @@ class CalendarioItem extends BaseModel
      */
     protected $guarded = [];
 
-    /**
-     * @return BelongsTo
-     */
     public function calendario(): BelongsTo
     {
         return $this->belongsTo(Calendario::class, 'calendario_id');
     }
 
-    /**
-     * @return BelongsTo
-     */
     public function itemDespacho(): BelongsTo
     {
         return $this->belongsTo(ItemDespacho::class, 'item_despacho_id');

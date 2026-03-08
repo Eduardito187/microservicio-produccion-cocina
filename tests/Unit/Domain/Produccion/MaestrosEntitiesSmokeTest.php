@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,15 +8,14 @@ namespace Tests\Unit\Domain\Produccion;
 
 use App\Domain\Produccion\ValueObjects\Qty;
 use App\Domain\Produccion\ValueObjects\Sku;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionUnionType;
-use DateTimeImmutable;
-use ReflectionClass;
 
 /**
  * @class MaestrosEntitiesSmokeTest
- * @package Tests\Unit\Domain\Produccion
  */
 class MaestrosEntitiesSmokeTest extends TestCase
 {
@@ -50,19 +50,16 @@ class MaestrosEntitiesSmokeTest extends TestCase
         $this->assertInstanceOf($data, $obj);
     }
 
-    /**
-     * @return array
-     */
     public static function entitiesProvider(): array
     {
         $root = dirname(__DIR__, 3);
         $base = dirname($root);
-        $dir = $base.'/app/Domain/Produccion/Entity/*.php';
+        $dir = $base . '/app/Domain/Produccion/Entity/*.php';
         $out = [];
 
         foreach (glob($dir) ?: [] as $file) {
             $class = basename($file, '.php');
-            $out[$class] = ['App\\Domain\\Produccion\\Entity\\'.$class];
+            $out[$class] = ['App\\Domain\\Produccion\\Entity\\' . $class];
         }
 
         if ($out === []) {
@@ -72,11 +69,6 @@ class MaestrosEntitiesSmokeTest extends TestCase
         return $out;
     }
 
-    /**
-     * @param string $typeName
-     * @param bool $nullable
-     * @return mixed
-     */
     private function dummyValueForType(string $typeName, bool $nullable): mixed
     {
         if ($typeName === Qty::class) {
@@ -98,10 +90,6 @@ class MaestrosEntitiesSmokeTest extends TestCase
         };
     }
 
-    /**
-     * @param string $typeName
-     * @return object
-     */
     private function dummyObject(string $typeName): object
     {
         if (class_exists($typeName)) {
@@ -110,7 +98,7 @@ class MaestrosEntitiesSmokeTest extends TestCase
             if ($reflectionClass->isInstantiable()) {
                 $constructor = $reflectionClass->getConstructor();
 
-                if (!$constructor || $constructor->getNumberOfRequiredParameters() === 0) {
+                if (! $constructor || $constructor->getNumberOfRequiredParameters() === 0) {
                     return $reflectionClass->newInstance();
                 }
             }
@@ -119,11 +107,6 @@ class MaestrosEntitiesSmokeTest extends TestCase
         return new class {};
     }
 
-    /**
-     * @param ReflectionUnionType $type
-     * @param bool $nullable
-     * @return mixed
-     */
     private function dummyValueForUnion(ReflectionUnionType $type, bool $nullable): mixed
     {
         $fallback = null;

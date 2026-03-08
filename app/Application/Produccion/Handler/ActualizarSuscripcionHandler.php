@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ActualizarSuscripcion;
 use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Events\SuscripcionActualizada;
+use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 
 /**
  * @class ActualizarSuscripcionHandler
- * @package App\Application\Produccion\Handler
  */
 class ActualizarSuscripcionHandler
 {
@@ -34,10 +34,6 @@ class ActualizarSuscripcionHandler
 
     /**
      * Constructor
-     *
-     * @param SuscripcionRepositoryInterface $suscripcionRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         SuscripcionRepositoryInterface $suscripcionRepository,
@@ -50,7 +46,6 @@ class ActualizarSuscripcionHandler
     }
 
     /**
-     * @param ActualizarSuscripcion $command
      * @return int
      */
     public function __invoke(ActualizarSuscripcion $command): string

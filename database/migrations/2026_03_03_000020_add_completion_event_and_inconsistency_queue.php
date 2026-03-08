@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -16,14 +17,14 @@ return new class extends Migration
     {
         if (Schema::hasTable('order_delivery_progress')) {
             Schema::table('order_delivery_progress', function (Blueprint $table) {
-                if (!Schema::hasColumn('order_delivery_progress', 'completion_event_id')) {
+                if (! Schema::hasColumn('order_delivery_progress', 'completion_event_id')) {
                     $table->uuid('completion_event_id')->nullable()->after('all_completed_at');
                     $table->index('completion_event_id', 'order_delivery_progress_completion_event_id_index');
                 }
             });
         }
 
-        if (!Schema::hasTable('delivery_inconsistency_queue')) {
+        if (! Schema::hasTable('delivery_inconsistency_queue')) {
             Schema::create('delivery_inconsistency_queue', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('event_id')->nullable()->index('delivery_inconsistency_event_id_index');

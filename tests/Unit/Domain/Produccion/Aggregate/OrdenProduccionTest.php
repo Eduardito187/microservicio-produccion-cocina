@@ -1,27 +1,24 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace Tests\Unit\Domain\Produccion\Aggregate;
 
-use App\Domain\Produccion\Events\OrdenProduccionCreada;
 use App\Domain\Produccion\Aggregate\OrdenProduccion;
 use App\Domain\Produccion\Enum\EstadoOP;
-use Ramsey\Uuid\Uuid;
-use PHPUnit\Framework\TestCase;
+use App\Domain\Produccion\Events\OrdenProduccionCreada;
 use DateTimeImmutable;
 use DomainException;
+use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @class OrdenProduccionTest
- * @package Tests\Unit\Domain\Produccion\Aggregate
  */
 class OrdenProduccionTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_crear_inicializa_la_op_en_estado_creada_y_registra_evento(): void
     {
         $fecha = new DateTimeImmutable('2025-01-01');
@@ -33,9 +30,6 @@ class OrdenProduccionTest extends TestCase
         $this->assertInstanceOf(OrdenProduccionCreada::class, $events[0]);
     }
 
-    /**
-     * @return void
-     */
     public function test_agregar_items_construye_orden_items_desde_array(): void
     {
         $fecha = new DateTimeImmutable('2025-01-01');
@@ -48,9 +42,6 @@ class OrdenProduccionTest extends TestCase
         $this->assertSame(3, $ordenProduccion->items()[0]->qty()->value());
     }
 
-    /**
-     * @return void
-     */
     public function test_agregar_items_falla_si_estado_no_es_creada(): void
     {
         $fecha = new DateTimeImmutable('2025-01-01');
@@ -61,9 +52,6 @@ class OrdenProduccionTest extends TestCase
         $ordenProduccion->agregarItems([['sku' => 'ABC', 'qty' => 3]]);
     }
 
-    /**
-     * @return void
-     */
     public function test_flujo_de_estados_planificar_procesar_cerrar(): void
     {
         $fecha = new DateTimeImmutable('2025-01-01');

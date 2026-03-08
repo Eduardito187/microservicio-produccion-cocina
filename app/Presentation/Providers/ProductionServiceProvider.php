@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,13 +10,9 @@ use Illuminate\Support\ServiceProvider;
 
 /**
  * @class ProductionServiceProvider
- * @package App\Presentation\Providers
  */
 class ProductionServiceProvider extends ServiceProvider
 {
-    /**
-     * @return void
-     */
     public function register(): void
     {
         //

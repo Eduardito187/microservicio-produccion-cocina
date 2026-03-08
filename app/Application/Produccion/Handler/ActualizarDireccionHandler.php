@@ -1,19 +1,19 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ActualizarDireccion;
 use App\Application\Shared\DomainEventPublisherInterface;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Events\DireccionActualizada;
+use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 
 /**
  * @class ActualizarDireccionHandler
- * @package App\Application\Produccion\Handler
  */
 class ActualizarDireccionHandler
 {
@@ -34,10 +34,6 @@ class ActualizarDireccionHandler
 
     /**
      * Constructor
-     *
-     * @param DireccionRepositoryInterface $direccionRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param DomainEventPublisherInterface $eventPublisher
      */
     public function __construct(
         DireccionRepositoryInterface $direccionRepository,
@@ -50,7 +46,6 @@ class ActualizarDireccionHandler
     }
 
     /**
-     * @param ActualizarDireccion $command
      * @return int
      */
     public function __invoke(ActualizarDireccion $command): string

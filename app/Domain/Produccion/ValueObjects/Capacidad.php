@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,19 +11,16 @@ use DomainException;
 
 /**
  * @class Capacidad
- * @package App\Domain\Produccion\ValueObjects
  */
 class Capacidad extends ValueObject
 {
-    /** 
+    /**
      * @var int
      */
     public $value;
 
     /**
      * Constructor
-     *
-     * @param int $value
      */
     public function __construct(int $value)
     {
@@ -33,9 +31,6 @@ class Capacidad extends ValueObject
         $this->value = $value;
     }
 
-    /**
-     * @return int
-     */
     public function value(): int
     {
         return $this->value;

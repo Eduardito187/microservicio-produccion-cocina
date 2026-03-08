@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -6,12 +7,12 @@
 namespace App\Application\Integration\Handlers;
 
 use App\Application\Integration\Events\CalendarioEntregaCreadoEvent;
-use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
-use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Calendario;
 use App\Domain\Produccion\Entity\VentanaEntrega;
+use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
+use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
 use DateTimeImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -20,7 +21,6 @@ use Psr\Log\NullLogger;
 
 /**
  * @class SuscripcionCreadaEvent
- * @package App\Application\Integration\Handlers
  */
 class CalendarioEntregaCreadoHandler implements IntegrationEventHandlerInterface
 {
@@ -46,11 +46,6 @@ class CalendarioEntregaCreadoHandler implements IntegrationEventHandlerInterface
 
     /**
      * Constructor
-     *
-     * @param CalendarioRepositoryInterface $calendarioRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param VentanaEntregaRepositoryInterface $ventanaEntregaRepository
-     * @param ?LoggerInterface $logger
      */
     public function __construct(
         CalendarioRepositoryInterface $calendarioRepository,
@@ -61,14 +56,9 @@ class CalendarioEntregaCreadoHandler implements IntegrationEventHandlerInterface
         $this->calendarioRepository = $calendarioRepository;
         $this->transactionAggregate = $transactionAggregate;
         $this->ventanaEntregaRepository = $ventanaEntregaRepository;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param array $payload
-     * @param array $meta
-     * @return void
-     */
     public function handle(array $payload, array $meta = []): void
     {
         $event = CalendarioEntregaCreadoEvent::fromPayload($payload);
@@ -115,15 +105,9 @@ class CalendarioEntregaCreadoHandler implements IntegrationEventHandlerInterface
         });
     }
 
-    /**
-     * @param string $calendarioId
-     * @param ?string $entregaId
-     * @param ?string $contratoId
-     * @return void
-     */
     private function syncCalendarioItems(string $calendarioId, ?string $entregaId, ?string $contratoId): void
     {
-        if (!is_string($entregaId) || $entregaId === '') {
+        if (! is_string($entregaId) || $entregaId === '') {
             return;
         }
 
@@ -141,7 +125,7 @@ class CalendarioEntregaCreadoHandler implements IntegrationEventHandlerInterface
         $itemIds = $query->pluck('id');
         $linked = 0;
         foreach ($itemIds as $itemId) {
-            if (!is_string($itemId) || $itemId === '') {
+            if (! is_string($itemId) || $itemId === '') {
                 continue;
             }
             $exists = DB::table('calendario_item')
@@ -171,15 +155,10 @@ class CalendarioEntregaCreadoHandler implements IntegrationEventHandlerInterface
         }
     }
 
-    /**
-     * @param string $baseId
-     * @param string $fecha
-     * @param string $hora
-     * @return string
-     */
     private function buildVentanaId(string $baseId, string $fecha, string $hora): string
     {
         $hash = md5($baseId . '|' . $fecha . '|' . $hora);
+
         return sprintf(
             '%s-%s-%s-%s-%s',
             substr($hash, 0, 8),

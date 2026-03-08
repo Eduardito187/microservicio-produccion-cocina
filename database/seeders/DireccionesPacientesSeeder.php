@@ -1,25 +1,22 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace Database\Seeders;
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 /**
  * @class DireccionesPacientesSeeder
- * @package Database\Seeders
  */
 class DireccionesPacientesSeeder extends Seeder
 {
-    /**
-     * @return void
-     */
     public function run(): void
     {
         $now = Carbon::now('America/La_Paz');
@@ -52,28 +49,28 @@ class DireccionesPacientesSeeder extends Seeder
                 DB::table('paciente')->upsert(
                     [
                         [
-                            'id'              => (string) Str::uuid(),
-                            'nombre'          => 'Estelo',
-                            'documento'       => 'CI-8178772',
-                            'suscripcion_id'  => $suscripciones['Mantener peso'] ?? null,
-                            'created_at'      => $now,
-                            'updated_at'      => $now,
+                            'id' => (string) Str::uuid(),
+                            'nombre' => 'Estelo',
+                            'documento' => 'CI-8178772',
+                            'suscripcion_id' => $suscripciones['Mantener peso'] ?? null,
+                            'created_at' => $now,
+                            'updated_at' => $now,
                         ],
                         [
-                            'id'              => (string) Str::uuid(),
-                            'nombre'          => 'Pepe',
-                            'documento'       => 'CI-8214882',
-                            'suscripcion_id'  => $suscripciones['Masa muscular'] ?? null,
-                            'created_at'      => $now,
-                            'updated_at'      => $now,
+                            'id' => (string) Str::uuid(),
+                            'nombre' => 'Pepe',
+                            'documento' => 'CI-8214882',
+                            'suscripcion_id' => $suscripciones['Masa muscular'] ?? null,
+                            'created_at' => $now,
+                            'updated_at' => $now,
                         ],
                         [
-                            'id'              => (string) Str::uuid(),
-                            'nombre'          => 'Din',
-                            'documento'       => 'CI-6358965',
-                            'suscripcion_id'  => $suscripciones['Bajar peso'] ?? null,
-                            'created_at'      => $now,
-                            'updated_at'      => $now,
+                            'id' => (string) Str::uuid(),
+                            'nombre' => 'Din',
+                            'documento' => 'CI-6358965',
+                            'suscripcion_id' => $suscripciones['Bajar peso'] ?? null,
+                            'created_at' => $now,
+                            'updated_at' => $now,
                         ],
                     ],
                     ['documento'],       // asumiendo que documento es único (ponle UNIQUE en la migración)
@@ -87,40 +84,40 @@ class DireccionesPacientesSeeder extends Seeder
             DB::table('direccion')->upsert(
                 [
                     [
-                        'id'          => (string) Str::uuid(),
-                        'nombre'      => 'Casa Juan',
-                        'linea1'      => 'Av. 16 de Julio 123',
-                        'linea2'      => 'Depto 4B',
-                        'ciudad'      => 'La Paz',
-                        'provincia'   => 'La Paz',
-                        'pais'        => 'Bolivia',
-                        'geo'         => json_encode(['latitud' => -16.4990100, 'longitud' => -68.1462480]),
-                        'created_at'  => $now,
-                        'updated_at'  => $now,
+                        'id' => (string) Str::uuid(),
+                        'nombre' => 'Casa Juan',
+                        'linea1' => 'Av. 16 de Julio 123',
+                        'linea2' => 'Depto 4B',
+                        'ciudad' => 'La Paz',
+                        'provincia' => 'La Paz',
+                        'pais' => 'Bolivia',
+                        'geo' => json_encode(['latitud' => -16.4990100, 'longitud' => -68.1462480]),
+                        'created_at' => $now,
+                        'updated_at' => $now,
                     ],
                     [
-                        'id'          => (string) Str::uuid(),
-                        'nombre'      => 'Oficina María',
-                        'linea1'      => 'Calle España 456',
-                        'linea2'      => null,
-                        'ciudad'      => 'Cochabamba',
-                        'provincia'   => 'Cochabamba',
-                        'pais'        => 'Bolivia',
-                        'geo'         => json_encode(['latitud' => -16.4990100, 'longitud' => -68.1462480]),
-                        'created_at'  => $now,
-                        'updated_at'  => $now,
+                        'id' => (string) Str::uuid(),
+                        'nombre' => 'Oficina María',
+                        'linea1' => 'Calle España 456',
+                        'linea2' => null,
+                        'ciudad' => 'Cochabamba',
+                        'provincia' => 'Cochabamba',
+                        'pais' => 'Bolivia',
+                        'geo' => json_encode(['latitud' => -16.4990100, 'longitud' => -68.1462480]),
+                        'created_at' => $now,
+                        'updated_at' => $now,
                     ],
                     [
-                        'id'          => (string) Str::uuid(),
-                        'nombre'      => 'Casa Luis',
-                        'linea1'      => 'Av. Cristo Redentor Km 6.5',
-                        'linea2'      => 'Zona Norte',
-                        'ciudad'      => 'Santa Cruz de la Sierra',
-                        'provincia'   => 'Santa Cruz',
-                        'pais'        => 'Bolivia',
-                        'geo'         => json_encode(['latitud' => -16.4990100, 'longitud' => -68.1462480]),
-                        'created_at'  => $now,
-                        'updated_at'  => $now,
+                        'id' => (string) Str::uuid(),
+                        'nombre' => 'Casa Luis',
+                        'linea1' => 'Av. Cristo Redentor Km 6.5',
+                        'linea2' => 'Zona Norte',
+                        'ciudad' => 'Santa Cruz de la Sierra',
+                        'provincia' => 'Santa Cruz',
+                        'pais' => 'Bolivia',
+                        'geo' => json_encode(['latitud' => -16.4990100, 'longitud' => -68.1462480]),
+                        'created_at' => $now,
+                        'updated_at' => $now,
                     ],
                 ],
                 ['nombre'],  // si decides que nombre de dirección debe ser único
@@ -132,23 +129,23 @@ class DireccionesPacientesSeeder extends Seeder
         if (Schema::hasTable('ventana_entrega')) {
             DB::table('ventana_entrega')->insert([
                 [
-                    'id'         => (string) Str::uuid(),
-                    'desde'      => $today->copy()->setTime(8, 0, 0),
-                    'hasta'      => $today->copy()->setTime(12, 0, 0),
+                    'id' => (string) Str::uuid(),
+                    'desde' => $today->copy()->setTime(8, 0, 0),
+                    'hasta' => $today->copy()->setTime(12, 0, 0),
                     'created_at' => $now,
                     'updated_at' => $now,
                 ],
                 [
-                    'id'         => (string) Str::uuid(),
-                    'desde'      => $today->copy()->setTime(13, 0, 0),
-                    'hasta'      => $today->copy()->setTime(17, 0, 0),
+                    'id' => (string) Str::uuid(),
+                    'desde' => $today->copy()->setTime(13, 0, 0),
+                    'hasta' => $today->copy()->setTime(17, 0, 0),
                     'created_at' => $now,
                     'updated_at' => $now,
                 ],
                 [
-                    'id'         => (string) Str::uuid(),
-                    'desde'      => $today->copy()->setTime(18, 0, 0),
-                    'hasta'      => $today->copy()->setTime(21, 0, 0),
+                    'id' => (string) Str::uuid(),
+                    'desde' => $today->copy()->setTime(18, 0, 0),
+                    'hasta' => $today->copy()->setTime(21, 0, 0),
                     'created_at' => $now,
                     'updated_at' => $now,
                 ],

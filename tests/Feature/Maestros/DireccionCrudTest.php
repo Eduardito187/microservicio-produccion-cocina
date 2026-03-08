@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,15 +11,11 @@ use Tests\TestCase;
 
 /**
  * @class DireccionCrudTest
- * @package Tests\Feature\Maestros
  */
 class DireccionCrudTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_crear_actualizar_y_eliminar_direccion(): void
     {
         $create = $this->postJson(route('direcciones.crear'), [
@@ -28,7 +25,7 @@ class DireccionCrudTest extends TestCase
             'ciudad' => 'Ciudad',
             'provincia' => 'Provincia',
             'pais' => 'Pais',
-            'geo' => ['lat' => 1.23, 'lng' => 4.56]
+            'geo' => ['lat' => 1.23, 'lng' => 4.56],
         ]);
 
         $create->assertCreated()->assertJsonStructure(['direccionId']);
@@ -46,7 +43,7 @@ class DireccionCrudTest extends TestCase
             'ciudad' => 'Ciudad 2',
             'provincia' => 'Provincia 2',
             'pais' => 'Pais 2',
-            'geo' => ['lat' => 2.34, 'lng' => 5.67]
+            'geo' => ['lat' => 2.34, 'lng' => 5.67],
         ]);
 
         $update->assertOk()->assertJsonPath('direccionId', $direccionId);

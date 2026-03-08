@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\ListarPaquetes;
+use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Paquete;
+use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 
 /**
  * @class ListarPaquetesHandler
- * @package App\Application\Produccion\Handler
  */
 class ListarPaquetesHandler
 {
@@ -28,9 +28,6 @@ class ListarPaquetesHandler
 
     /**
      * Constructor
-     *
-     * @param PaqueteRepositoryInterface $paqueteRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         PaqueteRepositoryInterface $paqueteRepository,
@@ -40,10 +37,6 @@ class ListarPaquetesHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param ListarPaquetes $command
-     * @return array
-     */
     public function __invoke(ListarPaquetes $command): array
     {
         return $this->transactionAggregate->runTransaction(function (): array {
@@ -51,10 +44,6 @@ class ListarPaquetesHandler
         });
     }
 
-    /**
-     * @param Paquete $paquete
-     * @return array
-     */
     private function mapPaquete(Paquete $paquete): array
     {
         return [

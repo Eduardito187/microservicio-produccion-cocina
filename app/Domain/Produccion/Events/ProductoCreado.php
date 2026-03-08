@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use App\Domain\Shared\Events\BaseDomainEvent;
 
 /**
  * @class ProductoCreado
- * @package App\Domain\Produccion\Events
  */
 class ProductoCreado extends BaseDomainEvent
 {
@@ -30,11 +30,6 @@ class ProductoCreado extends BaseDomainEvent
 
     /**
      * Constructor
-     *
-     * @param string|int|null $productoId
-     * @param string $sku
-     * @param float $price
-     * @param float $specialPrice
      */
     public function __construct(
         string|int|null $productoId,
@@ -48,9 +43,6 @@ class ProductoCreado extends BaseDomainEvent
         $this->specialPrice = $specialPrice;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [

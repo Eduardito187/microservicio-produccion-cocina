@@ -1,17 +1,17 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace App\Application\Produccion\Handler;
 
-use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
-use App\Application\Support\Transaction\TransactionAggregate;
 use App\Application\Produccion\Command\EliminarPaquete;
+use App\Application\Support\Transaction\TransactionAggregate;
+use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 
 /**
  * @class EliminarPaqueteHandler
- * @package App\Application\Produccion\Handler
  */
 class EliminarPaqueteHandler
 {
@@ -27,9 +27,6 @@ class EliminarPaqueteHandler
 
     /**
      * Constructor
-     *
-     * @param PaqueteRepositoryInterface $paqueteRepository
-     * @param TransactionAggregate $transactionAggregate
      */
     public function __construct(
         PaqueteRepositoryInterface $paqueteRepository,
@@ -39,10 +36,6 @@ class EliminarPaqueteHandler
         $this->transactionAggregate = $transactionAggregate;
     }
 
-    /**
-     * @param EliminarPaquete $command
-     * @return void
-     */
     public function __invoke(EliminarPaquete $command): void
     {
         $this->transactionAggregate->runTransaction(function () use ($command): void {

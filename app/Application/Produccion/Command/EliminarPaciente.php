@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Application\Produccion\Command;
 
 /**
  * @class EliminarPaciente
- * @package App\Application\Produccion\Command
  */
 class EliminarPaciente
 {
@@ -18,8 +18,6 @@ class EliminarPaciente
 
     /**
      * Constructor
-     *
-     * @param string $id
      */
     public function __construct(string $id)
     {

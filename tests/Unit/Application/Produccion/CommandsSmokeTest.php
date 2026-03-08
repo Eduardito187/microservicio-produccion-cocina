@@ -1,18 +1,18 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
 
 namespace Tests\Unit\Application\Produccion;
 
-use PHPUnit\Framework\TestCase;
-use ReflectionNamedType;
 use DateTimeImmutable;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use ReflectionNamedType;
 
 /**
  * @class CommandsSmokeTest
- * @package Tests\Unit\Application\Produccion
  */
 class CommandsSmokeTest extends TestCase
 {
@@ -41,19 +41,16 @@ class CommandsSmokeTest extends TestCase
         $this->assertInstanceOf($data, $obj);
     }
 
-    /**
-     * @return array
-     */
     public static function commandsProvider(): array
     {
         $root = dirname(__DIR__, 4);
         $base = dirname($root);
-        $dir = $base.'/app/Application/Produccion/Command/*.php';
+        $dir = $base . '/app/Application/Produccion/Command/*.php';
         $out = [];
 
         foreach (glob($dir) ?: [] as $file) {
             $class = basename($file, '.php');
-            $out[$class] = ['App\\Application\\Produccion\\Command\\'.$class];
+            $out[$class] = ['App\\Application\\Produccion\\Command\\' . $class];
         }
 
         if ($out === []) {
@@ -63,11 +60,6 @@ class CommandsSmokeTest extends TestCase
         return $out;
     }
 
-    /**
-     * @param string $typeName
-     * @param bool $nullable
-     * @return mixed
-     */
     private function dummyValueForType(string $typeName, bool $nullable): mixed
     {
         return match ($typeName) {
@@ -81,10 +73,6 @@ class CommandsSmokeTest extends TestCase
         };
     }
 
-    /**
-     * @param string $typeName
-     * @return object
-     */
     private function dummyObject(string $typeName): object
     {
         if (class_exists($typeName)) {
@@ -93,7 +81,7 @@ class CommandsSmokeTest extends TestCase
             if ($reflectionClass->isInstantiable()) {
                 $constructor = $reflectionClass->getConstructor();
 
-                if (!$constructor || $constructor->getNumberOfRequiredParameters() === 0) {
+                if (! $constructor || $constructor->getNumberOfRequiredParameters() === 0) {
                     return $reflectionClass->newInstance();
                 }
             }

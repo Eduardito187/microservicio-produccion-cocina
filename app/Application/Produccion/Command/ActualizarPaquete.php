@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Application\Produccion\Command;
 
 /**
  * @class ActualizarPaquete
- * @package App\Application\Produccion\Command
  */
 class ActualizarPaquete
 {
@@ -19,7 +19,7 @@ class ActualizarPaquete
     /**
      * @var string|int|null
      */
-    public$etiquetaId;
+    public $etiquetaId;
 
     /**
      * @var string|int|null
@@ -33,11 +33,6 @@ class ActualizarPaquete
 
     /**
      * Constructor
-     *
-     * @param string|int $id
-     * @param string|int|null $etiquetaId
-     * @param string|int|null $ventanaId
-     * @param string|int|null $direccionId
      */
     public function __construct(
         string|int $id,

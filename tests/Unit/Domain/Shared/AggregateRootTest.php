@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -11,28 +12,21 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @class AggregateRootTest
- * @package Tests\Unit\Domain\Shared
  */
 class AggregateRootTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function test_record_and_pull_events_behaviour(): void
     {
-        $aggregate = new class {
+        $aggregate = new class
+        {
             use AggregateRoot;
 
-            /**
-             * @return void
-             */
             public function raise(): void
             {
-                $this->record(new class(1) extends BaseDomainEvent {
-                    /**
-                     * @return array
-                     */
-                    public function toArray(): array {
+                $this->record(new class(1) extends BaseDomainEvent
+                {
+                    public function toArray(): array
+                    {
                         return ['x' => 1];
                     }
                 });

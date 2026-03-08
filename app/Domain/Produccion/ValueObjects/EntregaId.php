@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -10,7 +11,6 @@ use DomainException;
 
 /**
  * @class EntregaId
- * @package App\Domain\Produccion\ValueObjects
  */
 class EntregaId extends ValueObject
 {
@@ -19,9 +19,6 @@ class EntregaId extends ValueObject
      */
     private $value;
 
-    /**
-     * @param string $value
-     */
     public function __construct(string $value)
     {
         $normalized = trim($value);
@@ -29,16 +26,13 @@ class EntregaId extends ValueObject
             throw new DomainException('EntregaId cannot be empty');
         }
 
-        if (!preg_match('/^[0-9a-fA-F-]{36}$/', $normalized)) {
+        if (! preg_match('/^[0-9a-fA-F-]{36}$/', $normalized)) {
             throw new DomainException('EntregaId must be UUID');
         }
 
         $this->value = strtolower($normalized);
     }
 
-    /**
-     * @return string
-     */
     public function value(): string
     {
         return $this->value;

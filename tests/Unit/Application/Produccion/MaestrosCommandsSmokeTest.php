@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -13,7 +14,6 @@ use ReflectionUnionType;
 
 /**
  * @class MaestrosCommandsSmokeTest
- * @package Tests\Unit\Application\Produccion
  */
 class MaestrosCommandsSmokeTest extends TestCase
 {
@@ -44,9 +44,6 @@ class MaestrosCommandsSmokeTest extends TestCase
         $this->assertInstanceOf($data, $obj);
     }
 
-    /**
-     * @return array
-     */
     public static function commandsProvider(): array
     {
         $classes = [
@@ -100,11 +97,6 @@ class MaestrosCommandsSmokeTest extends TestCase
         return $out;
     }
 
-    /**
-     * @param string $typeName
-     * @param bool $nullable
-     * @return mixed
-     */
     private function dummyValueForType(string $typeName, bool $nullable): mixed
     {
         return match ($typeName) {
@@ -118,10 +110,6 @@ class MaestrosCommandsSmokeTest extends TestCase
         };
     }
 
-    /**
-     * @param string $typeName
-     * @return object
-     */
     private function dummyObject(string $typeName): object
     {
         if (class_exists($typeName)) {
@@ -130,7 +118,7 @@ class MaestrosCommandsSmokeTest extends TestCase
             if ($reflectionClass->isInstantiable()) {
                 $constructor = $reflectionClass->getConstructor();
 
-                if (!$constructor || $constructor->getNumberOfRequiredParameters() === 0) {
+                if (! $constructor || $constructor->getNumberOfRequiredParameters() === 0) {
                     return $reflectionClass->newInstance();
                 }
             }
@@ -139,11 +127,6 @@ class MaestrosCommandsSmokeTest extends TestCase
         return new class {};
     }
 
-    /**
-     * @param ReflectionUnionType $type
-     * @param bool $nullable
-     * @return mixed
-     */
     private function dummyValueForUnion(ReflectionUnionType $type, bool $nullable): mixed
     {
         $fallback = null;

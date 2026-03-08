@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -14,7 +15,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('package_delivery_tracking')) {
+        if (! Schema::hasTable('package_delivery_tracking')) {
             Schema::create('package_delivery_tracking', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('package_id')->unique('package_delivery_tracking_package_id_unique');
@@ -32,7 +33,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('package_delivery_history')) {
+        if (! Schema::hasTable('package_delivery_history')) {
             Schema::create('package_delivery_history', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('event_id')->unique('package_delivery_history_event_id_unique');
@@ -47,7 +48,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('order_delivery_progress')) {
+        if (! Schema::hasTable('order_delivery_progress')) {
             Schema::create('order_delivery_progress', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('op_id')->unique('order_delivery_progress_op_id_unique');

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Foundation\Http\Middleware\TrimStrings as Middleware;
 
 /**
  * @class TrimStrings
- * @package App\Presentation\Http\Middleware
  */
 class TrimStrings extends Middleware
 {

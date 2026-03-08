@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -7,7 +8,6 @@ namespace App\Application\Produccion\Command;
 
 /**
  * @class ActualizarPorcion
- * @package App\Application\Produccion\Command
  */
 class ActualizarPorcion
 {
@@ -28,10 +28,6 @@ class ActualizarPorcion
 
     /**
      * Constructor
-     *
-     * @param string $id
-     * @param string $nombre
-     * @param int $pesoGr
      */
     public function __construct(string $id, string $nombre, int $pesoGr)
     {

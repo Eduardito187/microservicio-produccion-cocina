@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -14,15 +15,11 @@ use Tests\TestCase;
 
 /**
  * @class LogisticaCompletionFlowTest
- * @package Tests\Feature\Integration
  */
 class LogisticaCompletionFlowTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     */
     public function test_orden_con_n_paquetes_no_emite_hasta_recibir_ultimo_completed(): void
     {
         DB::table('calendario')->insert([
@@ -103,11 +100,12 @@ class LogisticaCompletionFlowTest extends TestCase
             ->method('publish')
             ->with(
                 $this->callback(function (array $events): bool {
-                    if (count($events) !== 1 || !$events[0] instanceof PaqueteEntregado) {
+                    if (count($events) !== 1 || ! $events[0] instanceof PaqueteEntregado) {
                         return false;
                     }
 
                     $payload = $events[0]->toArray();
+
                     return ($payload['calendarioId'] ?? null) === 'cal-n-1'
                         && ($payload['contratoId'] ?? null) === 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'
                         && ($payload['estado'] ?? null) === 'entregado';
@@ -151,9 +149,6 @@ class LogisticaCompletionFlowTest extends TestCase
         $this->assertNotNull($orderAfterLast->entrega_completada_at);
     }
 
-    /**
-     * @return void
-     */
     public function test_evento_duplicado_no_duplica_conteo_ni_emision(): void
     {
         DB::table('calendario')->insert([

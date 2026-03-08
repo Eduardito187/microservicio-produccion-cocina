@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -27,7 +28,6 @@ use Psr\Log\NullLogger;
 
 /**
  * @class ActualizarEstadoPaqueteDesdeLogisticaHandler
- * @package App\Application\Produccion\Handler
  */
 class ActualizarEstadoPaqueteDesdeLogisticaHandler
 {
@@ -56,13 +56,6 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
      */
     private $eventPublisher;
 
-    /**
-     * @param EntregaEvidenciaRepositoryInterface $evidenciaRepository
-     * @param KpiRepositoryInterface $kpiRepository
-     * @param TransactionAggregate $transactionAggregate
-     * @param DomainEventPublisherInterface $eventPublisher
-     * @param ?LoggerInterface $logger
-     */
     public function __construct(
         EntregaEvidenciaRepositoryInterface $evidenciaRepository,
         KpiRepositoryInterface $kpiRepository,
@@ -74,13 +67,9 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         $this->kpiRepository = $kpiRepository;
         $this->transactionAggregate = $transactionAggregate;
         $this->eventPublisher = $eventPublisher;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
-    /**
-     * @param ActualizarEstadoPaqueteDesdeLogisticaCommand $command
-     * @return void
-     */
     public function __invoke(ActualizarEstadoPaqueteDesdeLogisticaCommand $command): void
     {
         $this->kpiRepository->increment('delivery_events_processed_total', 1);
@@ -96,16 +85,15 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             'mapped_status' => $nextStatus->value(),
         ]);
 
-
         $fotoUrl = null;
         $geo = null;
         if (is_array($command->deliveryEvidence)) {
             $fotoUrl = $command->deliveryEvidence['url'] ?? ($command->deliveryEvidence['fotoUrl'] ?? null);
             $geo = $command->deliveryEvidence['geo'] ?? ($command->deliveryEvidence['geolocation'] ?? null);
-            if (!is_array($geo)) {
+            if (! is_array($geo)) {
                 $geo = null;
             }
-            if (!is_string($fotoUrl)) {
+            if (! is_string($fotoUrl)) {
                 $fotoUrl = null;
             }
         } elseif (is_string($command->deliveryEvidence) && trim($command->deliveryEvidence) !== '') {
@@ -158,7 +146,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         }
 
         $normalizedStatus = $receivedStatus !== '' ? strtolower(trim($receivedStatus)) : null;
-        $encodedPayload   = json_encode($payload);
+        $encodedPayload = json_encode($payload);
 
         $existing = DB::table('package_delivery_history')
             ->where('event_id', $eventId)
@@ -168,29 +156,30 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             DB::table('package_delivery_history')
                 ->where('event_id', $eventId)
                 ->update([
-                    'package_id'      => $packageId,
+                    'package_id' => $packageId,
                     'received_status' => $normalizedStatus,
-                    'driver_id'       => $driverId,
-                    'evidence'        => $encodedEvidence,
-                    'payload'         => $encodedPayload,
-                    'occurred_on'     => $occurredAt,
-                    'updated_at'      => now(),
+                    'driver_id' => $driverId,
+                    'evidence' => $encodedEvidence,
+                    'payload' => $encodedPayload,
+                    'occurred_on' => $occurredAt,
+                    'updated_at' => now(),
                 ]);
+
             return;
         }
 
         // Se listan todos los campos explícitamente para que 'id' nunca quede fuera
         DB::table('package_delivery_history')->insert([
-            'id'              => (string) Str::uuid(),
-            'event_id'        => $eventId,
-            'package_id'      => $packageId,
+            'id' => (string) Str::uuid(),
+            'event_id' => $eventId,
+            'package_id' => $packageId,
             'received_status' => $normalizedStatus,
-            'driver_id'       => $driverId,
-            'evidence'        => $encodedEvidence,
-            'payload'         => $encodedPayload,
-            'occurred_on'     => $occurredAt,
-            'created_at'      => now(),
-            'updated_at'      => now(),
+            'driver_id' => $driverId,
+            'evidence' => $encodedEvidence,
+            'payload' => $encodedPayload,
+            'occurred_on' => $occurredAt,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 
@@ -211,6 +200,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                 'driver_id' => $driverId?->value(),
             ]);
             $this->enqueueInconsistency(null, $eventId, $packageId, 'package_without_dispatch_relation', $payload);
+
             return;
         }
 
@@ -221,7 +211,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         $anyChanged = false;
 
         foreach ($rows as $row) {
-            if ((!is_string($row->op_id) || $row->op_id === '') && !$missingOpAlertRaised) {
+            if ((! is_string($row->op_id) || $row->op_id === '') && ! $missingOpAlertRaised) {
                 $this->kpiRepository->increment('alert_missing_op_id', 1);
                 $this->logger->warning('Actualizacion de estado sin relacion op_id', [
                     'event_id' => $eventId,
@@ -250,7 +240,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             $changed = $seguimiento->applyStatus($nextStatus, $driverId, $effectiveOccurredOn);
             $isLocked = $nextStatus->isCompleted() || $wasLocked;
 
-            if (!$changed && $currentStatus !== null && $currentStatus->value() !== $nextStatus->value()) {
+            if (! $changed && $currentStatus !== null && $currentStatus->value() !== $nextStatus->value()) {
                 $this->kpiRepository->increment('delivery_state_blocked_terminal', 1);
                 $this->logger->warning('Transicion de estado bloqueada por politica del agregado', [
                     'event_id' => $eventId,
@@ -285,7 +275,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
             DB::table('item_despacho')->where('id', $row->id)->update($updatePayload);
 
-            if (!$trackingUpserted) {
+            if (! $trackingUpserted) {
                 $this->upsertTracking(
                     $packageId,
                     is_string($row->op_id) ? $row->op_id : null,
@@ -305,7 +295,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                 $anyChanged = true;
             }
 
-            if ($changed && $nextStatus->isCompleted() && !$packageCompletedMetricCounted) {
+            if ($changed && $nextStatus->isCompleted() && ! $packageCompletedMetricCounted) {
                 $this->kpiRepository->increment('delivery_packages_completed', 1);
                 $packageCompletedMetricCounted = true;
             }
@@ -315,7 +305,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             }
         }
 
-        if (!$anyChanged) {
+        if (! $anyChanged) {
             return;
         }
 
@@ -327,7 +317,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
             $allDelivered = $projection['completed_packages'] === $projection['total_packages'];
             $allFailed = $projection['failed_packages'] === $projection['total_packages'];
-            if (!$allDelivered && !$allFailed) {
+            if (! $allDelivered && ! $allFailed) {
                 continue;
             }
 
@@ -397,6 +387,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             ]);
         }
     }
+
     private function backfillDeliveryContextForPackage(string $packageId): void
     {
         $rows = DB::table('item_despacho')
@@ -422,10 +413,10 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             }
 
             $update = [];
-            if (!$hasEntrega && isset($ventana->entrega_id) && is_string($ventana->entrega_id) && $ventana->entrega_id !== '') {
+            if (! $hasEntrega && isset($ventana->entrega_id) && is_string($ventana->entrega_id) && $ventana->entrega_id !== '') {
                 $update['entrega_id'] = $ventana->entrega_id;
             }
-            if (!$hasContrato && isset($ventana->contrato_id) && is_string($ventana->contrato_id) && $ventana->contrato_id !== '') {
+            if (! $hasContrato && isset($ventana->contrato_id) && is_string($ventana->contrato_id) && $ventana->contrato_id !== '') {
                 $update['contrato_id'] = $ventana->contrato_id;
             }
 
@@ -450,7 +441,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                 ->exists();
         }
 
-        if (!$alreadyExists) {
+        if (! $alreadyExists) {
             DB::table('delivery_inconsistency_queue')->insert([
                 'id' => (string) Str::uuid(),
                 'event_id' => $eventIdValue,
@@ -472,6 +463,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
             $event = new EntregaInconsistenciaDetectada($opId, $reason, $eventId, $packageId, $payload);
             $this->eventPublisher->publish([$event], $opId ?? $packageId);
+
             return;
         }
 
@@ -619,7 +611,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
     private function parseOccurredOn(?string $value): ?OccurredOn
     {
-        if (!is_string($value) || trim($value) === '') {
+        if (! is_string($value) || trim($value) === '') {
             return null;
         }
 
@@ -632,7 +624,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
     private function parseDriverId(?string $value): ?DriverId
     {
-        if (!is_string($value) || trim($value) === '') {
+        if (! is_string($value) || trim($value) === '') {
             return null;
         }
 
@@ -640,13 +632,14 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             return new DriverId($value);
         } catch (\Throwable $e) {
             $this->logger->warning('driver_id ignorado porque el formato es invalido', ['driver_id' => $value]);
+
             return null;
         }
     }
 
     private function parseStoredStatus(?string $status): ?PackageStatus
     {
-        if (!is_string($status) || trim($status) === '') {
+        if (! is_string($status) || trim($status) === '') {
             return null;
         }
 
@@ -658,7 +651,6 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
     }
 
     /**
-     * @param string $status
      * @return array{0:PackageStatus,1:?string}
      */
     private function mapStatus(string $status): array
@@ -675,7 +667,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
     private function isUuid(?string $value): bool
     {
-        if (!is_string($value) || trim($value) === '') {
+        if (! is_string($value) || trim($value) === '') {
             return false;
         }
 

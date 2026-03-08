@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Microservicio "Produccion y Cocina"
  */
@@ -9,7 +10,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
 /**
  * @class VerifyCsrfToken
- * @package App\Presentation\Http\Middleware
  */
 class VerifyCsrfToken extends Middleware
 {
