@@ -31,7 +31,7 @@ RUN a2enconf fqdn || true \
  && apache2ctl -t
 
 # Install node deps once at build time (global node_modules in project root)
-RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+RUN npm install
 
 # Entrypoint (normalize CRLF -> LF to avoid "exec format error")
 COPY docker/entrypoint.sh /usr/local/bin/app-entrypoint.sh

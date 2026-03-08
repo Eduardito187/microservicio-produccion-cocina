@@ -31,6 +31,12 @@ if [ ! -d vendor ]; then
   composer install --no-interaction --prefer-dist || echo "[entrypoint] WARN: composer install failed (continuing)"
 fi
 
+# npm only if node_modules missing (husky se salta via guard en package.json)
+if [ ! -d node_modules ]; then
+  echo "[entrypoint] running npm install..."
+  npm install || echo "[entrypoint] WARN: npm install failed (continuing)"
+fi
+
 # Generate key if missing
 if [ -f .env ]; then
   if ! grep -q "^APP_KEY=base64:" .env 2>/dev/null; then

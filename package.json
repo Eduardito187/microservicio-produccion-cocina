@@ -1,16 +1,22 @@
 {
-    "private": true,
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "pact:consumer": "node contract-tests/consumer/pact/generar-planificar.pact.test.js",
-        "pact:verify": "node contract-tests/provider/verify-pacts.js",
-        "pact:all": "npm run pact:consumer && npm run pact:verify"
-    },
-    "devDependencies": {
-        "@pact-foundation/pact": "^16.0.4",
-        "axios": "^1.13.2",
-        "laravel-vite-plugin": "^1.0.0",
-        "vite": "^5.0.0"
-    }
+	"private": true,
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"pact:consumer": "node contract-tests/consumer/pact/generar-planificar.pact.test.js",
+		"pact:verify": "node contract-tests/provider/verify-pacts.js",
+		"pact:all": "npm run pact:consumer && npm run pact:verify",
+		"prepare": "[ -d .git ] && husky || true"
+	},
+	"lint-staged": {
+		"*.php": "./vendor/bin/pint"
+	},
+	"devDependencies": {
+		"@pact-foundation/pact": "^16.0.4",
+		"axios": "^1.13.2",
+		"husky": "^9.1.0",
+		"laravel-vite-plugin": "^1.0.0",
+		"lint-staged": "^15.2.0",
+		"vite": "^5.0.0"
+	}
 }
