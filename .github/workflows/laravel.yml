@@ -1,3 +1,5 @@
+# This workflow will build a Laravel/PHP project and run SonarCloud analysis
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-php
 name: Laravel CI
 
 on:
@@ -7,14 +9,14 @@ on:
     branches: [ "main" ]
 
 jobs:
-  laravel-tests:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -36,28 +38,35 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install PHP Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
 
-      - name: Install Node Dependencies
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Install Node dependencies
         run: npm ci
 
-      - name: Copy .env
+      - name: Copy environment file
         run: cp .env.example .env
 
-      - name: Generate key
+      - name: Generate application key
         run: php artisan key:generate
 
-      - name: Directory Permissions
+      - name: Set directory permissions
         run: chmod -R 777 storage bootstrap/cache
 
-      - name: Pint Linting
+      - name: Run Pint linting
         run: ./vendor/bin/pint --test
 
-      - name: ESLint Linting
+      - name: Run ESLint linting
         run: npx eslint . --ext .js,.ts
 
-      - name: Run migrations
+      - name: Run database migrations
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
@@ -66,7 +75,7 @@ jobs:
           touch database/database.sqlite
           php artisan migrate --force
 
-      - name: Execute tests with coverage
+      - name: Execute tests with code coverage
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
@@ -74,10 +83,33 @@ jobs:
           OUTBOX_SKIP_DISPATCH: "true"
           PACT_BYPASS_AUTH: "true"
           EVENTBUS_DRIVER: sync
-        run: php artisan test --coverage --coverage-clover=coverage.xml
+        run: >
+          ./vendor/bin/phpunit
+          --coverage-clover=coverage.xml
+          --log-junit=junit.xml
+          --colors=never
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+          retention-days: 7
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: junit.xml
+          retention-days: 7
