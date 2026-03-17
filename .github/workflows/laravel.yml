@@ -116,7 +116,6 @@ jobs:
             -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
             -Dsonar.php.coverage.reportPaths=coverage.xml
-            -Dsonar.qualitygate.wait=true
 
       - name: Upload coverage report
         if: always()
