@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SONAR_TOKEN: ${{ secrets.SONARTOKEN }}
+      SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
 
     steps:
       - name: Checkout code
@@ -92,13 +93,14 @@ jobs:
           --colors=never
 
       - name: SonarCloud Scan
-        if: ${{ env.SONAR_TOKEN != '' }}
-        uses: SonarSource/sonarcloud-github-action@master
+        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_ORGANIZATION != '' }}
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
         with:
           args: >
+            -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
             -Dsonar.qualitygate.wait=true
 
       - name: Upload coverage report
