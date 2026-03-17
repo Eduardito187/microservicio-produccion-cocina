@@ -14,7 +14,6 @@ jobs:
     env:
       SONAR_TOKEN: ${{ secrets.SONARTOKEN }}
       SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
-      SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
 
     steps:
       - name: Checkout code
@@ -93,16 +92,19 @@ jobs:
           --log-junit=junit.xml
           --colors=never
 
+      - name: Verify coverage file exists
+        run: test -f coverage.xml
+
       - name: SonarCloud Scan
-        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_ORGANIZATION != '' && env.SONAR_PROJECT_KEY != '' }}
+        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_ORGANIZATION != '' }}
         uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
+            -Dsonar.php.coverage.reportPaths=coverage.xml
             -Dsonar.qualitygate.wait=true
 
       - name: Upload coverage report
