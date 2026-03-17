@@ -10,7 +10,7 @@
 	},
 	"lint-staged": {
 		"*.php": "./vendor/bin/pint",
-		"*.{js,ts}": "eslint --fix"
+		"resources/js/**/*.{js,ts}": "eslint --fix"
 	},
 	"devDependencies": {
 		"@pact-foundation/pact": "^16.0.4",

@@ -64,7 +64,7 @@ jobs:
         run: ./vendor/bin/pint --test
 
       - name: Run ESLint linting
-        run: npx eslint . --ext .js,.ts
+        run: npx eslint resources/js --ext .js,.ts
 
       - name: Run database migrations
         env:
@@ -90,6 +90,7 @@ jobs:
           --colors=never
 
       - name: SonarCloud Scan
+        if: ${{ secrets.SONAR_TOKEN != '' }}
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

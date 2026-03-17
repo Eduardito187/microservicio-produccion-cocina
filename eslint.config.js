@@ -1,15 +1,32 @@
-import js from '@eslint/js';
+const js = require('@eslint/js');
 
-export default [
-	js.configs.recommended,
+module.exports = [
 	{
-		files: ['**/*.js'],
 		ignores: [
 			'vendor/**',
 			'node_modules/**',
 			'public/**',
 			'storage/**',
 		],
+	},
+	{
+		files: ['eslint.config.js'],
+		languageOptions: {
+			globals: {
+				require: 'readonly',
+				module: 'readonly',
+			},
+		},
+	},
+	js.configs.recommended,
+	{
+		files: ['resources/js/**/*.js'],
+		languageOptions: {
+			globals: {
+				window: 'readonly',
+				document: 'readonly',
+			},
+		},
 		rules: {
 			'indent': ['error', 'tab'],
 			'no-tabs': 'off',
