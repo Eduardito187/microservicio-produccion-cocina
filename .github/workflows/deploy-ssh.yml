@@ -31,15 +31,10 @@ jobs:
 
       - name: Build deploy artifact
         run: |
-          tar -czf app.tgz \
-            --exclude-vcs \
-            --exclude=.env \
-            --exclude=vendor \
-            --exclude=node_modules \
-            --exclude=storage \
-            --exclude=coverage.xml \
-            --exclude=junit.xml \
-            .
+          # Use git archive to avoid "file changed as we read it" tar failures.
+          # It only packages tracked files from the checked-out SHA.
+          git archive --format=tar.gz -o app.tgz HEAD
+          test -s app.tgz
 
       - name: Upload artifact to VPS (/tmp)
         uses: appleboy/scp-action@v0.1.7

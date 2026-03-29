@@ -164,3 +164,11 @@ Route::post('/_pact/setup', PactStateController::class);
 // KeyCloak
 Route::post('/login', LoginController::class);
 Route::post('/refresh', RefreshController::class);
+
+// Public test (sin token / sin middleware custom)
+Route::get('/test-public', function () {
+    return response()->json([
+        'ok' => true,
+        'message' => 'test quemado',
+    ]);
+});
