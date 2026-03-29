@@ -169,6 +169,6 @@ Route::post('/refresh', RefreshController::class);
 Route::get('/test-public', function () {
     return response()->json([
         'ok' => true,
-        'message' => 'test quemado',
+        'message' => 'test quemado v1',
     ]);
 });
