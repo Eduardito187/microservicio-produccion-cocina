@@ -61,16 +61,21 @@ jobs:
             set -eu
             (set -o pipefail) 2>/dev/null || true
 
-            compose() {
-              docker compose "$@" 2>/dev/null || docker-compose "$@"
-            }
+            if docker compose version >/dev/null 2>&1; then
+              COMPOSE="docker compose"
+            elif command -v docker-compose >/dev/null 2>&1; then
+              COMPOSE="docker-compose"
+            else
+              echo "[deploy] ERROR: docker compose no está instalado (ni 'docker compose' ni 'docker-compose')."
+              exit 1
+            fi
 
             echo "[deploy] APP_DIR=${APP_DIR}"
 
             # Stop current containers (if any)
             if [ -f "${APP_DIR}/docker-compose.yml" ]; then
               cd "${APP_DIR}"
-              compose down || true
+              $COMPOSE down || true
             fi
 
             # Extract code (keeps existing .env + storage because they are not in the tarball)
@@ -88,5 +93,7 @@ jobs:
             rm -rf vendor node_modules
 
             # Rebuild/restart
-            compose up -d --build
-            compose ps
+            export DOCKER_BUILDKIT=0
+            export COMPOSE_DOCKER_CLI_BUILD=0
+            $COMPOSE up -d --build
+            $COMPOSE ps

@@ -15,8 +15,11 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
  && node -v && npm -v \
  && rm -rf /var/lib/apt/lists/*
 
-# Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Composer (evita COPY cross-image que puede fallar por "whiteout" en algunos storage drivers)
+RUN curl -fsSL https://getcomposer.org/installer -o /tmp/composer-setup.php \
+ && php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+ && rm -f /tmp/composer-setup.php \
+ && composer --version
 
 WORKDIR /var/www/html
 COPY . /var/www/html
