@@ -31,8 +31,6 @@ jobs:
 
       - name: Build deploy artifact
         run: |
-          # Use git archive to avoid "file changed as we read it" tar failures.
-          # It only packages tracked files from the checked-out SHA.
           git archive --format=tar.gz -o app.tgz HEAD
           test -s app.tgz
 
@@ -85,14 +83,11 @@ jobs:
 
             cd "${APP_DIR}"
 
-            # Ensure Laravel runtime dirs exist
             mkdir -p storage bootstrap/cache
             chmod -R ug+rw storage bootstrap/cache || true
 
-            # Force dependencies refresh (entrypoint re-installs when missing)
             rm -rf vendor node_modules
 
-            # Rebuild/restart
             export DOCKER_BUILDKIT=0
             export COMPOSE_DOCKER_CLI_BUILD=0
             $COMPOSE up -d --build
