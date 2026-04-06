@@ -1,0 +1,17 @@
+# CODEOWNERS
+#
+# Each line is a file pattern followed by one or more owners.
+# Owners are GitHub usernames or team slugs (@org/team-name).
+#
+# These owners are required reviewers for any PR that touches
+# the matched files/paths. Combined with branch protection rules
+# (require PR + CODEOWNER review before merge) this prevents
+# direct commits to main and develop.
+#
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything in the repo
+*       @Eduardito187
+
+# CI/CD pipelines require team review
+.github/workflows/   @Eduardito187

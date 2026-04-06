@@ -6,10 +6,10 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
+    types: [ opened, synchronize, reopened, review_requested ]
+  workflow_dispatch:
 
 jobs:
   build:
