@@ -135,4 +135,48 @@ class RegistrarInboundEventHandlerTest extends TestCase
             '{"x":5}'
         ));
     }
+
+    public function test_usa_correlation_id_del_comando_cuando_se_envia(): void
+    {
+        $repository = $this->createMock(InboundEventRepositoryInterface::class);
+        $repository->expects($this->once())
+            ->method('save')
+            ->with($this->callback(function (InboundEvent $event): bool {
+                return $event->eventId === 'evt-6'
+                    && $event->schemaVersion === 1
+                    && $event->correlationId === 'corr-fixed-123';
+            }));
+
+        $handler = new RegistrarInboundEventHandler($repository, $this->tx());
+        $duplicate = $handler(new RegistrarInboundEvent(
+            'evt-6',
+            'SomeEvent',
+            '2026-01-10T10:00:00Z',
+            '{"x":6}',
+            1,
+            'corr-fixed-123'
+        ));
+
+        $this->assertFalse($duplicate);
+    }
+
+    public function test_schema_version_vacia_en_config_aplica_fallback_a_version_uno(): void
+    {
+        $repository = $this->createMock(InboundEventRepositoryInterface::class);
+        $repository->expects($this->once())
+            ->method('save')
+            ->with($this->callback(fn (InboundEvent $event): bool => $event->schemaVersion === 1));
+
+        $handler = new RegistrarInboundEventHandler($repository, $this->tx(), null, ' , ');
+
+        $duplicate = $handler(new RegistrarInboundEvent(
+            'evt-7',
+            'SomeEvent',
+            '2026-01-10T10:00:00Z',
+            '{"x":7}',
+            1
+        ));
+
+        $this->assertFalse($duplicate);
+    }
 }
