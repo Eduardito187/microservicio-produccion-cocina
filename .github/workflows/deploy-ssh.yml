@@ -200,8 +200,13 @@ jobs:
             echo "══════════════════════════════════════"
             echo " Last 50 log lines (app container)"
             echo "══════════════════════════════════════"
-            # Assumes the main service is named 'app'; adjust if different
-            $COMPOSE logs --tail=50 app 2>/dev/null || $COMPOSE logs --tail=50
+            $COMPOSE logs --tail=50 laravel_app 2>/dev/null || $COMPOSE logs --tail=50
+
+            echo ""
+            echo "══════════════════════════════════════"
+            echo " Grafana endpoint"
+            echo "══════════════════════════════════════"
+            echo "http://$(hostname -I | awk '{print $1}'):3000"
 
             echo ""
             echo "══════════════════════════════════════"
