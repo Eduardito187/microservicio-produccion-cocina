@@ -259,6 +259,27 @@ En Fase 1:
 - Producción emite eventos propios
 - No coordina a nadie
 
+## CI/CD minimo requerido
+
+Este repositorio deja implementado lo minimo solicitado:
+
+- Pre-commit con formateo y unit tests (Husky + lint-staged).
+- CI de build en Pull Request/review solicitado con compilacion, tests, coverage y analisis SonarCloud.
+- Pipeline de release con 2 jobs (build/test + deploy) por SSH/Docker.
+- Monitoreo post-release mediante estado de contenedores y logs.
+
+### Proteccion de ramas principales
+
+La proteccion de ramas no se define en archivos del repo, se configura en GitHub. Para automatizarlo, ejecuta:
+
+```bash
+bash .github/scripts/apply-branch-protection.sh owner/repo
+```
+
+Si omites `owner/repo`, el script toma el repo actual desde `gh repo view`.
+
+Esto aplica proteccion a `main` y `develop` para bloquear pushes directos y exigir Pull Request con review.
+
 En Fase 2:
 - Producción participa en flujos multi-servicio
 - Aparecen logística, entregas, rutas y confirmaciones

@@ -9,7 +9,6 @@ on:
   pull_request:
     branches: [ "main", "develop" ]
     types: [ opened, synchronize, reopened, review_requested ]
-  workflow_dispatch:
 
 jobs:
   build:
@@ -57,6 +56,9 @@ jobs:
 
       - name: Install Node dependencies
         run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
 
       - name: Copy environment file
         run: cp .env.example .env
