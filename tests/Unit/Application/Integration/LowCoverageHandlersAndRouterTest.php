@@ -49,7 +49,6 @@ class LowCoverageHandlersAndRouterTest extends TestCase
             'database.connections.sqlite.database' => ':memory:',
             'database.connections.sqlite.foreign_key_constraints' => false,
         ]);
-
         DB::purge('sqlite');
         DB::reconnect('sqlite');
         $this->createSchema();
@@ -71,7 +70,6 @@ class LowCoverageHandlersAndRouterTest extends TestCase
 
         $router->register('evt.test', $handler);
         $router->dispatch('evt.test', ['x' => 1], ['event_id' => 'evt-1']);
-
         $this->assertSame(['x' => 1], $handler->received['payload']);
         $this->assertSame(['event_id' => 'evt-1'], $handler->received['meta']);
     }
