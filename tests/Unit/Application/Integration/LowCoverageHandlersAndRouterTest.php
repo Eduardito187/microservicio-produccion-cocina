@@ -52,7 +52,6 @@ class LowCoverageHandlersAndRouterTest extends TestCase
 
         DB::purge('sqlite');
         DB::reconnect('sqlite');
-
         $this->createSchema();
     }
 
