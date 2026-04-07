@@ -70,7 +70,7 @@ class KeycloakJwtMiddleware
             return false;
         }
 
-        if ((bool) env('PACT_BYPASS_AUTH', false)) {
+        if ($this->readBoolEnv('PACT_BYPASS_AUTH', false)) {
             return $request->is('api/_pact/*');
         }
 
@@ -281,7 +281,7 @@ class KeycloakJwtMiddleware
 
     private function hasValidPactSecret(Request $request): bool
     {
-        $expected = (string) env('PACT_BYPASS_HEADER_SECRET', '');
+        $expected = $this->readStringEnv('PACT_BYPASS_HEADER_SECRET', '');
         if ($expected === '') {
             return true;
         }
@@ -289,5 +289,23 @@ class KeycloakJwtMiddleware
         $provided = $request->header('X-Pact-Secret', '');
 
         return is_string($provided) && hash_equals($expected, $provided);
+    }
+
+    private function readStringEnv(string $key, string $default = ''): string
+    {
+        $value = getenv($key);
+
+        return is_string($value) ? $value : $default;
+    }
+
+    private function readBoolEnv(string $key, bool $default = false): bool
+    {
+        $value = getenv($key);
+
+        if ($value === false) {
+            return $default;
+        }
+
+        return (bool) $value;
     }
 }
