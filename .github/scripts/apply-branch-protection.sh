@@ -25,18 +25,26 @@ protect_branch() {
     --method PUT \
     -H "Accept: application/vnd.github+json" \
     "repos/$REPO/branches/$branch/protection" \
-    -f required_linear_history=true \
-    -f allow_force_pushes=false \
-    -f allow_deletions=false \
-    -f block_creations=false \
-    -f required_conversation_resolution=true \
-    -f enforce_admins=true \
-    -F required_status_checks.strict=true \
-    -F required_status_checks.contexts[]='Laravel CI / build' \
-    -F required_pull_request_reviews.dismiss_stale_reviews=true \
-    -F required_pull_request_reviews.require_code_owner_reviews=false \
-    -F required_pull_request_reviews.required_approving_review_count=1 \
-    -F restrictions=
+    --input - <<'JSON'
+{
+  "required_status_checks": {
+    "strict": true,
+    "contexts": ["Laravel CI / build"]
+  },
+  "enforce_admins": true,
+  "required_pull_request_reviews": {
+    "dismiss_stale_reviews": true,
+    "require_code_owner_reviews": false,
+    "required_approving_review_count": 1
+  },
+  "restrictions": null,
+  "required_linear_history": true,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "block_creations": false,
+  "required_conversation_resolution": true
+}
+JSON
 }
 
 protect_branch "main"

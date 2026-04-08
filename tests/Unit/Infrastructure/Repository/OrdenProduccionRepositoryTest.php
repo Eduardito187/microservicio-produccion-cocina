@@ -42,10 +42,8 @@ class OrdenProduccionRepositoryTest extends TestCase
             'database.connections.sqlite.database' => ':memory:',
             'database.connections.sqlite.foreign_key_constraints' => false,
         ]);
-
         DB::purge('sqlite');
         DB::reconnect('sqlite');
-
         $this->createSchema();
     }
 

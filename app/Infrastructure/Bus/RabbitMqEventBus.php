@@ -98,7 +98,7 @@ class RabbitMqEventBus implements BusInterface
                     $channel->queue_bind($queue, $exchange, $bindingKey);
                 }
 
-                Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Enviando salida Rabbit', [
+                $this->writeOutboundAudit('info', 'Enviando salida Rabbit', [
                     'event' => $name,
                     'event_id' => $eventId,
                     'schema_version' => $meta['schema_version'] ?? null,
@@ -127,7 +127,7 @@ class RabbitMqEventBus implements BusInterface
                     'aggregate_id' => $meta['aggregate_id'] ?? null,
                     'payload' => $payload,
                 ]);
-                Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Salida Rabbit enviada', [
+                $this->writeOutboundAudit('info', 'Salida Rabbit enviada', [
                     'event' => $name,
                     'event_id' => $eventId,
                     'schema_version' => $meta['schema_version'] ?? null,
@@ -148,7 +148,7 @@ class RabbitMqEventBus implements BusInterface
                     'error' => $e->getMessage(),
                     'payload' => $payload,
                 ]);
-                Log::channel(self::OUTBOUND_LOG_CHANNEL)->error('Fallo de salida Rabbit', [
+                $this->writeOutboundAudit('error', 'Fallo de salida Rabbit', [
                     'event' => $name,
                     'event_id' => $eventId,
                     'schema_version' => $meta['schema_version'] ?? null,
@@ -175,6 +175,15 @@ class RabbitMqEventBus implements BusInterface
                     $connection->close();
                 }
             }
+        }
+    }
+
+    private function writeOutboundAudit(string $level, string $message, array $context = []): void
+    {
+        try {
+            Log::channel(self::OUTBOUND_LOG_CHANNEL)->log($level, $message, $context);
+        } catch (\Throwable) {
+            // Ignore audit sink failures so message publication is not blocked by filesystem permissions.
         }
     }
 

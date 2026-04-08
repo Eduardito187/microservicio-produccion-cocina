@@ -32,4 +32,10 @@ interface CalendarioItemRepositoryInterface
     public function delete(string|int $id): void;
 
     public function deleteByCalendarioId(string|int $calendarioId): void;
+
+    /**
+     * Links item_despacho rows that match $entregaId (and optionally $contratoId) to a calendario.
+     * Skips rows already linked. Returns the number of new links created.
+     */
+    public function linkItemsByEntregaId(string $entregaId, ?string $contratoId, string $calendarioId): int;
 }

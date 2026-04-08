@@ -70,7 +70,7 @@ class PublishOutbox implements ShouldQueue
                 'claim_id' => $claimId,
                 'count' => count($ids),
             ]);
-            Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Lote saliente Rabbit', [
+            $this->writeOutboundAudit('info', 'Lote saliente Rabbit', [
                 'claim_id' => $claimId,
                 'pending' => count($ids),
                 'exchange' => (string) config('rabbitmq.exchange', ''),
@@ -112,7 +112,7 @@ class PublishOutbox implements ShouldQueue
                         'correlation_id' => $row->correlation_id,
                         'payload' => $row->payload,
                     ]);
-                    Log::channel(self::OUTBOUND_LOG_CHANNEL)->info('Evento encolado de salida Rabbit', [
+                    $this->writeOutboundAudit('info', 'Evento encolado de salida Rabbit', [
                         'event' => $row->event_name,
                         'event_id' => $row->event_id,
                         'aggregate_id' => $row->aggregate_id,
@@ -153,5 +153,14 @@ class PublishOutbox implements ShouldQueue
                     ]);
                 }
             });
+    }
+
+    private function writeOutboundAudit(string $level, string $message, array $context = []): void
+    {
+        try {
+            Log::channel(self::OUTBOUND_LOG_CHANNEL)->log($level, $message, $context);
+        } catch (\Throwable) {
+            // Ignore audit sink failures so outbox publishing is not blocked by filesystem permissions.
+        }
     }
 }
