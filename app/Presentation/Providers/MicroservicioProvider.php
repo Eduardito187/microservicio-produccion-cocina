@@ -32,6 +32,10 @@ use App\Application\Integration\Handlers\SuscripcionCrearHandler;
 use App\Application\Integration\IntegrationEventRouter;
 use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
 use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
+use App\Application\Produccion\Repository\DeliveryInconsistencyQueueRepositoryInterface;
+use App\Application\Produccion\Repository\OrderDeliveryProgressRepositoryInterface;
+use App\Application\Produccion\Repository\PackageDeliveryHistoryRepositoryInterface;
+use App\Application\Produccion\Repository\PackageDeliveryTrackingRepositoryInterface;
 use App\Application\Shared\BusInterface;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Shared\OutboxStoreInterface;
@@ -60,6 +64,7 @@ use App\Infrastructure\Persistence\Outbox\OutboxStoreAdapter;
 use App\Infrastructure\Persistence\Outbox\OutboxUnitOfWork;
 use App\Infrastructure\Persistence\Repository\CalendarioItemRepository;
 use App\Infrastructure\Persistence\Repository\CalendarioRepository;
+use App\Infrastructure\Persistence\Repository\DeliveryInconsistencyQueueRepository;
 use App\Infrastructure\Persistence\Repository\DireccionRepository;
 use App\Infrastructure\Persistence\Repository\EntregaEvidenciaRepository;
 use App\Infrastructure\Persistence\Repository\EtiquetaRepository;
@@ -67,7 +72,10 @@ use App\Infrastructure\Persistence\Repository\InboundEventRepository;
 use App\Infrastructure\Persistence\Repository\ItemDespachoRepository;
 use App\Infrastructure\Persistence\Repository\KpiRepository;
 use App\Infrastructure\Persistence\Repository\OrdenProduccionRepository;
+use App\Infrastructure\Persistence\Repository\OrderDeliveryProgressRepository;
 use App\Infrastructure\Persistence\Repository\PacienteRepository;
+use App\Infrastructure\Persistence\Repository\PackageDeliveryHistoryRepository;
+use App\Infrastructure\Persistence\Repository\PackageDeliveryTrackingRepository;
 use App\Infrastructure\Persistence\Repository\PaqueteRepository;
 use App\Infrastructure\Persistence\Repository\PorcionRepository;
 use App\Infrastructure\Persistence\Repository\ProduccionBatchRepository;
@@ -89,125 +97,10 @@ class MicroservicioProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(
-            OrdenProduccionRepositoryInterface::class,
-            OrdenProduccionRepository::class
-        );
-
-        $this->app->bind(
-            ProduccionBatchRepositoryInterface::class,
-            ProduccionBatchRepository::class
-        );
-
-        $this->app->bind(
-            PacienteRepositoryInterface::class,
-            PacienteRepository::class
-        );
-
-        $this->app->bind(
-            DireccionRepositoryInterface::class,
-            DireccionRepository::class
-        );
-
-        $this->app->bind(
-            VentanaEntregaRepositoryInterface::class,
-            VentanaEntregaRepository::class
-        );
-
-        $this->app->bind(
-            PorcionRepositoryInterface::class,
-            PorcionRepository::class
-        );
-
-        $this->app->bind(
-            RecetaVersionRepositoryInterface::class,
-            RecetaVersionRepository::class
-        );
-
-        $this->app->bind(
-            RecetaRepositoryInterface::class,
-            RecetaRepository::class
-        );
-
-        $this->app->bind(
-            SuscripcionRepositoryInterface::class,
-            SuscripcionRepository::class
-        );
-
-        $this->app->bind(
-            CalendarioRepositoryInterface::class,
-            CalendarioRepository::class
-        );
-
-        $this->app->bind(
-            CalendarioItemRepositoryInterface::class,
-            CalendarioItemRepository::class
-        );
-
-        $this->app->bind(
-            EtiquetaRepositoryInterface::class,
-            EtiquetaRepository::class
-        );
-
-        $this->app->bind(
-            PaqueteRepositoryInterface::class,
-            PaqueteRepository::class
-        );
-
-        $this->app->bind(
-            ItemDespachoRepositoryInterface::class,
-            ItemDespachoRepository::class
-        );
-
-        $this->app->bind(
-            ProductRepositoryInterface::class,
-            ProductRepository::class
-        );
-
-        $this->app->bind(
-            InboundEventRepositoryInterface::class,
-            InboundEventRepository::class
-        );
-
-        $this->app->bind(RegistrarInboundEventHandler::class, function ($app) {
-            return new RegistrarInboundEventHandler(
-                $app->make(InboundEventRepositoryInterface::class),
-                $app->make(\App\Application\Support\Transaction\TransactionAggregate::class),
-                $app->make(\Psr\Log\LoggerInterface::class),
-                (string) config('rabbitmq.inbound.schema_versions', '1')
-            );
-        });
-
-        $this->app->bind(
-            KpiRepositoryInterface::class,
-            KpiRepository::class
-        );
-
-        $this->app->bind(
-            EntregaEvidenciaRepositoryInterface::class,
-            EntregaEvidenciaRepository::class
-        );
-
-        $this->app->bind(
-            OutboxStoreInterface::class,
-            OutboxStoreAdapter::class
-        );
-
-        $this->app->singleton(
-            OutboxUnitOfWorkInterface::class,
-            OutboxUnitOfWork::class
-        );
-
-        $this->app->bind(
-            DomainEventPublisherInterface::class,
-            OutboxEventPublisher::class
-        );
-
-        $this->app->bind(BusInterface::class, function () {
-            $driver = env('EVENTBUS_DRIVER', 'http');
-
-            return $driver === 'rabbitmq' ? new RabbitMqEventBus : new HttpEventBus;
-        });
+        $this->bindDomainRepositories();
+        $this->bindDeliveryRepositories();
+        $this->bindInfrastructureServices();
+        $this->bindHandlers();
 
         $this->app->singleton(IntegrationEventRouter::class, function ($app) {
             $router = new IntegrationEventRouter;
@@ -264,7 +157,60 @@ class MicroservicioProvider extends ServiceProvider
             TransactionManagerInterface::class,
             TransactionManager::class
         );
+    }
 
+    private function bindDomainRepositories(): void
+    {
+        $this->app->bind(OrdenProduccionRepositoryInterface::class, OrdenProduccionRepository::class);
+        $this->app->bind(ProduccionBatchRepositoryInterface::class, ProduccionBatchRepository::class);
+        $this->app->bind(PacienteRepositoryInterface::class, PacienteRepository::class);
+        $this->app->bind(DireccionRepositoryInterface::class, DireccionRepository::class);
+        $this->app->bind(VentanaEntregaRepositoryInterface::class, VentanaEntregaRepository::class);
+        $this->app->bind(PorcionRepositoryInterface::class, PorcionRepository::class);
+        $this->app->bind(RecetaVersionRepositoryInterface::class, RecetaVersionRepository::class);
+        $this->app->bind(RecetaRepositoryInterface::class, RecetaRepository::class);
+        $this->app->bind(SuscripcionRepositoryInterface::class, SuscripcionRepository::class);
+        $this->app->bind(CalendarioRepositoryInterface::class, CalendarioRepository::class);
+        $this->app->bind(CalendarioItemRepositoryInterface::class, CalendarioItemRepository::class);
+        $this->app->bind(EtiquetaRepositoryInterface::class, EtiquetaRepository::class);
+        $this->app->bind(PaqueteRepositoryInterface::class, PaqueteRepository::class);
+        $this->app->bind(ItemDespachoRepositoryInterface::class, ItemDespachoRepository::class);
+        $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
+        $this->app->bind(InboundEventRepositoryInterface::class, InboundEventRepository::class);
+    }
+
+    private function bindDeliveryRepositories(): void
+    {
+        $this->app->bind(KpiRepositoryInterface::class, KpiRepository::class);
+        $this->app->bind(EntregaEvidenciaRepositoryInterface::class, EntregaEvidenciaRepository::class);
+        $this->app->bind(PackageDeliveryHistoryRepositoryInterface::class, PackageDeliveryHistoryRepository::class);
+        $this->app->bind(PackageDeliveryTrackingRepositoryInterface::class, PackageDeliveryTrackingRepository::class);
+        $this->app->bind(OrderDeliveryProgressRepositoryInterface::class, OrderDeliveryProgressRepository::class);
+        $this->app->bind(DeliveryInconsistencyQueueRepositoryInterface::class, DeliveryInconsistencyQueueRepository::class);
+    }
+
+    private function bindInfrastructureServices(): void
+    {
+        $this->app->bind(OutboxStoreInterface::class, OutboxStoreAdapter::class);
+        $this->app->singleton(OutboxUnitOfWorkInterface::class, OutboxUnitOfWork::class);
+        $this->app->bind(DomainEventPublisherInterface::class, OutboxEventPublisher::class);
+        $this->app->bind(BusInterface::class, function () {
+            $driver = env('EVENTBUS_DRIVER', 'http');
+
+            return $driver === 'rabbitmq' ? new RabbitMqEventBus : new HttpEventBus;
+        });
+    }
+
+    private function bindHandlers(): void
+    {
+        $this->app->bind(RegistrarInboundEventHandler::class, function ($app) {
+            return new RegistrarInboundEventHandler(
+                $app->make(InboundEventRepositoryInterface::class),
+                $app->make(\App\Application\Support\Transaction\TransactionAggregate::class),
+                $app->make(\Psr\Log\LoggerInterface::class),
+                (string) config('rabbitmq.inbound.schema_versions', '1')
+            );
+        });
     }
 
     /**

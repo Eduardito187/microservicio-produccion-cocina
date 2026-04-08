@@ -280,6 +280,43 @@ Si omites `owner/repo`, el script toma el repo actual desde `gh repo view`.
 
 Esto aplica proteccion a `main` y `develop` para bloquear pushes directos y exigir Pull Request con review.
 
+### Monitoreo con Grafana, Prometheus y Loki
+
+El `docker-compose.yml` incluye un stack de monitoreo listo para usar con:
+
+- Grafana
+- Prometheus
+- Loki
+- Promtail
+- cAdvisor
+- Node Exporter
+
+Levantar servicios:
+
+```bash
+docker compose up -d --build
+```
+
+Accesos por defecto:
+
+- Grafana: `http://localhost:3000`
+- Prometheus: `http://localhost:9090`
+- Loki: `http://localhost:3100`
+- cAdvisor: `http://localhost:8081`
+- Node Exporter: `http://localhost:9100/metrics`
+
+Credenciales iniciales de Grafana:
+
+- Usuario: `admin`
+- Password: `admin123`
+
+Grafana queda provisionado con datasources para Prometheus y Loki, ademas de un dashboard inicial de monitoreo Docker/servidor/logs.
+
+Importante:
+
+- Cambia `GRAFANA_ADMIN_PASSWORD` en `.env` antes de usarlo en una VPS publica.
+- Promtail recolecta logs de Docker y logs de Laravel desde `storage/logs`.
+
 En Fase 2:
 - Producción participa en flujos multi-servicio
 - Aparecen logística, entregas, rutas y confirmaciones

@@ -21,12 +21,14 @@ use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Direccion;
 use App\Domain\Produccion\Entity\Paquete;
 use App\Domain\Produccion\Entity\Suscripcion;
+use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
 use App\Domain\Produccion\Repository\DireccionRepositoryInterface;
 use App\Domain\Produccion\Repository\PaqueteRepositoryInterface;
 use App\Domain\Produccion\Repository\SuscripcionRepositoryInterface;
 use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
+use App\Infrastructure\Persistence\Repository\CalendarioItemRepository;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -103,6 +105,7 @@ class LowCoverageHandlersAndRouterTest extends TestCase
             $calRepo,
             $this->tx(),
             $ventanaRepo,
+            new CalendarioItemRepository,
             new NullLogger
         );
 
@@ -136,6 +139,7 @@ class LowCoverageHandlersAndRouterTest extends TestCase
             $calRepo,
             $this->tx(),
             $ventanaRepo,
+            $this->makeNoOpCalendarioItemRepo(),
             $logger
         );
 
@@ -153,14 +157,15 @@ class LowCoverageHandlersAndRouterTest extends TestCase
         $handler = new CalendarioEntregaCreadoHandler(
             $this->createMock(CalendarioRepositoryInterface::class),
             $this->tx(),
-            $this->createMock(VentanaEntregaRepositoryInterface::class)
+            $this->createMock(VentanaEntregaRepositoryInterface::class),
+            $this->makeNoOpCalendarioItemRepo()
         );
 
         $id = $this->invokePrivate($handler, 'buildVentanaId', ['ent-1', '2026-04-06', '10:00:00']);
         $this->assertMatchesRegularExpression('/^[0-9a-f\-]{36}$/', $id);
     }
 
-    public function test_calendario_entrega_creado_handler_private_sync_items_without_contrato_filter(): void
+    public function test_calendario_item_repository_link_items_sin_filtro_contrato(): void
     {
         DB::table('item_despacho')->insert([
             ['id' => 'item-10', 'entrega_id' => 'ent-10', 'contrato_id' => 'con-a'],
@@ -168,15 +173,25 @@ class LowCoverageHandlersAndRouterTest extends TestCase
             ['id' => '', 'entrega_id' => 'ent-10', 'contrato_id' => 'con-b'],
         ]);
 
-        $handler = new CalendarioEntregaCreadoHandler(
-            $this->createMock(CalendarioRepositoryInterface::class),
-            $this->tx(),
-            $this->createMock(VentanaEntregaRepositoryInterface::class),
-            new NullLogger
-        );
+        $repo = new CalendarioItemRepository;
+        $linked = $repo->linkItemsByEntregaId('ent-10', null, 'cal-10');
 
-        $this->invokePrivate($handler, 'syncCalendarioItems', ['cal-10', 'ent-10', null]);
+        $this->assertSame(2, $linked);
         $this->assertSame(2, DB::table('calendario_item')->where('calendario_id', 'cal-10')->count());
+    }
+
+    public function test_calendario_item_repository_link_items_deduplica(): void
+    {
+        DB::table('item_despacho')->insert([
+            ['id' => 'item-20', 'entrega_id' => 'ent-20', 'contrato_id' => null],
+        ]);
+
+        $repo = new CalendarioItemRepository;
+        $repo->linkItemsByEntregaId('ent-20', null, 'cal-20');
+        $second = $repo->linkItemsByEntregaId('ent-20', null, 'cal-20');
+
+        $this->assertSame(0, $second);
+        $this->assertSame(1, DB::table('calendario_item')->where('calendario_id', 'cal-20')->count());
     }
 
     public function test_calendario_entrega_creado_handler_con_hora_valida_y_sin_entrega_id_usa_id_base(): void
@@ -187,7 +202,13 @@ class LowCoverageHandlersAndRouterTest extends TestCase
         $ventanaRepo = $this->createMock(VentanaEntregaRepositoryInterface::class);
         $ventanaRepo->expects($this->once())->method('save');
 
-        $handler = new CalendarioEntregaCreadoHandler($calRepo, $this->tx(), $ventanaRepo, new NullLogger);
+        $handler = new CalendarioEntregaCreadoHandler(
+            $calRepo,
+            $this->tx(),
+            $ventanaRepo,
+            $this->makeNoOpCalendarioItemRepo(),
+            new NullLogger
+        );
         $handler->handle([
             'id' => 'cal-20',
             'fecha' => '2026-04-06',
@@ -405,6 +426,42 @@ class LowCoverageHandlersAndRouterTest extends TestCase
         $this->assertNull($stringB);
         $this->assertNull($stringC);
         $this->assertNull($fechaInvalida);
+    }
+
+    private function makeNoOpCalendarioItemRepo(): CalendarioItemRepositoryInterface
+    {
+        return new class implements CalendarioItemRepositoryInterface
+        {
+            public function byId(string|int $id): ?\App\Domain\Produccion\Entity\CalendarioItem
+            {
+                return null;
+            }
+
+            public function save(\App\Domain\Produccion\Entity\CalendarioItem $item): string
+            {
+                return '';
+            }
+
+            public function list(): array
+            {
+                return [];
+            }
+
+            public function delete(string|int $id): void
+            {
+                // intentionally empty — test stub
+            }
+
+            public function deleteByCalendarioId(string|int $calendarioId): void
+            {
+                // intentionally empty — test stub
+            }
+
+            public function linkItemsByEntregaId(string $entregaId, ?string $contratoId, string $calendarioId): int
+            {
+                return 0;
+            }
+        };
     }
 
     private function tx(): TransactionAggregate

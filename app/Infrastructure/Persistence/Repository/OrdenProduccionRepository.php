@@ -371,6 +371,17 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         return $paquete->id;
     }
 
+    public function markEntregaCompletada(string $opId, DateTimeImmutable $completedAt): void
+    {
+        OrdenProduccionModel::query()
+            ->where('id', $opId)
+            ->whereNull('entrega_completada_at')
+            ->update([
+                'entrega_completada_at' => $completedAt->format('Y-m-d H:i:s'),
+                'updated_at' => now(),
+            ]);
+    }
+
     private function convertDate(string|DateTimeInterface $value): DateTimeImmutable
     {
         if ($value instanceof DateTimeInterface) {
