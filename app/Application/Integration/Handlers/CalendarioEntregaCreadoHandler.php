@@ -11,11 +11,10 @@ use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\Calendario;
 use App\Domain\Produccion\Entity\VentanaEntrega;
+use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 use App\Domain\Produccion\Repository\CalendarioRepositoryInterface;
 use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
 use DateTimeImmutable;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -40,6 +39,11 @@ class CalendarioEntregaCreadoHandler implements IntegrationEventHandlerInterface
     private $ventanaEntregaRepository;
 
     /**
+     * @var CalendarioItemRepositoryInterface
+     */
+    private $calendarioItemRepository;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -51,11 +55,13 @@ class CalendarioEntregaCreadoHandler implements IntegrationEventHandlerInterface
         CalendarioRepositoryInterface $calendarioRepository,
         TransactionAggregate $transactionAggregate,
         VentanaEntregaRepositoryInterface $ventanaEntregaRepository,
+        CalendarioItemRepositoryInterface $calendarioItemRepository,
         ?LoggerInterface $logger = null
     ) {
         $this->calendarioRepository = $calendarioRepository;
         $this->transactionAggregate = $transactionAggregate;
         $this->ventanaEntregaRepository = $ventanaEntregaRepository;
+        $this->calendarioItemRepository = $calendarioItemRepository;
         $this->logger = $logger ?? new NullLogger;
     }
 
@@ -101,58 +107,22 @@ class CalendarioEntregaCreadoHandler implements IntegrationEventHandlerInterface
                 }
             }
 
-            $this->syncCalendarioItems($calendarId, $event->entregaId, $event->contratoId);
+            if (is_string($event->entregaId) && $event->entregaId !== '') {
+                $linked = $this->calendarioItemRepository->linkItemsByEntregaId(
+                    $event->entregaId,
+                    $event->contratoId,
+                    $calendarId
+                );
+                if ($linked > 0) {
+                    $this->logger->info('Calendario sincronizado con items de despacho', [
+                        'calendario_id' => $calendarId,
+                        'entrega_id' => $event->entregaId,
+                        'contrato_id' => $event->contratoId,
+                        'items_linked' => $linked,
+                    ]);
+                }
+            }
         });
-    }
-
-    private function syncCalendarioItems(string $calendarioId, ?string $entregaId, ?string $contratoId): void
-    {
-        if (! is_string($entregaId) || $entregaId === '') {
-            return;
-        }
-
-        $query = DB::table('item_despacho')
-            ->select('id')
-            ->where('entrega_id', $entregaId);
-
-        if (is_string($contratoId) && $contratoId !== '') {
-            $query->where(function ($q) use ($contratoId): void {
-                $q->whereNull('contrato_id')
-                    ->orWhere('contrato_id', $contratoId);
-            });
-        }
-
-        $itemIds = $query->pluck('id');
-        $linked = 0;
-        foreach ($itemIds as $itemId) {
-            if (! is_string($itemId) || $itemId === '') {
-                continue;
-            }
-            $exists = DB::table('calendario_item')
-                ->where('calendario_id', $calendarioId)
-                ->where('item_despacho_id', $itemId)
-                ->exists();
-            if ($exists) {
-                continue;
-            }
-            DB::table('calendario_item')->insert([
-                'id' => (string) Str::uuid(),
-                'calendario_id' => $calendarioId,
-                'item_despacho_id' => $itemId,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-            $linked++;
-        }
-
-        if ($linked > 0) {
-            $this->logger->info('Calendario sincronizado con items de despacho', [
-                'calendario_id' => $calendarioId,
-                'entrega_id' => $entregaId,
-                'contrato_id' => $contratoId,
-                'items_linked' => $linked,
-            ]);
-        }
     }
 
     private function buildVentanaId(string $baseId, string $fecha, string $hora): string

@@ -10,6 +10,8 @@ use App\Domain\Produccion\Entity\CalendarioItem;
 use App\Domain\Produccion\Repository\CalendarioItemRepositoryInterface;
 use App\Domain\Shared\Exception\EntityNotFoundException;
 use App\Infrastructure\Persistence\Model\CalendarioItem as CalendarioItemModel;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * @class CalendarioItemRepository
@@ -81,5 +83,43 @@ class CalendarioItemRepository implements CalendarioItemRepositoryInterface
     public function deleteByCalendarioId(string|int $calendarioId): void
     {
         CalendarioItemModel::query()->where('calendario_id', $calendarioId)->delete();
+    }
+
+    public function linkItemsByEntregaId(string $entregaId, ?string $contratoId, string $calendarioId): int
+    {
+        $query = DB::table('item_despacho')
+            ->select('id')
+            ->where('entrega_id', $entregaId);
+
+        if (is_string($contratoId) && $contratoId !== '') {
+            $query->where(function ($q) use ($contratoId): void {
+                $q->whereNull('contrato_id')
+                    ->orWhere('contrato_id', $contratoId);
+            });
+        }
+
+        $linked = 0;
+        foreach ($query->pluck('id') as $itemId) {
+            if (! is_string($itemId) || $itemId === '') {
+                continue;
+            }
+            $exists = DB::table('calendario_item')
+                ->where('calendario_id', $calendarioId)
+                ->where('item_despacho_id', $itemId)
+                ->exists();
+            if ($exists) {
+                continue;
+            }
+            DB::table('calendario_item')->insert([
+                'id' => (string) Str::uuid(),
+                'calendario_id' => $calendarioId,
+                'item_despacho_id' => $itemId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            $linked++;
+        }
+
+        return $linked;
     }
 }

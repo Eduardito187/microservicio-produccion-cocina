@@ -9,24 +9,28 @@ namespace App\Application\Produccion\Handler;
 use App\Application\Analytics\KpiRepositoryInterface;
 use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
 use App\Application\Produccion\Command\ActualizarEstadoPaqueteDesdeLogisticaCommand;
+use App\Application\Produccion\Repository\DeliveryInconsistencyQueueRepositoryInterface;
+use App\Application\Produccion\Repository\PackageDeliveryHistoryRepositoryInterface;
+use App\Application\Produccion\Repository\PackageDeliveryTrackingRepositoryInterface;
+use App\Application\Produccion\Service\DeliveryContextBackfiller;
+use App\Application\Produccion\Service\DeliveryStatusMapper;
+use App\Application\Produccion\Service\OrderDeliveryProgressSync;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Aggregate\ProgresoEntregaOrden;
 use App\Domain\Produccion\Aggregate\SeguimientoEntregaPaquete;
 use App\Domain\Produccion\Events\EntregaInconsistenciaDetectada;
 use App\Domain\Produccion\Events\PaqueteEntregado;
-use App\Domain\Produccion\ValueObjects\ContratoId;
-use App\Domain\Produccion\ValueObjects\DriverId;
-use App\Domain\Produccion\ValueObjects\EntregaId;
+use App\Domain\Produccion\Repository\ItemDespachoRepositoryInterface;
+use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Domain\Produccion\ValueObjects\OccurredOn;
-use App\Domain\Produccion\ValueObjects\PackageStatus;
 use DateTimeImmutable;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
+ * Orquesta la actualizacion del estado de entrega de un paquete proveniente del servicio de logistica.
+ *
  * @class ActualizarEstadoPaqueteDesdeLogisticaHandler
  */
 class ActualizarEstadoPaqueteDesdeLogisticaHandler
@@ -47,36 +51,100 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
     private $transactionAggregate;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @var DomainEventPublisherInterface
      */
     private $eventPublisher;
+
+    /**
+     * @var DeliveryStatusMapper
+     */
+    private $statusMapper;
+
+    /**
+     * @var PackageDeliveryHistoryRepositoryInterface
+     */
+    private $historyRepository;
+
+    /**
+     * @var PackageDeliveryTrackingRepositoryInterface
+     */
+    private $trackingRepository;
+
+    /**
+     * @var \App\Application\Produccion\Repository\OrderDeliveryProgressRepositoryInterface
+     */
+    private $progressRepository;
+
+    /**
+     * @var DeliveryInconsistencyQueueRepositoryInterface
+     */
+    private $inconsistencyRepository;
+
+    /**
+     * @var ItemDespachoRepositoryInterface
+     */
+    private $itemDespachoRepository;
+
+    /**
+     * @var OrdenProduccionRepositoryInterface
+     */
+    private $ordenProduccionRepository;
+
+    /**
+     * @var DeliveryContextBackfiller
+     */
+    private $backfiller;
+
+    /**
+     * @var OrderDeliveryProgressSync
+     */
+    private $progressSync;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     public function __construct(
         EntregaEvidenciaRepositoryInterface $evidenciaRepository,
         KpiRepositoryInterface $kpiRepository,
         TransactionAggregate $transactionAggregate,
         DomainEventPublisherInterface $eventPublisher,
+        DeliveryStatusMapper $statusMapper,
+        PackageDeliveryHistoryRepositoryInterface $historyRepository,
+        PackageDeliveryTrackingRepositoryInterface $trackingRepository,
+        \App\Application\Produccion\Repository\OrderDeliveryProgressRepositoryInterface $progressRepository,
+        DeliveryInconsistencyQueueRepositoryInterface $inconsistencyRepository,
+        ItemDespachoRepositoryInterface $itemDespachoRepository,
+        OrdenProduccionRepositoryInterface $ordenProduccionRepository,
+        DeliveryContextBackfiller $backfiller,
+        OrderDeliveryProgressSync $progressSync,
         ?LoggerInterface $logger = null
     ) {
         $this->evidenciaRepository = $evidenciaRepository;
         $this->kpiRepository = $kpiRepository;
         $this->transactionAggregate = $transactionAggregate;
         $this->eventPublisher = $eventPublisher;
+        $this->statusMapper = $statusMapper;
+        $this->historyRepository = $historyRepository;
+        $this->trackingRepository = $trackingRepository;
+        $this->progressRepository = $progressRepository;
+        $this->inconsistencyRepository = $inconsistencyRepository;
+        $this->itemDespachoRepository = $itemDespachoRepository;
+        $this->ordenProduccionRepository = $ordenProduccionRepository;
+        $this->backfiller = $backfiller;
+        $this->progressSync = $progressSync;
         $this->logger = $logger ?? new NullLogger;
     }
 
     public function __invoke(ActualizarEstadoPaqueteDesdeLogisticaCommand $command): void
     {
         $this->kpiRepository->increment('delivery_events_processed_total', 1);
-        [$nextStatus, $kpiName] = $this->mapStatus($command->deliveryStatus);
-        $occurredOn = $this->parseOccurredOn($command->occurredOn);
+        [$nextStatus, $kpiName] = $this->statusMapper->mapStatus($command->deliveryStatus);
+        $occurredOn = $this->statusMapper->parseOccurredOn($command->occurredOn);
         $occurredAt = $occurredOn?->toDatabase();
-        $driverId = $this->parseDriverId($command->driverId);
+        $driverId = $this->statusMapper->parseDriverId($command->driverId);
+
         $this->logger->info('Procesando actualizacion de estado logistico del paquete', [
             'event_id' => $command->eventId,
             'package_id' => $command->packageId,
@@ -148,28 +216,23 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         $normalizedStatus = $receivedStatus !== '' ? strtolower(trim($receivedStatus)) : null;
         $encodedPayload = json_encode($payload);
 
-        $existing = DB::table('package_delivery_history')
-            ->where('event_id', $eventId)
-            ->first();
+        $existing = $this->historyRepository->findByEventId($eventId);
 
         if ($existing !== null) {
-            DB::table('package_delivery_history')
-                ->where('event_id', $eventId)
-                ->update([
-                    'package_id' => $packageId,
-                    'received_status' => $normalizedStatus,
-                    'driver_id' => $driverId,
-                    'evidence' => $encodedEvidence,
-                    'payload' => $encodedPayload,
-                    'occurred_on' => $occurredAt,
-                    'updated_at' => now(),
-                ]);
+            $this->historyRepository->updateByEventId($eventId, [
+                'package_id' => $packageId,
+                'received_status' => $normalizedStatus,
+                'driver_id' => $driverId,
+                'evidence' => $encodedEvidence,
+                'payload' => $encodedPayload,
+                'occurred_on' => $occurredAt,
+                'updated_at' => now(),
+            ]);
 
             return;
         }
 
-        // Se listan todos los campos explícitamente para que 'id' nunca quede fuera
-        DB::table('package_delivery_history')->insert([
+        $this->historyRepository->insert([
             'id' => (string) Str::uuid(),
             'event_id' => $eventId,
             'package_id' => $packageId,
@@ -183,16 +246,19 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         ]);
     }
 
-    private function syncDispatchStatusAndEmitCompletionIfReady(string $eventId, string $packageId, PackageStatus $nextStatus, ?OccurredOn $occurredOn, ?DriverId $driverId, array $payload): void
-    {
-        $this->backfillDeliveryContextForPackage($packageId);
+    private function syncDispatchStatusAndEmitCompletionIfReady(
+        string $eventId,
+        string $packageId,
+        \App\Domain\Produccion\ValueObjects\PackageStatus $nextStatus,
+        ?OccurredOn $occurredOn,
+        ?\App\Domain\Produccion\ValueObjects\DriverId $driverId,
+        array $payload
+    ): void {
+        $this->backfiller->backfill($packageId);
 
-        $rows = DB::table('item_despacho')
-            ->select('id', 'op_id', 'delivery_status', 'entrega_id', 'contrato_id')
-            ->where('paquete_id', $packageId)
-            ->get();
+        $rows = $this->itemDespachoRepository->findDeliveryRowsByPaqueteId($packageId);
 
-        if ($rows->isEmpty()) {
+        if (empty($rows)) {
             $this->kpiRepository->increment('alert_package_unknown', 1);
             $this->logger->warning('Actualizacion de estado recibida para paquete desconocido', [
                 'event_id' => $eventId,
@@ -223,7 +289,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                 $missingOpAlertRaised = true;
             }
 
-            $currentStatus = $this->parseStoredStatus(is_string($row->delivery_status) ? $row->delivery_status : null);
+            $currentStatus = $this->statusMapper->parseStoredStatus(is_string($row->delivery_status) ? $row->delivery_status : null);
             $wasLocked = $currentStatus?->isCompleted() ?? false;
             $seguimiento = new SeguimientoEntregaPaquete(
                 $packageId,
@@ -273,7 +339,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                 $updatePayload['driver_id'] = $driverId->value();
             }
 
-            DB::table('item_despacho')->where('id', $row->id)->update($updatePayload);
+            $this->itemDespachoRepository->updateDeliveryFields($row->id, $updatePayload);
 
             if (! $trackingUpserted) {
                 $this->upsertTracking(
@@ -310,7 +376,8 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         }
 
         foreach (array_keys($opIds) as $opId) {
-            $projection = $this->syncOrderProgress($opId, $occurredOn);
+            $projection = $this->progressSync->syncAndGetProjection($opId, $occurredOn);
+
             if ($projection['total_packages'] === 0) {
                 continue;
             }
@@ -335,36 +402,22 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                     $eventId,
                     $packageId,
                     'missing_delivery_context_for_consolidated_event',
-                    [
-                        'projection' => $projection,
-                        'payload' => $payload,
-                    ]
+                    ['projection' => $projection, 'payload' => $payload]
                 );
                 continue;
             }
 
             $completionEventId = (string) Str::uuid();
-            $markedProgress = DB::table('order_delivery_progress')
-                ->where('op_id', $opId)
-                ->whereNull('completion_event_id')
-                ->update([
-                    'completion_event_id' => $completionEventId,
-                    'all_completed_at' => $projection['all_completed_at'] ?? now()->format('Y-m-d H:i:s'),
-                    'updated_at' => now(),
-                ]);
+            $allCompletedAt = $projection['all_completed_at'] ?? now()->format('Y-m-d H:i:s');
+
+            $markedProgress = $this->progressRepository->markCompletionIfNotSet($opId, $completionEventId, $allCompletedAt);
 
             if ($markedProgress === 0) {
                 continue;
             }
 
-            $completedAt = new DateTimeImmutable($projection['all_completed_at'] ?? 'now');
-            DB::table('orden_produccion')
-                ->where('id', $opId)
-                ->whereNull('entrega_completada_at')
-                ->update([
-                    'entrega_completada_at' => $completedAt->format('Y-m-d H:i:s'),
-                    'updated_at' => now(),
-                ]);
+            $completedAt = new DateTimeImmutable($allCompletedAt);
+            $this->ordenProduccionRepository->markEntregaCompletada($opId, $completedAt);
 
             $event = new PaqueteEntregado(
                 $opId,
@@ -388,43 +441,43 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         }
     }
 
-    private function backfillDeliveryContextForPackage(string $packageId): void
-    {
-        $rows = DB::table('item_despacho')
-            ->select('id', 'ventana_entrega_id', 'entrega_id', 'contrato_id')
-            ->where('paquete_id', $packageId)
-            ->get();
+    private function upsertTracking(
+        string $packageId,
+        ?string $opId,
+        ?string $entregaId,
+        ?string $contratoId,
+        ?string $driverId,
+        ?string $status,
+        bool $statusLocked,
+        ?string $completedAt,
+        string $eventId,
+        ?string $occurredAt
+    ): void {
+        $existingTracking = $this->trackingRepository->findByPackageId($packageId);
 
-        foreach ($rows as $row) {
-            $hasEntrega = is_string($row->entrega_id) && $row->entrega_id !== '';
-            $hasContrato = is_string($row->contrato_id) && $row->contrato_id !== '';
-            if ($hasEntrega && $hasContrato) {
-                continue;
-            }
-
-            $ventanaId = is_string($row->ventana_entrega_id) ? $row->ventana_entrega_id : null;
-            if ($ventanaId === null || $ventanaId === '') {
-                continue;
-            }
-
-            $ventana = DB::table('ventana_entrega')->select('entrega_id', 'contrato_id')->where('id', $ventanaId)->first();
-            if ($ventana === null) {
-                continue;
-            }
-
-            $update = [];
-            if (! $hasEntrega && isset($ventana->entrega_id) && is_string($ventana->entrega_id) && $ventana->entrega_id !== '') {
-                $update['entrega_id'] = $ventana->entrega_id;
-            }
-            if (! $hasContrato && isset($ventana->contrato_id) && is_string($ventana->contrato_id) && $ventana->contrato_id !== '') {
-                $update['contrato_id'] = $ventana->contrato_id;
-            }
-
-            if ($update !== []) {
-                $update['updated_at'] = now();
-                DB::table('item_despacho')->where('id', $row->id)->update($update);
-            }
+        if ($completedAt === null && $existingTracking !== null && isset($existingTracking->completed_at)) {
+            $completedAt = is_string($existingTracking->completed_at) ? $existingTracking->completed_at : null;
         }
+
+        $values = [
+            'op_id' => $opId,
+            'entrega_id' => $entregaId,
+            'contrato_id' => $contratoId,
+            'driver_id' => $driverId,
+            'status' => $status,
+            'status_locked' => $statusLocked,
+            'completed_at' => $completedAt,
+            'last_event_id' => $eventId,
+            'last_occurred_on' => $occurredAt,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ];
+
+        if ($existingTracking === null) {
+            $values['id'] = (string) Str::uuid();
+        }
+
+        $this->trackingRepository->upsertByPackageId($packageId, $values);
     }
 
     private function enqueueInconsistency(?string $opId, string $eventId, string $packageId, string $reason, array $payload): void
@@ -435,14 +488,11 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
         $alreadyExists = false;
         if ($eventIdValue !== null) {
-            $alreadyExists = DB::table('delivery_inconsistency_queue')
-                ->where('event_id', $eventIdValue)
-                ->where('reason', $reason)
-                ->exists();
+            $alreadyExists = $this->inconsistencyRepository->existsByEventIdAndReason($eventIdValue, $reason);
         }
 
         if (! $alreadyExists) {
-            DB::table('delivery_inconsistency_queue')->insert([
+            $this->inconsistencyRepository->insert([
                 'id' => (string) Str::uuid(),
                 'event_id' => $eventIdValue,
                 'package_id' => $packageIdValue,
@@ -467,15 +517,12 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             return;
         }
 
-        DB::table('delivery_inconsistency_queue')
-            ->where('event_id', $eventIdValue)
-            ->where('reason', $reason)
-            ->update([
-                'package_id' => $packageIdValue,
-                'op_id' => $opIdValue,
-                'payload' => json_encode($payload),
-                'updated_at' => now(),
-            ]);
+        $this->inconsistencyRepository->updateByEventIdAndReason($eventIdValue, $reason, [
+            'package_id' => $packageIdValue,
+            'op_id' => $opIdValue,
+            'payload' => json_encode($payload),
+            'updated_at' => now(),
+        ]);
 
         $this->logger->info('Inconsistencia de entrega deduplicada', [
             'event_id' => $eventId,
@@ -483,194 +530,5 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             'op_id' => $opId,
             'reason' => $reason,
         ]);
-    }
-
-    private function upsertTracking(string $packageId, ?string $opId, ?string $entregaId, ?string $contratoId, ?string $driverId, ?string $status, bool $statusLocked, ?string $completedAt, string $eventId, ?string $occurredAt): void
-    {
-        $existingTracking = DB::table('package_delivery_tracking')->where('package_id', $packageId)->first();
-
-        if ($completedAt === null && $existingTracking !== null && isset($existingTracking->completed_at)) {
-            $completedAt = is_string($existingTracking->completed_at) ? $existingTracking->completed_at : null;
-        }
-
-        $values = [
-            'op_id' => $opId,
-            'entrega_id' => $entregaId,
-            'contrato_id' => $contratoId,
-            'driver_id' => $driverId,
-            'status' => $status,
-            'status_locked' => $statusLocked,
-            'completed_at' => $completedAt,
-            'last_event_id' => $eventId,
-            'last_occurred_on' => $occurredAt,
-            'updated_at' => now(),
-            'created_at' => now(),
-        ];
-
-        if ($existingTracking === null) {
-            $values['id'] = (string) \Illuminate\Support\Str::uuid();
-        }
-
-        DB::table('package_delivery_tracking')->updateOrInsert(
-            ['package_id' => $packageId],
-            $values
-        );
-    }
-
-    private function syncOrderProgress(string $opId, ?OccurredOn $occurredOn): array
-    {
-        $totalPackages = (int) DB::table('item_despacho')
-            ->where('op_id', $opId)
-            ->whereNotNull('paquete_id')
-            ->distinct()
-            ->count('paquete_id');
-
-        $completedPackages = (int) DB::table('item_despacho')
-            ->where('op_id', $opId)
-            ->whereNotNull('paquete_id')
-            ->where('delivery_status', 'confirmada')
-            ->distinct()
-            ->count('paquete_id');
-        $failedPackages = (int) DB::table('item_despacho')
-            ->where('op_id', $opId)
-            ->whereNotNull('paquete_id')
-            ->where('delivery_status', 'fallida')
-            ->distinct()
-            ->count('paquete_id');
-
-        $progress = new ProgresoEntregaOrden($opId, $totalPackages, $completedPackages);
-        $existingProgress = DB::table('order_delivery_progress')->where('op_id', $opId)->first();
-        $allCompletedAt = ($existingProgress !== null && isset($existingProgress->all_completed_at) && is_string($existingProgress->all_completed_at))
-            ? $existingProgress->all_completed_at
-            : null;
-        if ($allCompletedAt === null && $progress->markAllCompletedIfReady($occurredOn ?? new OccurredOn(new DateTimeImmutable('now')))) {
-            $allCompletedAt = ($occurredOn ?? new OccurredOn(new DateTimeImmutable('now')))->toDatabase();
-        }
-
-        $pendingPackages = $progress->pendingPackages();
-
-        $entregaIdRaw = DB::table('item_despacho')->where('op_id', $opId)->whereNotNull('entrega_id')->orderBy('id')->value('entrega_id');
-        $entregaId = null;
-        if (is_string($entregaIdRaw) && $entregaIdRaw !== '') {
-            try {
-                $entregaId = (new EntregaId($entregaIdRaw))->value();
-            } catch (\Throwable $e) {
-                $entregaId = null;
-            }
-        }
-
-        $contratoIdRaw = DB::table('item_despacho')->where('op_id', $opId)->whereNotNull('contrato_id')->orderBy('id')->value('contrato_id');
-        $contratoId = null;
-        if (is_string($contratoIdRaw) && $contratoIdRaw !== '') {
-            try {
-                $contratoId = (new ContratoId($contratoIdRaw))->value();
-            } catch (\Throwable $e) {
-                $contratoId = null;
-            }
-        }
-
-        $calendarioIdRaw = DB::table('item_despacho as i')
-            ->join('calendario_item as ci', 'ci.item_despacho_id', '=', 'i.id')
-            ->where('i.op_id', $opId)
-            ->whereNotNull('ci.calendario_id')
-            ->orderBy('ci.id')
-            ->value('ci.calendario_id');
-        $calendarioId = is_string($calendarioIdRaw) && $calendarioIdRaw !== '' ? $calendarioIdRaw : null;
-
-        $progressValues = [
-            'total_packages' => $totalPackages,
-            'completed_packages' => $completedPackages,
-            'pending_packages' => $pendingPackages,
-            'all_completed_at' => $allCompletedAt,
-            'entrega_id' => $entregaId,
-            'contrato_id' => $contratoId,
-            'updated_at' => now(),
-            'created_at' => now(),
-        ];
-
-        if ($existingProgress === null) {
-            $progressValues['id'] = (string) \Illuminate\Support\Str::uuid();
-        }
-
-        DB::table('order_delivery_progress')->updateOrInsert(
-            ['op_id' => $opId],
-            $progressValues
-        );
-
-        return [
-            'total_packages' => $totalPackages,
-            'completed_packages' => $completedPackages,
-            'failed_packages' => $failedPackages,
-            'pending_packages' => $pendingPackages,
-            'all_completed_at' => $allCompletedAt,
-            'entrega_id' => $entregaId,
-            'contrato_id' => $contratoId,
-            'calendario_id' => $calendarioId,
-        ];
-    }
-
-    private function parseOccurredOn(?string $value): ?OccurredOn
-    {
-        if (! is_string($value) || trim($value) === '') {
-            return null;
-        }
-
-        try {
-            return new OccurredOn($value);
-        } catch (\Throwable $e) {
-            return null;
-        }
-    }
-
-    private function parseDriverId(?string $value): ?DriverId
-    {
-        if (! is_string($value) || trim($value) === '') {
-            return null;
-        }
-
-        try {
-            return new DriverId($value);
-        } catch (\Throwable $e) {
-            $this->logger->warning('driver_id ignorado porque el formato es invalido', ['driver_id' => $value]);
-
-            return null;
-        }
-    }
-
-    private function parseStoredStatus(?string $status): ?PackageStatus
-    {
-        if (! is_string($status) || trim($status) === '') {
-            return null;
-        }
-
-        try {
-            return new PackageStatus($status);
-        } catch (\Throwable $e) {
-            return null;
-        }
-    }
-
-    /**
-     * @return array{0:PackageStatus,1:?string}
-     */
-    private function mapStatus(string $status): array
-    {
-        $normalized = strtolower(trim($status));
-
-        return match ($normalized) {
-            'entregado', 'delivered', 'confirmada', 'confirmado', 'completed' => [new PackageStatus('confirmada'), 'entrega_confirmada'],
-            'fallido', 'fallida', 'failed' => [new PackageStatus('fallida'), 'entrega_fallida'],
-            'entransito', 'en_transito', 'en transito', 'intransit', 'onroute', 'en_ruta' => [new PackageStatus('en_ruta'), 'paquete_en_ruta'],
-            default => [new PackageStatus('estado_actualizado'), null],
-        };
-    }
-
-    private function isUuid(?string $value): bool
-    {
-        if (! is_string($value) || trim($value) === '') {
-            return false;
-        }
-
-        return (bool) preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/', $value);
     }
 }
