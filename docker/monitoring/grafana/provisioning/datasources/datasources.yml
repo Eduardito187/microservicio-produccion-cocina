@@ -57,3 +57,10 @@ datasources:
     access: proxy
     url: http://213.136.90.174:3100
     editable: true
+
+  - name: Jaeger Produccion
+    uid: jaeger
+    type: jaeger
+    access: proxy
+    url: http://jaeger:16686
+    editable: true

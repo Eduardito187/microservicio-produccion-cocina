@@ -19,9 +19,24 @@ services:
       RUN_UNIT_TESTS_ON_START: "0"
       RUN_RABBITMQ_CONSUMER: "1"
       RUN_CRON_SCHEDULER: "1"
+      RUN_CONSUL_REGISTER: "${RUN_CONSUL_REGISTER:-1}"
+      SERVICE_DISCOVERY_DRIVER: "${SERVICE_DISCOVERY_DRIVER:-consul}"
+      SERVICE_NAME: "${SERVICE_NAME:-microservicio-produccion-cocina}"
+      SERVICE_ADDRESS: "${SERVICE_ADDRESS:-laravel_app}"
+      SERVICE_PORT: "${SERVICE_PORT:-80}"
+      CONSUL_HOST: "${CONSUL_HOST:-consul}"
+      CONSUL_PORT: "${CONSUL_PORT:-8500}"
+      TRACING_ENABLED: "${TRACING_ENABLED:-true}"
+      TRACING_SERVICE_NAME: "${TRACING_SERVICE_NAME:-microservicio-produccion-cocina}"
+      TRACING_EXPORTER: "${TRACING_EXPORTER:-zipkin}"
+      ZIPKIN_ENDPOINT: "${ZIPKIN_ENDPOINT:-http://jaeger:9411/api/v2/spans}"
     depends_on:
       mysql_server:
         condition: service_healthy
+      consul:
+        condition: service_started
+      jaeger:
+        condition: service_started
 
   prometheus:
     container_name: prometheus
@@ -111,6 +126,30 @@ services:
       - /sys:/host/sys:ro
       - /:/rootfs:ro
 
+  consul:
+    container_name: consul
+    image: hashicorp/consul:1.18
+    restart: unless-stopped
+    command: agent -dev -client=0.0.0.0 -ui
+    ports:
+      - "${CONSUL_UI_PORT:-8500}:8500"
+      - "${CONSUL_DNS_PORT:-8600}:8600/udp"
+    volumes:
+      - consul_data:/consul/data
+
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:1.57
+    restart: unless-stopped
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: ":9411"
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "${JAEGER_UI_PORT:-16686}:16686"
+      - "${JAEGER_ZIPKIN_PORT:-9411}:9411"
+      - "${JAEGER_OTLP_GRPC_PORT:-4317}:4317"
+      - "${JAEGER_OTLP_HTTP_PORT:-4318}:4318"
+
   mysql_server:
     container_name: mysql_server
     restart: unless-stopped
@@ -139,3 +178,4 @@ volumes:
   prometheus_data:
   loki_data:
   promtail_positions:
+  consul_data:

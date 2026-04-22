@@ -120,6 +120,8 @@ class PublishOutboxTest extends TestCase
             $table->string('locked_by')->nullable();
             $table->unsignedInteger('schema_version')->nullable();
             $table->string('correlation_id')->nullable();
+            $table->string('trace_id', 32)->nullable();
+            $table->string('span_id', 16)->nullable();
             $table->timestamps();
         });
 

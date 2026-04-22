@@ -7,6 +7,7 @@
 namespace App\Infrastructure\Persistence\Outbox;
 
 use App\Infrastructure\Persistence\Model\Outbox;
+use App\Infrastructure\Tracing\Tracer;
 use DateTimeImmutable;
 use Illuminate\Support\Str;
 
@@ -27,6 +28,21 @@ class OutboxStore
             $correlationId = null;
         }
 
+        $traceId = null;
+        $spanId = null;
+        try {
+            if (app()->bound(Tracer::class)) {
+                $ctx = app(Tracer::class)->currentContext();
+                if ($ctx !== null) {
+                    $traceId = $ctx->traceId;
+                    $spanId = $ctx->spanId;
+                }
+            }
+        } catch (\Throwable $e) {
+            $traceId = null;
+            $spanId = null;
+        }
+
         $resolvedAggregateId = is_string($aggregateId) && Str::isUuid($aggregateId)
           ? $aggregateId
           : (string) Str::uuid();
@@ -38,6 +54,8 @@ class OutboxStore
             'aggregate_id' => $resolvedAggregateId,
             'schema_version' => (int) env('EVENT_SCHEMA_VERSION', 1),
             'correlation_id' => $correlationId ?? (string) Str::uuid(),
+            'trace_id' => $traceId,
+            'span_id' => $spanId,
             'payload' => $normalizedPayload,
             'occurred_on' => $occurredOn->format('Y-m-d H:i:s'),
         ]);
