@@ -24,7 +24,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "prometheus"
+				"uid": "${prometheus_ds}"
 			},
 			"fieldConfig": {
 				"defaults": {
@@ -82,7 +82,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "prometheus"
+				"uid": "${prometheus_ds}"
 			},
 			"fieldConfig": {
 				"defaults": {
@@ -140,7 +140,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "prometheus"
+				"uid": "${prometheus_ds}"
 			},
 			"fieldConfig": {
 				"defaults": {
@@ -198,7 +198,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "prometheus"
+				"uid": "${prometheus_ds}"
 			},
 			"fieldConfig": {
 				"defaults": {
@@ -243,7 +243,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "prometheus"
+				"uid": "${prometheus_ds}"
 			},
 			"fieldConfig": {
 				"defaults": {
@@ -319,7 +319,7 @@
 		{
 			"datasource": {
 				"type": "prometheus",
-				"uid": "prometheus"
+				"uid": "${prometheus_ds}"
 			},
 			"fieldConfig": {
 				"defaults": {
@@ -363,7 +363,7 @@
 		{
 			"datasource": {
 				"type": "loki",
-				"uid": "loki"
+				"uid": "${loki_ds}"
 			},
 			"gridPos": {
 				"h": 10,
@@ -401,7 +401,44 @@
 		"grafana"
 	],
 	"templating": {
-		"list": []
+		"list": [
+			{
+				"current": {
+					"selected": false,
+					"text": "Prometheus Produccion",
+					"value": "prometheus"
+				},
+				"hide": 0,
+				"includeAll": false,
+				"label": "Prometheus",
+				"multi": false,
+				"name": "prometheus_ds",
+				"options": [],
+				"query": "prometheus",
+				"refresh": 1,
+				"regex": "",
+				"skipUrlSync": false,
+				"type": "datasource"
+			},
+			{
+				"current": {
+					"selected": false,
+					"text": "Loki Produccion",
+					"value": "loki"
+				},
+				"hide": 0,
+				"includeAll": false,
+				"label": "Loki",
+				"multi": false,
+				"name": "loki_ds",
+				"options": [],
+				"query": "loki",
+				"refresh": 1,
+				"regex": "",
+				"skipUrlSync": false,
+				"type": "datasource"
+			}
+		]
 	},
 	"time": {
 		"from": "now-1h",
@@ -411,6 +448,6 @@
 	"timezone": "browser",
 	"title": "Docker Monitoring Overview",
 	"uid": "docker-monitoring-overview",
-	"version": 1,
+	"version": 2,
 	"weekStart": ""
 }
