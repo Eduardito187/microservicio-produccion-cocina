@@ -1,0 +1,147 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-logistica" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "options": { "0": { "color": "red", "text": "DOWN" } }, "type": "value" },
+            { "options": { "1": { "color": "green", "text": "UP" } }, "type": "value" }
+          ],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "colorMode": "background", "graphMode": "none", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [{ "expr": "up{job=\"logistics-deliveries-api\"}", "refId": "A" }],
+      "title": "Service UP",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-logistica" },
+      "fieldConfig": { "defaults": { "unit": "reqps" } },
+      "gridPos": { "h": 4, "w": 10, "x": 4, "y": 0 },
+      "id": 2,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "rate(http_requests_received_total[1m])", "legendFormat": "received", "refId": "A" },
+        { "expr": "rate(microsoft_aspnetcore_hosting_total_requests[1m])", "legendFormat": "hosting total", "refId": "B" },
+        { "expr": "rate(microsoft_aspnetcore_hosting_failed_requests[1m])", "legendFormat": "failed", "refId": "C" }
+      ],
+      "title": "HTTP Request Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-logistica" },
+      "fieldConfig": { "defaults": { "unit": "s", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 0.5 }, { "color": "red", "value": 1 }] } } },
+      "gridPos": { "h": 4, "w": 10, "x": 14, "y": 0 },
+      "id": 3,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))", "legendFormat": "p50", "refId": "A" },
+        { "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))", "legendFormat": "p95", "refId": "B" },
+        { "expr": "histogram_quantile(0.99, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))", "legendFormat": "p99", "refId": "C" }
+      ],
+      "title": "HTTP Latency (quantiles)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-logistica" },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "id": 4,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "microsoft_aspnetcore_hosting_current_requests", "legendFormat": "in-flight", "refId": "A" },
+        { "expr": "microsoft_aspnetcore_server_kestrel_current_connections", "legendFormat": "kestrel connections", "refId": "B" },
+        { "expr": "microsoft_aspnetcore_server_kestrel_request_queue_length", "legendFormat": "kestrel queue", "refId": "C" }
+      ],
+      "title": "Requests / Connections / Queue",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-logistica" },
+      "fieldConfig": { "defaults": { "unit": "bytes" } },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "id": 5,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "process_working_set_bytes", "legendFormat": "working set", "refId": "A" },
+        { "expr": "process_private_memory_bytes", "legendFormat": "private", "refId": "B" },
+        { "expr": "dotnet_total_memory_bytes", "legendFormat": ".NET total", "refId": "C" },
+        { "expr": "system_runtime_gc_heap_size", "legendFormat": "GC heap", "refId": "D" }
+      ],
+      "title": "Memory (.NET process + GC heap)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-logistica" },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "max": 1, "min": 0 } },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "id": 6,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "single" } },
+      "targets": [
+        { "expr": "rate(process_cpu_seconds_total[1m])", "legendFormat": "process cpu", "refId": "A" },
+        { "expr": "system_runtime_cpu_usage", "legendFormat": "runtime cpu", "refId": "B" }
+      ],
+      "title": "CPU Usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-logistica" },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "id": 7,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "rate(system_runtime_gen_0_gc_count_total[1m])", "legendFormat": "gen0/s", "refId": "A" },
+        { "expr": "rate(system_runtime_gen_1_gc_count_total[1m])", "legendFormat": "gen1/s", "refId": "B" },
+        { "expr": "rate(system_runtime_gen_2_gc_count_total[1m])", "legendFormat": "gen2/s", "refId": "C" },
+        { "expr": "system_runtime_threadpool_thread_count", "legendFormat": "threadpool threads", "refId": "D" }
+      ],
+      "title": ".NET GC / ThreadPool",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus-logistica" },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "id": 8,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi" } },
+      "targets": [
+        { "expr": "npgsql_db_client_connections_usage", "legendFormat": "connections {{state}}", "refId": "A" },
+        { "expr": "npgsql_db_client_commands_executing", "legendFormat": "commands executing", "refId": "B" },
+        { "expr": "npgsql_db_client_connections_max", "legendFormat": "max", "refId": "C" }
+      ],
+      "title": "Npgsql (Postgres Client)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "loki-logistica" },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 20 },
+      "id": 9,
+      "options": { "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [{ "expr": "{job=~\".+\"} |~ \"(?i)error|exception|warn|fail\"", "refId": "A" }],
+      "title": "Logs (errors / warnings)",
+      "type": "logs"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["logistica", "dotnet", "remote"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Logistica - App Overview",
+  "uid": "logistica-app-overview",
+  "version": 1,
+  "weekStart": ""
+}
