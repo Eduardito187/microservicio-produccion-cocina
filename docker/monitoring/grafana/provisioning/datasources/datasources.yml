@@ -1,7 +1,7 @@
 apiVersion: 1
 
 datasources:
-  - name: Prometheus
+  - name: Prometheus Produccion
     uid: prometheus
     type: prometheus
     access: proxy
@@ -9,9 +9,37 @@ datasources:
     isDefault: true
     editable: true
 
-  - name: Loki
+  - name: Planes Prometeus
+    uid: prometheus-remote
+    type: prometheus
+    access: proxy
+    url: http://142.93.120.239:9090
+    editable: true
+
+  - name: Loki Produccion
     uid: loki
     type: loki
     access: proxy
     url: http://loki:3100
+    editable: true
+
+  - name: Planes Loki
+    uid: loki-remote
+    type: loki
+    access: proxy
+    url: http://142.93.120.239:3100
+    editable: true
+
+  - name: Citas Prometeus
+    uid: prometheus-citas
+    type: prometheus
+    access: proxy
+    url: http://146.190.116.159:9090
+    editable: true
+
+  - name: Citas Loki
+    uid: loki-citas
+    type: loki
+    access: proxy
+    url: http://146.190.116.159:3100
     editable: true
