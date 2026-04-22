@@ -27,12 +27,12 @@ class RequireRoleMiddleware
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $required = $this->parseRoles($roles);
+        $required = array_map('strtolower', $this->parseRoles($roles));
         if ($required === []) {
             return $next($request);
         }
 
-        $available = $this->extractRoles($claims);
+        $available = array_map('strtolower', $this->extractRoles($claims));
         foreach ($required as $role) {
             if (in_array($role, $available, true)) {
                 return $next($request);
