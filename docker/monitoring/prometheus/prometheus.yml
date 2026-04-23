@@ -14,3 +14,27 @@ scrape_configs:
   - job_name: node_exporter
     static_configs:
       - targets: ['node_exporter:9100']
+
+  - job_name: nur-tricenter-api-gateway
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['154.38.180.80:5000']
+        labels:
+          service: nur-tricenter-api-gateway
+          stack: gateway
+
+  - job_name: nur-tricenter-patients
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['154.38.180.80:8080']
+        labels:
+          service: nur-tricenter-patients
+          stack: patients
+
+  - job_name: nur-tricenter-appointments
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['146.190.116.159:9004']
+        labels:
+          service: nur-tricenter-appointments
+          stack: appointments
