@@ -12,7 +12,6 @@ on:
 
 jobs:
   build:
-    name: build (pull_request)
     runs-on: ubuntu-latest
     env:
       SONAR_TOKEN: ${{ secrets.SONARTOKEN }}
