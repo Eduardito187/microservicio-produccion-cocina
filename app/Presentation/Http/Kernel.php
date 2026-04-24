@@ -12,6 +12,7 @@ use App\Presentation\Http\Middleware\EncryptCookies;
 use App\Presentation\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Presentation\Http\Middleware\RedirectIfAuthenticated;
 use App\Presentation\Http\Middleware\RequireRoleMiddleware;
+use App\Presentation\Http\Middleware\TracingMiddleware;
 use App\Presentation\Http\Middleware\TrimStrings;
 use App\Presentation\Http\Middleware\TrustHosts;
 use App\Presentation\Http\Middleware\TrustProxies;
@@ -34,6 +35,7 @@ class Kernel extends HttpKernel
     protected $middleware = [
         // TrustHosts::class,
         TrustProxies::class,
+        TracingMiddleware::class,
         \Illuminate\Http\Middleware\HandleCors::class,
         PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,

@@ -179,9 +179,15 @@ class OrdenProduccionRepositoryTest extends TestCase
             $table->uuid('event_id');
             $table->string('event_name');
             $table->uuid('aggregate_id')->nullable();
+            $table->unsignedInteger('schema_version')->nullable();
+            $table->string('correlation_id')->nullable();
+            $table->string('trace_id', 32)->nullable();
+            $table->string('span_id', 16)->nullable();
             $table->json('payload');
             $table->timestamp('occurred_on');
             $table->timestamp('published_at')->nullable();
+            $table->timestamp('locked_at')->nullable();
+            $table->string('locked_by')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
         });

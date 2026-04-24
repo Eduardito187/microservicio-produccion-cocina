@@ -129,6 +129,8 @@ class PublishOutbox implements ShouldQueue
                             'aggregate_id' => $row->aggregate_id,
                             'correlation_id' => $row->correlation_id,
                             'schema_version' => $row->schema_version,
+                            'trace_id' => $row->trace_id ?? null,
+                            'span_id' => $row->span_id ?? null,
                         ]
                     );
 

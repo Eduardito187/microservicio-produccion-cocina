@@ -12,6 +12,7 @@ on:
 
 jobs:
   build:
+    name: "Laravel CI / build (pull_request)"
     runs-on: ubuntu-latest
     env:
       SONAR_TOKEN: ${{ secrets.SONARTOKEN }}

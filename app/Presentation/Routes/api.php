@@ -40,6 +40,7 @@ use App\Presentation\Http\Controllers\EliminarSuscripcionController;
 use App\Presentation\Http\Controllers\EliminarVentanaEntregaController;
 use App\Presentation\Http\Controllers\EventBusController;
 use App\Presentation\Http\Controllers\GenerarOPController;
+use App\Presentation\Http\Controllers\HealthController;
 use App\Presentation\Http\Controllers\ListarCalendarioItemsController;
 use App\Presentation\Http\Controllers\ListarCalendariosController;
 use App\Presentation\Http\Controllers\ListarDireccionesController;
@@ -172,3 +173,6 @@ Route::get('/test-public', function () {
         'message' => 'test quemado v1',
     ]);
 });
+
+// Health check para service discovery
+Route::get('/health', HealthController::class)->name('health');

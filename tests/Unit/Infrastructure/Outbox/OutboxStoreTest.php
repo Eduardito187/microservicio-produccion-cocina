@@ -41,6 +41,8 @@ class OutboxStoreTest extends TestCase
             $table->string('aggregate_id')->nullable();
             $table->unsignedInteger('schema_version')->nullable();
             $table->string('correlation_id')->nullable();
+            $table->string('trace_id', 32)->nullable();
+            $table->string('span_id', 16)->nullable();
             $table->json('payload');
             $table->dateTime('occurred_on');
             $table->dateTime('published_at')->nullable();

@@ -7,10 +7,12 @@
 namespace App\Infrastructure\Bus;
 
 use App\Application\Shared\BusInterface;
+use App\Infrastructure\Tracing\TraceContext;
 use DateTimeImmutable;
 use Illuminate\Support\Facades\Log;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
 
 /**
  * @class RabbitMqEventBus
@@ -21,19 +23,7 @@ class RabbitMqEventBus implements BusInterface
 
     public function publish(string $eventId, string $name, array $payload, DateTimeImmutable $occurredOn, array $meta = []): void
     {
-        $messageBody = json_encode([
-            'event_id' => $eventId,
-            'event' => $name,
-            'occurred_on' => $occurredOn->format(DATE_ATOM),
-            'schema_version' => $meta['schema_version'] ?? null,
-            'correlation_id' => $meta['correlation_id'] ?? null,
-            'aggregate_id' => $meta['aggregate_id'] ?? null,
-            'payload' => $payload,
-        ], JSON_UNESCAPED_SLASHES);
-
-        if (! is_string($messageBody)) {
-            throw new \RuntimeException('Unable to encode outbox message');
-        }
+        $messageBody = $this->encodeEnvelope($eventId, $name, $payload, $occurredOn, $meta);
 
         $queueMap = config('rabbitmq.event_queues', []);
         $mappedQueue = is_array($queueMap) ? ($queueMap[$name] ?? null) : null;
@@ -110,10 +100,7 @@ class RabbitMqEventBus implements BusInterface
                     'attempt' => $attempt,
                 ]);
 
-                $message = new AMQPMessage($messageBody, [
-                    'content_type' => 'application/json',
-                    'delivery_mode' => 2,
-                ]);
+                $message = $this->buildAmqpMessage($messageBody, $meta);
 
                 $channel->basic_publish($message, $exchange, $routingKey);
                 Log::info('Publicacion en RabbitMQ exitosa', [
@@ -202,5 +189,52 @@ class RabbitMqEventBus implements BusInterface
         $normalized = preg_replace('/[^a-zA-Z0-9._-]/', '', $normalized);
 
         return strtolower($normalized ?? $eventName);
+    }
+
+    private function encodeEnvelope(string $eventId, string $name, array $payload, DateTimeImmutable $occurredOn, array $meta): string
+    {
+        $traceId = isset($meta['trace_id']) && is_string($meta['trace_id']) ? $meta['trace_id'] : null;
+        $spanId = isset($meta['span_id']) && is_string($meta['span_id']) ? $meta['span_id'] : null;
+
+        $encoded = json_encode([
+            'event_id' => $eventId,
+            'event' => $name,
+            'occurred_on' => $occurredOn->format(DATE_ATOM),
+            'schema_version' => $meta['schema_version'] ?? null,
+            'correlation_id' => $meta['correlation_id'] ?? null,
+            'aggregate_id' => $meta['aggregate_id'] ?? null,
+            'trace_id' => $traceId,
+            'span_id' => $spanId,
+            'payload' => $payload,
+        ], JSON_UNESCAPED_SLASHES);
+
+        if (! is_string($encoded)) {
+            throw new \RuntimeException('Unable to encode outbox message');
+        }
+
+        return $encoded;
+    }
+
+    private function buildAmqpMessage(string $body, array $meta): AMQPMessage
+    {
+        $headers = [];
+        $traceId = isset($meta['trace_id']) && is_string($meta['trace_id']) ? $meta['trace_id'] : null;
+        $spanId = isset($meta['span_id']) && is_string($meta['span_id']) ? $meta['span_id'] : null;
+        if ($traceId !== null && $spanId !== null) {
+            $headers['traceparent'] = (new TraceContext($traceId, $spanId, true))->toTraceparent();
+        }
+        if (isset($meta['correlation_id']) && is_string($meta['correlation_id'])) {
+            $headers['correlation_id'] = $meta['correlation_id'];
+        }
+
+        $properties = [
+            'content_type' => 'application/json',
+            'delivery_mode' => 2,
+        ];
+        if ($headers !== []) {
+            $properties['application_headers'] = new AMQPTable($headers);
+        }
+
+        return new AMQPMessage($body, $properties);
     }
 }

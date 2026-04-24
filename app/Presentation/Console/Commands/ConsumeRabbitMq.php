@@ -10,8 +10,11 @@ use App\Application\Integration\IntegrationEventRouter;
 use App\Application\Integration\Service\InboundPayloadValidator;
 use App\Application\Produccion\Command\RegistrarInboundEvent;
 use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
+use App\Infrastructure\Tracing\TraceContext;
+use App\Infrastructure\Tracing\Tracer;
 use DateTimeImmutable;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -216,7 +219,7 @@ class ConsumeRabbitMq extends Command
         $this->info("Consuming from queue={$queue} exchange={$exchange} bindingKey={$bindingKey}");
 
         $channel->basic_consume($queue, '', false, false, false, false, function (AMQPMessage $msg) use ($once, $retryExchange, $retryQueue, $retryRoutingKey): void {
-            $this->processMessage($msg, $retryExchange, $retryQueue, $retryRoutingKey);
+            $this->withTrace($msg, fn () => $this->processMessage($msg, $retryExchange, $retryQueue, $retryRoutingKey));
             if ($once) {
                 $msg->getChannel()->basic_cancel($msg->getConsumerTag());
             }
@@ -619,5 +622,70 @@ class ConsumeRabbitMq extends Command
         }
 
         return \Ramsey\Uuid\Uuid::uuid5(\Ramsey\Uuid\Uuid::NAMESPACE_URL, $routingKey . '|' . $json)->toString();
+    }
+
+    private function withTrace(AMQPMessage $msg, \Closure $callback): void
+    {
+        $tracer = null;
+        try {
+            if (function_exists('app') && app()->bound(Tracer::class)) {
+                $tracer = app(Tracer::class);
+            }
+        } catch (\Throwable $e) {
+            $tracer = null;
+        }
+
+        if ($tracer === null || ! $tracer->isEnabled()) {
+            $callback();
+
+            return;
+        }
+
+        $parent = TraceContext::fromTraceparent($this->extractTraceparent($msg));
+        $span = $tracer->startSpan('rabbitmq.consume ' . $this->resolveRoutingKey($msg), $parent, 'CONSUMER');
+        $span->setTag('messaging.system', 'rabbitmq');
+        $span->setTag('messaging.operation', 'receive');
+        $span->setTag('messaging.destination', $this->resolveRoutingKey($msg));
+
+        $logCtx = [
+            'trace_id' => $span->context->traceId,
+            'span_id' => $span->context->spanId,
+        ];
+        Log::withContext($logCtx);
+
+        try {
+            $callback();
+        } catch (\Throwable $e) {
+            $span->setTag('error', true);
+            $span->setTag('error.message', $e->getMessage());
+            throw $e;
+        } finally {
+            $tracer->endSpan($span);
+            $tracer->flush();
+        }
+    }
+
+    private function extractTraceparent(AMQPMessage $msg): ?string
+    {
+        $headers = $this->getMessageProperty($msg, 'application_headers');
+        if ($headers instanceof AMQPTable) {
+            $native = $headers->getNativeData();
+            if (isset($native['traceparent']) && is_string($native['traceparent'])) {
+                return $native['traceparent'];
+            }
+        }
+        $body = $msg->getBody();
+        if (is_string($body) && $body !== '') {
+            $decoded = json_decode($body, true);
+            if (is_array($decoded)) {
+                $traceId = $decoded['trace_id'] ?? null;
+                $spanId = $decoded['span_id'] ?? null;
+                if (is_string($traceId) && is_string($spanId)) {
+                    return (new TraceContext($traceId, $spanId, true))->toTraceparent();
+                }
+            }
+        }
+
+        return null;
     }
 }
