@@ -13,7 +13,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('entrega_evidencia', function (Blueprint $table) {
-            $table->string('driver_id', 36)->nullable()->after('paquete_id');
             $table->string('incident_type', 80)->nullable()->after('foto_url');
             $table->text('incident_description')->nullable()->after('incident_type');
         });
@@ -22,7 +21,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('entrega_evidencia', function (Blueprint $table) {
-            $table->dropColumn(['driver_id', 'incident_type', 'incident_description']);
+            $table->dropColumn(['incident_type', 'incident_description']);
         });
     }
 };
