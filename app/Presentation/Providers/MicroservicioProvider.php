@@ -33,6 +33,7 @@ use App\Application\Integration\IntegrationEventRouter;
 use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
 use App\Application\Produccion\Handler\RegistrarInboundEventHandler;
 use App\Application\Produccion\Repository\DeliveryInconsistencyQueueRepositoryInterface;
+use App\Application\Produccion\Repository\OrdenProduccionQueryRepositoryInterface;
 use App\Application\Produccion\Repository\OrderDeliveryProgressRepositoryInterface;
 use App\Application\Produccion\Repository\PackageDeliveryHistoryRepositoryInterface;
 use App\Application\Produccion\Repository\PackageDeliveryTrackingRepositoryInterface;
@@ -62,6 +63,7 @@ use App\Infrastructure\Bus\RabbitMqEventBus;
 use App\Infrastructure\Persistence\Outbox\OutboxEventPublisher;
 use App\Infrastructure\Persistence\Outbox\OutboxStoreAdapter;
 use App\Infrastructure\Persistence\Outbox\OutboxUnitOfWork;
+use App\Infrastructure\Persistence\Query\OrdenProduccionQueryRepository;
 use App\Infrastructure\Persistence\Repository\CalendarioItemRepository;
 use App\Infrastructure\Persistence\Repository\CalendarioRepository;
 use App\Infrastructure\Persistence\Repository\DeliveryInconsistencyQueueRepository;
@@ -162,6 +164,7 @@ class MicroservicioProvider extends ServiceProvider
     private function bindDomainRepositories(): void
     {
         $this->app->bind(OrdenProduccionRepositoryInterface::class, OrdenProduccionRepository::class);
+        $this->app->bind(OrdenProduccionQueryRepositoryInterface::class, OrdenProduccionQueryRepository::class);
         $this->app->bind(ProduccionBatchRepositoryInterface::class, ProduccionBatchRepository::class);
         $this->app->bind(PacienteRepositoryInterface::class, PacienteRepository::class);
         $this->app->bind(DireccionRepositoryInterface::class, DireccionRepository::class);
