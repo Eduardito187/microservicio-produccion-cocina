@@ -13,21 +13,32 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Remove duplicate rows keeping the one with delivery data (or the most recent)
-        DB::statement('
-            DELETE id1 FROM item_despacho id1
-            INNER JOIN item_despacho id2
-                ON id1.paquete_id = id2.paquete_id
-                AND id1.id <> id2.id
-            WHERE id1.paquete_id IS NOT NULL
-              AND (
-                id1.delivery_status IS NULL AND id2.delivery_status IS NOT NULL
-                OR (
-                    (id1.delivery_status IS NULL OR id1.delivery_status = id2.delivery_status)
-                    AND id1.created_at < id2.created_at
-                )
-              )
-        ');
+        // Keep per paquete_id: the row with delivery_status, or the most recent if all null.
+        // Compatible with MySQL and SQLite.
+        $idsToDelete = DB::table('item_despacho as a')
+            ->select('a.id')
+            ->join('item_despacho as b', function ($join) {
+                $join->on('a.paquete_id', '=', 'b.paquete_id')
+                    ->whereColumn('a.id', '<>', 'b.id');
+            })
+            ->whereNotNull('a.paquete_id')
+            ->where(function ($q) {
+                $q->where(function ($q2) {
+                    $q2->whereNull('a.delivery_status')
+                        ->whereNotNull('b.delivery_status');
+                })->orWhere(function ($q2) {
+                    $q2->where(function ($q3) {
+                        $q3->whereNull('a.delivery_status')
+                            ->whereNull('b.delivery_status');
+                    })->orWhereColumn('a.delivery_status', '=', 'b.delivery_status');
+                    $q2->whereColumn('a.created_at', '<', 'b.created_at');
+                });
+            })
+            ->pluck('a.id');
+
+        if ($idsToDelete->isNotEmpty()) {
+            DB::table('item_despacho')->whereIn('id', $idsToDelete)->delete();
+        }
 
         Schema::table('item_despacho', function (Blueprint $table) {
             $table->unique('paquete_id', 'item_despacho_paquete_id_unique');
