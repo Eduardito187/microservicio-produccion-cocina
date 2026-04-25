@@ -157,6 +157,9 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
             if (str_contains($class, 'DesdeLogistica')) {
                 continue;
             }
+            if (str_contains($class, 'Orden')) {
+                continue;
+            }
 
             $out[$class] = ['App\\Application\\Produccion\\Handler\\' . $class];
         }

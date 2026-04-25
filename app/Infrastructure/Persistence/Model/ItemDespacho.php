@@ -42,4 +42,14 @@ class ItemDespacho extends BaseModel
     {
         return $this->hasMany(CalendarioItem::class, 'item_despacho_id');
     }
+
+    public function paciente(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Paciente::class, 'paciente_id');
+    }
+
+    public function ventanaEntrega(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(VentanaEntrega::class, 'ventana_entrega_id');
+    }
 }
