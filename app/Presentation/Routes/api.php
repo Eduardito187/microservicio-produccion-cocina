@@ -48,6 +48,8 @@ use App\Presentation\Http\Controllers\ListarCalendariosPorSuscripcionController;
 use App\Presentation\Http\Controllers\ListarCalendariosPorVentanaEntregaController;
 use App\Presentation\Http\Controllers\ListarDireccionesController;
 use App\Presentation\Http\Controllers\ListarEtiquetasController;
+use App\Presentation\Http\Controllers\ListarOrdenesPorSuscripcionController;
+use App\Presentation\Http\Controllers\ListarOrdenesProduccionController;
 use App\Presentation\Http\Controllers\ListarPacientesController;
 use App\Presentation\Http\Controllers\ListarPacientesPorCalendarioController;
 use App\Presentation\Http\Controllers\ListarPacientesPorVentanaEntregaController;
@@ -60,6 +62,7 @@ use App\Presentation\Http\Controllers\ListarVentanasEntregaController;
 use App\Presentation\Http\Controllers\ListarVentanasEntregaPorCalendarioController;
 use App\Presentation\Http\Controllers\ListarVentanasEntregaPorPacienteController;
 use App\Presentation\Http\Controllers\LoginController;
+use App\Presentation\Http\Controllers\ObtenerAgendaController;
 use App\Presentation\Http\Controllers\PactStateController;
 use App\Presentation\Http\Controllers\PlanificarOPController;
 use App\Presentation\Http\Controllers\ProcesarOPController;
@@ -69,11 +72,13 @@ use App\Presentation\Http\Controllers\VerCalendarioController;
 use App\Presentation\Http\Controllers\VerCalendarioItemController;
 use App\Presentation\Http\Controllers\VerDireccionController;
 use App\Presentation\Http\Controllers\VerEtiquetaController;
+use App\Presentation\Http\Controllers\VerOrdenProduccionController;
 use App\Presentation\Http\Controllers\VerPacienteController;
 use App\Presentation\Http\Controllers\VerPaqueteController;
 use App\Presentation\Http\Controllers\VerPorcionController;
 use App\Presentation\Http\Controllers\VerProductoController;
 use App\Presentation\Http\Controllers\VerRecetaController;
+use App\Presentation\Http\Controllers\VerSubrecursoOrdenController;
 use App\Presentation\Http\Controllers\VerSuscripcionController;
 use App\Presentation\Http\Controllers\VerVentanaEntregaController;
 use Illuminate\Support\Facades\Route;
@@ -91,6 +96,16 @@ Route::middleware(['keycloak.jwt', 'deny.users', 'role:cocinero,planificador,des
     Route::post('/produccion/ordenes/despachar', DespacharOPController::class)
         ->middleware('role:despachador')
         ->name('produccion.ordenes.despachar');
+    Route::get('/produccion/ordenes', ListarOrdenesProduccionController::class)
+        ->name('produccion.ordenes.listar');
+    Route::get('/produccion/ordenes/{id}', VerOrdenProduccionController::class)
+        ->name('produccion.ordenes.ver');
+    Route::get('/produccion/ordenes/{id}/{sub}', VerSubrecursoOrdenController::class)
+        ->name('produccion.ordenes.subrecurso');
+    Route::get('/suscripciones/{id}/ordenes', ListarOrdenesPorSuscripcionController::class)
+        ->name('suscripciones.ordenes');
+    Route::get('/agenda', ObtenerAgendaController::class)
+        ->name('agenda');
 
     Route::post('/pacientes', CrearPacienteController::class)->middleware('role:planificador,produccion')->name('pacientes.crear');
     Route::get('/pacientes', ListarPacientesController::class)->name('pacientes.listar');
