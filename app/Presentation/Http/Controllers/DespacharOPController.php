@@ -37,7 +37,7 @@ class DespacharOPController
             [
                 'ordenProduccionId' => ['required', 'uuid'],
                 'itemsDespacho' => ['required', 'array', 'min:1'],
-                'itemsDespacho.*.sku' => ['required', 'string'],
+                'itemsDespacho.*' => ['string'],
                 'pacienteId' => ['required', 'uuid'],
                 'direccionId' => ['required', 'uuid'],
                 'ventanaEntrega' => ['required', 'uuid'],

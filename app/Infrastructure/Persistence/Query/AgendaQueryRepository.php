@@ -33,10 +33,16 @@ class AgendaQueryRepository
         foreach ($query->get() as $calendario) {
             $fechaKey = $calendario->fecha->format('Y-m-d');
 
+            if ($calendario->items->isEmpty()) {
+                $agrupado[$fechaKey][] = $this->entradaSinDespacho($calendario);
+                continue;
+            }
+
             foreach ($calendario->items as $item) {
                 $despacho = $item->itemDespacho;
 
                 if (! $despacho) {
+                    $agrupado[$fechaKey][] = $this->entradaSinDespacho($calendario);
                     continue;
                 }
 
@@ -68,5 +74,18 @@ class AgendaQueryRepository
         }
 
         return $agrupado;
+    }
+
+    private function entradaSinDespacho(object $calendario): array
+    {
+        return [
+            'calendario_id' => $calendario->id,
+            'estado' => $calendario->estado,
+            'entrega_id' => $calendario->entrega_id,
+            'contrato_id' => $calendario->contrato_id,
+            'paciente' => null,
+            'suscripcion' => null,
+            'ventana_entrega' => null,
+        ];
     }
 }
