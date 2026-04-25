@@ -63,6 +63,7 @@ use App\Presentation\Http\Controllers\ListarVentanasEntregaPorCalendarioControll
 use App\Presentation\Http\Controllers\ListarVentanasEntregaPorPacienteController;
 use App\Presentation\Http\Controllers\LoginController;
 use App\Presentation\Http\Controllers\ObtenerAgendaController;
+use App\Presentation\Http\Controllers\ObtenerProximaVentanaEntregaController;
 use App\Presentation\Http\Controllers\PactStateController;
 use App\Presentation\Http\Controllers\PlanificarOPController;
 use App\Presentation\Http\Controllers\ProcesarOPController;
@@ -123,6 +124,7 @@ Route::middleware(['keycloak.jwt', 'deny.users', 'role:cocinero,planificador,des
 
     Route::post('/ventanas-entrega', CrearVentanaEntregaController::class)->middleware('role:planificador,produccion')->name('ventanas-entrega.crear');
     Route::get('/ventanas-entrega', ListarVentanasEntregaController::class)->name('ventanas-entrega.listar');
+    Route::get('/ventanas-entrega/proxima', ObtenerProximaVentanaEntregaController::class)->name('ventanas-entrega.proxima');
     Route::get('/ventanas-entrega/{id}', VerVentanaEntregaController::class)->name('ventanas-entrega.ver');
     Route::put('/ventanas-entrega/{id}', ActualizarVentanaEntregaController::class)->middleware('role:planificador,produccion')->name('ventanas-entrega.actualizar');
     Route::delete('/ventanas-entrega/{id}', EliminarVentanaEntregaController::class)->middleware('role:planificador,produccion')->name('ventanas-entrega.eliminar');
