@@ -24,11 +24,9 @@ return new class extends Migration
             ->whereNotNull('a.paquete_id')
             ->where(function ($q) {
                 $q->where(function ($q2) {
-                    // a has no status but b does → delete a
                     $q2->whereNull('a.delivery_status')
                         ->whereNotNull('b.delivery_status');
                 })->orWhere(function ($q2) {
-                    // same status (both null or equal) → keep the newer row, delete the older
                     $q2->where(function ($q3) {
                         $q3->whereNull('a.delivery_status')
                             ->whereNull('b.delivery_status');
