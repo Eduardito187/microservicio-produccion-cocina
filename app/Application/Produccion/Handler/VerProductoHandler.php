@@ -51,6 +51,7 @@ class VerProductoHandler
         return [
             'id' => $product->id,
             'sku' => $product->sku,
+            'nombre' => $product->nombre,
             'price' => $product->price,
             'special_price' => $product->special_price,
         ];

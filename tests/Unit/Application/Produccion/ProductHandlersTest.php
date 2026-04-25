@@ -93,7 +93,7 @@ class ProductHandlersTest extends TestCase
         $repository->method('byId')->with($productId)->willReturn($product);
         $ver = new VerProductoHandler($repository, $this->tx());
         $data = $ver(new VerProducto($productId));
-        $this->assertSame(['id' => $productId, 'sku' => 'SKU-007', 'price' => 50.0, 'special_price' => 0.0], $data);
+        $this->assertSame(['id' => $productId, 'sku' => 'SKU-007', 'nombre' => null, 'price' => 50.0, 'special_price' => 0.0], $data);
 
         $repository2 = $this->createMock(ProductRepositoryInterface::class);
         $repository2->method('list')->willReturn([$product]);

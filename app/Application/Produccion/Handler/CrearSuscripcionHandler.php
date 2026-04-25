@@ -52,7 +52,7 @@ class CrearSuscripcionHandler
     public function __invoke(CrearSuscripcion $command): string
     {
         return $this->transactionAggregate->runTransaction(function () use ($command): string {
-            $suscripcion = new Suscripcion(null, $command->nombre);
+            $suscripcion = new Suscripcion($command->id, $command->nombre);
 
             $id = $this->suscripcionRepository->save($suscripcion);
             $event = new SuscripcionCreada($id, $command->nombre);

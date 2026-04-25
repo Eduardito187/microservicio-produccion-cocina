@@ -29,5 +29,26 @@ interface CalendarioRepositoryInterface
      */
     public function list(): array;
 
+    /**
+     * Calendarios asociados a un paciente via item_despacho -> calendario_item.
+     *
+     * @return Calendario[]
+     */
+    public function byPacienteId(string $pacienteId): array;
+
+    /**
+     * Calendarios asociados a una ventana de entrega (mismos entrega_id + contrato_id).
+     *
+     * @return Calendario[]
+     */
+    public function byVentanaEntregaId(string $ventanaEntregaId): array;
+
+    /**
+     * Calendarios asociados a una suscripcion via paciente -> item_despacho -> calendario_item.
+     *
+     * @return Calendario[]
+     */
+    public function bySuscripcionId(string $suscripcionId): array;
+
     public function delete(string|int $id): void;
 }

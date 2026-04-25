@@ -67,6 +67,7 @@ class OrdenProduccionRepositoryTest extends TestCase
         Schema::create('products', function ($table) {
             $table->uuid('id')->primary();
             $table->string('sku')->unique();
+            $table->string('nombre', 255)->nullable();
             $table->decimal('price', 10, 2);
             $table->decimal('special_price', 10, 2)->default(0);
             $table->timestamp('created_at')->nullable();

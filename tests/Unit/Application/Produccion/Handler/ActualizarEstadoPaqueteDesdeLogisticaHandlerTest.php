@@ -274,6 +274,16 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandlerTest extends TestCase
                         return [];
                     }
 
+                    public function byPacienteId(string $pacienteId): array
+                    {
+                        return [];
+                    }
+
+                    public function byCalendarioId(string $calendarioId): array
+                    {
+                        return [];
+                    }
+
                     public function delete(string|int $id): void
                     {
                         // intentionally empty — test stub

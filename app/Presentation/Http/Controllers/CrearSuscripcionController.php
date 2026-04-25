@@ -32,10 +32,12 @@ class CrearSuscripcionController
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([
+            'id' => ['required', 'string', 'uuid'],
             'nombre' => ['required', 'string', 'max:150'],
         ]);
 
         $suscripcionId = $this->handler->__invoke(new CrearSuscripcion(
+            $data['id'],
             $data['nombre']
         ));
 

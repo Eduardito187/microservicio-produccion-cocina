@@ -14,13 +14,19 @@ class CrearSuscripcion
     /**
      * @var string
      */
+    public $id;
+
+    /**
+     * @var string
+     */
     public $nombre;
 
     /**
      * Constructor
      */
-    public function __construct(string $nombre)
+    public function __construct(string $id, string $nombre)
     {
+        $this->id = $id;
         $this->nombre = $nombre;
     }
 }

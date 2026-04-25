@@ -58,11 +58,12 @@ class ActualizarProductoHandler
                 id: $command->id,
                 sku: $command->sku,
                 price: $command->price,
-                special_price: $command->specialPrice
+                special_price: $command->specialPrice,
+                nombre: $command->nombre
             );
 
             $id = $this->productRepository->save($product);
-            $event = new ProductoActualizado($id, $command->sku, $command->price, $command->specialPrice);
+            $event = new ProductoActualizado($id, $command->sku, $command->price, $command->specialPrice, $command->nombre);
             $this->eventPublisher->publish([$event], $id);
 
             return $id;
