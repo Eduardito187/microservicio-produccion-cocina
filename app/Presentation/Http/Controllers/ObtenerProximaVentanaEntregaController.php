@@ -18,12 +18,13 @@ use Illuminate\Http\Request;
  */
 class ObtenerProximaVentanaEntregaController
 {
+    private const TZ = 'America/La_Paz';
+
     public function __invoke(Request $request): JsonResponse
     {
-        $ahora = Carbon::now('America/La_Paz');
+        $ahora = Carbon::now(self::TZ);
 
         $ventana = VentanaEntregaModel::where('hasta', '>', $ahora)
-            ->where(fn ($q) => $q->whereNull('estado')->orWhere('estado', '!=', 0))
             ->orderBy('desde', 'asc')
             ->first();
 
@@ -33,8 +34,8 @@ class ObtenerProximaVentanaEntregaController
 
         return response()->json([
             'id' => $ventana->id,
-            'desde' => Carbon::parse($ventana->desde)->setTimezone('America/La_Paz')->format('Y-m-d H:i:s'),
-            'hasta' => Carbon::parse($ventana->hasta)->setTimezone('America/La_Paz')->format('Y-m-d H:i:s'),
+            'desde' => Carbon::parse($ventana->desde)->setTimezone(self::TZ)->format('Y-m-d H:i:s'),
+            'hasta' => Carbon::parse($ventana->hasta)->setTimezone(self::TZ)->format('Y-m-d H:i:s'),
             'estado' => $ventana->estado,
             'entrega_id' => $ventana->entrega_id,
             'contrato_id' => $ventana->contrato_id,

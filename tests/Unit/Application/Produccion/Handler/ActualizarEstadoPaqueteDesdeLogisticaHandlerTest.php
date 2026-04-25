@@ -10,7 +10,9 @@ use App\Application\Analytics\KpiRepositoryInterface;
 use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
 use App\Application\Produccion\Command\ActualizarEstadoPaqueteDesdeLogisticaCommand;
 use App\Application\Produccion\Handler\ActualizarEstadoPaqueteDesdeLogisticaHandler;
+use App\Application\Produccion\Handler\DeliveryCompletionRepos;
 use App\Application\Produccion\Handler\DeliveryHandlerRepositories;
+use App\Application\Produccion\Handler\DeliveryHandlerServices;
 use App\Application\Produccion\Repository\DeliveryInconsistencyQueueRepositoryInterface;
 use App\Application\Produccion\Repository\OrderDeliveryProgressRepositoryInterface;
 use App\Application\Produccion\Repository\PackageDeliveryHistoryRepositoryInterface;
@@ -255,20 +257,14 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandlerTest extends TestCase
             public function desactivar(string $id): void
             { /* stub */
             }
+
+            public function desactivarSiVencida(string $id): void
+            { /* stub */
+            }
         };
 
-        $repos = new DeliveryHandlerRepositories(
-            evidencia: new class implements EntregaEvidenciaRepositoryInterface
-            {
-                public function upsertByEventId(string $eventId, array $data): void
-                { /* stub */
-                }
-            },
-            history: $overrides['historyRepo'] ?? $this->makeHistoryRepo(),
-            tracking: $overrides['trackingRepo'] ?? $this->makeTrackingRepo(),
+        $completion = new DeliveryCompletionRepos(
             progress: $overrides['progressRepo'] ?? $this->makeProgressRepoMarkingRows(0),
-            inconsistency: $overrides['inconsistencyRepo'] ?? $this->makeInconsistencyRepo(),
-            itemDespacho: $itemRepo,
             ordenProduccion: new class implements OrdenProduccionRepositoryInterface
             {
                 public function byId(?string $id): ?\App\Domain\Produccion\Aggregate\OrdenProduccion
@@ -288,14 +284,21 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandlerTest extends TestCase
             ventanaEntrega: $ventanaStub,
         );
 
-        return new ActualizarEstadoPaqueteDesdeLogisticaHandler(
-            repos: $repos,
-            kpiRepository: $overrides['kpi'] ?? $this->makeKpiSpy(),
-            transactionAggregate: $this->tx(),
-            eventPublisher: $overrides['publisher'] ?? new class implements DomainEventPublisherInterface
+        $repos = new DeliveryHandlerRepositories(
+            evidencia: new class implements EntregaEvidenciaRepositoryInterface
             {
-                public function publish(array $events, mixed $aggregateId): void {}
+                public function upsertByEventId(string $eventId, array $data): void
+                { /* stub */
+                }
             },
+            history: $overrides['historyRepo'] ?? $this->makeHistoryRepo(),
+            tracking: $overrides['trackingRepo'] ?? $this->makeTrackingRepo(),
+            inconsistency: $overrides['inconsistencyRepo'] ?? $this->makeInconsistencyRepo(),
+            itemDespacho: $itemRepo,
+            completion: $completion,
+        );
+
+        $services = new DeliveryHandlerServices(
             statusMapper: new DeliveryStatusMapper,
             backfiller: new DeliveryContextBackfiller($itemRepo, $ventanaStub),
             progressSync: $overrides['progressSync'] ?? $this->makeProgressSyncReturning([
@@ -303,6 +306,19 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandlerTest extends TestCase
                 'pending_packages' => 0, 'all_completed_at' => null,
                 'entrega_id' => null, 'contrato_id' => null, 'calendario_id' => null,
             ]),
+        );
+
+        return new ActualizarEstadoPaqueteDesdeLogisticaHandler(
+            repos: $repos,
+            services: $services,
+            kpiRepository: $overrides['kpi'] ?? $this->makeKpiSpy(),
+            transactionAggregate: $this->tx(),
+            eventPublisher: $overrides['publisher'] ?? new class implements DomainEventPublisherInterface
+            {
+                public function publish(array $events, mixed $aggregateId): void
+                { /* spy */
+                }
+            },
             logger: new NullLogger
         );
     }
