@@ -85,6 +85,27 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
     /**
      * @return VentanaEntrega[]
      */
+    public function listVigentes(): array
+    {
+        $items = [];
+
+        foreach (VentanaEntregaModel::query()->where('hasta', '>=', now())->orderBy('desde')->get() as $row) {
+            $items[] = new VentanaEntrega(
+                $row->id,
+                $this->convertDateTime($row->desde),
+                $this->convertDateTime($row->hasta),
+                $row->entrega_id,
+                $row->contrato_id,
+                $row->estado
+            );
+        }
+
+        return $items;
+    }
+
+    /**
+     * @return VentanaEntrega[]
+     */
     public function byPacienteId(string $pacienteId): array
     {
         $rows = VentanaEntregaModel::query()

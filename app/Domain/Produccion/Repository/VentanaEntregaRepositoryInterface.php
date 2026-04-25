@@ -30,6 +30,11 @@ interface VentanaEntregaRepositoryInterface
     public function list(): array;
 
     /**
+     * @return VentanaEntrega[]
+     */
+    public function listVigentes(): array;
+
+    /**
      * Ventanas de entrega ligadas a un paciente via item_despacho.ventana_entrega_id
      * y via etiqueta -> paquete.ventana_id.
      *

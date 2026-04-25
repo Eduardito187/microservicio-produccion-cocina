@@ -40,7 +40,7 @@ class ListarVentanasEntregaHandler
     public function __invoke(ListarVentanasEntrega $command): array
     {
         return $this->transactionAggregate->runTransaction(function (): array {
-            return array_map([$this, 'mapVentana'], $this->ventanaEntregaRepository->list());
+            return array_map([$this, 'mapVentana'], $this->ventanaEntregaRepository->listVigentes());
         });
     }
 

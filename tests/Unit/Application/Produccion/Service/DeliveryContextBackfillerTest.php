@@ -118,6 +118,11 @@ class DeliveryContextBackfillerTest extends TestCase
                 return [];
             }
 
+            public function listVigentes(): array
+            {
+                return [];
+            }
+
             public function byPacienteId(string $pacienteId): array
             {
                 return [];
@@ -219,6 +224,11 @@ class DeliveryContextBackfillerTest extends TestCase
             }
 
             public function list(): array
+            {
+                return [];
+            }
+
+            public function listVigentes(): array
             {
                 return [];
             }
