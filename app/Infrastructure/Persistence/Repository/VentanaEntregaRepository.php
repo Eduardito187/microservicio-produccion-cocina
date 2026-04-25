@@ -89,7 +89,12 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
     {
         $items = [];
 
-        foreach (VentanaEntregaModel::query()->where('hasta', '>=', now())->orderBy('desde')->get() as $row) {
+        $query = VentanaEntregaModel::query()
+            ->where('hasta', '>=', now())
+            ->where(fn ($q) => $q->whereNull('estado')->orWhere('estado', '!=', 0))
+            ->orderBy('desde');
+
+        foreach ($query->get() as $row) {
             $items[] = new VentanaEntrega(
                 $row->id,
                 $this->convertDateTime($row->desde),
@@ -101,6 +106,11 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
         }
 
         return $items;
+    }
+
+    public function desactivar(string $id): void
+    {
+        VentanaEntregaModel::query()->whereKey($id)->update(['estado' => 0]);
     }
 
     /**
