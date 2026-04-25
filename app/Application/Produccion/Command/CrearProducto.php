@@ -17,6 +17,11 @@ class CrearProducto
     public $sku;
 
     /**
+     * @var ?string
+     */
+    public $nombre;
+
+    /**
      * @var float
      */
     public $price;
@@ -29,10 +34,11 @@ class CrearProducto
     /**
      * Constructor
      */
-    public function __construct(string $sku, float $price, float $specialPrice = 0.0)
+    public function __construct(string $sku, float $price, float $specialPrice = 0.0, ?string $nombre = null)
     {
         $this->sku = $sku;
         $this->price = $price;
         $this->specialPrice = $specialPrice;
+        $this->nombre = $nombre;
     }
 }

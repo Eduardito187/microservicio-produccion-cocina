@@ -22,6 +22,11 @@ class Products
     public $sku;
 
     /**
+     * @var ?string
+     */
+    public $nombre;
+
+    /**
      * @var string
      */
     public $price;
@@ -38,11 +43,13 @@ class Products
         string|int|null $id,
         string $sku,
         float $price,
-        float $special_price
+        float $special_price,
+        ?string $nombre = null
     ) {
         $this->id = $id;
         $this->sku = $sku;
         $this->price = $price;
         $this->special_price = $special_price;
+        $this->nombre = $nombre;
     }
 }

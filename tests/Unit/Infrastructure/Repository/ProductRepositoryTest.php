@@ -40,6 +40,7 @@ class ProductRepositoryTest extends TestCase
         Schema::create('products', function (Blueprint $table): void {
             $table->string('id')->primary();
             $table->string('sku')->unique();
+            $table->string('nombre', 255)->nullable();
             $table->decimal('price', 10, 2);
             $table->decimal('special_price', 10, 2)->nullable();
             $table->timestamps();

@@ -193,6 +193,7 @@ class CrearActualizarControllersBulkTest extends TestCase
     private function fullPayload(): array
     {
         return [
+            'id' => '11111111-1111-1111-1111-111111111111',
             'nombre' => 'Nombre Demo',
             'name' => 'Name Demo',
             'documento' => 'DOC-001',

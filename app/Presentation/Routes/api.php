@@ -43,15 +43,22 @@ use App\Presentation\Http\Controllers\GenerarOPController;
 use App\Presentation\Http\Controllers\HealthController;
 use App\Presentation\Http\Controllers\ListarCalendarioItemsController;
 use App\Presentation\Http\Controllers\ListarCalendariosController;
+use App\Presentation\Http\Controllers\ListarCalendariosPorPacienteController;
+use App\Presentation\Http\Controllers\ListarCalendariosPorSuscripcionController;
+use App\Presentation\Http\Controllers\ListarCalendariosPorVentanaEntregaController;
 use App\Presentation\Http\Controllers\ListarDireccionesController;
 use App\Presentation\Http\Controllers\ListarEtiquetasController;
 use App\Presentation\Http\Controllers\ListarPacientesController;
+use App\Presentation\Http\Controllers\ListarPacientesPorCalendarioController;
+use App\Presentation\Http\Controllers\ListarPacientesPorVentanaEntregaController;
 use App\Presentation\Http\Controllers\ListarPaquetesController;
 use App\Presentation\Http\Controllers\ListarPorcionesController;
 use App\Presentation\Http\Controllers\ListarProductosController;
 use App\Presentation\Http\Controllers\ListarRecetasController;
 use App\Presentation\Http\Controllers\ListarSuscripcionesController;
 use App\Presentation\Http\Controllers\ListarVentanasEntregaController;
+use App\Presentation\Http\Controllers\ListarVentanasEntregaPorCalendarioController;
+use App\Presentation\Http\Controllers\ListarVentanasEntregaPorPacienteController;
 use App\Presentation\Http\Controllers\LoginController;
 use App\Presentation\Http\Controllers\PactStateController;
 use App\Presentation\Http\Controllers\PlanificarOPController;
@@ -90,6 +97,8 @@ Route::middleware(['keycloak.jwt', 'deny.users', 'role:cocinero,planificador,des
     Route::get('/pacientes/{id}', VerPacienteController::class)->name('pacientes.ver');
     Route::put('/pacientes/{id}', ActualizarPacienteController::class)->middleware('role:planificador,produccion')->name('pacientes.actualizar');
     Route::delete('/pacientes/{id}', EliminarPacienteController::class)->middleware('role:planificador,produccion')->name('pacientes.eliminar');
+    Route::get('/pacientes/{id}/calendarios', ListarCalendariosPorPacienteController::class)->name('pacientes.calendarios');
+    Route::get('/pacientes/{id}/ventanas-entrega', ListarVentanasEntregaPorPacienteController::class)->name('pacientes.ventanas-entrega');
 
     Route::post('/direcciones', CrearDireccionController::class)->middleware('role:planificador,produccion')->name('direcciones.crear');
     Route::get('/direcciones', ListarDireccionesController::class)->name('direcciones.listar');
@@ -102,6 +111,8 @@ Route::middleware(['keycloak.jwt', 'deny.users', 'role:cocinero,planificador,des
     Route::get('/ventanas-entrega/{id}', VerVentanaEntregaController::class)->name('ventanas-entrega.ver');
     Route::put('/ventanas-entrega/{id}', ActualizarVentanaEntregaController::class)->middleware('role:planificador,produccion')->name('ventanas-entrega.actualizar');
     Route::delete('/ventanas-entrega/{id}', EliminarVentanaEntregaController::class)->middleware('role:planificador,produccion')->name('ventanas-entrega.eliminar');
+    Route::get('/ventanas-entrega/{id}/pacientes', ListarPacientesPorVentanaEntregaController::class)->name('ventanas-entrega.pacientes');
+    Route::get('/ventanas-entrega/{id}/calendarios', ListarCalendariosPorVentanaEntregaController::class)->name('ventanas-entrega.calendarios');
 
     Route::post('/porciones', CrearPorcionController::class)->middleware('role:planificador,produccion')->name('porciones.crear');
     Route::get('/porciones', ListarPorcionesController::class)->name('porciones.listar');
@@ -114,6 +125,7 @@ Route::middleware(['keycloak.jwt', 'deny.users', 'role:cocinero,planificador,des
     Route::get('/suscripciones/{id}', VerSuscripcionController::class)->name('suscripciones.ver');
     Route::put('/suscripciones/{id}', ActualizarSuscripcionController::class)->middleware('role:planificador,produccion')->name('suscripciones.actualizar');
     Route::delete('/suscripciones/{id}', EliminarSuscripcionController::class)->middleware('role:planificador,produccion')->name('suscripciones.eliminar');
+    Route::get('/suscripciones/{id}/calendarios', ListarCalendariosPorSuscripcionController::class)->name('suscripciones.calendarios');
 
     Route::post('/productos', CrearProductoController::class)->middleware('role:planificador,produccion')->name('productos.crear');
     Route::get('/productos', ListarProductosController::class)->name('productos.listar');
@@ -126,6 +138,8 @@ Route::middleware(['keycloak.jwt', 'deny.users', 'role:cocinero,planificador,des
     Route::get('/calendarios/{id}', VerCalendarioController::class)->name('calendarios.ver');
     Route::put('/calendarios/{id}', ActualizarCalendarioController::class)->middleware('role:planificador,produccion')->name('calendarios.actualizar');
     Route::delete('/calendarios/{id}', EliminarCalendarioController::class)->middleware('role:planificador,produccion')->name('calendarios.eliminar');
+    Route::get('/calendarios/{id}/pacientes', ListarPacientesPorCalendarioController::class)->name('calendarios.pacientes');
+    Route::get('/calendarios/{id}/ventanas-entrega', ListarVentanasEntregaPorCalendarioController::class)->name('calendarios.ventanas-entrega');
 
     Route::post('/calendario-items', CrearCalendarioItemController::class)->middleware('role:planificador,produccion')->name('calendario-items.crear');
     Route::get('/calendario-items', ListarCalendarioItemsController::class)->name('calendario-items.listar');

@@ -19,6 +19,11 @@ class ProductoActualizado extends BaseDomainEvent
     private $sku;
 
     /**
+     * @var ?string
+     */
+    private $nombre;
+
+    /**
      * @var float
      */
     private $price;
@@ -35,18 +40,21 @@ class ProductoActualizado extends BaseDomainEvent
         string|int|null $productoId,
         string $sku,
         float $price,
-        float $specialPrice
+        float $specialPrice,
+        ?string $nombre = null
     ) {
         parent::__construct($productoId);
         $this->sku = $sku;
         $this->price = $price;
         $this->specialPrice = $specialPrice;
+        $this->nombre = $nombre;
     }
 
     public function toArray(): array
     {
         return [
             'sku' => $this->sku,
+            'nombre' => $this->nombre,
             'price' => $this->price,
             'specialPrice' => $this->specialPrice,
         ];

@@ -56,11 +56,12 @@ class CrearProductoHandler
                 null,
                 $command->sku,
                 $command->price,
-                $command->specialPrice
+                $command->specialPrice,
+                $command->nombre
             );
 
             $id = $this->productRepository->save($product);
-            $event = new ProductoCreado($id, $command->sku, $command->price, $command->specialPrice);
+            $event = new ProductoCreado($id, $command->sku, $command->price, $command->specialPrice, $command->nombre);
             $this->eventPublisher->publish([$event], $id);
 
             return $id;

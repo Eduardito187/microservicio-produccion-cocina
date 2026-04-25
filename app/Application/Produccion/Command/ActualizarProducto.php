@@ -22,6 +22,11 @@ class ActualizarProducto
     public $sku;
 
     /**
+     * @var ?string
+     */
+    public $nombre;
+
+    /**
      * @var float
      */
     public $price;
@@ -34,11 +39,12 @@ class ActualizarProducto
     /**
      * Constructor
      */
-    public function __construct(string $id, string $sku, float $price, float $specialPrice = 0.0)
+    public function __construct(string $id, string $sku, float $price, float $specialPrice = 0.0, ?string $nombre = null)
     {
         $this->id = $id;
         $this->sku = $sku;
         $this->price = $price;
         $this->specialPrice = $specialPrice;
+        $this->nombre = $nombre;
     }
 }

@@ -118,6 +118,16 @@ class DeliveryContextBackfillerTest extends TestCase
                 return [];
             }
 
+            public function byPacienteId(string $pacienteId): array
+            {
+                return [];
+            }
+
+            public function byCalendarioId(string $calendarioId): array
+            {
+                return [];
+            }
+
             public function delete(string|int $id): void {}
         };
 
@@ -209,6 +219,16 @@ class DeliveryContextBackfillerTest extends TestCase
             }
 
             public function list(): array
+            {
+                return [];
+            }
+
+            public function byPacienteId(string $pacienteId): array
+            {
+                return [];
+            }
+
+            public function byCalendarioId(string $calendarioId): array
             {
                 return [];
             }

@@ -30,8 +30,9 @@ class ProductRepository implements ProductRepositoryInterface
         return new Products(
             $row->id,
             $row->sku,
-            $row->price,
-            $row->special_price
+            (float) $row->price,
+            (float) $row->special_price,
+            $row->nombre
         );
     }
 
@@ -46,8 +47,9 @@ class ProductRepository implements ProductRepositoryInterface
         return new Products(
             $row->id,
             $row->sku,
-            $row->price,
-            $row->special_price
+            (float) $row->price,
+            (float) $row->special_price,
+            $row->nombre
         );
     }
 
@@ -55,7 +57,12 @@ class ProductRepository implements ProductRepositoryInterface
     {
         $model = ProductModel::query()->updateOrCreate(
             ['id' => $product->id],
-            ['sku' => $product->sku, 'price' => $product->price, 'special_price' => $product->special_price]
+            [
+                'sku' => $product->sku,
+                'nombre' => $product->nombre,
+                'price' => $product->price,
+                'special_price' => $product->special_price,
+            ]
         );
 
         return $model->id;
@@ -73,7 +80,8 @@ class ProductRepository implements ProductRepositoryInterface
                 $row->id,
                 $row->sku,
                 (float) $row->price,
-                (float) $row->special_price
+                (float) $row->special_price,
+                $row->nombre
             );
         }
 

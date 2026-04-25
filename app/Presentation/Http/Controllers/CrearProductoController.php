@@ -33,6 +33,7 @@ class CrearProductoController
     {
         $data = $request->validate([
             'sku' => ['required', 'string', 'max:150'],
+            'nombre' => ['nullable', 'string', 'max:255'],
             'price' => ['required', 'numeric', 'min:0'],
             'specialPrice' => ['nullable', 'numeric', 'min:0'],
         ]);
@@ -40,7 +41,8 @@ class CrearProductoController
         $productId = $this->handler->__invoke(new CrearProducto(
             $data['sku'],
             (float) $data['price'],
-            isset($data['specialPrice']) ? (float) $data['specialPrice'] : 0.0
+            isset($data['specialPrice']) ? (float) $data['specialPrice'] : 0.0,
+            $data['nombre'] ?? null
         ));
 
         return response()->json(['productId' => $productId], 201);

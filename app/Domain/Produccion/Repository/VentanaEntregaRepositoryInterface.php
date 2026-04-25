@@ -29,5 +29,20 @@ interface VentanaEntregaRepositoryInterface
      */
     public function list(): array;
 
+    /**
+     * Ventanas de entrega ligadas a un paciente via item_despacho.ventana_entrega_id
+     * y via etiqueta -> paquete.ventana_id.
+     *
+     * @return VentanaEntrega[]
+     */
+    public function byPacienteId(string $pacienteId): array;
+
+    /**
+     * Ventanas de entrega asociadas a un calendario (mismos entrega_id + contrato_id).
+     *
+     * @return VentanaEntrega[]
+     */
+    public function byCalendarioId(string $calendarioId): array;
+
     public function delete(string|int $id): void;
 }
