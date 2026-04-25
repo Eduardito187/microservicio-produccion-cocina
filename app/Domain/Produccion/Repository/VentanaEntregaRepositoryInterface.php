@@ -52,4 +52,10 @@ interface VentanaEntregaRepositoryInterface
     public function delete(string|int $id): void;
 
     public function desactivar(string $id): void;
+
+    /**
+     * Desactiva la ventana solo si ya venció (hasta < ahora).
+     * No toca ventanas con fecha futura.
+     */
+    public function desactivarSiVencida(string $id): void;
 }

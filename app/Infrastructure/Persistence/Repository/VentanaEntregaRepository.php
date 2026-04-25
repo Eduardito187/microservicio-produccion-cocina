@@ -91,7 +91,6 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
 
         $query = VentanaEntregaModel::query()
             ->where('hasta', '>=', now())
-            ->where(fn ($q) => $q->whereNull('estado')->orWhere('estado', '!=', 0))
             ->orderBy('desde');
 
         foreach ($query->get() as $row) {
@@ -111,6 +110,14 @@ class VentanaEntregaRepository implements VentanaEntregaRepositoryInterface
     public function desactivar(string $id): void
     {
         VentanaEntregaModel::query()->whereKey($id)->update(['estado' => 0]);
+    }
+
+    public function desactivarSiVencida(string $id): void
+    {
+        VentanaEntregaModel::query()
+            ->whereKey($id)
+            ->where('hasta', '<', now())
+            ->update(['estado' => 0]);
     }
 
     /**

@@ -133,9 +133,17 @@ class DeliveryContextBackfillerTest extends TestCase
                 return [];
             }
 
-            public function delete(string|int $id): void {}
+            public function delete(string|int $id): void
+            { /* stub */
+            }
 
-            public function desactivar(string $id): void {}
+            public function desactivar(string $id): void
+            { /* stub */
+            }
+
+            public function desactivarSiVencida(string $id): void
+            { /* stub */
+            }
         };
 
         $backfiller = new DeliveryContextBackfiller($itemRepo, $ventanaRepo);
@@ -245,9 +253,17 @@ class DeliveryContextBackfillerTest extends TestCase
                 return [];
             }
 
-            public function delete(string|int $id): void {}
+            public function delete(string|int $id): void
+            { /* stub */
+            }
 
-            public function desactivar(string $id): void {}
+            public function desactivar(string $id): void
+            { /* stub */
+            }
+
+            public function desactivarSiVencida(string $id): void
+            { /* stub */
+            }
         };
     }
 }

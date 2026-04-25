@@ -8,9 +8,6 @@ namespace App\Application\Produccion\Handler;
 
 use App\Application\Analytics\KpiRepositoryInterface;
 use App\Application\Produccion\Command\ActualizarEstadoPaqueteDesdeLogisticaCommand;
-use App\Application\Produccion\Service\DeliveryContextBackfiller;
-use App\Application\Produccion\Service\DeliveryStatusMapper;
-use App\Application\Produccion\Service\OrderDeliveryProgressSync;
 use App\Application\Shared\DomainEventPublisherInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Aggregate\SeguimientoEntregaPaquete;
@@ -30,41 +27,35 @@ use Psr\Log\NullLogger;
 class ActualizarEstadoPaqueteDesdeLogisticaHandler
 {
     private DeliveryHandlerRepositories $repos;
+    private DeliveryHandlerServices $services;
     private KpiRepositoryInterface $kpiRepository;
     private TransactionAggregate $transactionAggregate;
     private DomainEventPublisherInterface $eventPublisher;
-    private DeliveryStatusMapper $statusMapper;
-    private DeliveryContextBackfiller $backfiller;
-    private OrderDeliveryProgressSync $progressSync;
     private LoggerInterface $logger;
 
     public function __construct(
         DeliveryHandlerRepositories $repos,
+        DeliveryHandlerServices $services,
         KpiRepositoryInterface $kpiRepository,
         TransactionAggregate $transactionAggregate,
         DomainEventPublisherInterface $eventPublisher,
-        DeliveryStatusMapper $statusMapper,
-        DeliveryContextBackfiller $backfiller,
-        OrderDeliveryProgressSync $progressSync,
         ?LoggerInterface $logger = null
     ) {
         $this->repos = $repos;
+        $this->services = $services;
         $this->kpiRepository = $kpiRepository;
         $this->transactionAggregate = $transactionAggregate;
         $this->eventPublisher = $eventPublisher;
-        $this->statusMapper = $statusMapper;
-        $this->backfiller = $backfiller;
-        $this->progressSync = $progressSync;
         $this->logger = $logger ?? new NullLogger;
     }
 
     public function __invoke(ActualizarEstadoPaqueteDesdeLogisticaCommand $command): void
     {
         $this->kpiRepository->increment('delivery_events_processed_total', 1);
-        [$nextStatus, $kpiName] = $this->statusMapper->mapStatus($command->deliveryStatus);
-        $occurredOn = $this->statusMapper->parseOccurredOn($command->occurredOn);
+        [$nextStatus, $kpiName] = $this->services->statusMapper->mapStatus($command->deliveryStatus);
+        $occurredOn = $this->services->statusMapper->parseOccurredOn($command->occurredOn);
         $occurredAt = $occurredOn?->toDatabase();
-        $driverId = $this->statusMapper->parseDriverId($command->driverId);
+        $driverId = $this->services->statusMapper->parseDriverId($command->driverId);
 
         $this->logger->info('Procesando actualizacion de estado logistico del paquete', [
             'event_id' => $command->eventId,
@@ -74,57 +65,58 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             'mapped_status' => $nextStatus->value(),
         ]);
 
-        $fotoUrl = null;
-        $geo = null;
-        if (is_array($command->deliveryEvidence)) {
-            $fotoUrl = $command->deliveryEvidence['url'] ?? ($command->deliveryEvidence['fotoUrl'] ?? null);
-            $geo = $command->deliveryEvidence['geo'] ?? ($command->deliveryEvidence['geolocation'] ?? null);
-            if (! is_array($geo)) {
-                $geo = null;
-            }
-            if (! is_string($fotoUrl)) {
-                $fotoUrl = null;
-            }
-        } elseif (is_string($command->deliveryEvidence) && trim($command->deliveryEvidence) !== '') {
-            $fotoUrl = trim($command->deliveryEvidence);
-        }
+        $ctx = new DeliveryEventContext($command->eventId, $command->packageId, $nextStatus, $occurredOn, $driverId, $command->payload);
 
-        $this->transactionAggregate->runTransaction(function () use ($command, $nextStatus, $kpiName, $occurredOn, $occurredAt, $driverId, $fotoUrl, $geo): void {
-            $this->persistHistory(
-                $command->eventId,
-                $command->packageId,
-                $command->deliveryStatus,
-                $driverId?->value(),
-                $command->deliveryEvidence,
-                $command->payload,
-                $occurredAt
-            );
+        $fotoUrl = $this->extractFotoUrl($command->deliveryEvidence);
+        $geo = $this->extractGeo($command->deliveryEvidence);
 
-            $this->repos->evidencia->upsertByEventId($command->eventId, [
-                'paquete_id' => $command->packageId,
-                'status' => $nextStatus->value(),
+        $this->transactionAggregate->runTransaction(function () use ($command, $ctx, $kpiName, $occurredAt, $driverId, $fotoUrl, $geo): void {
+            $this->persistHistory($ctx->eventId, $ctx->packageId, $command->deliveryStatus, $driverId?->value(), $command->deliveryEvidence, $ctx->payload, $occurredAt);
+
+            $this->repos->evidencia->upsertByEventId($ctx->eventId, [
+                'paquete_id' => $ctx->packageId,
+                'status' => $ctx->nextStatus->value(),
                 'driver_id' => $driverId?->value(),
                 'foto_url' => $fotoUrl,
                 'geo' => $geo,
                 'incident_type' => $command->incidentType,
                 'incident_description' => $command->incidentDescription,
                 'occurred_on' => $occurredAt,
-                'payload' => $command->payload,
+                'payload' => $ctx->payload,
             ]);
 
             if ($kpiName !== null) {
                 $this->kpiRepository->increment($kpiName, 1);
             }
 
-            $this->syncDispatchStatusAndEmitCompletionIfReady(
-                $command->eventId,
-                $command->packageId,
-                $nextStatus,
-                $occurredOn,
-                $driverId,
-                $command->payload
-            );
+            $this->syncDispatchStatusAndEmitCompletionIfReady($ctx);
         });
+    }
+
+    private function extractFotoUrl(mixed $evidence): ?string
+    {
+        if (is_array($evidence)) {
+            $url = $evidence['url'] ?? ($evidence['fotoUrl'] ?? null);
+
+            return is_string($url) ? $url : null;
+        }
+
+        if (is_string($evidence) && trim($evidence) !== '') {
+            return trim($evidence);
+        }
+
+        return null;
+    }
+
+    private function extractGeo(mixed $evidence): ?array
+    {
+        if (! is_array($evidence)) {
+            return null;
+        }
+
+        $geo = $evidence['geo'] ?? ($evidence['geolocation'] ?? null);
+
+        return is_array($geo) ? $geo : null;
     }
 
     private function persistHistory(string $eventId, string $packageId, string $receivedStatus, ?string $driverId, mixed $evidence, array $payload, ?string $occurredAt): void
@@ -138,7 +130,6 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
         $normalizedStatus = $receivedStatus !== '' ? strtolower(trim($receivedStatus)) : null;
         $encodedPayload = json_encode($payload);
-
         $existing = $this->repos->history->findByEventId($eventId);
 
         if ($existing !== null) {
@@ -169,128 +160,47 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         ]);
     }
 
-    private function syncDispatchStatusAndEmitCompletionIfReady(
-        string $eventId,
-        string $packageId,
-        \App\Domain\Produccion\ValueObjects\PackageStatus $nextStatus,
-        ?OccurredOn $occurredOn,
-        ?\App\Domain\Produccion\ValueObjects\DriverId $driverId,
-        array $payload
-    ): void {
-        $this->backfiller->backfill($packageId);
+    private function syncDispatchStatusAndEmitCompletionIfReady(DeliveryEventContext $ctx): void
+    {
+        $this->services->backfiller->backfill($ctx->packageId);
 
-        $rows = $this->repos->itemDespacho->findDeliveryRowsByPaqueteId($packageId);
+        $rows = $this->repos->itemDespacho->findDeliveryRowsByPaqueteId($ctx->packageId);
 
         if (empty($rows)) {
             $this->kpiRepository->increment('alert_package_unknown', 1);
             $this->logger->warning('Actualizacion de estado recibida para paquete desconocido', [
-                'event_id' => $eventId,
-                'package_id' => $packageId,
-                'driver_id' => $driverId?->value(),
+                'event_id' => $ctx->eventId,
+                'package_id' => $ctx->packageId,
+                'driver_id' => $ctx->driverId?->value(),
             ]);
-            $this->enqueueInconsistency(null, $eventId, $packageId, 'package_without_dispatch_relation', $payload);
+            $this->enqueueInconsistency(null, $ctx, 'package_without_dispatch_relation');
 
             return;
         }
 
+        [$opIds, $anyChanged] = $this->processRowsAndCollectOpIds($rows, $ctx);
+
+        if (! $anyChanged) {
+            return;
+        }
+
+        foreach (array_keys($opIds) as $opId) {
+            $this->emitOrderCompletionIfReady($opId, $ctx);
+        }
+    }
+
+    /**
+     * @return array{0: array<string,true>, 1: bool}
+     */
+    private function processRowsAndCollectOpIds(array $rows, DeliveryEventContext $ctx): array
+    {
+        $state = new RowProcessingState;
         $opIds = [];
-        $trackingUpserted = false;
-        $packageCompletedMetricCounted = false;
-        $missingOpAlertRaised = false;
         $anyChanged = false;
 
         foreach ($rows as $row) {
-            if ((! is_string($row->op_id) || $row->op_id === '') && ! $missingOpAlertRaised) {
-                $this->kpiRepository->increment('alert_missing_op_id', 1);
-                $this->logger->warning('Actualizacion de estado sin relacion op_id', [
-                    'event_id' => $eventId,
-                    'package_id' => $packageId,
-                    'item_despacho_id' => $row->id,
-                    'driver_id' => $driverId?->value(),
-                ]);
-                $this->enqueueInconsistency(null, $eventId, $packageId, 'missing_op_id_for_package', $payload);
-                $missingOpAlertRaised = true;
-            }
-
-            $currentStatus = $this->statusMapper->parseStoredStatus(is_string($row->delivery_status) ? $row->delivery_status : null);
-            $wasLocked = $currentStatus?->isCompleted() ?? false;
-            $seguimiento = new SeguimientoEntregaPaquete(
-                $packageId,
-                is_string($row->op_id) ? $row->op_id : null,
-                is_string($row->entrega_id) ? $row->entrega_id : null,
-                is_string($row->contrato_id) ? $row->contrato_id : null,
-                $currentStatus,
-                $wasLocked,
-                null,
-                null
-            );
-
-            $effectiveOccurredOn = $occurredOn ?? new OccurredOn(new DateTimeImmutable('now'));
-            $changed = $seguimiento->applyStatus($nextStatus, $driverId, $effectiveOccurredOn);
-            $isLocked = $nextStatus->isCompleted() || $wasLocked;
-
-            if (! $changed && $currentStatus !== null && $currentStatus->value() !== $nextStatus->value()) {
-                $this->kpiRepository->increment('delivery_state_blocked_terminal', 1);
-                $this->logger->warning('Transicion de estado bloqueada por politica del agregado', [
-                    'event_id' => $eventId,
-                    'package_id' => $packageId,
-                    'op_id' => $row->op_id,
-                    'driver_id' => $driverId?->value(),
-                    'previous_status' => $currentStatus->value(),
-                    'new_status' => $nextStatus->value(),
-                    'locked' => $isLocked,
-                ]);
-            }
-
-            $this->logger->info('Transicion de estado del paquete procesada', [
-                'event_id' => $eventId,
-                'package_id' => $packageId,
-                'op_id' => $row->op_id,
-                'driver_id' => $driverId?->value(),
-                'previous_status' => $currentStatus?->value(),
-                'new_status' => $nextStatus->value(),
-                'changed' => $changed,
-                'locked' => $isLocked,
-            ]);
-
-            $updatePayload = ['updated_at' => now()];
-            if ($changed) {
-                $updatePayload['delivery_status'] = $nextStatus->value();
-                $updatePayload['delivery_occurred_on'] = $effectiveOccurredOn->toDatabase();
-            }
-            if ($driverId !== null) {
-                $updatePayload['driver_id'] = $driverId->value();
-            }
-
-            $this->repos->itemDespacho->updateDeliveryFields($row->id, $updatePayload);
-
-            if ($changed && $nextStatus->isCompleted() && is_string($row->ventana_entrega_id) && $row->ventana_entrega_id !== '') {
-                $this->repos->ventanaEntrega->desactivar($row->ventana_entrega_id);
-            }
-
-            if (! $trackingUpserted) {
-                $this->upsertTracking(
-                    $packageId,
-                    is_string($row->op_id) ? $row->op_id : null,
-                    is_string($row->entrega_id) ? $row->entrega_id : null,
-                    is_string($row->contrato_id) ? $row->contrato_id : null,
-                    $driverId?->value(),
-                    $changed ? $nextStatus->value() : ($currentStatus?->value()),
-                    $isLocked,
-                    $nextStatus->isCompleted() ? $effectiveOccurredOn->toDatabase() : null,
-                    $eventId,
-                    $effectiveOccurredOn->toDatabase()
-                );
-                $trackingUpserted = true;
-            }
-
-            if ($changed) {
+            if ($this->processDeliveryRow($row, $ctx, $state)) {
                 $anyChanged = true;
-            }
-
-            if ($changed && $nextStatus->isCompleted() && ! $packageCompletedMetricCounted) {
-                $this->kpiRepository->increment('delivery_packages_completed', 1);
-                $packageCompletedMetricCounted = true;
             }
 
             if (is_string($row->op_id) && $row->op_id !== '') {
@@ -298,104 +208,218 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             }
         }
 
-        if (! $anyChanged) {
+        return [$opIds, $anyChanged];
+    }
+
+    private function processDeliveryRow(object $row, DeliveryEventContext $ctx, RowProcessingState $state): bool
+    {
+        $this->handleMissingOpId($row, $ctx, $state);
+
+        $currentStatus = $this->services->statusMapper->parseStoredStatus(is_string($row->delivery_status) ? $row->delivery_status : null);
+        $wasLocked = $currentStatus?->isCompleted() ?? false;
+        $seguimiento = new SeguimientoEntregaPaquete(
+            $ctx->packageId,
+            is_string($row->op_id) ? $row->op_id : null,
+            is_string($row->entrega_id) ? $row->entrega_id : null,
+            is_string($row->contrato_id) ? $row->contrato_id : null,
+            $currentStatus,
+            $wasLocked,
+            null,
+            null
+        );
+
+        $effectiveOccurredOn = $ctx->occurredOn ?? new OccurredOn(new DateTimeImmutable('now'));
+        $changed = $seguimiento->applyStatus($ctx->nextStatus, $ctx->driverId, $effectiveOccurredOn);
+        $isLocked = $ctx->nextStatus->isCompleted() || $wasLocked;
+
+        $this->logStatusTransition($row, $ctx, $currentStatus, $changed, $isLocked);
+        $this->updateItemDespacho($row, $ctx, $changed, $effectiveOccurredOn);
+
+        if (! $state->trackingUpserted) {
+            $this->upsertTracking($this->buildTrackingContext($row, $ctx, $currentStatus, $changed, $isLocked, $effectiveOccurredOn));
+            $state->trackingUpserted = true;
+        }
+
+        if ($changed && $ctx->nextStatus->isCompleted()) {
+            $this->deactivateVentanaIfExpired($row);
+            if (! $state->packageCompletedMetricCounted) {
+                $this->kpiRepository->increment('delivery_packages_completed', 1);
+                $state->packageCompletedMetricCounted = true;
+            }
+        }
+
+        return $changed;
+    }
+
+    private function handleMissingOpId(object $row, DeliveryEventContext $ctx, RowProcessingState $state): void
+    {
+        if ((is_string($row->op_id) && $row->op_id !== '') || $state->missingOpAlertRaised) {
             return;
         }
 
-        foreach (array_keys($opIds) as $opId) {
-            $projection = $this->progressSync->syncAndGetProjection($opId, $occurredOn);
+        $this->kpiRepository->increment('alert_missing_op_id', 1);
+        $this->logger->warning('Actualizacion de estado sin relacion op_id', [
+            'event_id' => $ctx->eventId,
+            'package_id' => $ctx->packageId,
+            'item_despacho_id' => $row->id,
+            'driver_id' => $ctx->driverId?->value(),
+        ]);
+        $this->enqueueInconsistency(null, $ctx, 'missing_op_id_for_package');
+        $state->missingOpAlertRaised = true;
+    }
 
-            if ($projection['total_packages'] === 0) {
-                continue;
-            }
-
-            $allDelivered = $projection['completed_packages'] === $projection['total_packages'];
-            $allFailed = $projection['failed_packages'] === $projection['total_packages'];
-            if (! $allDelivered && ! $allFailed) {
-                continue;
-            }
-
-            if ($projection['calendario_id'] === null || $projection['contrato_id'] === null) {
-                $this->kpiRepository->increment('alert_missing_delivery_context', 1);
-                $this->logger->warning('Evento consolidado bloqueado por contexto de entrega faltante', [
-                    'event_id' => $eventId,
-                    'package_id' => $packageId,
-                    'op_id' => $opId,
-                    'driver_id' => $driverId?->value(),
-                    'projection' => $projection,
-                ]);
-                $this->enqueueInconsistency(
-                    $opId,
-                    $eventId,
-                    $packageId,
-                    'missing_delivery_context_for_consolidated_event',
-                    ['projection' => $projection, 'payload' => $payload]
-                );
-                continue;
-            }
-
-            $completionEventId = (string) Str::uuid();
-            $allCompletedAt = $projection['all_completed_at'] ?? now()->format('Y-m-d H:i:s');
-
-            $markedProgress = $this->repos->progress->markCompletionIfNotSet($opId, $completionEventId, $allCompletedAt);
-
-            if ($markedProgress === 0) {
-                continue;
-            }
-
-            $completedAt = new DateTimeImmutable($allCompletedAt);
-            $this->repos->ordenProduccion->markEntregaCompletada($opId, $completedAt);
-
-            $event = new PaqueteEntregado(
-                $opId,
-                $projection['calendario_id'],
-                $projection['contrato_id'],
-                $allDelivered ? 'entregado' : 'no entregado'
-            );
-            $this->eventPublisher->publish([$event], $opId);
-            $this->kpiRepository->increment('delivery_orders_completed', 1);
-            $this->logger->info('Evento consolidado de entrega publicado', [
-                'event_id' => $eventId,
-                'op_id' => $opId,
-                'package_id' => $packageId,
-                'driver_id' => $driverId?->value(),
-                'completion_event_id' => $completionEventId,
-                'total_packages' => $projection['total_packages'],
-                'completed_packages' => $projection['completed_packages'],
-                'failed_packages' => $projection['failed_packages'],
-                'estado' => $allDelivered ? 'entregado' : 'no entregado',
+    private function logStatusTransition(object $row, DeliveryEventContext $ctx, mixed $currentStatus, bool $changed, bool $isLocked): void
+    {
+        if (! $changed && $currentStatus !== null && $currentStatus->value() !== $ctx->nextStatus->value()) {
+            $this->kpiRepository->increment('delivery_state_blocked_terminal', 1);
+            $this->logger->warning('Transicion de estado bloqueada por politica del agregado', [
+                'event_id' => $ctx->eventId,
+                'package_id' => $ctx->packageId,
+                'op_id' => $row->op_id,
+                'driver_id' => $ctx->driverId?->value(),
+                'previous_status' => $currentStatus->value(),
+                'new_status' => $ctx->nextStatus->value(),
+                'locked' => $isLocked,
             ]);
+        }
+
+        $this->logger->info('Transicion de estado del paquete procesada', [
+            'event_id' => $ctx->eventId,
+            'package_id' => $ctx->packageId,
+            'op_id' => $row->op_id,
+            'driver_id' => $ctx->driverId?->value(),
+            'previous_status' => $currentStatus?->value(),
+            'new_status' => $ctx->nextStatus->value(),
+            'changed' => $changed,
+            'locked' => $isLocked,
+        ]);
+    }
+
+    private function updateItemDespacho(object $row, DeliveryEventContext $ctx, bool $changed, OccurredOn $effectiveOccurredOn): void
+    {
+        $updatePayload = ['updated_at' => now()];
+
+        if ($changed) {
+            $updatePayload['delivery_status'] = $ctx->nextStatus->value();
+            $updatePayload['delivery_occurred_on'] = $effectiveOccurredOn->toDatabase();
+        }
+
+        if ($ctx->driverId !== null) {
+            $updatePayload['driver_id'] = $ctx->driverId->value();
+        }
+
+        $this->repos->itemDespacho->updateDeliveryFields($row->id, $updatePayload);
+    }
+
+    private function deactivateVentanaIfExpired(object $row): void
+    {
+        $ventanaId = is_string($row->ventana_entrega_id) ? $row->ventana_entrega_id : null;
+
+        if ($ventanaId !== null && $ventanaId !== '') {
+            $this->repos->completion->ventanaEntrega->desactivarSiVencida($ventanaId);
         }
     }
 
-    private function upsertTracking(
-        string $packageId,
-        ?string $opId,
-        ?string $entregaId,
-        ?string $contratoId,
-        ?string $driverId,
-        ?string $status,
-        bool $statusLocked,
-        ?string $completedAt,
-        string $eventId,
-        ?string $occurredAt
-    ): void {
-        $existingTracking = $this->repos->tracking->findByPackageId($packageId);
+    private function emitOrderCompletionIfReady(string $opId, DeliveryEventContext $ctx): void
+    {
+        $projection = $this->services->progressSync->syncAndGetProjection($opId, $ctx->occurredOn);
 
+        if ($projection['total_packages'] === 0) {
+            return;
+        }
+
+        $allDelivered = $projection['completed_packages'] === $projection['total_packages'];
+        $allFailed = $projection['failed_packages'] === $projection['total_packages'];
+
+        if ($allDelivered || $allFailed) {
+            $this->finalizeOrderCompletion($opId, $ctx, $projection, $allDelivered);
+        }
+    }
+
+    private function finalizeOrderCompletion(string $opId, DeliveryEventContext $ctx, array $projection, bool $allDelivered): void
+    {
+        if ($projection['calendario_id'] === null || $projection['contrato_id'] === null) {
+            $this->kpiRepository->increment('alert_missing_delivery_context', 1);
+            $this->logger->warning('Evento consolidado bloqueado por contexto de entrega faltante', [
+                'event_id' => $ctx->eventId,
+                'package_id' => $ctx->packageId,
+                'op_id' => $opId,
+                'driver_id' => $ctx->driverId?->value(),
+                'projection' => $projection,
+            ]);
+            $this->enqueueInconsistency(
+                $opId,
+                $ctx,
+                'missing_delivery_context_for_consolidated_event',
+                ['projection' => $projection, 'payload' => $ctx->payload]
+            );
+
+            return;
+        }
+
+        $completionEventId = (string) Str::uuid();
+        $allCompletedAt = $projection['all_completed_at'] ?? now()->format('Y-m-d H:i:s');
+        $markedProgress = $this->repos->completion->progress->markCompletionIfNotSet($opId, $completionEventId, $allCompletedAt);
+
+        if ($markedProgress === 0) {
+            return;
+        }
+
+        $this->repos->completion->ordenProduccion->markEntregaCompletada($opId, new DateTimeImmutable($allCompletedAt));
+        $this->eventPublisher->publish([new PaqueteEntregado($opId, $projection['calendario_id'], $projection['contrato_id'], $allDelivered ? 'entregado' : 'no entregado')], $opId);
+        $this->kpiRepository->increment('delivery_orders_completed', 1);
+        $this->logger->info('Evento consolidado de entrega publicado', [
+            'event_id' => $ctx->eventId,
+            'op_id' => $opId,
+            'package_id' => $ctx->packageId,
+            'driver_id' => $ctx->driverId?->value(),
+            'completion_event_id' => $completionEventId,
+            'total_packages' => $projection['total_packages'],
+            'completed_packages' => $projection['completed_packages'],
+            'failed_packages' => $projection['failed_packages'],
+            'estado' => $allDelivered ? 'entregado' : 'no entregado',
+        ]);
+    }
+
+    private function buildTrackingContext(object $row, DeliveryEventContext $ctx, mixed $currentStatus, bool $changed, bool $isLocked, OccurredOn $effectiveOccurredOn): TrackingUpdateContext
+    {
+        return new TrackingUpdateContext(
+            packageId: $ctx->packageId,
+            context: new DeliveryContextIds(
+                opId: is_string($row->op_id) ? $row->op_id : null,
+                entregaId: is_string($row->entrega_id) ? $row->entrega_id : null,
+                contratoId: is_string($row->contrato_id) ? $row->contrato_id : null,
+            ),
+            driverId: $ctx->driverId?->value(),
+            status: $changed ? $ctx->nextStatus->value() : ($currentStatus?->value()),
+            statusLocked: $isLocked,
+            completedAt: $ctx->nextStatus->isCompleted() ? $effectiveOccurredOn->toDatabase() : null,
+            event: new TrackingEventRef(
+                eventId: $ctx->eventId,
+                occurredAt: $effectiveOccurredOn->toDatabase(),
+            ),
+        );
+    }
+
+    private function upsertTracking(TrackingUpdateContext $ctx): void
+    {
+        $existingTracking = $this->repos->tracking->findByPackageId($ctx->packageId);
+
+        $completedAt = $ctx->completedAt;
         if ($completedAt === null && $existingTracking !== null && isset($existingTracking->completed_at)) {
             $completedAt = is_string($existingTracking->completed_at) ? $existingTracking->completed_at : null;
         }
 
         $values = [
-            'op_id' => $opId,
-            'entrega_id' => $entregaId,
-            'contrato_id' => $contratoId,
-            'driver_id' => $driverId,
-            'status' => $status,
-            'status_locked' => $statusLocked,
+            'op_id' => $ctx->context->opId,
+            'entrega_id' => $ctx->context->entregaId,
+            'contrato_id' => $ctx->context->contratoId,
+            'driver_id' => $ctx->driverId,
+            'status' => $ctx->status,
+            'status_locked' => $ctx->statusLocked,
             'completed_at' => $completedAt,
-            'last_event_id' => $eventId,
-            'last_occurred_on' => $occurredAt,
+            'last_event_id' => $ctx->event->eventId,
+            'last_occurred_on' => $ctx->event->occurredAt,
             'updated_at' => now(),
             'created_at' => now(),
         ];
@@ -404,19 +428,17 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             $values['id'] = (string) Str::uuid();
         }
 
-        $this->repos->tracking->upsertByPackageId($packageId, $values);
+        $this->repos->tracking->upsertByPackageId($ctx->packageId, $values);
     }
 
-    private function enqueueInconsistency(?string $opId, string $eventId, string $packageId, string $reason, array $payload): void
+    private function enqueueInconsistency(?string $opId, DeliveryEventContext $ctx, string $reason, array $extra = []): void
     {
-        $eventIdValue = ($eventId !== '') ? $eventId : null;
-        $packageIdValue = ($packageId !== '') ? $packageId : null;
+        $eventIdValue = $ctx->eventId !== '' ? $ctx->eventId : null;
+        $packageIdValue = $ctx->packageId !== '' ? $ctx->packageId : null;
         $opIdValue = ($opId !== null && $opId !== '') ? $opId : null;
+        $payload = empty($extra) ? $ctx->payload : $extra;
 
-        $alreadyExists = false;
-        if ($eventIdValue !== null) {
-            $alreadyExists = $this->repos->inconsistency->existsByEventIdAndReason($eventIdValue, $reason);
-        }
+        $alreadyExists = $eventIdValue !== null && $this->repos->inconsistency->existsByEventIdAndReason($eventIdValue, $reason);
 
         if (! $alreadyExists) {
             $this->repos->inconsistency->insert([
@@ -429,17 +451,14 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-
             $this->kpiRepository->increment('delivery_inconsistency_events', 1);
             $this->logger->warning('Inconsistencia de entrega encolada', [
-                'event_id' => $eventId,
-                'package_id' => $packageId,
+                'event_id' => $ctx->eventId,
+                'package_id' => $ctx->packageId,
                 'op_id' => $opId,
                 'reason' => $reason,
             ]);
-
-            $event = new EntregaInconsistenciaDetectada($opId, $reason, $eventId, $packageId, $payload);
-            $this->eventPublisher->publish([$event], $opId ?? $packageId);
+            $this->eventPublisher->publish([new EntregaInconsistenciaDetectada($opId, $reason, $ctx->eventId, $ctx->packageId, $payload)], $opId ?? $ctx->packageId);
 
             return;
         }
@@ -450,10 +469,9 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             'payload' => json_encode($payload),
             'updated_at' => now(),
         ]);
-
         $this->logger->info('Inconsistencia de entrega deduplicada', [
-            'event_id' => $eventId,
-            'package_id' => $packageId,
+            'event_id' => $ctx->eventId,
+            'package_id' => $ctx->packageId,
             'op_id' => $opId,
             'reason' => $reason,
         ]);
