@@ -274,6 +274,11 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandlerTest extends TestCase
                         return [];
                     }
 
+                    public function listVigentes(): array
+                    {
+                        return [];
+                    }
+
                     public function byPacienteId(string $pacienteId): array
                     {
                         return [];
