@@ -338,14 +338,13 @@ class OrdenProduccionRepository implements OrdenProduccionRepositoryInterface
         }
 
         $etiqueta = EtiquetaModel::firstOrCreate(
-            [
-                'paciente_id' => $paciente->id,
-            ],
-            [
-                'suscripcion_id' => $paciente->suscripcion_id,
-                'qr_payload' => [],
-            ]
+            ['paciente_id' => $paciente->id],
+            ['suscripcion_id' => $paciente->suscripcion_id, 'qr_payload' => []]
         );
+
+        if ($etiqueta->suscripcion_id === null && $paciente->suscripcion_id !== null) {
+            $etiqueta->update(['suscripcion_id' => $paciente->suscripcion_id]);
+        }
 
         $paquete = PaqueteModel::firstOrCreate(
             [

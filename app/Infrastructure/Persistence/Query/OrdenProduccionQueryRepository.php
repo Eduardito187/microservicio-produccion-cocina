@@ -133,6 +133,8 @@ class OrdenProduccionQueryRepository implements OrdenProduccionQueryRepositoryIn
                 'receta_id' => $b->receta_id,
             ])->all(),
             'despacho' => $op->despachoItems
+                ->unique('paquete_id')
+                ->values()
                 ->map(fn ($d) => $this->mapDespacho($d, $trackings, $historiales, $evidencias))
                 ->all(),
             'progreso_entrega' => $progreso ? [

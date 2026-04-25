@@ -113,6 +113,9 @@ class MaestrosHandlersBulkSmokeTest extends TestCase
                 if (method_exists($repository, 'byId')) {
                     $repository->method('byId')->willReturn($entity ?? $this->dummyEntityFromRepositoryById($repository));
                 }
+                if (method_exists($repository, 'porId')) {
+                    $repository->method('porId')->willReturn(['id' => 'e28e9cc2-5225-40c0-b88b-2341f96d76a3']);
+                }
             } elseif (str_starts_with($baseName, 'Listar')) {
                 if (method_exists($repository, 'list')) {
                     $repository->method('list')->willReturn($entity ? [$entity] : []);

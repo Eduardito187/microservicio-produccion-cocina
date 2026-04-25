@@ -134,6 +134,8 @@ class DeliveryContextBackfillerTest extends TestCase
             }
 
             public function delete(string|int $id): void {}
+
+            public function desactivar(string $id): void {}
         };
 
         $backfiller = new DeliveryContextBackfiller($itemRepo, $ventanaRepo);
@@ -244,6 +246,8 @@ class DeliveryContextBackfillerTest extends TestCase
             }
 
             public function delete(string|int $id): void {}
+
+            public function desactivar(string $id): void {}
         };
     }
 }

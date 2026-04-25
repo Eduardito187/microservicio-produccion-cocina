@@ -7,52 +7,24 @@
 namespace App\Application\Produccion\Handler;
 
 use App\Application\Produccion\Command\VerEtiqueta;
-use App\Application\Support\Transaction\TransactionAggregate;
-use App\Domain\Produccion\Entity\Etiqueta;
-use App\Domain\Produccion\Repository\EtiquetaRepositoryInterface;
+use App\Application\Produccion\Repository\EtiquetaQueryRepositoryInterface;
+use App\Domain\Shared\Exception\EntityNotFoundException;
 
 /**
  * @class VerEtiquetaHandler
  */
 class VerEtiquetaHandler
 {
-    /**
-     * @var EtiquetaRepositoryInterface
-     */
-    private $etiquetaRepository;
-
-    /**
-     * @var TransactionAggregate
-     */
-    private $transactionAggregate;
-
-    /**
-     * Constructor
-     */
-    public function __construct(
-        EtiquetaRepositoryInterface $etiquetaRepository,
-        TransactionAggregate $transactionAggregate
-    ) {
-        $this->etiquetaRepository = $etiquetaRepository;
-        $this->transactionAggregate = $transactionAggregate;
-    }
+    public function __construct(private EtiquetaQueryRepositoryInterface $query) {}
 
     public function __invoke(VerEtiqueta $command): array
     {
-        return $this->transactionAggregate->runTransaction(function () use ($command): array {
-            $etiqueta = $this->etiquetaRepository->byId($command->id);
+        $result = $this->query->porId($command->id);
 
-            return $this->mapEtiqueta($etiqueta);
-        });
-    }
+        if ($result === null) {
+            throw new EntityNotFoundException("La etiqueta id: {$command->id} no existe.");
+        }
 
-    private function mapEtiqueta(Etiqueta $etiqueta): array
-    {
-        return [
-            'id' => $etiqueta->id,
-            'suscripcion_id' => $etiqueta->suscripcionId,
-            'paciente_id' => $etiqueta->pacienteId,
-            'qr_payload' => $etiqueta->qrPayload,
-        ];
+        return $result;
     }
 }

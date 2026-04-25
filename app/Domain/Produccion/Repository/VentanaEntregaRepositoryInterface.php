@@ -50,4 +50,6 @@ interface VentanaEntregaRepositoryInterface
     public function byCalendarioId(string $calendarioId): array;
 
     public function delete(string|int $id): void;
+
+    public function desactivar(string $id): void;
 }

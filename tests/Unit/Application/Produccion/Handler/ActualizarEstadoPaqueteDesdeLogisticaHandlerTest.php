@@ -251,6 +251,10 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandlerTest extends TestCase
             public function delete(string|int $id): void
             { /* stub */
             }
+
+            public function desactivar(string $id): void
+            { /* stub */
+            }
         };
 
         $repos = new DeliveryHandlerRepositories(
@@ -281,6 +285,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandlerTest extends TestCase
                 { /* stub */
                 }
             },
+            ventanaEntrega: $ventanaStub,
         );
 
         return new ActualizarEstadoPaqueteDesdeLogisticaHandler(

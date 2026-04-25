@@ -264,6 +264,10 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
             $this->repos->itemDespacho->updateDeliveryFields($row->id, $updatePayload);
 
+            if ($changed && $nextStatus->isCompleted() && is_string($row->ventana_entrega_id) && $row->ventana_entrega_id !== '') {
+                $this->repos->ventanaEntrega->desactivar($row->ventana_entrega_id);
+            }
+
             if (! $trackingUpserted) {
                 $this->upsertTracking(
                     $packageId,

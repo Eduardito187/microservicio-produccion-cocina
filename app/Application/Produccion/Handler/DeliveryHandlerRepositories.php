@@ -13,6 +13,7 @@ use App\Application\Produccion\Repository\PackageDeliveryHistoryRepositoryInterf
 use App\Application\Produccion\Repository\PackageDeliveryTrackingRepositoryInterface;
 use App\Domain\Produccion\Repository\ItemDespachoRepositoryInterface;
 use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
+use App\Domain\Produccion\Repository\VentanaEntregaRepositoryInterface;
 
 /**
  * Agrupa los repositorios que necesita ActualizarEstadoPaqueteDesdeLogisticaHandler
@@ -30,5 +31,6 @@ class DeliveryHandlerRepositories
         public readonly DeliveryInconsistencyQueueRepositoryInterface $inconsistency,
         public readonly ItemDespachoRepositoryInterface $itemDespacho,
         public readonly OrdenProduccionRepositoryInterface $ordenProduccion,
+        public readonly VentanaEntregaRepositoryInterface $ventanaEntrega,
     ) {}
 }

@@ -23,6 +23,7 @@ class ObtenerProximaVentanaEntregaController
         $ahora = Carbon::now('America/La_Paz');
 
         $ventana = VentanaEntregaModel::where('hasta', '>', $ahora)
+            ->where(fn ($q) => $q->whereNull('estado')->orWhere('estado', '!=', 0))
             ->orderBy('desde', 'asc')
             ->first();
 
