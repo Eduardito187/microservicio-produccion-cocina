@@ -19,8 +19,8 @@ class VentanaEntregaCrudTest extends TestCase
     public function test_crear_actualizar_y_eliminar_ventana_entrega(): void
     {
         $create = $this->postJson(route('ventanas-entrega.crear'), [
-            'desde' => '2026-01-01 08:00:00',
-            'hasta' => '2026-01-01 12:00:00',
+            'desde' => now()->addMonth()->format('Y-m-d') . ' 08:00:00',
+            'hasta' => now()->addMonth()->format('Y-m-d') . ' 12:00:00',
         ]);
 
         $create->assertCreated()->assertJsonStructure(['ventanaEntregaId']);
@@ -32,7 +32,8 @@ class VentanaEntregaCrudTest extends TestCase
             ->assertOk()->assertJsonFragment(['id' => $ventanaId]);
 
         $update = $this->putJson(route('ventanas-entrega.actualizar', ['id' => $ventanaId]), [
-            'desde' => '2026-01-01 09:00:00', 'hasta' => '2026-01-01 13:00:00',
+            'desde' => now()->addMonth()->format('Y-m-d') . ' 09:00:00',
+            'hasta' => now()->addMonth()->format('Y-m-d') . ' 13:00:00',
         ]);
 
         $update->assertOk()->assertJsonPath('ventanaEntregaId', $ventanaId);
