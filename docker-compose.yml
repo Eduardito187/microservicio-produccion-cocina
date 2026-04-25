@@ -9,6 +9,7 @@ services:
       - "8000:80"
     volumes:
       - ./:/var/www/html
+      - storage_evidencias:/var/www/html/storage/app/public/evidencias
       - ./docker/apache-fqdn.conf:/etc/apache2/conf-available/fqdn.conf:ro
       - ./docker/laravel.conf:/etc/apache2/sites-available/laravel.conf:ro
     working_dir: /var/www/html
@@ -179,3 +180,4 @@ volumes:
   loki_data:
   promtail_positions:
   consul_data:
+  storage_evidencias:

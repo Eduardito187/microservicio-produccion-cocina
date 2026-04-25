@@ -52,4 +52,9 @@ class ItemDespacho extends BaseModel
     {
         return $this->belongsTo(VentanaEntrega::class, 'ventana_entrega_id');
     }
+
+    public function direccion(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Direccion::class, 'direccion_id');
+    }
 }

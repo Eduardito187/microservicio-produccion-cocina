@@ -7,6 +7,7 @@
 namespace App\Infrastructure\Persistence\Query;
 
 use App\Application\Produccion\Repository\OrdenProduccionQueryRepositoryInterface;
+use App\Infrastructure\Persistence\Model\EntregaEvidencia;
 use App\Infrastructure\Persistence\Model\ItemDespacho as ItemDespachoModel;
 use App\Infrastructure\Persistence\Model\OrdenProduccion as OrdenProduccionModel;
 use App\Infrastructure\Persistence\Model\OrderDeliveryProgress;
@@ -66,7 +67,7 @@ class OrdenProduccionQueryRepository implements OrdenProduccionQueryRepositoryIn
         }
 
         $ordenes = OrdenProduccionModel::whereIn('id', $ids)
-            ->with(['items.product', 'batches', 'despachoItems'])
+            ->with(['items.product', 'batches', 'despachoItems.paciente', 'despachoItems.direccion'])
             ->orderBy('fecha', 'desc')
             ->get();
 
@@ -90,12 +91,18 @@ class OrdenProduccionQueryRepository implements OrdenProduccionQueryRepositoryIn
             ->get()
             ->groupBy('package_id');
 
+        $evidencias = EntregaEvidencia::whereIn('paquete_id', $paqueteIds)
+            ->whereNotNull('foto_url')
+            ->orderByDesc('occurred_on')
+            ->get()
+            ->keyBy('paquete_id');
+
         return $ordenes
-            ->map(fn ($op) => $this->mapOrden($op, $progresos, $trackings, $historiales))
+            ->map(fn ($op) => $this->mapOrden($op, $progresos, $trackings, $historiales, $evidencias))
             ->all();
     }
 
-    private function mapOrden($op, $progresos, $trackings, $historiales): array
+    private function mapOrden($op, $progresos, $trackings, $historiales, $evidencias): array
     {
         $progreso = $progresos->get($op->id);
 
@@ -126,7 +133,7 @@ class OrdenProduccionQueryRepository implements OrdenProduccionQueryRepositoryIn
                 'receta_id' => $b->receta_id,
             ])->all(),
             'despacho' => $op->despachoItems
-                ->map(fn ($d) => $this->mapDespacho($d, $trackings, $historiales))
+                ->map(fn ($d) => $this->mapDespacho($d, $trackings, $historiales, $evidencias))
                 ->all(),
             'progreso_entrega' => $progreso ? [
                 'total_paquetes' => $progreso->total_packages,
@@ -139,9 +146,12 @@ class OrdenProduccionQueryRepository implements OrdenProduccionQueryRepositoryIn
         ];
     }
 
-    private function mapDespacho($d, $trackings, $historiales): array
+    private const STORE_GEO = ['lat' => -17.7681816, 'lng' => -63.1822064];
+
+    private function mapDespacho($d, $trackings, $historiales, $evidencias): array
     {
         $tracking = $d->paquete_id ? $trackings->get($d->paquete_id) : null;
+        $evidencia = $d->paquete_id ? $evidencias->get($d->paquete_id) : null;
         $historial = [];
 
         if ($d->paquete_id && $historiales->has($d->paquete_id)) {
@@ -155,21 +165,44 @@ class OrdenProduccionQueryRepository implements OrdenProduccionQueryRepositoryIn
                 ->all();
         }
 
+        $paciente = $d->paciente;
+        $dir = $d->direccion;
+        $geoDestino = $dir?->geo;
+
         return [
             'id' => $d->id,
             'delivery_status' => $d->delivery_status,
             'delivery_occurred_on' => $d->delivery_occurred_on,
-            'paciente_id' => $d->paciente_id,
-            'direccion_id' => $d->direccion_id,
-            'ventana_entrega_id' => $d->ventana_entrega_id,
-            'entrega_id' => $d->entrega_id,
-            'contrato_id' => $d->contrato_id,
             'driver_id' => $d->driver_id,
             'paquete_id' => $d->paquete_id,
+            'entrega_id' => $d->entrega_id,
+            'contrato_id' => $d->contrato_id,
+            'paciente' => $paciente ? [
+                'id' => $paciente->id,
+                'nombre' => $paciente->nombre,
+                'documento' => $paciente->documento,
+            ] : ['id' => $d->paciente_id, 'nombre' => null, 'documento' => null],
+            'direccion' => $dir ? [
+                'id' => $dir->id,
+                'linea1' => $dir->linea1,
+                'linea2' => $dir->linea2,
+                'ciudad' => $dir->ciudad,
+                'provincia' => $dir->provincia,
+                'pais' => $dir->pais,
+                'geo' => $geoDestino,
+            ] : ['id' => $d->direccion_id, 'linea1' => null, 'geo' => null],
+            'ventana_entrega_id' => $d->ventana_entrega_id,
+            'ruta' => [
+                'origen' => self::STORE_GEO,
+                'destino' => $geoDestino,
+            ],
             'tracking' => $tracking ? [
                 'status' => $tracking->status,
                 'completed_at' => $tracking->completed_at,
                 'driver_id' => $tracking->driver_id,
+                'foto_url' => $evidencia?->foto_url,
+                'incident_type' => $evidencia?->incident_type,
+                'incident_description' => $evidencia?->incident_description,
                 'historial' => $historial,
             ] : null,
         ];

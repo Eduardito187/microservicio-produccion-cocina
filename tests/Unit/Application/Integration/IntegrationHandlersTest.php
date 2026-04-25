@@ -24,6 +24,7 @@ use App\Application\Integration\Handlers\SuscripcionActualizadaHandler;
 use App\Application\Integration\Handlers\SuscripcionCreadaHandler;
 use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
 use App\Application\Produccion\Handler\ActualizarEstadoPaqueteDesdeLogisticaHandler;
+use App\Application\Produccion\Service\DeliveryEvidenceImageStore;
 use App\Application\Support\Transaction\Interface\TransactionManagerInterface;
 use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Entity\CalendarioItem;
@@ -491,7 +492,7 @@ class IntegrationHandlersTest extends TestCase
         $commandHandler = $this->createMock(ActualizarEstadoPaqueteDesdeLogisticaHandler::class);
         $commandHandler->expects($this->never())->method('__invoke');
 
-        $handler = new LogisticaPaqueteEstadoActualizadoHandler($commandHandler, new NullLogger);
+        $handler = new LogisticaPaqueteEstadoActualizadoHandler($commandHandler, new DeliveryEvidenceImageStore, new NullLogger);
         $handler->handle(['packageId' => 'pkg-01', 'deliveryStatus' => 'confirmada'], []);
     }
 
@@ -500,7 +501,7 @@ class IntegrationHandlersTest extends TestCase
         $commandHandler = $this->createMock(ActualizarEstadoPaqueteDesdeLogisticaHandler::class);
         $commandHandler->expects($this->never())->method('__invoke');
 
-        $handler = new LogisticaPaqueteEstadoActualizadoHandler($commandHandler, new NullLogger);
+        $handler = new LogisticaPaqueteEstadoActualizadoHandler($commandHandler, new DeliveryEvidenceImageStore, new NullLogger);
         $handler->handle(['deliveryStatus' => 'confirmada'], ['event_id' => 'evt-01']);
     }
 
@@ -509,7 +510,7 @@ class IntegrationHandlersTest extends TestCase
         $commandHandler = $this->createMock(ActualizarEstadoPaqueteDesdeLogisticaHandler::class);
         $commandHandler->expects($this->once())->method('__invoke');
 
-        $handler = new LogisticaPaqueteEstadoActualizadoHandler($commandHandler, new NullLogger);
+        $handler = new LogisticaPaqueteEstadoActualizadoHandler($commandHandler, new DeliveryEvidenceImageStore, new NullLogger);
         $handler->handle(
             ['packageId' => 'a1b2c3d4-0000-0000-0000-000000000090', 'deliveryStatus' => 'en_ruta'],
             ['event_id' => 'evt-002']
@@ -521,7 +522,7 @@ class IntegrationHandlersTest extends TestCase
         $commandHandler = $this->createMock(ActualizarEstadoPaqueteDesdeLogisticaHandler::class);
         $commandHandler->expects($this->once())->method('__invoke');
 
-        $handler = new LogisticaPaqueteEstadoActualizadoHandler($commandHandler, new NullLogger);
+        $handler = new LogisticaPaqueteEstadoActualizadoHandler($commandHandler, new DeliveryEvidenceImageStore, new NullLogger);
         $handler->handle(
             ['paqueteId' => 'a1b2c3d4-0000-0000-0000-000000000091', 'status' => 'pendiente'],
             ['event_id' => 'evt-003']

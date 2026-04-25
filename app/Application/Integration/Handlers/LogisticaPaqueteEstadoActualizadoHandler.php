@@ -9,6 +9,7 @@ namespace App\Application\Integration\Handlers;
 use App\Application\Integration\IntegrationEventHandlerInterface;
 use App\Application\Produccion\Command\ActualizarEstadoPaqueteDesdeLogisticaCommand;
 use App\Application\Produccion\Handler\ActualizarEstadoPaqueteDesdeLogisticaHandler;
+use App\Application\Produccion\Service\DeliveryEvidenceImageStore;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -23,15 +24,22 @@ class LogisticaPaqueteEstadoActualizadoHandler implements IntegrationEventHandle
     private $commandHandler;
 
     /**
+     * @var DeliveryEvidenceImageStore
+     */
+    private $imageStore;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
 
     public function __construct(
         ActualizarEstadoPaqueteDesdeLogisticaHandler $commandHandler,
+        DeliveryEvidenceImageStore $imageStore,
         ?LoggerInterface $logger = null
     ) {
         $this->commandHandler = $commandHandler;
+        $this->imageStore = $imageStore;
         $this->logger = $logger ?? new NullLogger;
     }
 
@@ -57,17 +65,35 @@ class LogisticaPaqueteEstadoActualizadoHandler implements IntegrationEventHandle
         $occurredOn = $this->getString($payload, ['occurredOn', 'occurred_on', 'updatedAt', 'updated_at', 'timestamp']);
         $driverId = $this->getString($payload, ['driverId', 'driver_id', 'repartidorId', 'driver']);
 
+        $rawEvidence = $payload['deliveryEvidence'] ?? null;
+        $resolvedEvidence = $this->resolveEvidence($packageId, $eventId, $rawEvidence);
+
         $command = new ActualizarEstadoPaqueteDesdeLogisticaCommand(
             $eventId,
             $packageId,
-            $deliveryStatus,
+            strtolower(trim($deliveryStatus)),
             $occurredOn,
             $driverId,
-            $payload['deliveryEvidence'] ?? null,
+            $resolvedEvidence,
             $payload
         );
 
         ($this->commandHandler)($command);
+    }
+
+    private function resolveEvidence(string $packageId, string $eventId, mixed $evidence): mixed
+    {
+        if (! is_string($evidence) || trim($evidence) === '') {
+            return $evidence;
+        }
+
+        if (! $this->imageStore->isBase64Image($evidence)) {
+            return $evidence;
+        }
+
+        $url = $this->imageStore->store($packageId, $eventId, $evidence);
+
+        return $url !== '' ? $url : null;
     }
 
     private function getString(array $payload, array $keys): ?string

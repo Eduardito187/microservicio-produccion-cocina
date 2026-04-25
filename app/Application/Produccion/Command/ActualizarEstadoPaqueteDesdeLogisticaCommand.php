@@ -42,6 +42,16 @@ class ActualizarEstadoPaqueteDesdeLogisticaCommand
     public $deliveryEvidence;
 
     /**
+     * @var ?string
+     */
+    public $incidentType;
+
+    /**
+     * @var ?string
+     */
+    public $incidentDescription;
+
+    /**
      * @var array
      */
     public $payload;
@@ -62,5 +72,9 @@ class ActualizarEstadoPaqueteDesdeLogisticaCommand
         $this->driverId = $driverId;
         $this->deliveryEvidence = $deliveryEvidence;
         $this->payload = $payload;
+        $this->incidentType = isset($payload['incidentType']) && is_string($payload['incidentType'])
+            ? strtolower(trim($payload['incidentType'])) : null;
+        $this->incidentDescription = isset($payload['incidentDescription']) && is_string($payload['incidentDescription'])
+            ? trim($payload['incidentDescription']) : null;
     }
 }

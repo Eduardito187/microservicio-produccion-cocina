@@ -39,7 +39,7 @@ class DeliveryStatusMapper
         $normalized = strtolower(trim($status));
 
         return match ($normalized) {
-            'entregado', 'delivered', 'confirmada', 'confirmado', 'completed' => [new PackageStatus('confirmada'), 'entrega_confirmada'],
+            'entregado', 'delivered', 'confirmada', 'confirmado', 'completed', 'completado' => [new PackageStatus('confirmada'), 'entrega_confirmada'],
             'fallido', 'fallida', 'failed' => [new PackageStatus('fallida'), 'entrega_fallida'],
             'entransito', 'en_transito', 'en transito', 'intransit', 'onroute', 'en_ruta' => [new PackageStatus('en_ruta'), 'paquete_en_ruta'],
             default => [new PackageStatus('estado_actualizado'), null],

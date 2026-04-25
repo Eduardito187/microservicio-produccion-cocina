@@ -55,6 +55,9 @@ run_artisan config:clear
 run_artisan route:clear
 run_artisan cache:clear
 
+# Storage symlink for public disk (evidencias, etc.)
+run_artisan storage:link
+
 # DB tasks (safe, may fail if DB not ready yet)
 run_artisan migrate --force --no-interaction
 if [ "${RUN_PACT_ON_START:-0}" = "1" ]; then

@@ -7,11 +7,7 @@
 namespace App\Application\Produccion\Handler;
 
 use App\Application\Analytics\KpiRepositoryInterface;
-use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
 use App\Application\Produccion\Command\ActualizarEstadoPaqueteDesdeLogisticaCommand;
-use App\Application\Produccion\Repository\DeliveryInconsistencyQueueRepositoryInterface;
-use App\Application\Produccion\Repository\PackageDeliveryHistoryRepositoryInterface;
-use App\Application\Produccion\Repository\PackageDeliveryTrackingRepositoryInterface;
 use App\Application\Produccion\Service\DeliveryContextBackfiller;
 use App\Application\Produccion\Service\DeliveryStatusMapper;
 use App\Application\Produccion\Service\OrderDeliveryProgressSync;
@@ -20,8 +16,6 @@ use App\Application\Support\Transaction\TransactionAggregate;
 use App\Domain\Produccion\Aggregate\SeguimientoEntregaPaquete;
 use App\Domain\Produccion\Events\EntregaInconsistenciaDetectada;
 use App\Domain\Produccion\Events\PaqueteEntregado;
-use App\Domain\Produccion\Repository\ItemDespachoRepositoryInterface;
-use App\Domain\Produccion\Repository\OrdenProduccionRepositoryInterface;
 use App\Domain\Produccion\ValueObjects\OccurredOn;
 use DateTimeImmutable;
 use Illuminate\Support\Str;
@@ -35,103 +29,30 @@ use Psr\Log\NullLogger;
  */
 class ActualizarEstadoPaqueteDesdeLogisticaHandler
 {
-    /**
-     * @var EntregaEvidenciaRepositoryInterface
-     */
-    private $evidenciaRepository;
-
-    /**
-     * @var KpiRepositoryInterface
-     */
-    private $kpiRepository;
-
-    /**
-     * @var TransactionAggregate
-     */
-    private $transactionAggregate;
-
-    /**
-     * @var DomainEventPublisherInterface
-     */
-    private $eventPublisher;
-
-    /**
-     * @var DeliveryStatusMapper
-     */
-    private $statusMapper;
-
-    /**
-     * @var PackageDeliveryHistoryRepositoryInterface
-     */
-    private $historyRepository;
-
-    /**
-     * @var PackageDeliveryTrackingRepositoryInterface
-     */
-    private $trackingRepository;
-
-    /**
-     * @var \App\Application\Produccion\Repository\OrderDeliveryProgressRepositoryInterface
-     */
-    private $progressRepository;
-
-    /**
-     * @var DeliveryInconsistencyQueueRepositoryInterface
-     */
-    private $inconsistencyRepository;
-
-    /**
-     * @var ItemDespachoRepositoryInterface
-     */
-    private $itemDespachoRepository;
-
-    /**
-     * @var OrdenProduccionRepositoryInterface
-     */
-    private $ordenProduccionRepository;
-
-    /**
-     * @var DeliveryContextBackfiller
-     */
-    private $backfiller;
-
-    /**
-     * @var OrderDeliveryProgressSync
-     */
-    private $progressSync;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private DeliveryHandlerRepositories $repos;
+    private KpiRepositoryInterface $kpiRepository;
+    private TransactionAggregate $transactionAggregate;
+    private DomainEventPublisherInterface $eventPublisher;
+    private DeliveryStatusMapper $statusMapper;
+    private DeliveryContextBackfiller $backfiller;
+    private OrderDeliveryProgressSync $progressSync;
+    private LoggerInterface $logger;
 
     public function __construct(
-        EntregaEvidenciaRepositoryInterface $evidenciaRepository,
+        DeliveryHandlerRepositories $repos,
         KpiRepositoryInterface $kpiRepository,
         TransactionAggregate $transactionAggregate,
         DomainEventPublisherInterface $eventPublisher,
         DeliveryStatusMapper $statusMapper,
-        PackageDeliveryHistoryRepositoryInterface $historyRepository,
-        PackageDeliveryTrackingRepositoryInterface $trackingRepository,
-        \App\Application\Produccion\Repository\OrderDeliveryProgressRepositoryInterface $progressRepository,
-        DeliveryInconsistencyQueueRepositoryInterface $inconsistencyRepository,
-        ItemDespachoRepositoryInterface $itemDespachoRepository,
-        OrdenProduccionRepositoryInterface $ordenProduccionRepository,
         DeliveryContextBackfiller $backfiller,
         OrderDeliveryProgressSync $progressSync,
         ?LoggerInterface $logger = null
     ) {
-        $this->evidenciaRepository = $evidenciaRepository;
+        $this->repos = $repos;
         $this->kpiRepository = $kpiRepository;
         $this->transactionAggregate = $transactionAggregate;
         $this->eventPublisher = $eventPublisher;
         $this->statusMapper = $statusMapper;
-        $this->historyRepository = $historyRepository;
-        $this->trackingRepository = $trackingRepository;
-        $this->progressRepository = $progressRepository;
-        $this->inconsistencyRepository = $inconsistencyRepository;
-        $this->itemDespachoRepository = $itemDespachoRepository;
-        $this->ordenProduccionRepository = $ordenProduccionRepository;
         $this->backfiller = $backfiller;
         $this->progressSync = $progressSync;
         $this->logger = $logger ?? new NullLogger;
@@ -179,12 +100,14 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                 $occurredAt
             );
 
-            $this->evidenciaRepository->upsertByEventId($command->eventId, [
+            $this->repos->evidencia->upsertByEventId($command->eventId, [
                 'paquete_id' => $command->packageId,
                 'status' => $nextStatus->value(),
                 'driver_id' => $driverId?->value(),
                 'foto_url' => $fotoUrl,
                 'geo' => $geo,
+                'incident_type' => $command->incidentType,
+                'incident_description' => $command->incidentDescription,
                 'occurred_on' => $occurredAt,
                 'payload' => $command->payload,
             ]);
@@ -216,10 +139,10 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         $normalizedStatus = $receivedStatus !== '' ? strtolower(trim($receivedStatus)) : null;
         $encodedPayload = json_encode($payload);
 
-        $existing = $this->historyRepository->findByEventId($eventId);
+        $existing = $this->repos->history->findByEventId($eventId);
 
         if ($existing !== null) {
-            $this->historyRepository->updateByEventId($eventId, [
+            $this->repos->history->updateByEventId($eventId, [
                 'package_id' => $packageId,
                 'received_status' => $normalizedStatus,
                 'driver_id' => $driverId,
@@ -232,7 +155,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             return;
         }
 
-        $this->historyRepository->insert([
+        $this->repos->history->insert([
             'id' => (string) Str::uuid(),
             'event_id' => $eventId,
             'package_id' => $packageId,
@@ -256,7 +179,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
     ): void {
         $this->backfiller->backfill($packageId);
 
-        $rows = $this->itemDespachoRepository->findDeliveryRowsByPaqueteId($packageId);
+        $rows = $this->repos->itemDespacho->findDeliveryRowsByPaqueteId($packageId);
 
         if (empty($rows)) {
             $this->kpiRepository->increment('alert_package_unknown', 1);
@@ -339,7 +262,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
                 $updatePayload['driver_id'] = $driverId->value();
             }
 
-            $this->itemDespachoRepository->updateDeliveryFields($row->id, $updatePayload);
+            $this->repos->itemDespacho->updateDeliveryFields($row->id, $updatePayload);
 
             if (! $trackingUpserted) {
                 $this->upsertTracking(
@@ -410,14 +333,14 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             $completionEventId = (string) Str::uuid();
             $allCompletedAt = $projection['all_completed_at'] ?? now()->format('Y-m-d H:i:s');
 
-            $markedProgress = $this->progressRepository->markCompletionIfNotSet($opId, $completionEventId, $allCompletedAt);
+            $markedProgress = $this->repos->progress->markCompletionIfNotSet($opId, $completionEventId, $allCompletedAt);
 
             if ($markedProgress === 0) {
                 continue;
             }
 
             $completedAt = new DateTimeImmutable($allCompletedAt);
-            $this->ordenProduccionRepository->markEntregaCompletada($opId, $completedAt);
+            $this->repos->ordenProduccion->markEntregaCompletada($opId, $completedAt);
 
             $event = new PaqueteEntregado(
                 $opId,
@@ -453,7 +376,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
         string $eventId,
         ?string $occurredAt
     ): void {
-        $existingTracking = $this->trackingRepository->findByPackageId($packageId);
+        $existingTracking = $this->repos->tracking->findByPackageId($packageId);
 
         if ($completedAt === null && $existingTracking !== null && isset($existingTracking->completed_at)) {
             $completedAt = is_string($existingTracking->completed_at) ? $existingTracking->completed_at : null;
@@ -477,7 +400,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             $values['id'] = (string) Str::uuid();
         }
 
-        $this->trackingRepository->upsertByPackageId($packageId, $values);
+        $this->repos->tracking->upsertByPackageId($packageId, $values);
     }
 
     private function enqueueInconsistency(?string $opId, string $eventId, string $packageId, string $reason, array $payload): void
@@ -488,11 +411,11 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
 
         $alreadyExists = false;
         if ($eventIdValue !== null) {
-            $alreadyExists = $this->inconsistencyRepository->existsByEventIdAndReason($eventIdValue, $reason);
+            $alreadyExists = $this->repos->inconsistency->existsByEventIdAndReason($eventIdValue, $reason);
         }
 
         if (! $alreadyExists) {
-            $this->inconsistencyRepository->insert([
+            $this->repos->inconsistency->insert([
                 'id' => (string) Str::uuid(),
                 'event_id' => $eventIdValue,
                 'package_id' => $packageIdValue,
@@ -517,7 +440,7 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandler
             return;
         }
 
-        $this->inconsistencyRepository->updateByEventIdAndReason($eventIdValue, $reason, [
+        $this->repos->inconsistency->updateByEventIdAndReason($eventIdValue, $reason, [
             'package_id' => $packageIdValue,
             'op_id' => $opIdValue,
             'payload' => json_encode($payload),

@@ -10,6 +10,7 @@ use App\Application\Analytics\KpiRepositoryInterface;
 use App\Application\Logistica\Repository\EntregaEvidenciaRepositoryInterface;
 use App\Application\Produccion\Command\ActualizarEstadoPaqueteDesdeLogisticaCommand;
 use App\Application\Produccion\Handler\ActualizarEstadoPaqueteDesdeLogisticaHandler;
+use App\Application\Produccion\Handler\DeliveryHandlerRepositories;
 use App\Application\Produccion\Repository\DeliveryInconsistencyQueueRepositoryInterface;
 use App\Application\Produccion\Repository\OrderDeliveryProgressRepositoryInterface;
 use App\Application\Produccion\Repository\PackageDeliveryHistoryRepositoryInterface;
@@ -215,30 +216,56 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandlerTest extends TestCase
     {
         $itemRepo = $overrides['itemRepo'] ?? $this->makeItemRepoWithRows([]);
 
-        return new ActualizarEstadoPaqueteDesdeLogisticaHandler(
-            evidenciaRepository: new class implements EntregaEvidenciaRepositoryInterface
+        $ventanaStub = new class implements VentanaEntregaRepositoryInterface
+        {
+            public function byId(string|int $id): ?VentanaEntrega
+            {
+                return null;
+            }
+
+            public function save(VentanaEntrega $v): string
+            {
+                return '';
+            }
+
+            public function list(): array
+            {
+                return [];
+            }
+
+            public function listVigentes(): array
+            {
+                return [];
+            }
+
+            public function byPacienteId(string $pacienteId): array
+            {
+                return [];
+            }
+
+            public function byCalendarioId(string $calendarioId): array
+            {
+                return [];
+            }
+
+            public function delete(string|int $id): void
+            { /* stub */
+            }
+        };
+
+        $repos = new DeliveryHandlerRepositories(
+            evidencia: new class implements EntregaEvidenciaRepositoryInterface
             {
                 public function upsertByEventId(string $eventId, array $data): void
-                {
-                    // intentionally empty — test stub
+                { /* stub */
                 }
             },
-            kpiRepository: $overrides['kpi'] ?? $this->makeKpiSpy(),
-            transactionAggregate: $this->tx(),
-            eventPublisher: $overrides['publisher'] ?? new class implements DomainEventPublisherInterface
-            {
-                public function publish(array $events, mixed $aggregateId): void
-                {
-                    // intentionally empty — test stub
-                }
-            },
-            statusMapper: new DeliveryStatusMapper,
-            historyRepository: $overrides['historyRepo'] ?? $this->makeHistoryRepo(),
-            trackingRepository: $overrides['trackingRepo'] ?? $this->makeTrackingRepo(),
-            progressRepository: $overrides['progressRepo'] ?? $this->makeProgressRepoMarkingRows(0),
-            inconsistencyRepository: $overrides['inconsistencyRepo'] ?? $this->makeInconsistencyRepo(),
-            itemDespachoRepository: $itemRepo,
-            ordenProduccionRepository: new class implements OrdenProduccionRepositoryInterface
+            history: $overrides['historyRepo'] ?? $this->makeHistoryRepo(),
+            tracking: $overrides['trackingRepo'] ?? $this->makeTrackingRepo(),
+            progress: $overrides['progressRepo'] ?? $this->makeProgressRepoMarkingRows(0),
+            inconsistency: $overrides['inconsistencyRepo'] ?? $this->makeInconsistencyRepo(),
+            itemDespacho: $itemRepo,
+            ordenProduccion: new class implements OrdenProduccionRepositoryInterface
             {
                 public function byId(?string $id): ?\App\Domain\Produccion\Aggregate\OrdenProduccion
                 {
@@ -251,50 +278,21 @@ class ActualizarEstadoPaqueteDesdeLogisticaHandlerTest extends TestCase
                 }
 
                 public function markEntregaCompletada(string $opId, DateTimeImmutable $completedAt): void
-                {
-                    // intentionally empty — test stub
+                { /* stub */
                 }
             },
-            backfiller: new DeliveryContextBackfiller(
-                $itemRepo,
-                new class implements VentanaEntregaRepositoryInterface
-                {
-                    public function byId(string|int $id): ?VentanaEntrega
-                    {
-                        return null;
-                    }
+        );
 
-                    public function save(VentanaEntrega $v): string
-                    {
-                        return '';
-                    }
-
-                    public function list(): array
-                    {
-                        return [];
-                    }
-
-                    public function listVigentes(): array
-                    {
-                        return [];
-                    }
-
-                    public function byPacienteId(string $pacienteId): array
-                    {
-                        return [];
-                    }
-
-                    public function byCalendarioId(string $calendarioId): array
-                    {
-                        return [];
-                    }
-
-                    public function delete(string|int $id): void
-                    {
-                        // intentionally empty — test stub
-                    }
-                }
-            ),
+        return new ActualizarEstadoPaqueteDesdeLogisticaHandler(
+            repos: $repos,
+            kpiRepository: $overrides['kpi'] ?? $this->makeKpiSpy(),
+            transactionAggregate: $this->tx(),
+            eventPublisher: $overrides['publisher'] ?? new class implements DomainEventPublisherInterface
+            {
+                public function publish(array $events, mixed $aggregateId): void {}
+            },
+            statusMapper: new DeliveryStatusMapper,
+            backfiller: new DeliveryContextBackfiller($itemRepo, $ventanaStub),
             progressSync: $overrides['progressSync'] ?? $this->makeProgressSyncReturning([
                 'total_packages' => 0, 'completed_packages' => 0, 'failed_packages' => 0,
                 'pending_packages' => 0, 'all_completed_at' => null,
