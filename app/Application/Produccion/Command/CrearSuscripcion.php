@@ -12,7 +12,7 @@ namespace App\Application\Produccion\Command;
 class CrearSuscripcion
 {
     /**
-     * @var string
+     * @var string|null
      */
     public $id;
 
@@ -24,7 +24,7 @@ class CrearSuscripcion
     /**
      * Constructor
      */
-    public function __construct(string $id, string $nombre)
+    public function __construct(?string $id, string $nombre)
     {
         $this->id = $id;
         $this->nombre = $nombre;
